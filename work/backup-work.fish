@@ -4,8 +4,9 @@ cp -rH -t ~/git/emacs-config/work ~/.config ~/backup-work.fish ~/move-to-zip.fis
 rm -r ~/git/emacs-config/work/.config/fish/generated_completions
 cd ~/git/emacs-config
 
-set git-status (git status -s)
-if test -n $git-status
+set gitstatus (git status -s)
+
+if test -n $gitstatus
     echo "Pushing to git"
     git add --all
     git commit -m (date +"%F %H:%M")
