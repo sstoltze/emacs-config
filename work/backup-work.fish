@@ -4,6 +4,6 @@ cp -rH -t ~/git/emacs-config/work ~/.config ~/backup-work.fish ~/move-to-zip.fis
 rm -r ~/git/emacs-config/work/.config/fish/generated_completions
 cd ~/git/emacs-config
 git add --all
-git commit
+git commit -m (date +"%F %H:%M")
 git push
 
