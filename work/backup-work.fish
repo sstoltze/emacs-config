@@ -12,5 +12,7 @@ if test -n "$gitstatus"
     git add --all
     git commit -m (date +"%F %H:%M")
     git push
+else
+    echo "No changes, nothing to commit."
 end
 
