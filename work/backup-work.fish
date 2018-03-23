@@ -7,7 +7,8 @@ cd ~/git/emacs-config
 set gitstatus (git status -s)
 
 if test -n "$gitstatus"
-    echo "Pushing to git"
+    echo "$gitstatus"
+    echo "Adding and pushing to git"
     git add --all
     git commit -m (date +"%F %H:%M")
     git push
