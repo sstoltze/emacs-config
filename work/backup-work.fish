@@ -1,6 +1,6 @@
 #!/usr/bin/fish
 
-cp -rH -t ~/git/emacs-config/work ~/.config ~/backup-work.fish ~/move-to-zip.fish ~/check-status.fish ~/update.fish ~/.gitconfig ~/.gitignore ~/.emacs ~/color-test.fish
+cp -rH -t ~/git/emacs-config/work ~/.config ~/backup-work.fish ~/move-to-zip.fish ~/check-status.fish ~/update.fish ~/.gitconfig ~/.gitignore ~/.emacs ~/color-test.fish /cygdrive/c/Users/sisto/Pictures/background
 rm -r ~/git/emacs-config/work/.config/fish/generated_completions
 cd ~/git/emacs-config
 
