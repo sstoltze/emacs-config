@@ -29,18 +29,14 @@ int main () {
   FILE *fptr;
   char line[200];
   char filename[100];
-  char ch;
   int errno;
   
   printf("Enter filename:\n");
   get_line_from_file(stdin, filename, sizeof(filename));
   
-  printf("Opening %s\n", filename);
-  
   fptr = fopen(filename, "r");
   if (errno != 0) {
-    perror("Test");
-    printf("Error. Errno is %d.\n", errno);
+    perror("Error: ");
     return 1;
   }
   if (fptr == NULL) {
@@ -52,10 +48,6 @@ int main () {
       return 0;
     
     printf("%s\n", line);
-    /*    ch = fgetc(fptr);
-          if (ch != EOF) {
-          printf("%c", ch);
-          } */
   }
   fclose(fptr);
   

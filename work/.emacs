@@ -350,3 +350,19 @@ Simon Stoltze
 ; Numbered lines
 ;(setq-default linum-format "%3d")
 ;(add-hook 'prog-mode-hook 'linum-mode)
+
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
