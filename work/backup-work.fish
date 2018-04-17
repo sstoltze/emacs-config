@@ -4,6 +4,7 @@ function handle_git
     set -l gitstatus (git status -s)
     if test -n "$gitstatus"
         echo $gitstatus
+        echo ""
         echo "Adding and pushing to git."
         git add --all
         git commit -m (date +"%F %H:%M")
@@ -11,12 +12,12 @@ function handle_git
     else
         echo "No changes, nothing to commit."
     end
+    echo ""
 end
 
 echo "Noter:"
 cd ~/noter
 handle_git
-echo ""
 cd ~
 
 echo "emacs-config:"
@@ -24,7 +25,6 @@ cp -rH -t ~/git/emacs-config/work ~/.config ~/backup-work.fish ~/move-to-zip.fis
 rm -r ~/git/emacs-config/work/.config/fish/generated_completions
 cd ~/git/emacs-config
 handle_git
-echo ""
 cd ~
 
 #set gitstatus (git status -s)
