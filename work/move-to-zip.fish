@@ -16,13 +16,24 @@ if not test -d "./zip-versioner/$curr_date"
 end
 
 for dir in (ls -F | grep "$pattern.*/")
-    cd $dir
     echo "Saving $dir"
-    git_save
-    for z in (ls | grep ".zip")
+
+    set -l git_dir (string split -m 1 -r / $dir)[1]
+    set -l zip_name "$git_dir-"(date +%F)".zip"
+    
+    zip -q -r "$zip_name" -x "*.git*" "*project.json*" @ "$git_dir"
+
+    for z in (ls | grep "\.zip")
         echo "Moving $z"
-        mv $z "../zip-versioner/$curr_date/."
+        mv $z "./zip-versioner/$curr_date/."
     end
-    cd ..
 end
+
+
+
+
+
+
+
+
 
