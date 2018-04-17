@@ -16,6 +16,7 @@ end
 echo "Noter:"
 cd ~/noter
 handle_git
+echo ""
 cd ~
 
 echo "emacs-config:"
@@ -23,6 +24,7 @@ cp -rH -t ~/git/emacs-config/work ~/.config ~/backup-work.fish ~/move-to-zip.fis
 rm -r ~/git/emacs-config/work/.config/fish/generated_completions
 cd ~/git/emacs-config
 handle_git
+echo ""
 cd ~
 
 #set gitstatus (git status -s)
