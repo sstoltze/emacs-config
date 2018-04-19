@@ -15,15 +15,6 @@ set -x EDITOR "emacs -nw "
 set PATH /usr/bin/ $PATH
 set PATH C:/Io/bin C:/Io/lib $PATH
 set PATH /cygdrive/c/Program\ Files\ \(x86\)/UiPath/Studio/ $PATH
-set PATH /cygdrive/c/go/bin/ $PATH
-set GOPATH $HOME/go
-
-set PATH /home/sisto/perl5/bin $PATH
-set PERL5LIB "/home/sisto/perl5/lib/perl5" $PERL5LIB
-set PERL_LOCAL_LIB_ROOT /home/sisto/perl5 $PERL_LOCAL_LIB_ROOT
-set PERL_MB_OPT "--install_base \"/home/sisto/perl5\""
-set PERL_MM_OPT "INSTALL_BASE=/home/sisto/perl5"
-
 
 set pink      ff99ff
 set dark_pink cc99ff
