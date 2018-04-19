@@ -26,30 +26,3 @@ rm -r ~/git/emacs-config/work/.config/fish/generated_completions
 cd ~/git/emacs-config
 handle_git
 cd ~
-
-#set gitstatus (git status -s)
-
-#if test -n "$gitstatus"
-#    echo "$gitstatus"
-#    echo "Adding and pushing to git"
-#    git add --all
-#    git commit -m (date +"%F %H:%M")
-#    git push
-#else
-#    echo "No changes, nothing to commit."
-#end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
