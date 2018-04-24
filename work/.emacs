@@ -331,10 +331,12 @@ Simon Stoltze
    (ruby . t)))
 (setq org-confirm-babel-evaluate nil)
 
-;(use-package magit
-;  :ensure t
-;  :bind (("C-x g" . magit-status)     ; Display the main magit popup
-;         ("C-x M-g" . magit-dispatch-popup))) ; Display keybinds for magit
+(if (not (eq system-type 'cygwin))
+    (use-package magit
+      :ensure t
+      :bind (("C-x g" . magit-status)     ; Display the main magit popup
+             ("C-x M-g" . magit-dispatch-popup))) ; Display keybinds for magit
+  )
 
 (put 'upcase-region 'disabled nil)
 
