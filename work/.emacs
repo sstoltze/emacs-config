@@ -263,27 +263,27 @@ Simon Stoltze
 
 (use-package ido
   :init
-  (ido-mode t)
-  (setq ido-everywhere t)
-  (setq ido-max-directory-size 100000)
-  (ido-mode (quote both))
-  ;; Use the current window when visiting files and buffers with ido
-  (setq ido-default-file-method 'selected-window)
-  (setq ido-default-buffer-method 'selected-window)
-
-  (setq ido-enable-flex-matching t))
+  (progn
+    (ido-mode t)
+    (setq ido-everywhere t)
+    (setq ido-max-directory-size 100000)
+    (ido-mode (quote both))
+    ;; Use the current window when visiting files and buffers with ido
+    (setq ido-default-file-method 'selected-window)
+    (setq ido-default-buffer-method 'selected-window)
+    (setq ido-enable-flex-matching t)))
 
 ;; Use IDO for both buffer and file completion and ido-everywhere to t
 (setq org-completion-use-ido t)
-
 
 (setq-default indent-tabs-mode nil)
 
 (use-package slime
   :init
-  (setq inferior-lisp-program "sbcl")
-  (setq slime-default-lisp "sbcl")
-  (setq slime-contribs '(slime-fancy)))
+  (progn
+    (setq inferior-lisp-program "sbcl")
+    (setq slime-default-lisp "sbcl")
+    (setq slime-contribs '(slime-fancy))))
 
 ;(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
 
@@ -364,6 +364,3 @@ Simon Stoltze
   :init (global-flycheck-mode))
 
 (semantic-mode 1)
-
-(provide 'emacs)
-;;; .emacs ends here
