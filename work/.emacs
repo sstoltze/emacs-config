@@ -97,7 +97,7 @@ Simon Stoltze
  '(package-enable-at-startup t)
  '(package-selected-packages
    (quote
-    (fish-completion fish-mode io-mode io-mode-inf magit auto-complete htmlize 2048-game csv-mode csv auctex paperless pdf-tools org-babel-eval-in-repl slime excorporate org-outlook eww-lnum org use-package gnugo)))
+    (flycheck irony fish-completion fish-mode io-mode io-mode-inf magit auto-complete htmlize 2048-game csv-mode csv auctex paperless pdf-tools org-babel-eval-in-repl slime excorporate org-outlook eww-lnum org use-package gnugo)))
  '(show-paren-mode t)
  '(syslog-debug-face
    (quote
@@ -149,7 +149,7 @@ Simon Stoltze
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (setq backup-directory-alist `(("." . "~/.emacs.d/backups")))
-(setq x-select-enable-clipboard t)
+(setq select-enable-clipboard t)
 
 (require 'package)
 (setq package-enable-at-startup nil)
@@ -194,6 +194,7 @@ Simon Stoltze
 ;; working LaTeX installation with the preview package.
 
 (require 'org-install)
+(require 'org)
 (define-key global-map "\C-cl" 'org-store-link)
 (define-key global-map "\C-cc" 'org-capture)
 (define-key global-map "\C-cb" 'org-iswitchb)
@@ -212,16 +213,7 @@ Simon Stoltze
 ; Allow refile to create parent tasks with confirmation
 (setq org-refile-allow-creating-parent-nodes (quote confirm))
 
-
-; Use IDO for both buffer and file completion and ido-everywhere to t
-(setq org-completion-use-ido t)
-(setq ido-everywhere t)
-(setq ido-max-directory-size 100000)
-(ido-mode (quote both))
-; Use the current window when visiting files and buffers with ido
-(setq ido-default-file-method 'selected-window)
-(setq ido-default-buffer-method 'selected-window)
-; Use the current window for indirect buffer display
+;; Use the current window for indirect buffer display
 (setq org-indirect-buffer-display 'current-window)
 (add-hook 'org-mode-hook #'(lambda ()
                              (visual-line-mode)
@@ -247,7 +239,7 @@ Simon Stoltze
 ;;;; Refile settings
 ; Exclude DONE state tasks from refile targets
 (defun bh/verify-refile-target ()
-  "Exclude todo keywords with a done state from refile targets"
+  "Exclude todo keywords with a done state from refile targets."
   (not (member (nth 2 (org-heading-components)) org-done-keywords)))
 
 (setq org-refile-target-verify-function 'bh/verify-refile-target)
@@ -269,42 +261,55 @@ Simon Stoltze
 ;  (setq twittering-use-master-password t)
 ;  (setq twittering-icon-mode t))
 
-(require 'ido)
-(ido-mode t)
-(setq ido-enable-flex-matching t)
+(use-package ido
+  :init
+  (ido-mode t)
+  (setq ido-everywhere t)
+  (setq ido-max-directory-size 100000)
+  (ido-mode (quote both))
+  ;; Use the current window when visiting files and buffers with ido
+  (setq ido-default-file-method 'selected-window)
+  (setq ido-default-buffer-method 'selected-window)
+
+  (setq ido-enable-flex-matching t))
+
+;; Use IDO for both buffer and file completion and ido-everywhere to t
+(setq org-completion-use-ido t)
+
 
 (setq-default indent-tabs-mode nil)
 
-(setq inferior-lisp-program "sbcl")
-(setq slime-default-lisp "sbcl")
-(setq slime-contribs '(slime-fancy))
-
+(use-package slime
+  :init
+  (setq inferior-lisp-program "sbcl")
+  (setq slime-default-lisp "sbcl")
+  (setq slime-contribs '(slime-fancy)))
 
 ;(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
 
 ; http://whattheemacsd.com/buffer-defuns.el-02.html#disqus_thread
 (defun rotate-windows ()
-  "Rotate your windows"
+  "Rotate your windows."
   (interactive)
   (cond ((not (> (count-windows) 1))
          (message "You can't rotate a single window!"))
         (t
-         (setq i 1)
-         (setq numWindows (count-windows))
-         (while  (< i numWindows)
-           (let* ((w1 (elt (window-list) i))
-                  (w2 (elt (window-list) (+ (% i numWindows) 1)))
+         (let ((i 1)
+               (numWindows (count-windows)))
+           (while  (< i numWindows)
+             (let* ((w1 (elt (window-list) i))
+                    (w2 (elt (window-list) (+ (% i numWindows) 1)))
 
-                  (b1 (window-buffer w1))
-                  (b2 (window-buffer w2))
+                    (b1 (window-buffer w1))
+                    (b2 (window-buffer w2))
 
-                  (s1 (window-start w1))
-                  (s2 (window-start w2)))
-             (set-window-buffer w1 b2)
-             (set-window-buffer w2 b1)
-             (set-window-start w1 s2)
-             (set-window-start w2 s1)
-             (setq i (1+ i)))))))
+                    (s1 (window-start w1))
+                    (s2 (window-start w2)))
+               (set-window-buffer w1 b2)
+               (set-window-buffer w2 b1)
+               (set-window-start w1 s2)
+               (set-window-start w2 s1)
+               (setq i (1+ i))))))))
 
 (global-set-key (kbd "<C-tab>") 'rotate-windows)
 
@@ -318,7 +323,6 @@ Simon Stoltze
 ;(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
 ;(use-package mu4e)
 
-(require 'org)
 (require 'ob)
 
 ;; make org mode allow eval of some langs
@@ -354,3 +358,12 @@ Simon Stoltze
 ;(add-hook 'prog-mode-hook 'linum-mode)
 
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+(use-package flycheck
+  :ensure t
+  :init (global-flycheck-mode))
+
+(semantic-mode 1)
+
+(provide 'emacs)
+;;; .emacs ends here
