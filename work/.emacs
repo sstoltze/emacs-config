@@ -84,7 +84,7 @@ SCHEDULED: %t
       (file
        (lambda nil
          (buffer-file-name)))
-      "* %? - %u 
+      "* %? - %u
 :ATTENDEES:
 Simon Stoltze
 :END:
@@ -230,7 +230,7 @@ Simon Stoltze
 (load-library "find-lisp")
 (if (eq system-type 'cygwin)
     (setq org-agenda-files
-          (append 
+          (append
            (quote ("/cygdrive/c/Users/sisto/AppData/Roaming/noter.org"
                    "/cygdrive/c/Users/sisto/AppData/Roaming/calendar.org"
                    "/cygdrive/c/Users/sisto/AppData/Roaming/organizer.org"))
@@ -238,7 +238,7 @@ Simon Stoltze
             "/cygdrive/c/Users/sisto/Desktop/noter"
             "\.org$")))
   (setq org-agenda-files
-        (append 
+        (append
          (quote ("~/noter.org" "~/calendar.org" "~/organizer.org"))
          (find-lisp-find-files
           "C:\\Users\\sisto\\Desktop\\noter"
@@ -294,10 +294,10 @@ Simon Stoltze
          (while  (< i numWindows)
            (let* ((w1 (elt (window-list) i))
                   (w2 (elt (window-list) (+ (% i numWindows) 1)))
-                  
+
                   (b1 (window-buffer w1))
                   (b2 (window-buffer w2))
-                  
+
                   (s1 (window-start w1))
                   (s2 (window-start w2)))
              (set-window-buffer w1 b2)
@@ -353,18 +353,4 @@ Simon Stoltze
 ;(setq-default linum-format "%3d")
 ;(add-hook 'prog-mode-hook 'linum-mode)
 
-
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
