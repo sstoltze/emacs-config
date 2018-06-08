@@ -97,7 +97,7 @@ Simon Stoltze
  '(package-enable-at-startup t)
  '(package-selected-packages
    (quote
-    (flycheck irony fish-completion fish-mode io-mode io-mode-inf magit auto-complete htmlize 2048-game csv-mode csv auctex paperless pdf-tools org-babel-eval-in-repl slime excorporate org-outlook eww-lnum org use-package gnugo)))
+    (slime company company-auctex company-c-headers twittering-mode flycheck irony fish-completion fish-mode io-mode io-mode-inf magit auto-complete htmlize csv-mode csv auctex pdf-tools org-babel-eval-in-repl excorporate org-outlook eww-lnum org use-package gnugo)))
  '(show-paren-mode t)
  '(syslog-debug-face
    (quote
@@ -363,4 +363,17 @@ Simon Stoltze
   :ensure t
   :init (global-flycheck-mode))
 
+;; Semantic setup
+(defun my-semantic-hook ()
+  "Hook for semantic to add TAGS to menubar."
+  (imenu-add-to-menubar "TAGS"))
+(add-hook 'semantic-init-hooks 'my-semantic-hook)
+;(add-to-list 'semantic-default-submodes 'global-semantic-decoration-mode)
+(add-to-list 'semantic-default-submodes 'global-semanticdb-minor-mode)
+(add-to-list 'semantic-default-submodes 'global-semantic-idle-local-symbol-highlight-mode)
+(add-to-list 'semantic-default-submodes 'global-semantic-idle-scheduler-mode)
+(add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode)
+(add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode)
 (semantic-mode 1)
+(require 'semantic/ia)
+(require 'semantic/bovine/gcc)
