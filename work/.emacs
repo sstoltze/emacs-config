@@ -97,7 +97,7 @@ Simon Stoltze
  '(package-enable-at-startup t)
  '(package-selected-packages
    (quote
-    (slime company company-auctex company-c-headers twittering-mode flycheck irony fish-completion fish-mode io-mode io-mode-inf magit auto-complete htmlize csv-mode csv auctex pdf-tools org-babel-eval-in-repl excorporate org-outlook eww-lnum org use-package gnugo)))
+    (flycheck-haskell ghc haskell-mode flycheck-ocaml merlin tuareg slime company company-auctex company-c-headers twittering-mode flycheck irony fish-completion fish-mode io-mode io-mode-inf magit auto-complete htmlize csv-mode csv auctex pdf-tools org-babel-eval-in-repl excorporate org-outlook eww-lnum org use-package gnugo)))
  '(show-paren-mode t)
  '(syslog-debug-face
    (quote
@@ -115,6 +115,7 @@ Simon Stoltze
    (quote
     ((t :background unspecified :foreground "#cb4b16" :weight bold))))
  '(tool-bar-mode nil)
+ '(tuareg-font-lock-symbols t)
  '(vc-annotate-background nil)
  '(vc-annotate-color-map
    (quote
@@ -313,7 +314,8 @@ Simon Stoltze
 
 (global-set-key (kbd "<C-tab>") 'rotate-windows)
 
-(setq default-directory "C:/Users/sisto/Desktop/")
+(if (not (eq system-type 'cygwin))
+    (setq default-directory "C:/Users/sisto/Desktop/"))
 
 (prefer-coding-system        'utf-8)
 (set-default-coding-systems  'utf-8)
