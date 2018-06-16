@@ -97,7 +97,7 @@ Simon Stoltze
  '(package-enable-at-startup t)
  '(package-selected-packages
    (quote
-    (flycheck-haskell ghc haskell-mode flycheck-ocaml merlin tuareg slime company company-auctex company-c-headers twittering-mode flycheck irony fish-completion fish-mode io-mode io-mode-inf magit auto-complete htmlize csv-mode csv auctex pdf-tools org-babel-eval-in-repl excorporate org-outlook eww-lnum org use-package gnugo)))
+    (elpy ess-smart-underscore flycheck-haskell ghc haskell-mode flycheck-ocaml merlin tuareg slime company company-auctex company-c-headers twittering-mode flycheck irony fish-completion fish-mode io-mode io-mode-inf magit auto-complete htmlize csv-mode csv auctex pdf-tools org-babel-eval-in-repl excorporate org-outlook eww-lnum org use-package gnugo)))
  '(show-paren-mode t)
  '(syslog-debug-face
    (quote
@@ -334,7 +334,9 @@ Simon Stoltze
    (lisp . t)
    (emacs-lisp . t)
    (python . t)
-   (ruby . t)))
+   (ruby . t)
+   (R . t)
+   (latex . t)))
 (setq org-confirm-babel-evaluate nil)
 
 (if (not (eq system-type 'cygwin))
@@ -379,3 +381,13 @@ Simon Stoltze
 (semantic-mode 1)
 (require 'semantic/ia)
 (require 'semantic/bovine/gcc)
+
+;;ESS - Emacs Speaks Statistics
+(require 'ess-site)
+(add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
+(add-hook 'org-mode-hook 'org-display-inline-images)
+;; Redefine asign key
+(require 'ess-smart-underscore)
+
+(elpy-enable)
+(setq elpy-shell-use-project-root nil)
