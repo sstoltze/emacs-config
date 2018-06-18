@@ -148,145 +148,43 @@ Simon Stoltze
  ;; If there is more than one, they won't work right.
  '(cursor ((t (:background "forest green")))))
 
+;;; General setup ------------------------------------------------------
+(prefer-coding-system        'utf-8)
+(set-default-coding-systems  'utf-8)
+(set-language-environment    'utf-8)
+(set-selection-coding-system 'utf-8)
+
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (setq backup-directory-alist `(("." . "~/.emacs.d/backups")))
 (setq select-enable-clipboard t)
 
-(require 'package)
-(setq package-enable-at-startup nil)
-(add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/"))
-;(add-to-list 'package-archives
-;             '("melpa" . "http://melpa.org/packages/"))
-(when (< emacs-major-version 24)
-  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
-(package-initialize)
+(if (not (eq system-type 'cygwin))
+    (setq default-directory "C:/Users/sisto/Desktop/"))
 
-;; Bootstrap `use-package'
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
+(setq next-line-add-newlines t) ;; Newline at end of file
+(add-hook 'before-save-hook
+          'delete-trailing-whitespace)
 
-; Brug zenburn fra terminal
-;(unless (display-graphic-p)
-;  (load-theme (quote hc-zenburn)))
+;; Unset suspend keys. Never used anyway
+(global-unset-key (kbd "C-z"))
+(global-unset-key (kbd "C-x C-z"))
 
-(add-hook 'LaTeX-mode-hook 'turn-on-auto-fill)
+(global-prettify-symbols-mode 1)
+(setq prettify-symbols-unprettify-at-point 'right-edge)
 
-(setq next-line-add-newlines t)
+(add-hook 'LaTeX-mode-hook
+          'turn-on-auto-fill)
 
-;; SAGE
-;(use-package sage
-;  :load-path "/usr/lib/sagemath/local/share/emacs"
-;                                        ;  :init
-;                                        ;  (add-to-list 'load-path (expand-file-name "/usr/lib/sagemath/local/share/emacs"))
-;  :config
-;  (setq sage-command "/usr/lib/sagemath/sage"))
-;(require 'sage "sage")
+(add-hook 'css-mode-hook
+          'rainbow-mode)
 
-;; If you want sage-view to typeset all your output and have plot()
-;; commands inline, uncomment the following line and configure sage-view:
-;; (require 'sage-view "sage-view")
-;; (add-hook 'sage-startup-after-prompt-hook 'sage-view)
-;; You can use commands like
-;; (add-hook 'sage-startup-after-prompt-hook 'sage-view-disable-inline-output)
-;; (add-hook 'sage-startup-after-prompt-hook 'sage-view-disable-inline-plots)
-;; to enable some combination of features.  Using sage-view requires a
-;; working LaTeX installation with the preview package.
-
-(require 'org-install)
-(require 'org)
-(define-key global-map "\C-cl" 'org-store-link)
-(define-key global-map "\C-cc" 'org-capture)
-(define-key global-map "\C-cb" 'org-iswitchb)
-(define-key global-map "\C-ca" 'org-agenda)
-(setq org-log-done t)
-(setq org-default-notes-file "~/organizer.org")
-(set-register ?o (cons 'file "~/organizer.org"))
-(setq org-refile-targets (quote ((nil :maxlevel . 9)
-                                 (org-agenda-files :maxlevel . 9))))
-; Use full outline paths for refile targets - we file directly with IDO
-(setq org-refile-use-outline-path t)
-
-; Targets complete directly with IDO
-(setq org-outline-path-complete-in-steps nil)
-
-; Allow refile to create parent tasks with confirmation
-(setq org-refile-allow-creating-parent-nodes (quote confirm))
-
-;; Use the current window for indirect buffer display
-(setq org-indirect-buffer-display 'current-window)
-(add-hook 'org-mode-hook #'(lambda ()
-                             (visual-line-mode)
-                             (org-indent-mode)))
-
-(load-library "find-lisp")
-(if (eq system-type 'cygwin)
-    (setq org-agenda-files
-          (append
-           (quote ("/cygdrive/c/Users/sisto/AppData/Roaming/noter.org"
-                   "/cygdrive/c/Users/sisto/AppData/Roaming/calendar.org"
-                   "/cygdrive/c/Users/sisto/AppData/Roaming/organizer.org"))
-           (find-lisp-find-files
-            "/cygdrive/c/Users/sisto/Desktop/noter"
-            "\.org$")))
-  (setq org-agenda-files
-        (append
-         (quote ("~/noter.org" "~/calendar.org" "~/organizer.org"))
-         (find-lisp-find-files
-          "C:\\Users\\sisto\\Desktop\\noter"
-          "\.org$"))))
-
-;;;; Refile settings
-; Exclude DONE state tasks from refile targets
-(defun bh/verify-refile-target ()
-  "Exclude todo keywords with a done state from refile targets."
-  (not (member (nth 2 (org-heading-components)) org-done-keywords)))
-
-(setq org-refile-target-verify-function 'bh/verify-refile-target)
-
-;; Macaulay 2 start
-;(load "~/.emacs-Macaulay2" t)
-;; Macaulay 2 end
-
-;(use-package iso-transl)
-
-(add-hook 'css-mode-hook 'rainbow-mode)
-
-;(use-package twittering-mode
-;  :load-path "~/Documents/git/twittering-mode/"
-;  :init
-;                                        ; (add-to-list 'load-path )
-;                                        ; (require 'twittering-mode)
-;  :config
-;  (setq twittering-use-master-password t)
-;  (setq twittering-icon-mode t))
-
-(use-package ido
-  :init
-  (progn
-    (ido-mode t)
-    (setq ido-everywhere t)
-    (setq ido-max-directory-size 100000)
-    (ido-mode (quote both))
-    ;; Use the current window when visiting files and buffers with ido
-    (setq ido-default-file-method 'selected-window)
-    (setq ido-default-buffer-method 'selected-window)
-    (setq ido-enable-flex-matching t)))
-
-;; Use IDO for both buffer and file completion and ido-everywhere to t
-(setq org-completion-use-ido t)
+;; Enable C-x C-u (upcase-region) and C-x C-l (downcase region)
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
 
 (setq-default indent-tabs-mode nil)
 
-(use-package slime
-  :init
-  (progn
-    (setq inferior-lisp-program "sbcl")
-    (setq slime-default-lisp "sbcl")
-    (setq slime-contribs '(slime-fancy))))
-
-;(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
+(load-library "find-lisp") ;; Provides find-lisp-find-files
 
 ; http://whattheemacsd.com/buffer-defuns.el-02.html#disqus_thread
 (defun rotate-windows ()
@@ -314,30 +212,135 @@ Simon Stoltze
 
 (global-set-key (kbd "<C-tab>") 'rotate-windows)
 
-(if (not (eq system-type 'cygwin))
-    (setq default-directory "C:/Users/sisto/Desktop/"))
+; Brug zenburn fra terminal
+;(unless (display-graphic-p)
+;  (load-theme (quote hc-zenburn)))
 
-(prefer-coding-system        'utf-8)
-(set-default-coding-systems  'utf-8)
-(set-language-environment    'utf-8)
-(set-selection-coding-system 'utf-8)
+;;; Packages -----------------------------------------------------------
+(require 'package)
+(setq package-enable-at-startup nil)
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/"))
+(add-to-list 'package-archives
+             '("elpy" . "https://jorgenschaefer.github.io/packages/"))
+(when (< emacs-major-version 24)
+  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+(package-initialize)
 
-;(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
-;(use-package mu4e)
+;; Bootstrap `use-package'
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
 
-(require 'ob)
+(use-package flycheck
+  :ensure t
+  :init (global-flycheck-mode))
 
-;; make org mode allow eval of some langs
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((ditaa . t)
-   (lisp . t)
-   (emacs-lisp . t)
-   (python . t)
-   (ruby . t)
-   (R . t)
-   (latex . t)))
-(setq org-confirm-babel-evaluate nil)
+;; org-mode
+(require 'org-install)
+(progn
+  (define-key global-map "\C-cl" 'org-store-link)
+  (define-key global-map "\C-cc" 'org-capture)
+  (define-key global-map "\C-cb" 'org-iswitchb)
+  (define-key global-map "\C-ca" 'org-agenda)
+  (setq org-log-done t)
+  (setq org-default-notes-file "~/organizer.org")
+  (set-register ?o (cons 'file "~/organizer.org"))
+  (setq org-refile-targets (quote ((nil :maxlevel . 9)
+                                   (org-agenda-files :maxlevel . 9))))
+  ;; Use full outline paths for refile targets - we file directly with IDO
+  (setq org-refile-use-outline-path t)
+  ;; Targets complete directly with IDO
+  (setq org-outline-path-complete-in-steps nil)
+  ;; Allow refile to create parent tasks with confirmation
+  (setq org-refile-allow-creating-parent-nodes (quote confirm))
+  ;; Use the current window for indirect buffer display
+  (setq org-indirect-buffer-display 'current-window)
+  (add-hook 'org-mode-hook #'(lambda ()
+                               (visual-line-mode)
+                               (org-indent-mode)))
+  ;; Use IDO for both buffer and file completion and ido-everywhere to t
+  (setq org-completion-use-ido t)
+  (if (eq system-type 'cygwin)
+      (setq org-agenda-files
+            (append
+             (quote ("/cygdrive/c/Users/sisto/AppData/Roaming/noter.org"
+                     "/cygdrive/c/Users/sisto/AppData/Roaming/calendar.org"
+                     "/cygdrive/c/Users/sisto/AppData/Roaming/organizer.org"))
+             (find-lisp-find-files
+              "/cygdrive/c/Users/sisto/Desktop/noter"
+              "\.org$")))
+    (setq org-agenda-files
+          (append
+           (quote ("~/noter.org" "~/calendar.org" "~/organizer.org"))
+           (find-lisp-find-files
+            "C:\\Users\\sisto\\Desktop\\noter"
+            "\.org$"))))
+  ;; Refile settings
+  ;; Exclude DONE state tasks from refile targets
+  (defun bh/verify-refile-target ()
+    "Exclude todo keywords with a done state from refile targets."
+    (not (member (nth 2 (org-heading-components)) org-done-keywords)))
+  (setq org-refile-target-verify-function 'bh/verify-refile-target))
+
+;; org babel evaluate
+(use-package ob
+  :init
+  (progn
+    ;; make org mode allow eval of some langs
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((ditaa . t)
+       (lisp . t)
+       (emacs-lisp . t)
+       (python . t)
+       (ruby . t)
+       (R . t)
+       (latex . t)))
+    (setq org-confirm-babel-evaluate nil)))
+
+(use-package ido
+  :init
+  (progn
+    (ido-mode t)
+    (setq ido-everywhere t)
+    (setq ido-max-directory-size 100000)
+    (ido-mode (quote both))
+    ;; Use the current window when visiting files and buffers with ido
+    (setq ido-default-file-method 'selected-window)
+    (setq ido-default-buffer-method 'selected-window)
+    (setq ido-enable-flex-matching t)))
+
+(use-package slime
+  :init
+  (progn
+    (setq inferior-lisp-program "sbcl")
+    (setq slime-default-lisp "sbcl")
+    (setq slime-contribs '(slime-fancy))))
+
+
+;; Semantic setup
+(progn
+  (defun my-semantic-hook ()
+    "Hook for semantic to add TAGS to menubar."
+    (imenu-add-to-menubar "TAGS"))
+  (add-hook 'semantic-init-hooks
+            'my-semantic-hook)
+
+  (require 'semantic/ia)
+  (require 'semantic/bovine/gcc)
+  (add-to-list 'semantic-default-submodes
+               'global-semanticdb-minor-mode)
+  (add-to-list 'semantic-default-submodes
+               'global-semantic-idle-local-symbol-highlight-mode)
+  (add-to-list 'semantic-default-submodes
+               'global-semantic-idle-scheduler-mode)
+  (add-to-list 'semantic-default-submodes
+               'global-semantic-idle-completions-mode)
+  (add-to-list 'semantic-default-submodes
+               'global-semantic-idle-summary-mode)
+  (add-hook 'c-mode-hook
+            '(lambda () (semantic-mode t))))
 
 (if (not (eq system-type 'cygwin))
     (use-package magit
@@ -346,48 +349,68 @@ Simon Stoltze
              ("C-x M-g" . magit-dispatch-popup))) ; Display keybinds for magit
   )
 
-(put 'upcase-region 'disabled nil)
-
 (use-package fish-mode :ensure t)
 
-;; Unset suspend keys. Never used anyway
-(global-unset-key (kbd "C-z"))
-(global-unset-key (kbd "C-x C-z"))
-
-(global-prettify-symbols-mode 1)
-(setq prettify-symbols-unprettify-at-point 'right-edge)
-
-; Numbered lines
-;(setq-default linum-format "%3d")
-;(add-hook 'prog-mode-hook 'linum-mode)
-
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-
-(use-package flycheck
-  :ensure t
-  :init (global-flycheck-mode))
-
-;; Semantic setup
-(defun my-semantic-hook ()
-  "Hook for semantic to add TAGS to menubar."
-  (imenu-add-to-menubar "TAGS"))
-(add-hook 'semantic-init-hooks 'my-semantic-hook)
-;(add-to-list 'semantic-default-submodes 'global-semantic-decoration-mode)
-(add-to-list 'semantic-default-submodes 'global-semanticdb-minor-mode)
-(add-to-list 'semantic-default-submodes 'global-semantic-idle-local-symbol-highlight-mode)
-(add-to-list 'semantic-default-submodes 'global-semantic-idle-scheduler-mode)
-(add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode)
-(add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode)
-(semantic-mode 1)
-(require 'semantic/ia)
-(require 'semantic/bovine/gcc)
-
 ;;ESS - Emacs Speaks Statistics
-(require 'ess-site)
-(add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
-(add-hook 'org-mode-hook 'org-display-inline-images)
-;; Redefine asign key
-(require 'ess-smart-underscore)
+(use-package ess-site
+  :ensure ess
+  :config
+  (add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
+  (add-hook 'org-mode-hook 'org-display-inline-images)
+  (use-package ess-smart-underscore))
 
-(elpy-enable)
-(setq elpy-shell-use-project-root nil)
+(use-package elpy
+  :ensure t
+  :pin elpy
+  :config
+  (elpy-enable)
+  (setq elpy-shell-use-project-root nil)
+  ;; Enable elpy in a Python mode
+  (add-hook 'python-mode-hook 'elpy-mode)
+  (setq elpy-rpc-backend "jedi")
+  ;; Open the Python shell in a buffer after sending code to it
+  (add-hook 'inferior-python-mode-hook 'python-shell-switch-to-shell)
+  ;; Enable pyvenv, which manages Python virtual environments
+  (pyvenv-mode 1)
+  ;; Tell Python debugger (pdb) to use the current virtual environment
+  ;; https://emacs.stackexchange.com/questions/17808/enable-python-pdb-on-emacs-with-virtualenv
+  (setq gud-pdb-command-name "python -m pdb "))
+
+
+;; SAGE
+;(use-package sage
+;  :load-path "/usr/lib/sagemath/local/share/emacs"
+;                                        ;  :init
+;                                        ;  (add-to-list 'load-path (expand-file-name "/usr/lib/sagemath/local/share/emacs"))
+;  :config
+;  (setq sage-command "/usr/lib/sagemath/sage"))
+;(require 'sage "sage")
+
+;; If you want sage-view to typeset all your output and have plot()
+;; commands inline, uncomment the following line and configure sage-view:
+;; (require 'sage-view "sage-view")
+;; (add-hook 'sage-startup-after-prompt-hook 'sage-view)
+;; You can use commands like
+;; (add-hook 'sage-startup-after-prompt-hook 'sage-view-disable-inline-output)
+;; (add-hook 'sage-startup-after-prompt-hook 'sage-view-disable-inline-plots)
+;; to enable some combination of features.  Using sage-view requires a
+;; working LaTeX installation with the preview package.
+
+;; Macaulay 2 start
+;(load "~/.emacs-Macaulay2" t)
+;; Macaulay 2 end
+
+;(use-package iso-transl)
+
+;(use-package twittering-mode
+;  :load-path "~/Documents/git/twittering-mode/"
+;  :init
+;                                        ; (add-to-list 'load-path )
+;                                        ; (require 'twittering-mode)
+;  :config
+;  (setq twittering-use-master-password t)
+;  (setq twittering-icon-mode t))
+;(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
+
+;(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
+;(use-package mu4e)
