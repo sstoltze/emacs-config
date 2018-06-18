@@ -97,7 +97,7 @@ Simon Stoltze
  '(package-enable-at-startup t)
  '(package-selected-packages
    (quote
-    (elpy ess-smart-underscore flycheck-haskell ghc haskell-mode flycheck-ocaml merlin tuareg slime company company-auctex company-c-headers twittering-mode flycheck irony fish-completion fish-mode io-mode io-mode-inf magit auto-complete htmlize csv-mode csv auctex pdf-tools org-babel-eval-in-repl excorporate org-outlook eww-lnum org use-package gnugo)))
+    (stan-snippets stan-mode ob elpy ess-smart-underscore flycheck-haskell ghc haskell-mode flycheck-ocaml merlin tuareg slime company company-auctex company-c-headers twittering-mode flycheck irony fish-completion fish-mode io-mode io-mode-inf magit auto-complete htmlize csv-mode csv auctex pdf-tools org-babel-eval-in-repl excorporate org-outlook eww-lnum org use-package gnugo)))
  '(show-paren-mode t)
  '(syslog-debug-face
    (quote
@@ -172,12 +172,6 @@ Simon Stoltze
 (global-prettify-symbols-mode 1)
 (setq prettify-symbols-unprettify-at-point 'right-edge)
 
-(add-hook 'LaTeX-mode-hook
-          'turn-on-auto-fill)
-
-(add-hook 'css-mode-hook
-          'rainbow-mode)
-
 ;; Enable C-x C-u (upcase-region) and C-x C-l (downcase region)
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
@@ -186,6 +180,20 @@ Simon Stoltze
 
 (load-library "find-lisp") ;; Provides find-lisp-find-files
 
+;; Python
+(if (or (eq system-type 'windows-nt)
+        (eq system-type 'ms-dos))
+    (setq python-shell-completion-native-disabled-interpreters '("python")))
+
+;; LaTeX
+(add-hook 'LaTeX-mode-hook
+          'turn-on-auto-fill)
+
+;; HTML/CSS
+(add-hook 'css-mode-hook
+          'rainbow-mode)
+
+;; Rotate windows on C-<tab>
 ; http://whattheemacsd.com/buffer-defuns.el-02.html#disqus_thread
 (defun rotate-windows ()
   "Rotate your windows."
@@ -209,7 +217,6 @@ Simon Stoltze
                (set-window-start w1 s2)
                (set-window-start w2 s1)
                (setq i (1+ i))))))))
-
 (global-set-key (kbd "<C-tab>") 'rotate-windows)
 
 ; Brug zenburn fra terminal
@@ -282,24 +289,23 @@ Simon Stoltze
     "Exclude todo keywords with a done state from refile targets."
     (not (member (nth 2 (org-heading-components)) org-done-keywords)))
   (setq org-refile-target-verify-function 'bh/verify-refile-target))
-
 ;; org babel evaluate
-(use-package ob
-  :init
-  (progn
-    ;; make org mode allow eval of some langs
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((ditaa . t)
-       (lisp . t)
-       (emacs-lisp . t)
-       (python . t)
-       (ruby . t)
-       (R . t)
-       (latex . t)))
-    (setq org-confirm-babel-evaluate nil)))
+(require' ob)
+(progn
+  ;; make org mode allow eval of some langs
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((ditaa . t)
+     (lisp . t)
+     (emacs-lisp . t)
+     (python . t)
+     (ruby . t)
+     (R . t)
+     (latex . t)))
+  (setq org-confirm-babel-evaluate nil))
 
 (use-package ido
+  :ensure t
   :init
   (progn
     (ido-mode t)
@@ -312,6 +318,7 @@ Simon Stoltze
     (setq ido-enable-flex-matching t)))
 
 (use-package slime
+  :ensure t
   :init
   (progn
     (setq inferior-lisp-program "sbcl")
@@ -349,7 +356,8 @@ Simon Stoltze
              ("C-x M-g" . magit-dispatch-popup))) ; Display keybinds for magit
   )
 
-(use-package fish-mode :ensure t)
+(use-package fish-mode
+  :ensure t)
 
 ;;ESS - Emacs Speaks Statistics
 (use-package ess-site
@@ -357,24 +365,33 @@ Simon Stoltze
   :config
   (add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
   (add-hook 'org-mode-hook 'org-display-inline-images)
-  (use-package ess-smart-underscore))
+  (use-package ess-smart-underscore
+    :ensure t))
+
+(use-package stan-mode
+  :ensure t
+  :init
+  (progn
+    (use-package stan-snippets
+      :ensure t)))
 
 (use-package elpy
   :ensure t
   :pin elpy
   :config
-  (elpy-enable)
-  (setq elpy-shell-use-project-root nil)
-  ;; Enable elpy in a Python mode
-  (add-hook 'python-mode-hook 'elpy-mode)
-  (setq elpy-rpc-backend "jedi")
-  ;; Open the Python shell in a buffer after sending code to it
-  (add-hook 'inferior-python-mode-hook 'python-shell-switch-to-shell)
-  ;; Enable pyvenv, which manages Python virtual environments
-  (pyvenv-mode 1)
-  ;; Tell Python debugger (pdb) to use the current virtual environment
-  ;; https://emacs.stackexchange.com/questions/17808/enable-python-pdb-on-emacs-with-virtualenv
-  (setq gud-pdb-command-name "python -m pdb "))
+  (progn
+    (elpy-enable)
+    (setq elpy-shell-use-project-root nil)
+    ;; Enable elpy in a Python mode
+    (add-hook 'python-mode-hook 'elpy-mode)
+    (setq elpy-rpc-backend "jedi")
+    ;; Open the Python shell in a buffer after sending code to it
+    (add-hook 'inferior-python-mode-hook 'python-shell-switch-to-shell)
+    ;; Enable pyvenv, which manages Python virtual environments
+    (pyvenv-mode 1)
+    ;; Tell Python debugger (pdb) to use the current virtual environment
+    ;; https://emacs.stackexchange.com/questions/17808/enable-python-pdb-on-emacs-with-virtualenv
+    (setq gud-pdb-command-name "python -m pdb ")))
 
 
 ;; SAGE
