@@ -29,9 +29,6 @@
  '(display-time-mode t)
  '(display-time-use-mail-icon nil)
  '(doc-view-continuous t)
- '(excorporate-configuration
-   (quote
-    ("sisto@eg.dk" . "https://outlook.office365.com/EWS/Exchange.asmx")))
  '(fci-rule-color "#073642")
  '(haskell-indent-spaces 4)
  '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
@@ -51,9 +48,6 @@
  '(nrepl-message-colors
    (quote
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
- '(org-agenda-files
-   (quote
-    ("~/noter.org" "~/calendar.org" "~/organizer.org" "c:/Users/sisto/Desktop/noter/test/test.org" "c:/Users/sisto/Desktop/noter/test/cl-shorter.org" "c:/Users/sisto/Desktop/noter/straksvalidering/programmer.org" "c:/Users/sisto/Desktop/noter/rpa/fkm-randers-noter.org" "c:/Users/sisto/Desktop/noter/rpa/aalborg/spørgsmaal.org" "c:/Users/sisto/Desktop/noter/rpa/aalborg/noter.org" "c:/Users/sisto/Desktop/noter/rpa/aalborg/møder.org" "c:/Users/sisto/Desktop/noter/forv-fods/opbygning-ka0.org" "c:/Users/sisto/Desktop/noter/forv-fods/noter.org" "c:/Users/sisto/Desktop/noter/forv-fods/møde-2018-01-29.org" "c:/Users/sisto/Desktop/noter/forv-fods/møde-2017-11-13.org" "c:/Users/sisto/Desktop/noter/forv-fods/møde-2017-11-08.org" "c:/Users/sisto/Desktop/noter/forv-fods/komp-til-sdpw-og-b109.org" "c:/Users/sisto/Desktop/noter/fejl/udbetaling-af-ferie-tilbageførsel-2017-11-01.org" "c:/Users/sisto/Desktop/noter/fejl/pro3464-dw-især-910-929-2018-02-01.org" "c:/Users/sisto/Desktop/noter/fejl/planlagt-udbetalt-ferie-kontovisning-2017-11-28.org" "c:/Users/sisto/Desktop/noter/fejl/Done/udbetaling-af-ferie-knap-2018-01-10.org" "c:/Users/sisto/Desktop/noter/fejl/Done/syl0534-2017-11-09.org" "c:/Users/sisto/Desktop/noter/fejl/Done/Srf0flb-dagplejere-2017-12-15/srf0flb-2017-12-15.org" "c:/Users/sisto/Desktop/noter/fejl/Done/kg-bo-lyngholm-andersen-2017-11-06.org")))
  '(org-capture-templates
    (quote
     (("t" "Task" entry
@@ -218,10 +212,6 @@ Simon Stoltze
                (set-window-start w2 s1)
                (setq i (1+ i))))))))
 (global-set-key (kbd "<C-tab>") 'rotate-windows)
-
-; Brug zenburn fra terminal
-;(unless (display-graphic-p)
-;  (load-theme (quote hc-zenburn)))
 
 ;;; Packages -----------------------------------------------------------
 (require 'package)
@@ -392,42 +382,3 @@ Simon Stoltze
     ;; Tell Python debugger (pdb) to use the current virtual environment
     ;; https://emacs.stackexchange.com/questions/17808/enable-python-pdb-on-emacs-with-virtualenv
     (setq gud-pdb-command-name "python -m pdb ")))
-
-
-;; SAGE
-;(use-package sage
-;  :load-path "/usr/lib/sagemath/local/share/emacs"
-;                                        ;  :init
-;                                        ;  (add-to-list 'load-path (expand-file-name "/usr/lib/sagemath/local/share/emacs"))
-;  :config
-;  (setq sage-command "/usr/lib/sagemath/sage"))
-;(require 'sage "sage")
-
-;; If you want sage-view to typeset all your output and have plot()
-;; commands inline, uncomment the following line and configure sage-view:
-;; (require 'sage-view "sage-view")
-;; (add-hook 'sage-startup-after-prompt-hook 'sage-view)
-;; You can use commands like
-;; (add-hook 'sage-startup-after-prompt-hook 'sage-view-disable-inline-output)
-;; (add-hook 'sage-startup-after-prompt-hook 'sage-view-disable-inline-plots)
-;; to enable some combination of features.  Using sage-view requires a
-;; working LaTeX installation with the preview package.
-
-;; Macaulay 2 start
-;(load "~/.emacs-Macaulay2" t)
-;; Macaulay 2 end
-
-;(use-package iso-transl)
-
-;(use-package twittering-mode
-;  :load-path "~/Documents/git/twittering-mode/"
-;  :init
-;                                        ; (add-to-list 'load-path )
-;                                        ; (require 'twittering-mode)
-;  :config
-;  (setq twittering-use-master-password t)
-;  (setq twittering-icon-mode t))
-;(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
-
-;(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
-;(use-package mu4e)
