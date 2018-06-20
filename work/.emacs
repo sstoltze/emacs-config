@@ -108,7 +108,9 @@ Simon Stoltze
  '(syslog-warn-face
    (quote
     ((t :background unspecified :foreground "#cb4b16" :weight bold))))
+ '(temporary-file-directory "F:/Users/sisto/AppData/Local/Temp/")
  '(tool-bar-mode nil)
+ '(tooltip-mode t)
  '(tuareg-font-lock-symbols t)
  '(vc-annotate-background nil)
  '(vc-annotate-color-map
@@ -186,6 +188,10 @@ Simon Stoltze
 ;; HTML/CSS
 (add-hook 'css-mode-hook
           'rainbow-mode)
+
+
+(add-hook 'haskell-mode-hook
+          'turn-on-haskell-indent)
 
 ;; Rotate windows on C-<tab>
 ; http://whattheemacsd.com/buffer-defuns.el-02.html#disqus_thread
