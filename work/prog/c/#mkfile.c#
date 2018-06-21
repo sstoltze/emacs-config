@@ -32,7 +32,7 @@ int main() {
 
   printf("Enter filename:\n");
   get_line_from_file(stdin, filename, sizeof(filename));
-
+  
   fptr = fopen(filename, "a");
   if (errno != 0) {
     perror("Error: ");
