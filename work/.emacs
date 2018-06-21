@@ -30,7 +30,7 @@
  '(display-time-use-mail-icon nil)
  '(doc-view-continuous t)
  '(fci-rule-color "#073642")
- '(haskell-indent-spaces 4)
+ '(haskell-indent-spaces 4 t)
  '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
  '(highlight-tail-colors
    (quote
@@ -82,7 +82,7 @@ SCHEDULED: %t
 :ATTENDEES:
 Simon Stoltze
 :END:
-"))))
+"))) t)
  '(org-ellipsis "…")
  '(org-startup-folded nil)
  '(org-startup-indented t)
@@ -91,7 +91,7 @@ Simon Stoltze
  '(package-enable-at-startup nil)
  '(package-selected-packages
    (quote
-    (benchmark-init stan-snippets stan-mode ob elpy ess-smart-underscore flycheck-haskell ghc haskell-mode flycheck-ocaml merlin tuareg slime company company-auctex company-c-headers twittering-mode flycheck irony fish-completion fish-mode io-mode io-mode-inf magit auto-complete htmlize csv-mode csv auctex pdf-tools org-babel-eval-in-repl excorporate org-outlook eww-lnum org use-package gnugo)))
+    (company-ghci company-jedi company-ghc intero benchmark-init stan-snippets stan-mode ob elpy ess-smart-underscore flycheck-haskell ghc haskell-mode flycheck-ocaml merlin tuareg slime company company-auctex company-c-headers twittering-mode flycheck irony fish-completion fish-mode io-mode io-mode-inf magit auto-complete htmlize csv-mode csv auctex pdf-tools org-babel-eval-in-repl excorporate org-outlook eww-lnum org use-package gnugo)))
  '(show-paren-mode t)
  '(syslog-debug-face
    (quote
@@ -141,6 +141,11 @@ Simon Stoltze
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(company-scrollbar-bg ((t (:background "slate blue"))))
+ '(company-scrollbar-fg ((t (:background "dark slate blue"))))
+ '(company-tooltip ((t (:inherit default :background "#1b1e2c"))))
+ '(company-tooltip-common ((t (:inherit font-lock-constant-face))))
+ '(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
  '(cursor ((t (:background "forest green")))))
 
 ;;; General setup ------------------------------------------------------
@@ -175,22 +180,306 @@ Simon Stoltze
 
 (load-library "find-lisp") ;; Provides find-lisp-find-files
 
-;; Python
-(if (or (eq system-type 'windows-nt)
-        (eq system-type 'ms-dos))
-    (setq python-shell-completion-native-disabled-interpreters '("python")))
+;;; Packages -----------------------------------------------------------
+(require 'package)
+(setq package-enable-at-startup nil)
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/"))
+(add-to-list 'package-archives
+             '("elpy" . "https://jorgenschaefer.github.io/packages/"))
+(when (< emacs-major-version 24)
+  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+(package-initialize)
 
-;; LaTeX
+;; Bootstrap `use-package'
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(use-package benchmark-init
+  :ensure t
+  :config
+  ;; To disable collection of benchmark data after init is done.
+  (add-hook 'after-init-hook 'benchmark-init/deactivate))
+
+;; --- flycheck ---
+(use-package flycheck
+  :ensure t
+  :config (global-flycheck-mode))
+
+;; --- org-mode ---
+(require 'org-install)
+(progn
+  (define-key global-map "\C-cl" 'org-store-link)
+  (define-key global-map "\C-cc" 'org-capture)
+  (define-key global-map "\C-cb" 'org-iswitchb)
+  (define-key global-map "\C-ca" 'org-agenda)
+  (setq org-ellipsis "…")
+  (setq org-startup-folded nil)
+  (setq org-startup-indented t)
+  (setq org-startup-with-inline-images t)
+  (setq org-time-stamp-custom-formats (quote ("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>")))
+  (setq org-log-done t)
+  (setq org-default-notes-file "~/organizer.org")
+  (set-register ?o (cons 'file "~/organizer.org"))
+  (setq org-refile-targets (quote ((nil :maxlevel . 9)
+                                   (org-agenda-files :maxlevel . 9))))
+  ;; Use full outline paths for refile targets - we file directly with IDO
+  (setq org-refile-use-outline-path t)
+  ;; Targets complete directly with IDO
+  (setq org-outline-path-complete-in-steps nil)
+  ;; Allow refile to create parent tasks with confirmation
+  (setq org-refile-allow-creating-parent-nodes (quote confirm))
+  ;; Use the current window for indirect buffer display
+  (setq org-indirect-buffer-display 'current-window)
+  (add-hook 'org-mode-hook #'(lambda ()
+                               (visual-line-mode)
+                               (org-indent-mode)))
+  (add-hook 'org-mode-hook
+            'org-display-inline-images)
+  ;; Use IDO for both buffer and file completion and ido-everywhere to t
+  (setq org-completion-use-ido t)
+  (if (eq system-type 'cygwin)
+      (setq org-agenda-files
+            (append
+             (quote ("/cygdrive/c/Users/sisto/AppData/Roaming/noter.org"
+                     "/cygdrive/c/Users/sisto/AppData/Roaming/calendar.org"
+                     "/cygdrive/c/Users/sisto/AppData/Roaming/organizer.org"))
+             (find-lisp-find-files
+              "/cygdrive/c/Users/sisto/Desktop/noter"
+              "\.org$")))
+    (setq org-agenda-files
+          (append
+           (quote ("~/noter.org" "~/calendar.org" "~/organizer.org"))
+           (find-lisp-find-files
+            "C:\\Users\\sisto\\Desktop\\noter"
+            "\.org$"))))
+  ;; Refile settings
+  ;; Exclude DONE state tasks from refile targets
+  (defun bh/verify-refile-target ()
+    "Exclude todo keywords with a done state from refile targets."
+    (not (member (nth 2 (org-heading-components)) org-done-keywords)))
+  (setq org-refile-target-verify-function 'bh/verify-refile-target)
+  (setq org-capture-templates
+        (quote
+         (("t" "Task" entry
+           (file+headline "~/organizer.org" "Tasks")
+           "* TODO %?
+%U
+%a
+")
+          ("r" "respond" entry
+           (file "~/organizer.org")
+           "* NEXT Respond to %:from on %:subject
+SCHEDULED: %t
+%U
+%a
+")
+          ("n" "note" entry
+           (file+headline "~/noter.org" "Notes")
+           "* %? :NOTE:
+%U
+%a
+")
+          ("j" "Journal" entry
+           (file+olp+datetree "~/organizer.org")
+           "* %?
+%U
+")
+          ("m" "Meeting" entry
+           (file
+            (lambda nil
+              (buffer-file-name)))
+           "* %? - %u
+:ATTENDEES:
+Simon Stoltze
+:END:
+")))))
+;; org babel evaluate
+(require' ob)
+(progn
+  ;; make org mode allow eval of some langs
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((ditaa . t)
+     (lisp . t)
+     (emacs-lisp . t)
+     (python . t)
+     (ruby . t)
+     (R . t)
+     (latex . t)))
+  (setq org-confirm-babel-evaluate nil)
+  (add-hook 'org-babel-after-execute-hook
+            'org-display-inline-images))
+
+;; --- Ido ---
+(use-package ido
+  :ensure t
+  :config
+  (progn
+    (setq ido-everywhere t)
+    (setq ido-max-directory-size 100000)
+    ;; Use the current window when visiting files and buffers with ido
+    (setq ido-default-file-method 'selected-window)
+    (setq ido-default-buffer-method 'selected-window)
+    (setq ido-enable-flex-matching t)
+    (ido-mode t)))
+
+;; --- Company ---
+(use-package company
+  :ensure t
+  :config
+  (require 'color)
+  (let ((bg (face-attribute 'default :background)))
+    (custom-set-faces
+     `(company-tooltip ((t (:inherit default
+                                     :background
+                                     ,(color-lighten-name bg 2)))))
+     `(company-scrollbar-bg ((t (:background
+                                 ,(color-lighten-name bg 10)))))
+                                        ; "slate blue"))))
+     `(company-scrollbar-fg ((t (:background
+                                 ,(color-lighten-name bg 5)))))
+                                 ;"dark slate blue"))))
+     `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
+     `(company-tooltip-common ((t (:inherit font-lock-constant-face)))))))
+(add-hook 'after-init-hook
+          'global-company-mode)
+
+;; --- Semantic ---
+(defun my-semantic-hook ()
+  "Hook for semantic to add TAGS to menubar."
+  (imenu-add-to-menubar "TAGS")
+  (require 'semantic)
+  (require 'semantic/ia)
+  (add-to-list 'semantic-default-submodes
+               'global-semanticdb-minor-mode)
+  (add-to-list 'semantic-default-submodes
+               'global-semantic-idle-local-symbol-highlight-mode)
+  (add-to-list 'semantic-default-submodes
+               'global-semantic-idle-scheduler-mode)
+  (add-to-list 'semantic-default-submodes
+               'global-semantic-idle-completions-mode)
+  (add-to-list 'semantic-default-submodes
+               'global-semantic-idle-summary-mode)
+  (semantic-mode t))
+
+;; --- Lisp ---
+(use-package slime
+  :ensure t
+  :defer t
+  :config
+  (progn
+    (setq inferior-lisp-program "sbcl")
+    (setq slime-default-lisp "sbcl")
+    (setq slime-contribs '(slime-fancy))))
+
+;; --- LaTeX ---
 (add-hook 'LaTeX-mode-hook
           'turn-on-auto-fill)
 
-;; HTML/CSS
+;; --- HTML/CSS ---
 (add-hook 'css-mode-hook
           'rainbow-mode)
 
-
+;; --- Haskell ---
+(use-package haskell-mode
+  :ensure t
+  :defer t
+  :config
+  (progn
+    (setq haskell-indent-spaces 4)
+    (use-package company-ghc
+      :ensure t
+      :defer t)
+    (use-package company-ghci
+      :ensure t
+      :defer t)
+    (use-package intero
+      :ensure t
+      :defer t)))
 (add-hook 'haskell-mode-hook
           'turn-on-haskell-indent)
+(add-hook 'haskell-mode-hook
+          'intero-mode)
+
+;; --- C/C++ ---
+(defun my-c-hook ()
+  "Hook for C/C++."
+  (use-package company-c-headers
+    :ensure t
+    :init
+    (add-to-list 'company-backends
+                 'company-c-headers))
+  (require 'semantic/bovine/gcc))
+(add-hook 'c-mode-hook
+          'my-c-hook)
+(add-hook 'c-mode-hook
+          'my-semantic-hook)
+
+;; --- Java ---
+(add-hook 'java-mode-hook
+          'my-semantic-hook)
+
+;; --- Magit ---
+(if (not (eq system-type 'cygwin))
+    (use-package magit
+      :ensure t
+;      :defer t
+      :bind (("C-x g" . magit-status)     ; Display the main magit popup
+             ("C-x M-g" . magit-dispatch-popup))) ; Display keybinds for magit
+  )
+
+;; --- Fish ---
+(use-package fish-mode
+  :defer t
+  :ensure t)
+
+;; --- ESS - Emacs Speaks Statistics ---
+(use-package ess-site
+  :ensure ess
+  :defer t
+  :config
+  (progn
+    (use-package ess-smart-underscore
+      :defer t
+      :ensure t)))
+
+;; --- Stan ---
+(use-package stan-mode
+  :ensure t
+  :defer t
+  :config
+  (progn
+    (use-package stan-snippets
+      :defer t
+      :ensure t)))
+
+;; --- Python ---
+(if (or (eq system-type 'windows-nt)
+        (eq system-type 'ms-dos))
+    (setq python-shell-completion-native-disabled-interpreters '("python")))
+(use-package elpy
+  :ensure t
+  :pin elpy
+  :defer t
+  :config
+  (progn
+    (elpy-enable)
+    (add-hook 'inferior-python-mode-hook
+          'python-shell-switch-to-shell)
+    (setq elpy-shell-use-project-root nil)
+    ;; Enable elpy in a Python mode
+    (setq elpy-rpc-backend "jedi")
+    ;; Open the Python shell in a buffer after sending code to it
+    ;; Enable pyvenv, which manages Python virtual environments
+    (pyvenv-mode 1)
+    ;; Tell Python debugger (pdb) to use the current virtual environment
+    ;; https://emacs.stackexchange.com/questions/17808/enable-python-pdb-on-emacs-with-virtualenv
+    (setq gud-pdb-command-name "python -m pdb ")))
+(add-hook 'python-mode-hook
+          'elpy-mode)
+
 
 ;; Rotate windows on C-<tab>
 ; http://whattheemacsd.com/buffer-defuns.el-02.html#disqus_thread
@@ -216,183 +505,5 @@ Simon Stoltze
                (set-window-start w1 s2)
                (set-window-start w2 s1)
                (setq i (1+ i))))))))
+
 (global-set-key (kbd "<C-tab>") 'rotate-windows)
-
-;;; Packages -----------------------------------------------------------
-(require 'package)
-(setq package-enable-at-startup nil)
-(add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/"))
-(add-to-list 'package-archives
-             '("elpy" . "https://jorgenschaefer.github.io/packages/"))
-(when (< emacs-major-version 24)
-  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
-(package-initialize)
-
-;; Bootstrap `use-package'
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-
-(use-package benchmark-init
-  :ensure t
-  :config
-  ;; To disable collection of benchmark data after init is done.
-  (add-hook 'after-init-hook 'benchmark-init/deactivate))
-
-(use-package flycheck
-  :ensure t
-  :defer 1
-  :config (global-flycheck-mode))
-
-;; org-mode
-(require 'org-install)
-(progn
-  (define-key global-map "\C-cl" 'org-store-link)
-  (define-key global-map "\C-cc" 'org-capture)
-  (define-key global-map "\C-cb" 'org-iswitchb)
-  (define-key global-map "\C-ca" 'org-agenda)
-  (setq org-log-done t)
-  (setq org-default-notes-file "~/organizer.org")
-  (set-register ?o (cons 'file "~/organizer.org"))
-  (setq org-refile-targets (quote ((nil :maxlevel . 9)
-                                   (org-agenda-files :maxlevel . 9))))
-  ;; Use full outline paths for refile targets - we file directly with IDO
-  (setq org-refile-use-outline-path t)
-  ;; Targets complete directly with IDO
-  (setq org-outline-path-complete-in-steps nil)
-  ;; Allow refile to create parent tasks with confirmation
-  (setq org-refile-allow-creating-parent-nodes (quote confirm))
-  ;; Use the current window for indirect buffer display
-  (setq org-indirect-buffer-display 'current-window)
-  (add-hook 'org-mode-hook #'(lambda ()
-                               (visual-line-mode)
-                               (org-indent-mode)))
-  ;; Use IDO for both buffer and file completion and ido-everywhere to t
-  (setq org-completion-use-ido t)
-  (if (eq system-type 'cygwin)
-      (setq org-agenda-files
-            (append
-             (quote ("/cygdrive/c/Users/sisto/AppData/Roaming/noter.org"
-                     "/cygdrive/c/Users/sisto/AppData/Roaming/calendar.org"
-                     "/cygdrive/c/Users/sisto/AppData/Roaming/organizer.org"))
-             (find-lisp-find-files
-              "/cygdrive/c/Users/sisto/Desktop/noter"
-              "\.org$")))
-    (setq org-agenda-files
-          (append
-           (quote ("~/noter.org" "~/calendar.org" "~/organizer.org"))
-           (find-lisp-find-files
-            "C:\\Users\\sisto\\Desktop\\noter"
-            "\.org$"))))
-  ;; Refile settings
-  ;; Exclude DONE state tasks from refile targets
-  (defun bh/verify-refile-target ()
-    "Exclude todo keywords with a done state from refile targets."
-    (not (member (nth 2 (org-heading-components)) org-done-keywords)))
-  (setq org-refile-target-verify-function 'bh/verify-refile-target))
-;; org babel evaluate
-(require' ob)
-(progn
-  ;; make org mode allow eval of some langs
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((ditaa . t)
-     (lisp . t)
-     (emacs-lisp . t)
-     (python . t)
-     (ruby . t)
-     (R . t)
-     (latex . t)))
-  (setq org-confirm-babel-evaluate nil))
-
-(use-package ido
-  :ensure t
-  :defer 1
-  :config
-  (progn
-    (ido-mode t)
-    (setq ido-everywhere t)
-    (setq ido-max-directory-size 100000)
-    (ido-mode (quote both))
-    ;; Use the current window when visiting files and buffers with ido
-    (setq ido-default-file-method 'selected-window)
-    (setq ido-default-buffer-method 'selected-window)
-    (setq ido-enable-flex-matching t)))
-
-(use-package slime
-  :ensure t
-  :defer t
-  :config
-  (progn
-    (setq inferior-lisp-program "sbcl")
-    (setq slime-default-lisp "sbcl")
-    (setq slime-contribs '(slime-fancy))))
-
-
-;; Semantic setup
-(progn
-  (defun my-semantic-hook ()
-    "Hook for semantic to add TAGS to menubar."
-    (imenu-add-to-menubar "TAGS"))
-  (add-hook 'semantic-init-hooks
-            'my-semantic-hook)
-  (require 'semantic/ia)
-  (require 'semantic/bovine/gcc)
-  (add-to-list 'semantic-default-submodes
-               'global-semanticdb-minor-mode)
-  (add-to-list 'semantic-default-submodes
-               'global-semantic-idle-local-symbol-highlight-mode)
-  (add-to-list 'semantic-default-submodes
-               'global-semantic-idle-scheduler-mode)
-  (add-to-list 'semantic-default-submodes
-               'global-semantic-idle-completions-mode)
-  (add-to-list 'semantic-default-submodes
-               'global-semantic-idle-summary-mode)
-  (add-hook 'c-mode-hook
-            '(lambda () (semantic-mode t))))
-
-(if (not (eq system-type 'cygwin))
-    (use-package magit
-      :ensure t
-      :bind (("C-x g" . magit-status)     ; Display the main magit popup
-             ("C-x M-g" . magit-dispatch-popup))) ; Display keybinds for magit
-  )
-
-(use-package fish-mode
-  :ensure t)
-
-;;ESS - Emacs Speaks Statistics
-(use-package ess-site
-  :ensure ess
-  :config
-  (add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
-  (add-hook 'org-mode-hook 'org-display-inline-images)
-  (use-package ess-smart-underscore
-    :ensure t))
-
-(use-package stan-mode
-  :ensure t
-  :config
-  (progn
-    (use-package stan-snippets
-      :ensure t)))
-
-(use-package elpy
-  :ensure t
-  :pin elpy
-  :defer t
-  :config
-  (progn
-    (elpy-enable)
-    (setq elpy-shell-use-project-root nil)
-    ;; Enable elpy in a Python mode
-    (add-hook 'python-mode-hook 'elpy-mode)
-    (setq elpy-rpc-backend "jedi")
-    ;; Open the Python shell in a buffer after sending code to it
-    (add-hook 'inferior-python-mode-hook 'python-shell-switch-to-shell)
-    ;; Enable pyvenv, which manages Python virtual environments
-    (pyvenv-mode 1)
-    ;; Tell Python debugger (pdb) to use the current virtual environment
-    ;; https://emacs.stackexchange.com/questions/17808/enable-python-pdb-on-emacs-with-virtualenv
-    (setq gud-pdb-command-name "python -m pdb ")))
