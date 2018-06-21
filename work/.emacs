@@ -88,10 +88,10 @@ Simon Stoltze
  '(org-startup-indented t)
  '(org-startup-with-inline-images t)
  '(org-time-stamp-custom-formats (quote ("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>")))
- '(package-enable-at-startup t)
+ '(package-enable-at-startup nil)
  '(package-selected-packages
    (quote
-    (stan-snippets stan-mode ob elpy ess-smart-underscore flycheck-haskell ghc haskell-mode flycheck-ocaml merlin tuareg slime company company-auctex company-c-headers twittering-mode flycheck irony fish-completion fish-mode io-mode io-mode-inf magit auto-complete htmlize csv-mode csv auctex pdf-tools org-babel-eval-in-repl excorporate org-outlook eww-lnum org use-package gnugo)))
+    (benchmark-init stan-snippets stan-mode ob elpy ess-smart-underscore flycheck-haskell ghc haskell-mode flycheck-ocaml merlin tuareg slime company company-auctex company-c-headers twittering-mode flycheck irony fish-completion fish-mode io-mode io-mode-inf magit auto-complete htmlize csv-mode csv auctex pdf-tools org-babel-eval-in-repl excorporate org-outlook eww-lnum org use-package gnugo)))
  '(show-paren-mode t)
  '(syslog-debug-face
    (quote
@@ -108,9 +108,8 @@ Simon Stoltze
  '(syslog-warn-face
    (quote
     ((t :background unspecified :foreground "#cb4b16" :weight bold))))
- '(temporary-file-directory "F:/Users/sisto/AppData/Local/Temp/")
+ '(temporary-file-directory "C:/Users/sisto/AppData/Local/Temp/")
  '(tool-bar-mode nil)
- '(tooltip-mode t)
  '(tuareg-font-lock-symbols t)
  '(vc-annotate-background nil)
  '(vc-annotate-color-map
@@ -235,9 +234,16 @@ Simon Stoltze
   (package-refresh-contents)
   (package-install 'use-package))
 
+(use-package benchmark-init
+  :ensure t
+  :config
+  ;; To disable collection of benchmark data after init is done.
+  (add-hook 'after-init-hook 'benchmark-init/deactivate))
+
 (use-package flycheck
   :ensure t
-  :init (global-flycheck-mode))
+  :defer 1
+  :config (global-flycheck-mode))
 
 ;; org-mode
 (require 'org-install)
@@ -302,7 +308,8 @@ Simon Stoltze
 
 (use-package ido
   :ensure t
-  :init
+  :defer 1
+  :config
   (progn
     (ido-mode t)
     (setq ido-everywhere t)
@@ -315,7 +322,8 @@ Simon Stoltze
 
 (use-package slime
   :ensure t
-  :init
+  :defer t
+  :config
   (progn
     (setq inferior-lisp-program "sbcl")
     (setq slime-default-lisp "sbcl")
@@ -329,7 +337,6 @@ Simon Stoltze
     (imenu-add-to-menubar "TAGS"))
   (add-hook 'semantic-init-hooks
             'my-semantic-hook)
-
   (require 'semantic/ia)
   (require 'semantic/bovine/gcc)
   (add-to-list 'semantic-default-submodes
@@ -366,7 +373,7 @@ Simon Stoltze
 
 (use-package stan-mode
   :ensure t
-  :init
+  :config
   (progn
     (use-package stan-snippets
       :ensure t)))
@@ -374,6 +381,7 @@ Simon Stoltze
 (use-package elpy
   :ensure t
   :pin elpy
+  :defer t
   :config
   (progn
     (elpy-enable)
