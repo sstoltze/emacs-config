@@ -30,7 +30,6 @@
  '(display-time-use-mail-icon nil)
  '(doc-view-continuous t)
  '(fci-rule-color "#073642")
- '(haskell-indent-spaces 4 t)
  '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
  '(highlight-tail-colors
    (quote
@@ -42,57 +41,15 @@
      ("#8B2C02" . 70)
      ("#93115C" . 85)
      ("#073642" . 100))))
- '(ido-confirm-unique-completion t)
  '(inhibit-startup-screen t)
  '(initial-scratch-message nil)
  '(nrepl-message-colors
    (quote
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
- '(org-capture-templates
-   (quote
-    (("t" "Task" entry
-      (file+headline "~/organizer.org" "Tasks")
-      "* TODO %?
-%U
-%a
-")
-     ("r" "respond" entry
-      (file "~/organizer.org")
-      "* NEXT Respond to %:from on %:subject
-SCHEDULED: %t
-%U
-%a
-")
-     ("n" "note" entry
-      (file+headline "~/noter.org" "Notes")
-      "* %? :NOTE:
-%U
-%a
-")
-     ("j" "Journal" entry
-      (file+olp+datetree "~/organizer.org")
-      "* %?
-%U
-")
-     ("m" "Meeting" entry
-      (file
-       (lambda nil
-         (buffer-file-name)))
-      "* %? - %u
-:ATTENDEES:
-Simon Stoltze
-:END:
-"))) t)
- '(org-ellipsis "…")
- '(org-startup-folded nil)
- '(org-startup-indented t)
- '(org-startup-with-inline-images t)
- '(org-time-stamp-custom-formats (quote ("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>")))
  '(package-enable-at-startup nil)
  '(package-selected-packages
    (quote
     (company-ghci company-jedi company-ghc intero benchmark-init stan-snippets stan-mode ob elpy ess-smart-underscore flycheck-haskell ghc haskell-mode flycheck-ocaml merlin tuareg slime company company-auctex company-c-headers twittering-mode flycheck irony fish-completion fish-mode io-mode io-mode-inf magit auto-complete htmlize csv-mode csv auctex pdf-tools org-babel-eval-in-repl excorporate org-outlook eww-lnum org use-package gnugo)))
- '(show-paren-mode t)
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#2aa198" :weight bold))))
@@ -178,6 +135,8 @@ Simon Stoltze
 
 (setq-default indent-tabs-mode nil)
 
+(show-paren-mode t)
+
 (load-library "find-lisp") ;; Provides find-lisp-find-files
 
 ;;; Packages -----------------------------------------------------------
@@ -209,108 +168,110 @@ Simon Stoltze
 
 ;; --- org-mode ---
 (require 'org-install)
-(progn
-  (define-key global-map "\C-cl" 'org-store-link)
-  (define-key global-map "\C-cc" 'org-capture)
-  (define-key global-map "\C-cb" 'org-iswitchb)
-  (define-key global-map "\C-ca" 'org-agenda)
-  (setq org-ellipsis "…")
-  (setq org-startup-folded nil)
-  (setq org-startup-indented t)
-  (setq org-startup-with-inline-images t)
-  (setq org-time-stamp-custom-formats (quote ("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>")))
-  (setq org-log-done t)
-  (setq org-default-notes-file "~/organizer.org")
-  (set-register ?o (cons 'file "~/organizer.org"))
-  (setq org-refile-targets (quote ((nil :maxlevel . 9)
-                                   (org-agenda-files :maxlevel . 9))))
-  ;; Use full outline paths for refile targets - we file directly with IDO
-  (setq org-refile-use-outline-path t)
-  ;; Targets complete directly with IDO
-  (setq org-outline-path-complete-in-steps nil)
-  ;; Allow refile to create parent tasks with confirmation
-  (setq org-refile-allow-creating-parent-nodes (quote confirm))
-  ;; Use the current window for indirect buffer display
-  (setq org-indirect-buffer-display 'current-window)
-  (add-hook 'org-mode-hook #'(lambda ()
-                               (visual-line-mode)
-                               (org-indent-mode)))
-  (add-hook 'org-mode-hook
-            'org-display-inline-images)
-  ;; Use IDO for both buffer and file completion and ido-everywhere to t
-  (setq org-completion-use-ido t)
-  (if (eq system-type 'cygwin)
+(define-key global-map "\C-cl" 'org-store-link)
+(define-key global-map "\C-cc" 'org-capture)
+(define-key global-map "\C-cb" 'org-iswitchb)
+(define-key global-map "\C-ca" 'org-agenda)
+(setq org-ellipsis "…")
+(setq org-startup-folded nil)
+(setq org-startup-indented t)
+(setq org-startup-with-inline-images t)
+(defun my-org-hook ()
+  (progn
+    (setq org-time-stamp-custom-formats (quote ("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>")))
+    (setq org-log-done t)
+
+    (setq org-refile-targets (quote ((nil :maxlevel . 9)
+                                     (org-agenda-files :maxlevel . 9))))
+    ;; Use full outline paths for refile targets - we file directly with IDO
+    (setq org-refile-use-outline-path t)
+    ;; Targets complete directly with IDO
+    (setq org-outline-path-complete-in-steps nil)
+    ;; Allow refile to create parent tasks with confirmation
+    (setq org-refile-allow-creating-parent-nodes (quote confirm))
+    ;; Use the current window for indirect buffer display
+    (setq org-indirect-buffer-display 'current-window)
+    ;; Use IDO for both buffer and file completion and ido-everywhere to t
+    (setq org-completion-use-ido t)
+    (if (eq system-type 'cygwin)
+        (setq org-agenda-files
+              (append
+               (quote ("/cygdrive/c/Users/sisto/AppData/Roaming/noter.org"
+                       "/cygdrive/c/Users/sisto/AppData/Roaming/calendar.org"
+                       "/cygdrive/c/Users/sisto/AppData/Roaming/organizer.org"))
+               (find-lisp-find-files
+                "/cygdrive/c/Users/sisto/Desktop/noter"
+                "\.org$")))
       (setq org-agenda-files
             (append
-             (quote ("/cygdrive/c/Users/sisto/AppData/Roaming/noter.org"
-                     "/cygdrive/c/Users/sisto/AppData/Roaming/calendar.org"
-                     "/cygdrive/c/Users/sisto/AppData/Roaming/organizer.org"))
+             (quote ("~/noter.org" "~/calendar.org" "~/organizer.org"))
              (find-lisp-find-files
-              "/cygdrive/c/Users/sisto/Desktop/noter"
-              "\.org$")))
-    (setq org-agenda-files
-          (append
-           (quote ("~/noter.org" "~/calendar.org" "~/organizer.org"))
-           (find-lisp-find-files
-            "C:\\Users\\sisto\\Desktop\\noter"
-            "\.org$"))))
-  ;; Refile settings
-  ;; Exclude DONE state tasks from refile targets
-  (defun bh/verify-refile-target ()
-    "Exclude todo keywords with a done state from refile targets."
-    (not (member (nth 2 (org-heading-components)) org-done-keywords)))
-  (setq org-refile-target-verify-function 'bh/verify-refile-target)
-  (setq org-capture-templates
-        (quote
-         (("t" "Task" entry
-           (file+headline "~/organizer.org" "Tasks")
-           "* TODO %?
+              "C:\\Users\\sisto\\Desktop\\noter"
+              "\.org$"))))
+    ;; Refile settings
+    ;; Exclude DONE state tasks from refile targets
+    (defun bh/verify-refile-target ()
+      "Exclude todo keywords with a done state from refile targets."
+      (not (member (nth 2 (org-heading-components)) org-done-keywords)))
+    (setq org-refile-target-verify-function 'bh/verify-refile-target))
+  ;; org babel evaluate
+  (require' ob)
+  (progn
+    ;; make org mode allow eval of some langs
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((ditaa . t)
+       (lisp . t)
+       (emacs-lisp . t)
+       (python . t)
+       (ruby . t)
+       (R . t)
+       (latex . t)))
+    (setq org-confirm-babel-evaluate nil)
+    (add-hook 'org-babel-after-execute-hook
+              'org-display-inline-images)))
+(setq org-default-notes-file "~/organizer.org")
+(set-register ?o (cons 'file "~/organizer.org"))
+(setq org-capture-templates
+      (quote
+       (("t" "Task" entry
+         (file+headline "~/organizer.org" "Tasks")
+         "* TODO %?
 %U
 %a
 ")
-          ("r" "respond" entry
-           (file "~/organizer.org")
-           "* NEXT Respond to %:from on %:subject
+        ("r" "respond" entry
+         (file "~/organizer.org")
+         "* NEXT Respond to %:from on %:subject
 SCHEDULED: %t
 %U
 %a
 ")
-          ("n" "note" entry
-           (file+headline "~/noter.org" "Notes")
-           "* %? :NOTE:
+        ("n" "note" entry
+         (file+headline "~/noter.org" "Notes")
+         "* %? :NOTE:
 %U
 %a
 ")
-          ("j" "Journal" entry
-           (file+olp+datetree "~/organizer.org")
-           "* %?
+        ("j" "Journal" entry
+         (file+olp+datetree "~/organizer.org")
+         "* %?
 %U
 ")
-          ("m" "Meeting" entry
-           (file
-            (lambda nil
-              (buffer-file-name)))
-           "* %? - %u
+        ("m" "Meeting" entry
+         (file
+          (lambda nil
+            (buffer-file-name)))
+         "* %? - %u
 :ATTENDEES:
 Simon Stoltze
 :END:
-")))))
-;; org babel evaluate
-(require' ob)
-(progn
-  ;; make org mode allow eval of some langs
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((ditaa . t)
-     (lisp . t)
-     (emacs-lisp . t)
-     (python . t)
-     (ruby . t)
-     (R . t)
-     (latex . t)))
-  (setq org-confirm-babel-evaluate nil)
-  (add-hook 'org-babel-after-execute-hook
-            'org-display-inline-images))
+"))))
+(add-hook 'org-mode-hook #'(lambda ()
+                             (visual-line-mode)
+                             (org-indent-mode)
+                             (org-display-inline-images)
+                             (my-org-hook)))
 
 ;; --- Ido ---
 (use-package ido
@@ -323,6 +284,7 @@ Simon Stoltze
     (setq ido-default-file-method 'selected-window)
     (setq ido-default-buffer-method 'selected-window)
     (setq ido-enable-flex-matching t)
+    (setq ido-confirm-unique-completion t)
     (ido-mode t)))
 
 ;; --- Company ---
@@ -388,7 +350,7 @@ Simon Stoltze
   :defer t
   :config
   (progn
-    (setq haskell-indent-spaces 4)
+    (setq haskell-indent-spaces 4 t)
     (use-package company-ghc
       :ensure t
       :defer t)
