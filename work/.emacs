@@ -49,7 +49,7 @@
  '(package-enable-at-startup nil)
  '(package-selected-packages
    (quote
-    (company-ghci company-jedi company-ghc intero benchmark-init stan-snippets stan-mode ob elpy ess-smart-underscore flycheck-haskell ghc haskell-mode flycheck-ocaml merlin tuareg slime company company-auctex company-c-headers twittering-mode flycheck irony fish-completion fish-mode io-mode io-mode-inf magit auto-complete htmlize csv-mode csv auctex pdf-tools org-babel-eval-in-repl excorporate org-outlook eww-lnum org use-package gnugo)))
+    (ess company-ghci company-jedi company-ghc intero benchmark-init stan-snippets stan-mode ob elpy ess-smart-underscore flycheck-haskell ghc haskell-mode flycheck-ocaml merlin tuareg slime company company-auctex company-c-headers twittering-mode flycheck irony fish-completion fish-mode io-mode io-mode-inf magit auto-complete htmlize csv-mode csv auctex pdf-tools org-babel-eval-in-repl excorporate org-outlook eww-lnum org use-package gnugo)))
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#2aa198" :weight bold))))
@@ -65,7 +65,6 @@
  '(syslog-warn-face
    (quote
     ((t :background unspecified :foreground "#cb4b16" :weight bold))))
- '(temporary-file-directory "C:/Users/sisto/AppData/Local/Temp/")
  '(tool-bar-mode nil)
  '(tuareg-font-lock-symbols t)
  '(vc-annotate-background nil)
@@ -113,6 +112,7 @@
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (setq backup-directory-alist `(("." . "~/.emacs.d/backups")))
+(setq temporary-file-directory "~/tmp")
 (setq select-enable-clipboard t)
 
 (if (not (eq system-type 'cygwin))
