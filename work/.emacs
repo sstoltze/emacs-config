@@ -41,15 +41,13 @@
      ("#8B2C02" . 70)
      ("#93115C" . 85)
      ("#073642" . 100))))
- '(inhibit-startup-screen t)
- '(initial-scratch-message nil)
  '(nrepl-message-colors
    (quote
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-enable-at-startup nil)
  '(package-selected-packages
    (quote
-    (ess company-ghci company-jedi company-ghc intero benchmark-init stan-snippets stan-mode ob elpy ess-smart-underscore flycheck-haskell ghc haskell-mode flycheck-ocaml merlin tuareg slime company company-auctex company-c-headers twittering-mode flycheck irony fish-completion fish-mode io-mode io-mode-inf magit auto-complete htmlize csv-mode csv auctex pdf-tools org-babel-eval-in-repl excorporate org-outlook eww-lnum org use-package gnugo)))
+    (company-irony company-irony-c-headers flycheck-irony irony ess company-ghci company-jedi company-ghc intero benchmark-init stan-snippets stan-mode ob elpy ess-smart-underscore flycheck-haskell ghc haskell-mode flycheck-ocaml merlin tuareg slime company company-auctex company-c-headers twittering-mode flycheck fish-completion fish-mode io-mode io-mode-inf magit auto-complete htmlize csv-mode csv auctex pdf-tools org-babel-eval-in-repl excorporate org-outlook eww-lnum org use-package gnugo)))
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#2aa198" :weight bold))))
@@ -138,6 +136,27 @@
 (show-paren-mode t)
 
 (load-library "find-lisp") ;; Provides find-lisp-find-files
+
+;; https://home.elis.nu/emacs/
+(setq-default calendar-week-start-day 1) ; Weeks start monday
+(defalias 'yes-or-no-p 'y-or-n-p)
+(column-number-mode 1)
+(if (boundp 'scroll-bar-mode)
+    (scroll-bar-mode -1))
+
+;; https://writequit.org/org/settings.html
+(global-font-lock-mode t)
+(setq gc-cons-threshold (* 100 1024 1024)) ;; 100 mb
+;; Allow font-lock-mode to do background parsing
+(setq jit-lock-stealth-time 1
+      ;; jit-lock-stealth-load 200
+      jit-lock-chunk-size 1000
+      jit-lock-defer-time 0.05)
+(setq inhibit-startup-screen t)
+(setq initial-scratch-message nil)
+(setq ring-bell-function (lambda ()))
+(setq make-pointer-invisible t)
+(setq load-prefer-newer t)
 
 ;;; Packages -----------------------------------------------------------
 (require 'package)
@@ -304,7 +323,8 @@ Simon Stoltze
                                  ,(color-lighten-name bg 5)))))
                                  ;"dark slate blue"))))
      `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
-     `(company-tooltip-common ((t (:inherit font-lock-constant-face)))))))
+     `(company-tooltip-common ((t (:inherit font-lock-constant-face))))))
+  (delete 'company-clang 'company-backends))
 (add-hook 'after-init-hook
           'global-company-mode)
 
@@ -314,6 +334,7 @@ Simon Stoltze
   (imenu-add-to-menubar "TAGS")
   (require 'semantic)
   (require 'semantic/ia)
+  (require 'semantic/wisent)
   (add-to-list 'semantic-default-submodes
                'global-semanticdb-minor-mode)
   (add-to-list 'semantic-default-submodes
@@ -373,11 +394,24 @@ Simon Stoltze
     :init
     (add-to-list 'company-backends
                  'company-c-headers))
-  (require 'semantic/bovine/gcc))
+  (require 'semantic/bovine/gcc)
+  (my-semantic-hook)
+  (use-package irony
+    :ensure t
+    :init
+    (progn
+      (setq w32-pipe-read-delay 0)
+      (setq irony-server-w32-pipe-buffer-size (* 64 1024))))
+  (add-hook 'irony-mode-hook
+            'irony-cdb-autosetup-compile-options)
+  (add-to-list 'company-backends
+               'company-irony)
+  (irony-mode))
 (add-hook 'c-mode-hook
           'my-c-hook)
-(add-hook 'c-mode-hook
-          'my-semantic-hook)
+(add-hook 'c++-mode-hook
+          'my-c-hook)
+
 
 ;; --- Java ---
 (add-hook 'java-mode-hook
