@@ -16,18 +16,11 @@
    [default default default italic underline success warning error])
  '(ansi-color-names-vector
    ["#002b36" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#839496"])
- '(csv-separators (quote (";")))
  '(custom-enabled-themes (quote (deeper-blue)))
  '(custom-safe-themes
    (quote
     ("e11569fd7e31321a33358ee4b232c2d3cf05caccd90f896e1df6cab228191109" "40c66989886b3f05b0c4f80952f128c6c4600f85b1f0996caa1fa1479e20c082" "ce557950466bf42096853c6dac6875b9ae9c782b8665f62478980cc5e3b6028d" "693f5a81a3728c2548efb4118c81941933cf0f7b614f9f3133101395e5830152" "bcc6775934c9adf5f3bd1f428326ce0dcd34d743a92df48c128e6438b815b44f" "f5eb916f6bd4e743206913e6f28051249de8ccfd070eae47b5bde31ee813d55f" "ac2b1fed9c0f0190045359327e963ddad250e131fbf332e80d371b2e1dbc1dc4" "28ec8ccf6190f6a73812df9bc91df54ce1d6132f18b4c8fcc85d45298569eb53" "e80932ca56b0f109f8545576531d3fc79487ca35a9a9693b62bf30d6d08c9aaf" "935cc557b01242fc7b4d3f803902d14d1b3afae5123624a2f924255f641f7f01" "7ce5ae5476aadfa57ffbfffd41c2d3f4aaa4e7f21de6646a76f10b2a7eaa105b" "108b3724e0d684027c713703f663358779cc6544075bc8fd16ae71470497304f" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "007b69ffec046a5842e34fea287b23c49175dfd6c6d5a0d9cdf150a2e8a8979f" default)))
  '(custom-theme-directory "~/.emacs.d/themes/")
- '(display-time-24hr-format t)
- '(display-time-day-and-date nil)
- '(display-time-default-load-average nil)
- '(display-time-format nil)
- '(display-time-mode t)
- '(display-time-use-mail-icon nil)
  '(doc-view-continuous t)
  '(fci-rule-color "#073642")
  '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
@@ -44,7 +37,6 @@
  '(nrepl-message-colors
    (quote
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
- '(package-enable-at-startup nil)
  '(package-selected-packages
    (quote
     (company-irony company-irony-c-headers flycheck-irony irony ess company-ghci company-jedi company-ghc intero benchmark-init stan-snippets stan-mode ob elpy ess-smart-underscore flycheck-haskell ghc haskell-mode flycheck-ocaml merlin tuareg slime company company-auctex company-c-headers twittering-mode flycheck fish-completion fish-mode io-mode io-mode-inf magit auto-complete htmlize csv-mode csv auctex pdf-tools org-babel-eval-in-repl excorporate org-outlook eww-lnum org use-package gnugo)))
@@ -63,8 +55,6 @@
  '(syslog-warn-face
    (quote
     ((t :background unspecified :foreground "#cb4b16" :weight bold))))
- '(tool-bar-mode nil)
- '(tuareg-font-lock-symbols t)
  '(vc-annotate-background nil)
  '(vc-annotate-color-map
    (quote
@@ -110,11 +100,18 @@
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (setq backup-directory-alist `(("." . "~/.emacs.d/backups")))
-(setq temporary-file-directory "~/tmp")
+(setq temporary-file-directory "~/.emacs.d/temp")
 (setq select-enable-clipboard t)
 
 (if (not (eq system-type 'cygwin))
     (setq default-directory "C:/Users/sisto/Desktop/"))
+
+(setq display-time-24hr-format          t)
+(setq display-time-day-and-date         nil)
+(setq display-time-default-load-average nil)
+(setq display-time-format               nil)
+(setq display-time-use-mail-icon        nil)
+(display-time-mode t)
 
 (setq next-line-add-newlines t) ;; Newline at end of file
 (add-hook 'before-save-hook
@@ -128,12 +125,14 @@
 (setq prettify-symbols-unprettify-at-point 'right-edge)
 
 ;; Enable C-x C-u (upcase-region) and C-x C-l (downcase region)
-(put 'upcase-region 'disabled nil)
+(put 'upcase-region   'disabled nil)
 (put 'downcase-region 'disabled nil)
 
 (setq-default indent-tabs-mode nil)
+(setq csv-separators (quote (";")))
 
-(show-paren-mode t)
+(show-paren-mode  t)
+(tool-bar-mode   -1)
 
 (load-library "find-lisp") ;; Provides find-lisp-find-files
 
@@ -145,18 +144,18 @@
     (scroll-bar-mode -1))
 
 ;; https://writequit.org/org/settings.html
-(global-font-lock-mode t)
-(setq gc-cons-threshold (* 100 1024 1024)) ;; 100 mb
+(global-font-lock-mode        t)
+(setq gc-cons-threshold       (* 100 1024 1024)) ;; 100 mb
 ;; Allow font-lock-mode to do background parsing
-(setq jit-lock-stealth-time 1
+(setq jit-lock-stealth-time   1
       ;; jit-lock-stealth-load 200
-      jit-lock-chunk-size 1000
-      jit-lock-defer-time 0.05)
-(setq inhibit-startup-screen t)
+      jit-lock-chunk-size     1000
+      jit-lock-defer-time     0.05)
+(setq inhibit-startup-screen  t)
 (setq initial-scratch-message nil)
-(setq ring-bell-function (lambda ()))
-(setq make-pointer-invisible t)
-(setq load-prefer-newer t)
+(setq ring-bell-function      (lambda ()))
+(setq make-pointer-invisible  t)
+(setq load-prefer-newer       t)
 
 ;;; Packages -----------------------------------------------------------
 (require 'package)
@@ -165,8 +164,11 @@
              '("melpa" . "https://melpa.org/packages/"))
 (add-to-list 'package-archives
              '("elpy" . "https://jorgenschaefer.github.io/packages/"))
+(add-to-list 'package-archives
+             '("org" . "https://orgmode.org/elpa/"))
 (when (< emacs-major-version 24)
-  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+  (add-to-list 'package-archives
+               '("gnu" . "http://elpa.gnu.org/packages/")))
 (package-initialize)
 
 ;; Bootstrap `use-package'
@@ -180,7 +182,7 @@
   ;; To disable collection of benchmark data after init is done.
   (add-hook 'after-init-hook 'benchmark-init/deactivate))
 
-;; --- flycheck ---
+;; --- Flycheck ---
 (use-package flycheck
   :ensure t
   :config (global-flycheck-mode))
@@ -195,60 +197,6 @@
 (setq org-startup-folded nil)
 (setq org-startup-indented t)
 (setq org-startup-with-inline-images t)
-(defun my-org-hook ()
-  (progn
-    (setq org-time-stamp-custom-formats (quote ("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>")))
-    (setq org-log-done t)
-
-    (setq org-refile-targets (quote ((nil :maxlevel . 9)
-                                     (org-agenda-files :maxlevel . 9))))
-    ;; Use full outline paths for refile targets - we file directly with IDO
-    (setq org-refile-use-outline-path t)
-    ;; Targets complete directly with IDO
-    (setq org-outline-path-complete-in-steps nil)
-    ;; Allow refile to create parent tasks with confirmation
-    (setq org-refile-allow-creating-parent-nodes (quote confirm))
-    ;; Use the current window for indirect buffer display
-    (setq org-indirect-buffer-display 'current-window)
-    ;; Use IDO for both buffer and file completion and ido-everywhere to t
-    (setq org-completion-use-ido t)
-    (if (eq system-type 'cygwin)
-        (setq org-agenda-files
-              (append
-               (quote ("/cygdrive/c/Users/sisto/AppData/Roaming/noter.org"
-                       "/cygdrive/c/Users/sisto/AppData/Roaming/calendar.org"
-                       "/cygdrive/c/Users/sisto/AppData/Roaming/organizer.org"))
-               (find-lisp-find-files
-                "/cygdrive/c/Users/sisto/Desktop/noter"
-                "\.org$")))
-      (setq org-agenda-files
-            (append
-             (quote ("~/noter.org" "~/calendar.org" "~/organizer.org"))
-             (find-lisp-find-files
-              "C:\\Users\\sisto\\Desktop\\noter"
-              "\.org$"))))
-    ;; Refile settings
-    ;; Exclude DONE state tasks from refile targets
-    (defun bh/verify-refile-target ()
-      "Exclude todo keywords with a done state from refile targets."
-      (not (member (nth 2 (org-heading-components)) org-done-keywords)))
-    (setq org-refile-target-verify-function 'bh/verify-refile-target))
-  ;; org babel evaluate
-  (require' ob)
-  (progn
-    ;; make org mode allow eval of some langs
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((ditaa . t)
-       (lisp . t)
-       (emacs-lisp . t)
-       (python . t)
-       (ruby . t)
-       (R . t)
-       (latex . t)))
-    (setq org-confirm-babel-evaluate nil)
-    (add-hook 'org-babel-after-execute-hook
-              'org-display-inline-images)))
 (setq org-default-notes-file "~/organizer.org")
 (set-register ?o (cons 'file "~/organizer.org"))
 (setq org-capture-templates
@@ -286,6 +234,64 @@ SCHEDULED: %t
 Simon Stoltze
 :END:
 "))))
+
+(defun my-org-hook ()
+  (progn
+    (setq org-time-stamp-custom-formats (quote ("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>")))
+    (setq org-log-done t)
+
+    (setq org-refile-targets (quote ((nil :maxlevel . 9)
+                                     (org-agenda-files :maxlevel . 9))))
+    ;; Use full outline paths for refile targets - we file directly with IDO
+    (setq org-refile-use-outline-path t)
+    ;; Targets complete directly with IDO
+    (setq org-outline-path-complete-in-steps nil)
+    ;; Allow refile to create parent tasks with confirmation
+    (setq org-refile-allow-creating-parent-nodes (quote confirm))
+    ;; Use the current window for indirect buffer display
+    (setq org-indirect-buffer-display 'current-window)
+    ;; Use IDO for both buffer and file completion and ido-everywhere to t
+    (setq org-completion-use-ido t)
+    ;; Export to .docx
+    (setq org-odt-preferred-output-format "docx")
+    (setq org-odt-convert-processes '(("LibreOffice" "soffice.exe --headless --convert-to %f%x --outdir %d %i")))
+    (if (eq system-type 'cygwin)
+        (setq org-agenda-files
+              (append
+               (quote ("/cygdrive/c/Users/sisto/AppData/Roaming/noter.org"
+                       "/cygdrive/c/Users/sisto/AppData/Roaming/calendar.org"
+                       "/cygdrive/c/Users/sisto/AppData/Roaming/organizer.org"))
+               (find-lisp-find-files
+                "/cygdrive/c/Users/sisto/Desktop/noter"
+                "\.org$")))
+      (setq org-agenda-files
+            (append
+             (quote ("~/noter.org" "~/calendar.org" "~/organizer.org"))
+             (find-lisp-find-files
+              "C:\\Users\\sisto\\Desktop\\noter"
+              "\.org$"))))
+    ;; Refile settings
+    ;; Exclude DONE state tasks from refile targets
+    (defun bh/verify-refile-target ()
+      "Exclude todo keywords with a done state from refile targets."
+      (not (member (nth 2 (org-heading-components)) org-done-keywords)))
+    (setq org-refile-target-verify-function 'bh/verify-refile-target))
+  ;; org babel evaluate
+  (require' ob)
+  (progn
+    ;; make org mode allow eval of some langs
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((ditaa . t)
+       (lisp . t)
+       (emacs-lisp . t)
+       (python . t)
+       (ruby . t)
+       (R . t)
+       (latex . t)))
+    (setq org-confirm-babel-evaluate nil)
+    (add-hook 'org-babel-after-execute-hook
+              'org-display-inline-images)))
 (add-hook 'org-mode-hook #'(lambda ()
                              (visual-line-mode)
                              (org-indent-mode)
@@ -373,14 +379,18 @@ Simon Stoltze
   (progn
     (setq haskell-indent-spaces 4 t)
     (use-package company-ghc
-      :ensure t
-      :defer t)
+      :ensure t)
     (use-package company-ghci
-      :ensure t
-      :defer t)
+      :ensure t)
+    (add-to-list 'company-backends
+                 '(company-ghc company-ghci))
     (use-package intero
+      :ensure t)
+    (use-package flycheck-haskell
       :ensure t
-      :defer t)))
+      :config
+      (add-hook 'haskell-mode-hook
+                'flycheck-haskell-setup))))
 (add-hook 'haskell-mode-hook
           'turn-on-haskell-indent)
 (add-hook 'haskell-mode-hook
@@ -401,11 +411,19 @@ Simon Stoltze
     :init
     (progn
       (setq w32-pipe-read-delay 0)
-      (setq irony-server-w32-pipe-buffer-size (* 64 1024))))
-  (add-hook 'irony-mode-hook
-            'irony-cdb-autosetup-compile-options)
-  (add-to-list 'company-backends
-               'company-irony)
+      (setq irony-server-w32-pipe-buffer-size (* 64 1024))
+      (use-package company-irony-c-headers
+        :ensure t)
+      (add-to-list 'company-backends
+                   '(company-irony-c-headers
+                     company-irony))
+      (add-hook 'irony-mode-hook
+                'irony-cdb-autosetup-compile-options)
+      (use-package flycheck-irony
+        :ensure t
+        :config
+        (add-hook 'irony-mode-hook
+                  'flycheck-irony-setup))))
   (irony-mode))
 (add-hook 'c-mode-hook
           'my-c-hook)
@@ -421,7 +439,6 @@ Simon Stoltze
 (if (not (eq system-type 'cygwin))
     (use-package magit
       :ensure t
-;      :defer t
       :bind (("C-x g" . magit-status)     ; Display the main magit popup
              ("C-x M-g" . magit-dispatch-popup))) ; Display keybinds for magit
   )
@@ -452,15 +469,15 @@ Simon Stoltze
       :ensure t)))
 
 ;; --- Python ---
-(if (or (eq system-type 'windows-nt)
-        (eq system-type 'ms-dos))
-    (setq python-shell-completion-native-disabled-interpreters '("python")))
 (use-package elpy
   :ensure t
   :pin elpy
   :defer t
   :config
   (progn
+    (if (or (eq system-type 'windows-nt)
+            (eq system-type 'ms-dos))
+    (setq python-shell-completion-native-disabled-interpreters '("python")))
     (elpy-enable)
     (add-hook 'inferior-python-mode-hook
           'python-shell-switch-to-shell)
@@ -476,6 +493,23 @@ Simon Stoltze
 (add-hook 'python-mode-hook
           'elpy-mode)
 
+;; --- Ocaml ---
+(use-package tuareg
+  :ensure t
+  :defer t
+  :config
+  (setq tuareg-font-lock-symbols t)
+  (use-package merlin
+    :ensure t
+    :config
+    (add-to-list 'company-backends
+                 'merlin-company-backend)
+    (use-package flycheck-ocaml
+      :ensure t
+      :config
+      (flycheck-ocaml-setup))))
+(add-hook 'tuareg-mode-hook
+          'merlin-mode)
 
 ;; Rotate windows on C-<tab>
 ; http://whattheemacsd.com/buffer-defuns.el-02.html#disqus_thread
