@@ -132,7 +132,8 @@
 (setq csv-separators (quote (";")))
 
 (show-paren-mode  t)
-(tool-bar-mode   -1)
+(if (functionp 'tool-bar-mode)
+    (tool-bar-mode -1))
 
 (load-library "find-lisp") ;; Provides find-lisp-find-files
 
@@ -316,21 +317,23 @@ Simon Stoltze
 (use-package company
   :ensure t
   :config
-  (require 'color)
-  (let ((bg (face-attribute 'default :background)))
-    (custom-set-faces
-     `(company-tooltip ((t (:inherit default
-                                     :background
-                                     ,(color-lighten-name bg 2)))))
-     `(company-scrollbar-bg ((t (:background
-                                 ,(color-lighten-name bg 10)))))
+  (if (display-graphic-p)
+      (progn
+        (require 'color)
+        (let ((bg (face-attribute 'default :background)))
+          (custom-set-faces
+           `(company-tooltip           ((t (:inherit default
+                                                     :background
+                                                     ,(color-lighten-name bg 2)))))
+           `(company-scrollbar-bg      ((t (:background
+                                            ,(color-lighten-name bg 10)))))
                                         ; "slate blue"))))
-     `(company-scrollbar-fg ((t (:background
-                                 ,(color-lighten-name bg 5)))))
-                                 ;"dark slate blue"))))
-     `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
-     `(company-tooltip-common ((t (:inherit font-lock-constant-face))))))
-  (delete 'company-clang 'company-backends))
+           `(company-scrollbar-fg      ((t (:background
+                                            ,(color-lighten-name bg 5)))))
+                                        ;"dark slate blue"))))
+           `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
+           `(company-tooltip-common    ((t (:inherit font-lock-constant-face))))))
+  (delete 'company-clang 'company-backends))))
 (add-hook 'after-init-hook
           'global-company-mode)
 
@@ -377,7 +380,7 @@ Simon Stoltze
   :defer t
   :config
   (progn
-    (setq haskell-indent-spaces 4 t)
+    (setq haskell-indent-spaces 4)
     (use-package company-ghc
       :ensure t)
     (use-package company-ghci
@@ -385,7 +388,10 @@ Simon Stoltze
     (add-to-list 'company-backends
                  '(company-ghc company-ghci))
     (use-package intero
-      :ensure t)
+      :ensure t
+      :config
+      (add-hook 'haskell-mode-hook
+                'intero-mode))
     (use-package flycheck-haskell
       :ensure t
       :config
@@ -393,8 +399,6 @@ Simon Stoltze
                 'flycheck-haskell-setup))))
 (add-hook 'haskell-mode-hook
           'turn-on-haskell-indent)
-(add-hook 'haskell-mode-hook
-          'intero-mode)
 
 ;; --- C/C++ ---
 (defun my-c-hook ()
