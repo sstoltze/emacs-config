@@ -255,7 +255,7 @@ Simon Stoltze
     (setq org-completion-use-ido t)
     ;; Export to .docx
     (setq org-odt-preferred-output-format "docx")
-    (setq org-odt-convert-processes '(("LibreOffice" "soffice.exe --headless --convert-to %f%x --outdir %d %i")))
+    (setq org-odt-convert-processes '(("LibreOffice" "C:\\Progra~1\\LibreOffice\\program\\soffice.exe --headless --convert-to %f%x --outdir %d %i")))
     (if (eq system-type 'cygwin)
         (setq org-agenda-files
               (append
@@ -472,30 +472,39 @@ Simon Stoltze
       :defer t
       :ensure t)))
 
-;; --- Python ---
+; --- Python ---
 (use-package elpy
   :ensure t
   :pin elpy
   :defer t
   :config
   (progn
-    (if (or (eq system-type 'windows-nt)
-            (eq system-type 'ms-dos))
-    (setq python-shell-completion-native-disabled-interpreters '("python")))
-    (elpy-enable)
-    (add-hook 'inferior-python-mode-hook
-          'python-shell-switch-to-shell)
     (setq elpy-shell-use-project-root nil)
-    ;; Enable elpy in a Python mode
     (setq elpy-rpc-backend "jedi")
-    ;; Open the Python shell in a buffer after sending code to it
+    (elpy-enable)
     ;; Enable pyvenv, which manages Python virtual environments
     (pyvenv-mode 1)
     ;; Tell Python debugger (pdb) to use the current virtual environment
     ;; https://emacs.stackexchange.com/questions/17808/enable-python-pdb-on-emacs-with-virtualenv
-    (setq gud-pdb-command-name "python -m pdb ")))
+    (setq gud-pdb-command-name "python -m pdb ")
+    (defun my-restart-python-console ()
+      "Restart python console before evaluate buffer or region to avoid various uncanny conflicts, like not reloding modules even when they are changed"
+      (interactive)
+      (kill-process "Python")
+      (sleep-for 0.15)
+      (kill-buffer "*Python*")
+      (elpy-shell-send-region-or-buffer))
+    (global-set-key (kbd "C-c C-x C-c") 'my-restart-python-console)))
 (add-hook 'python-mode-hook
-          'elpy-mode)
+          (lambda ()
+            (if (or (eq system-type 'windows-nt)
+                    (eq system-type 'ms-dos))
+                (setq python-shell-completion-native-disabled-interpreters
+                      '("python")))
+;            (setq python-shell-interpreter-args "-i C:\\Users\\sisto\\AppData\\Local\\Programs\\Python\\Python36-32\\Scripts\\ipython3.exe console --pylab=qt")
+            (elpy-mode t)))
+(add-hook 'inferior-python-mode-hook
+          'python-shell-switch-to-shell)
 
 ;; --- Ocaml ---
 (use-package tuareg
