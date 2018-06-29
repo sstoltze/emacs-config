@@ -22,6 +22,9 @@
     ("e11569fd7e31321a33358ee4b232c2d3cf05caccd90f896e1df6cab228191109" "40c66989886b3f05b0c4f80952f128c6c4600f85b1f0996caa1fa1479e20c082" "ce557950466bf42096853c6dac6875b9ae9c782b8665f62478980cc5e3b6028d" "693f5a81a3728c2548efb4118c81941933cf0f7b614f9f3133101395e5830152" "bcc6775934c9adf5f3bd1f428326ce0dcd34d743a92df48c128e6438b815b44f" "f5eb916f6bd4e743206913e6f28051249de8ccfd070eae47b5bde31ee813d55f" "ac2b1fed9c0f0190045359327e963ddad250e131fbf332e80d371b2e1dbc1dc4" "28ec8ccf6190f6a73812df9bc91df54ce1d6132f18b4c8fcc85d45298569eb53" "e80932ca56b0f109f8545576531d3fc79487ca35a9a9693b62bf30d6d08c9aaf" "935cc557b01242fc7b4d3f803902d14d1b3afae5123624a2f924255f641f7f01" "7ce5ae5476aadfa57ffbfffd41c2d3f4aaa4e7f21de6646a76f10b2a7eaa105b" "108b3724e0d684027c713703f663358779cc6544075bc8fd16ae71470497304f" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "007b69ffec046a5842e34fea287b23c49175dfd6c6d5a0d9cdf150a2e8a8979f" default)))
  '(custom-theme-directory "~/.emacs.d/themes/")
  '(doc-view-continuous t)
+ '(elpy-modules
+   (quote
+    (elpy-module-eldoc elpy-module-flymake elpy-module-pyvenv elpy-module-highlight-indentation elpy-module-yasnippet elpy-module-django elpy-module-sane-defaults)))
  '(fci-rule-color "#073642")
  '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
  '(highlight-tail-colors
@@ -39,7 +42,7 @@
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (company-irony company-irony-c-headers flycheck-irony irony ess company-ghci company-jedi company-ghc intero benchmark-init stan-snippets stan-mode ob elpy ess-smart-underscore flycheck-haskell ghc haskell-mode flycheck-ocaml merlin tuareg slime company company-auctex company-c-headers twittering-mode flycheck fish-completion fish-mode io-mode io-mode-inf magit auto-complete htmlize csv-mode csv auctex pdf-tools org-babel-eval-in-repl excorporate org-outlook eww-lnum org use-package gnugo)))
+    (company-irony company-irony-c-headers flycheck-irony irony ess company-ghci company-jedi company-ghc intero benchmark-init stan-snippets stan-mode ob elpy ess-smart-underscore flycheck-haskell ghc haskell-mode flycheck-ocaml merlin tuareg slime company company-auctex company-c-headers twittering-mode flycheck fish-completion fish-mode io-mode io-mode-inf magit auto-complete htmlize csv-mode csv auctex pdf-tools org-babel-eval-in-repl excorporate eww-lnum org use-package gnugo)))
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#2aa198" :weight bold))))
@@ -333,9 +336,11 @@ Simon Stoltze
                                         ;"dark slate blue"))))
            `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
            `(company-tooltip-common    ((t (:inherit font-lock-constant-face))))))
-  (delete 'company-clang 'company-backends))))
+        (delete 'company-clang 'company-backends))))
 (add-hook 'after-init-hook
-          'global-company-mode)
+          (lambda ()
+            (global-company-mode '(not python-mode
+                                       elpy-mode))))
 
 ;; --- Semantic ---
 (defun my-semantic-hook ()
@@ -472,7 +477,8 @@ Simon Stoltze
       :defer t
       :ensure t)))
 
-; --- Python ---
+;; --- Python ---
+;; python -m pip install --upgrade jedi rope black flake8 yapf autopep8
 (use-package elpy
   :ensure t
   :pin elpy
@@ -494,17 +500,24 @@ Simon Stoltze
       (sleep-for 0.15)
       (kill-buffer "*Python*")
       (elpy-shell-send-region-or-buffer))
-    (global-set-key (kbd "C-c C-x C-c") 'my-restart-python-console)))
+    (global-set-key (kbd "C-c C-x C-c") 'my-restart-python-console)
+    (add-hook 'after-change-major-mode-hook
+              (lambda ()
+                (delete 'elpy-module-company
+                        'elpy-modules)
+                (company-mode 0)))))
 (add-hook 'python-mode-hook
           (lambda ()
             (if (or (eq system-type 'windows-nt)
                     (eq system-type 'ms-dos))
                 (setq python-shell-completion-native-disabled-interpreters
                       '("python")))
-;            (setq python-shell-interpreter-args "-i C:\\Users\\sisto\\AppData\\Local\\Programs\\Python\\Python36-32\\Scripts\\ipython3.exe console --pylab=qt")
-            (elpy-mode t)))
+            (elpy-mode t)
+            (company-mode 0)))
 (add-hook 'inferior-python-mode-hook
-          'python-shell-switch-to-shell)
+          (lambda ()
+            (company-mode 0)
+            (python-shell-switch-to-shell)))
 
 ;; --- Ocaml ---
 (use-package tuareg
