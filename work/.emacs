@@ -101,12 +101,18 @@
 (set-language-environment    'utf-8)
 (set-selection-coding-system 'utf-8)
 
+(if (not (file-directory-p "~/.emacs.d/lisp"))
+    (make-directory "~/.emacs.d/lisp"))
 (add-to-list 'load-path "~/.emacs.d/lisp")
+(if (not (file-directory-p "~/.emacs.d/backups"))
+    (make-directory "~/.emacs.d/backups"))
 (setq backup-directory-alist `(("." . "~/.emacs.d/backups")))
+(if (not (file-directory-p "~/.emacs.d/temp"))
+    (make-directory "~/.emacs.d/temp"))
 (setq temporary-file-directory "~/.emacs.d/temp")
 (setq select-enable-clipboard t)
 
-(if (not (eq system-type 'cygwin))
+(if (eq system-type 'windows-nt)
     (setq default-directory "C:/Users/sisto/Desktop/"))
 
 (setq display-time-24hr-format          t)
@@ -537,6 +543,30 @@ Simon Stoltze
       (flycheck-ocaml-setup))))
 (add-hook 'tuareg-mode-hook
           'merlin-mode)
+
+;; Twitter
+(if (eq system-type 'gnu/linux)
+    (use-package twittering-mode
+      :ensure t
+                                        ;  :init
+                                        ; (add-to-list 'load-path )
+                                        ; (require 'twittering-mode)
+      :config
+      (setq twittering-use-master-password t)
+      (setq twittering-icon-mode t)))
+
+;; Macaulay 2
+(if (eq system-type 'gnu/linux)
+    (load "~/.emacs-Macaulay2" t))
+
+;; SAGE
+(if (eq system-type 'gnu/linux)
+    (use-package sage
+      :load-path "/usr/lib/sagemath/local/share/emacs"
+                                        ;  :init
+                                        ;  (add-to-list 'load-path (expand-file-name "/usr/lib/sagemath/local/share/emacs"))
+      :config
+      (setq sage-command "/usr/lib/sagemath/sage")))
 
 ;; Rotate windows on C-<tab>
 ; http://whattheemacsd.com/buffer-defuns.el-02.html#disqus_thread
