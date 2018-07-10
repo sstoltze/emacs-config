@@ -374,7 +374,8 @@ Simon Stoltze
   :defer t
   :config
   (progn
-    (setq inferior-lisp-program "sbcl")
+    ;;(load (expand-file-name "~/quicklisp/slime-helper.el"))
+    (setq inferior-lisp-program "sbcl --dynamic-space-size 2560")
     (setq slime-default-lisp "sbcl")
     (setq slime-contribs '(slime-fancy))))
 
