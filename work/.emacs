@@ -323,31 +323,32 @@ Simon Stoltze
     (setq ido-confirm-unique-completion t)
     (ido-mode t)))
 
+;; Disabled because it got annoying when programming
 ;; --- Company ---
-(use-package company
-  :ensure t
-  :config
-  (if (display-graphic-p)
-      (progn
-        (require 'color)
-        (let ((bg (face-attribute 'default :background)))
-          (custom-set-faces
-           `(company-tooltip           ((t (:inherit default
-                                                     :background
-                                                     ,(color-lighten-name bg 2)))))
-           `(company-scrollbar-bg      ((t (:background
-                                            ,(color-lighten-name bg 10)))))
-                                        ; "slate blue"))))
-           `(company-scrollbar-fg      ((t (:background
-                                            ,(color-lighten-name bg 5)))))
-                                        ;"dark slate blue"))))
-           `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
-           `(company-tooltip-common    ((t (:inherit font-lock-constant-face))))))
-        (delete 'company-clang 'company-backends))))
-(add-hook 'after-init-hook
-          (lambda ()
-            (global-company-mode '(not python-mode
-                                       elpy-mode))))
+;; (use-package company
+;;   :ensure t
+;;   :config
+;;   (if (display-graphic-p)
+;;       (progn
+;;         (require 'color)
+;;         (let ((bg (face-attribute 'default :background)))
+;;           (custom-set-faces
+;;            `(company-tooltip           ((t (:inherit default
+;;                                                      :background
+;;                                                      ,(color-lighten-name bg 2)))))
+;;            `(company-scrollbar-bg      ((t (:background
+;;                                             ,(color-lighten-name bg 10)))))
+;;                                         ; "slate blue"))))
+;;            `(company-scrollbar-fg      ((t (:background
+;;                                             ,(color-lighten-name bg 5)))))
+;;                                         ;"dark slate blue"))))
+;;            `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
+;;            `(company-tooltip-common    ((t (:inherit font-lock-constant-face))))))
+;;         (delete 'company-clang 'company-backends))))
+;; (add-hook 'after-init-hook
+;;           (lambda ()
+;;             (global-company-mode '(not python-mode
+;;                                        elpy-mode))))
 
 ;; --- Semantic ---
 (defun my-semantic-hook ()
@@ -394,12 +395,12 @@ Simon Stoltze
   :config
   (progn
     (setq haskell-indent-spaces 4)
-    (use-package company-ghc
-      :ensure t)
-    (use-package company-ghci
-      :ensure t)
-    (add-to-list 'company-backends
-                 '(company-ghc company-ghci))
+;;    (use-package company-ghc
+;;      :ensure t)
+;;    (use-package company-ghci
+;;      :ensure t)
+;;    (add-to-list 'company-backends
+;;                 '(company-ghc company-ghci))
     (use-package intero
       :ensure t
       :config
@@ -416,32 +417,33 @@ Simon Stoltze
 ;; --- C/C++ ---
 (defun my-c-hook ()
   "Hook for C/C++."
-  (use-package company-c-headers
-    :ensure t
-    :init
-    (add-to-list 'company-backends
-                 'company-c-headers))
+;;  (use-package company-c-headers
+;;   :ensure t
+;;  :init
+;; (add-to-list 'company-backends
+;;                 'company-c-headers))
   (require 'semantic/bovine/gcc)
   (my-semantic-hook)
-  (use-package irony
-    :ensure t
-    :init
-    (progn
-      (setq w32-pipe-read-delay 0)
-      (setq irony-server-w32-pipe-buffer-size (* 64 1024))
-      (use-package company-irony-c-headers
-        :ensure t)
-      (add-to-list 'company-backends
-                   '(company-irony-c-headers
-                     company-irony))
-      (add-hook 'irony-mode-hook
-                'irony-cdb-autosetup-compile-options)
-      (use-package flycheck-irony
-        :ensure t
-        :config
-        (add-hook 'irony-mode-hook
-                  'flycheck-irony-setup))))
-  (irony-mode))
+;; (use-package irony
+;;   :ensure t
+;;    :init
+;;    (progn
+;;      (setq w32-pipe-read-delay 0)
+;;      (setq irony-server-w32-pipe-buffer-size (* 64 1024))
+;;      (use-package company-irony-c-headers
+;;        :ensure t)
+;;     (add-to-list 'company-backends
+;;                 '(company-irony-c-headers
+;;                  company-irony))
+;;      (add-hook 'irony-mode-hook
+;;                'irony-cdb-autosetup-compile-options)
+;;      (use-package flycheck-irony
+;;        :ensure t
+;;        :config
+;;        (add-hook 'irony-mode-hook
+;;                  'flycheck-irony-setup))))
+;;  (irony-mode))
+  )
 (add-hook 'c-mode-hook
           'my-c-hook)
 (add-hook 'c++-mode-hook
@@ -513,7 +515,8 @@ Simon Stoltze
               (lambda ()
                 (delete 'elpy-module-company
                         'elpy-modules)
-                (company-mode 0)))))
+;;                (company-mode 0)
+                ))))
 (add-hook 'python-mode-hook
           (lambda ()
             (if (or (eq system-type 'windows-nt)
@@ -521,10 +524,11 @@ Simon Stoltze
                 (setq python-shell-completion-native-disabled-interpreters
                       '("python")))
             (elpy-mode t)
-            (company-mode 0)))
+;;            (company-mode 0))
+          ))
 (add-hook 'inferior-python-mode-hook
           (lambda ()
-            (company-mode 0)
+;;            (company-mode 0)
             (python-shell-switch-to-shell)))
 
 ;; --- Ocaml ---
@@ -536,8 +540,8 @@ Simon Stoltze
   (use-package merlin
     :ensure t
     :config
-    (add-to-list 'company-backends
-                 'merlin-company-backend)
+;;    (add-to-list 'company-backends
+;;                 'merlin-company-backend)
     (use-package flycheck-ocaml
       :ensure t
       :config
