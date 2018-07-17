@@ -1,3 +1,6 @@
 function weather
-    curl -s "wttr.in/Aarhus?M0q"
+    if test -z "$argv"
+        set -l argv Aarhus
+    end
+    curl -s "wttr.in/$argv?M0q"
 end
