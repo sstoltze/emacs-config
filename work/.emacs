@@ -375,7 +375,8 @@ Simon Stoltze
   :defer t
   :config
   (progn
-    ;;(load (expand-file-name "~/quicklisp/slime-helper.el"))
+    (if (eq system-type 'cygwin)
+        (load (expand-file-name "~/quicklisp/slime-helper.el")))
     (setq inferior-lisp-program "sbcl --dynamic-space-size 2560")
     (setq slime-default-lisp "sbcl")
     (setq slime-contribs '(slime-fancy))))
