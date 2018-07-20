@@ -103,14 +103,14 @@
 
 (if (not (file-directory-p "~/.emacs.d/lisp"))
     (make-directory "~/.emacs.d/lisp"))
-(add-to-list 'load-path "~/.emacs.d/lisp")
+(add-to-list 'load-path "~/.emacs.d/lisp/")
 (if (not (file-directory-p "~/.emacs.d/backups"))
     (make-directory "~/.emacs.d/backups"))
 (setq backup-directory-alist
-      `(("." . "~/.emacs.d/backups")))
+      `(("." . "~/.emacs.d/backups/")))
 (if (not (file-directory-p "~/.emacs.d/temp"))
-    (make-directory "~/.emacs.d/temp"))
-(setq temporary-file-directory "~/.emacs.d/temp")
+    (make-directory "~/.emacs.d/temp/"))
+(setq temporary-file-directory "~/.emacs.d/temp/")
 (if (not (file-directory-p "~/.emacs.d/autosave"))
     (make-directory "~/.emacs.d/autosave"))
 (setq auto-save-file-name-transforms
