@@ -106,10 +106,15 @@
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (if (not (file-directory-p "~/.emacs.d/backups"))
     (make-directory "~/.emacs.d/backups"))
-(setq backup-directory-alist `(("." . "~/.emacs.d/backups")))
+(setq backup-directory-alist
+      `(("." . "~/.emacs.d/backups")))
 (if (not (file-directory-p "~/.emacs.d/temp"))
     (make-directory "~/.emacs.d/temp"))
 (setq temporary-file-directory "~/.emacs.d/temp")
+(if (not (file-directory-p "~/.emacs.d/autosave"))
+    (make-directory "~/.emacs.d/autosave"))
+(setq auto-save-file-name-transforms
+      '((".*" "~/.emacs.d/autosave/" t)))
 (setq select-enable-clipboard t)
 
 (if (eq system-type 'windows-nt)
