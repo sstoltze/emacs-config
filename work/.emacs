@@ -375,8 +375,17 @@ Simon Stoltze
   :defer t
   :config
   (progn
-    (if (eq system-type 'cygwin)
-        (load (expand-file-name "~/quicklisp/slime-helper.el")))
+    (when  (eq  system-type 'cygwin)
+      (defun cyg-slime-to-lisp-translation (filename)
+        (replace-regexp-in-string "\n" ""
+                                  (shell-command-to-string
+                                   (format "cygpath.exe --windows %s" filename))))
+
+      (defun cyg-lisp-to-slime-translation (filename)
+        (replace-regexp-in-string "\n" "" (shell-command-to-string
+                                           (format "cygpath.exe --unix %s filename"))))
+      (setq slime-to-lisp-filename-function #'cyg-slime-to-lisp-translation)
+      (setq lisp-to-slime-filename-function #'cyg-lisp-to-slime-translation))
     (setq inferior-lisp-program "sbcl --dynamic-space-size 2560")
     (setq slime-default-lisp "sbcl")
     (setq slime-contribs '(slime-fancy))))
