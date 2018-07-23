@@ -118,7 +118,9 @@
 (setq select-enable-clipboard t)
 
 (if (eq system-type 'windows-nt)
-    (setq default-directory "C:/Users/sisto/Desktop/"))
+    (setq default-directory (concat "C:/Users/"
+                                    (user-login-name)
+                                    "/Desktop/")))
 
 (setq display-time-24hr-format          t)
 (setq display-time-day-and-date         nil)
@@ -212,6 +214,14 @@
 (setq org-startup-folded nil)
 (setq org-startup-indented t)
 (setq org-startup-with-inline-images t)
+(if (not (file-exists-p "~/organizer.org"))
+    (write-region ""                ; Start - What to write
+                  nil               ; End - Ignored when start is string
+                  "~/organizer.org" ; Filename
+                  t                 ; Append
+                  nil               ; Visit
+                  nil               ; Lockname
+                  'excl))           ; Mustbenew - error if already exists
 (setq org-default-notes-file "~/organizer.org")
 (set-register ?o (cons 'file "~/organizer.org"))
 (setq org-capture-templates
@@ -270,21 +280,22 @@ Simon Stoltze
     ;; Export to .docx
     (setq org-odt-preferred-output-format "docx")
     (setq org-odt-convert-processes '(("LibreOffice" "C:\\Progra~1\\LibreOffice\\program\\soffice.exe --headless --convert-to %f%x --outdir %d %i")))
-    (if (eq system-type 'cygwin)
-        (setq org-agenda-files
-              (append
-               (quote ("/cygdrive/c/Users/sisto/AppData/Roaming/noter.org"
-                       "/cygdrive/c/Users/sisto/AppData/Roaming/calendar.org"
-                       "/cygdrive/c/Users/sisto/AppData/Roaming/organizer.org"))
-               (find-lisp-find-files
-                "/cygdrive/c/Users/sisto/Desktop/noter"
-                "\.org$")))
-      (setq org-agenda-files
-            (append
-             (quote ("~/noter.org" "~/calendar.org" "~/organizer.org"))
-             (find-lisp-find-files
-              "C:\\Users\\sisto\\Desktop\\noter"
-              "\.org$"))))
+    (setq org-agenda-files (list "~/organizer.org"))
+    ;; (if (eq system-type 'cygwin)
+    ;;     (setq org-agenda-files
+    ;;           (append
+    ;;            (quote ("/cygdrive/c/Users/sisto/AppData/Roaming/noter.org"
+    ;;                    "/cygdrive/c/Users/sisto/AppData/Roaming/calendar.org"
+    ;;                    "/cygdrive/c/Users/sisto/AppData/Roaming/organizer.org"))
+    ;;            (find-lisp-find-files
+    ;;             "/cygdrive/c/Users/sisto/Desktop/noter"
+    ;;             "\.org$")))
+    ;;   (setq org-agenda-files
+    ;;         (append
+    ;;          (quote ("~/noter.org" "~/calendar.org" "~/organizer.org"))
+    ;;          (find-lisp-find-files
+    ;;           "C:\\Users\\sisto\\Desktop\\noter"
+    ;;           "\.org$"))))
     ;; Refile settings
     ;; Exclude DONE state tasks from refile targets
     (defun bh/verify-refile-target ()
@@ -297,14 +308,14 @@ Simon Stoltze
     ;; make org mode allow eval of some langs
     (org-babel-do-load-languages
      'org-babel-load-languages
-     '((ditaa . t)
-       (lisp . t)
+     '((ditaa      . t)
+       (lisp       . t)
        (emacs-lisp . t)
-       (python . t)
-       (ruby . t)
-       (R . t)
-       (latex . t)
-       (sql . t)))
+       (python     . t)
+       (ruby       . t)
+       (R          . t)
+       (latex      . t)
+       (sql        . t)))
     (setq org-confirm-babel-evaluate nil)
     (add-hook 'org-babel-after-execute-hook
               'org-display-inline-images)))
