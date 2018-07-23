@@ -21,7 +21,8 @@ handle_git
 cd ~
 
 echo "emacs-config:"
-cp -rH -t ~/git/emacs-config/work ~/.config ~/backup-work.fish ~/move-to-zip.fish ~/check-status.fish ~/update.fish ~/.gitconfig ~/.gitignore ~/.emacs ~/color-test.fish /cygdrive/c/Users/sisto/Pictures/background ~/prog
+cp -H -t ~/git/emacs-config ~/.emacs
+cp -rH -t ~/git/emacs-config/work ~/.config ~/backup-work.fish ~/move-to-zip.fish ~/check-status.fish ~/update.fish ~/.gitconfig ~/.gitignore ~/color-test.fish /cygdrive/c/Users/sisto/Pictures/background ~/prog
 rm -r ~/git/emacs-config/work/.config/fish/generated_completions
 cd ~/git/emacs-config
 handle_git

@@ -19,12 +19,13 @@
  '(custom-enabled-themes (quote (deeper-blue)))
  '(custom-safe-themes
    (quote
-    ("40c66989886b3f05b0c4f80952f128c6c4600f85b1f0996caa1fa1479e20c082" "ce557950466bf42096853c6dac6875b9ae9c782b8665f62478980cc5e3b6028d" "693f5a81a3728c2548efb4118c81941933cf0f7b614f9f3133101395e5830152" "bcc6775934c9adf5f3bd1f428326ce0dcd34d743a92df48c128e6438b815b44f" "f5eb916f6bd4e743206913e6f28051249de8ccfd070eae47b5bde31ee813d55f" "ac2b1fed9c0f0190045359327e963ddad250e131fbf332e80d371b2e1dbc1dc4" "28ec8ccf6190f6a73812df9bc91df54ce1d6132f18b4c8fcc85d45298569eb53" "e80932ca56b0f109f8545576531d3fc79487ca35a9a9693b62bf30d6d08c9aaf" "935cc557b01242fc7b4d3f803902d14d1b3afae5123624a2f924255f641f7f01" "7ce5ae5476aadfa57ffbfffd41c2d3f4aaa4e7f21de6646a76f10b2a7eaa105b" "108b3724e0d684027c713703f663358779cc6544075bc8fd16ae71470497304f" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "007b69ffec046a5842e34fea287b23c49175dfd6c6d5a0d9cdf150a2e8a8979f" default)))
+    ("e11569fd7e31321a33358ee4b232c2d3cf05caccd90f896e1df6cab228191109" "40c66989886b3f05b0c4f80952f128c6c4600f85b1f0996caa1fa1479e20c082" "ce557950466bf42096853c6dac6875b9ae9c782b8665f62478980cc5e3b6028d" "693f5a81a3728c2548efb4118c81941933cf0f7b614f9f3133101395e5830152" "bcc6775934c9adf5f3bd1f428326ce0dcd34d743a92df48c128e6438b815b44f" "f5eb916f6bd4e743206913e6f28051249de8ccfd070eae47b5bde31ee813d55f" "ac2b1fed9c0f0190045359327e963ddad250e131fbf332e80d371b2e1dbc1dc4" "28ec8ccf6190f6a73812df9bc91df54ce1d6132f18b4c8fcc85d45298569eb53" "e80932ca56b0f109f8545576531d3fc79487ca35a9a9693b62bf30d6d08c9aaf" "935cc557b01242fc7b4d3f803902d14d1b3afae5123624a2f924255f641f7f01" "7ce5ae5476aadfa57ffbfffd41c2d3f4aaa4e7f21de6646a76f10b2a7eaa105b" "108b3724e0d684027c713703f663358779cc6544075bc8fd16ae71470497304f" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "007b69ffec046a5842e34fea287b23c49175dfd6c6d5a0d9cdf150a2e8a8979f" default)))
  '(custom-theme-directory "~/.emacs.d/themes/")
  '(doc-view-continuous t)
+ '(elpy-modules
+   (quote
+    (elpy-module-eldoc elpy-module-flymake elpy-module-pyvenv elpy-module-highlight-indentation elpy-module-yasnippet elpy-module-django elpy-module-sane-defaults)))
  '(fci-rule-color "#073642")
- '(ggtags-global-ignore-case t)
- '(haskell-indent-spaces 4 t)
  '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
  '(highlight-tail-colors
    (quote
@@ -36,17 +37,12 @@
      ("#8B2C02" . 70)
      ("#93115C" . 85)
      ("#073642" . 100))))
- '(ido-confirm-unique-completion t)
- '(inhibit-startup-screen t)
  '(nrepl-message-colors
    (quote
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
- '(org-agenda-files (quote ("~/Documents/tourdekontor/fangerne/oversigt.org")))
- '(org-hide-leading-stars t)
  '(package-selected-packages
    (quote
-    (twittering-mode flycheck-ocaml merlin tuareg flycheck-haskell intero company-ghci company-ghc haskell-mode benchmark-init ess-smart-underscore flycheck elpy stan-snippets stan-mode ess ggtags org zenburn-theme web-mode warm-night-theme w3 use-package sx shakespeare-mode rainbow-mode pdf-tools org-ac magit linum-relative latex-preview-pane io-mode-inf io-mode hc-zenburn-theme fish-mode diminish darkmine-theme darkburn-theme csharp-mode auto-complete-sage auto-complete-auctex afternoon-theme achievements ac-slime ac-math ac-ispell ac-html abyss-theme 2048-game)))
- '(show-paren-mode t)
+    (ob-sql-mode company-irony company-irony-c-headers flycheck-irony irony ess company-ghci company-jedi company-ghc intero benchmark-init stan-snippets stan-mode ob elpy ess-smart-underscore flycheck-haskell ghc haskell-mode flycheck-ocaml merlin tuareg slime company company-auctex company-c-headers twittering-mode flycheck fish-completion fish-mode io-mode io-mode-inf magit auto-complete htmlize csv-mode csv auctex pdf-tools org-babel-eval-in-repl excorporate eww-lnum org use-package gnugo)))
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#2aa198" :weight bold))))
@@ -62,7 +58,6 @@
  '(syslog-warn-face
    (quote
     ((t :background unspecified :foreground "#cb4b16" :weight bold))))
- '(tool-bar-mode nil)
  '(vc-annotate-background nil)
  '(vc-annotate-color-map
    (quote
@@ -93,12 +88,12 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(company-scrollbar-bg ((t (:background "#2b2f45"))))
- '(company-scrollbar-fg ((t (:background "#212435"))))
+ '(company-scrollbar-bg ((t (:background "slate blue"))))
+ '(company-scrollbar-fg ((t (:background "dark slate blue"))))
  '(company-tooltip ((t (:inherit default :background "#1b1e2c"))))
  '(company-tooltip-common ((t (:inherit font-lock-constant-face))))
- '(company-tooltip-selection ((t (:inherit font-lock-function-name-face)))))
-
+ '(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
+ '(cursor ((t (:background "forest green")))))
 
 ;;; General setup ------------------------------------------------------
 (prefer-coding-system        'utf-8)
@@ -106,20 +101,26 @@
 (set-language-environment    'utf-8)
 (set-selection-coding-system 'utf-8)
 
-
 (if (not (file-directory-p "~/.emacs.d/lisp"))
     (make-directory "~/.emacs.d/lisp"))
-(add-to-list 'load-path "~/.emacs.d/lisp")
+(add-to-list 'load-path "~/.emacs.d/lisp/")
 (if (not (file-directory-p "~/.emacs.d/backups"))
     (make-directory "~/.emacs.d/backups"))
-(setq backup-directory-alist `(("." . "~/.emacs.d/backups")))
+(setq backup-directory-alist
+      `(("." . "~/.emacs.d/backups/")))
 (if (not (file-directory-p "~/.emacs.d/temp"))
-    (make-directory "~/.emacs.d/temp"))
-(setq temporary-file-directory "~/.emacs.d/temp")
+    (make-directory "~/.emacs.d/temp/"))
+(setq temporary-file-directory "~/.emacs.d/temp/")
+(if (not (file-directory-p "~/.emacs.d/autosave"))
+    (make-directory "~/.emacs.d/autosave"))
+(setq auto-save-file-name-transforms
+      '((".*" "~/.emacs.d/autosave/" t)))
 (setq select-enable-clipboard t)
 
 (if (eq system-type 'windows-nt)
-    (setq default-directory "C:/Users/sisto/Desktop/"))
+    (setq default-directory (concat "C:/Users/"
+                                    (user-login-name)
+                                    "/Desktop/")))
 
 (setq display-time-24hr-format          t)
 (setq display-time-day-and-date         nil)
@@ -213,6 +214,14 @@
 (setq org-startup-folded nil)
 (setq org-startup-indented t)
 (setq org-startup-with-inline-images t)
+(if (not (file-exists-p "~/organizer.org"))
+    (write-region ""                ; Start - What to write
+                  nil               ; End - Ignored when start is string
+                  "~/organizer.org" ; Filename
+                  t                 ; Append
+                  nil               ; Visit
+                  nil               ; Lockname
+                  'excl))           ; Mustbenew - error if already exists
 (setq org-default-notes-file "~/organizer.org")
 (set-register ?o (cons 'file "~/organizer.org"))
 (setq org-capture-templates
@@ -271,21 +280,22 @@ Simon Stoltze
     ;; Export to .docx
     (setq org-odt-preferred-output-format "docx")
     (setq org-odt-convert-processes '(("LibreOffice" "C:\\Progra~1\\LibreOffice\\program\\soffice.exe --headless --convert-to %f%x --outdir %d %i")))
-    (if (eq system-type 'cygwin)
-        (setq org-agenda-files
-              (append
-               (quote ("/cygdrive/c/Users/sisto/AppData/Roaming/noter.org"
-                       "/cygdrive/c/Users/sisto/AppData/Roaming/calendar.org"
-                       "/cygdrive/c/Users/sisto/AppData/Roaming/organizer.org"))
-               (find-lisp-find-files
-                "/cygdrive/c/Users/sisto/Desktop/noter"
-                "\.org$")))
-      (setq org-agenda-files
-            (append
-             (quote ("~/noter.org" "~/calendar.org" "~/organizer.org"))
-             (find-lisp-find-files
-              "C:\\Users\\sisto\\Desktop\\noter"
-              "\.org$"))))
+    (setq org-agenda-files (list "~/organizer.org"))
+    ;; (if (eq system-type 'cygwin)
+    ;;     (setq org-agenda-files
+    ;;           (append
+    ;;            (quote ("/cygdrive/c/Users/sisto/AppData/Roaming/noter.org"
+    ;;                    "/cygdrive/c/Users/sisto/AppData/Roaming/calendar.org"
+    ;;                    "/cygdrive/c/Users/sisto/AppData/Roaming/organizer.org"))
+    ;;            (find-lisp-find-files
+    ;;             "/cygdrive/c/Users/sisto/Desktop/noter"
+    ;;             "\.org$")))
+    ;;   (setq org-agenda-files
+    ;;         (append
+    ;;          (quote ("~/noter.org" "~/calendar.org" "~/organizer.org"))
+    ;;          (find-lisp-find-files
+    ;;           "C:\\Users\\sisto\\Desktop\\noter"
+    ;;           "\.org$"))))
     ;; Refile settings
     ;; Exclude DONE state tasks from refile targets
     (defun bh/verify-refile-target ()
@@ -298,14 +308,14 @@ Simon Stoltze
     ;; make org mode allow eval of some langs
     (org-babel-do-load-languages
      'org-babel-load-languages
-     '((ditaa . t)
-       (lisp . t)
+     '((ditaa      . t)
+       (lisp       . t)
        (emacs-lisp . t)
-       (python . t)
-       (ruby . t)
-       (R . t)
-       (latex . t)
-       (sql . t)))
+       (python     . t)
+       (ruby       . t)
+       (R          . t)
+       (latex      . t)
+       (sql        . t)))
     (setq org-confirm-babel-evaluate nil)
     (add-hook 'org-babel-after-execute-hook
               'org-display-inline-images)))
@@ -329,31 +339,32 @@ Simon Stoltze
     (setq ido-confirm-unique-completion t)
     (ido-mode t)))
 
+;; Disabled because it got annoying when programming
 ;; --- Company ---
-(use-package company
-  :ensure t
-  :config
-  (if (display-graphic-p)
-      (progn
-        (require 'color)
-        (let ((bg (face-attribute 'default :background)))
-          (custom-set-faces
-           `(company-tooltip           ((t (:inherit default
-                                                     :background
-                                                     ,(color-lighten-name bg 2)))))
-           `(company-scrollbar-bg      ((t (:background
-                                            ,(color-lighten-name bg 10)))))
-                                        ; "slate blue"))))
-           `(company-scrollbar-fg      ((t (:background
-                                            ,(color-lighten-name bg 5)))))
-                                        ;"dark slate blue"))))
-           `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
-           `(company-tooltip-common    ((t (:inherit font-lock-constant-face))))))
-        (delete 'company-clang 'company-backends))))
-(add-hook 'after-init-hook
-          (lambda ()
-            (global-company-mode '(not python-mode
-                                       elpy-mode))))
+;; (use-package company
+;;   :ensure t
+;;   :config
+;;   (if (display-graphic-p)
+;;       (progn
+;;         (require 'color)
+;;         (let ((bg (face-attribute 'default :background)))
+;;           (custom-set-faces
+;;            `(company-tooltip           ((t (:inherit default
+;;                                                      :background
+;;                                                      ,(color-lighten-name bg 2)))))
+;;            `(company-scrollbar-bg      ((t (:background
+;;                                             ,(color-lighten-name bg 10)))))
+;;                                         ; "slate blue"))))
+;;            `(company-scrollbar-fg      ((t (:background
+;;                                             ,(color-lighten-name bg 5)))))
+;;                                         ;"dark slate blue"))))
+;;            `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
+;;            `(company-tooltip-common    ((t (:inherit font-lock-constant-face))))))
+;;         (delete 'company-clang 'company-backends))))
+;; (add-hook 'after-init-hook
+;;           (lambda ()
+;;             (global-company-mode '(not python-mode
+;;                                        elpy-mode))))
 
 ;; --- Semantic ---
 (defun my-semantic-hook ()
@@ -380,7 +391,18 @@ Simon Stoltze
   :defer t
   :config
   (progn
-    (setq inferior-lisp-program "sbcl")
+    (when  (eq  system-type 'cygwin)
+      (defun cyg-slime-to-lisp-translation (filename)
+        (replace-regexp-in-string "\n" ""
+                                  (shell-command-to-string
+                                   (format "cygpath.exe --windows %s" filename))))
+
+      (defun cyg-lisp-to-slime-translation (filename)
+        (replace-regexp-in-string "\n" "" (shell-command-to-string
+                                           (format "cygpath.exe --unix %s filename"))))
+      (setq slime-to-lisp-filename-function #'cyg-slime-to-lisp-translation)
+      (setq lisp-to-slime-filename-function #'cyg-lisp-to-slime-translation))
+    (setq inferior-lisp-program "sbcl --dynamic-space-size 2560")
     (setq slime-default-lisp "sbcl")
     (setq slime-contribs '(slime-fancy))))
 
@@ -399,12 +421,12 @@ Simon Stoltze
   :config
   (progn
     (setq haskell-indent-spaces 4)
-    (use-package company-ghc
-      :ensure t)
-    (use-package company-ghci
-      :ensure t)
-    (add-to-list 'company-backends
-                 '(company-ghc company-ghci))
+;;    (use-package company-ghc
+;;      :ensure t)
+;;    (use-package company-ghci
+;;      :ensure t)
+;;    (add-to-list 'company-backends
+;;                 '(company-ghc company-ghci))
     (use-package intero
       :ensure t
       :config
@@ -421,32 +443,33 @@ Simon Stoltze
 ;; --- C/C++ ---
 (defun my-c-hook ()
   "Hook for C/C++."
-  (use-package company-c-headers
-    :ensure t
-    :init
-    (add-to-list 'company-backends
-                 'company-c-headers))
+;;  (use-package company-c-headers
+;;   :ensure t
+;;  :init
+;; (add-to-list 'company-backends
+;;                 'company-c-headers))
   (require 'semantic/bovine/gcc)
   (my-semantic-hook)
-  (use-package irony
-    :ensure t
-    :init
-    (progn
-      (setq w32-pipe-read-delay 0)
-      (setq irony-server-w32-pipe-buffer-size (* 64 1024))
-      (use-package company-irony-c-headers
-        :ensure t)
-      (add-to-list 'company-backends
-                   '(company-irony-c-headers
-                     company-irony))
-      (add-hook 'irony-mode-hook
-                'irony-cdb-autosetup-compile-options)
-      (use-package flycheck-irony
-        :ensure t
-        :config
-        (add-hook 'irony-mode-hook
-                  'flycheck-irony-setup))))
-  (irony-mode))
+;; (use-package irony
+;;   :ensure t
+;;    :init
+;;    (progn
+;;      (setq w32-pipe-read-delay 0)
+;;      (setq irony-server-w32-pipe-buffer-size (* 64 1024))
+;;      (use-package company-irony-c-headers
+;;        :ensure t)
+;;     (add-to-list 'company-backends
+;;                 '(company-irony-c-headers
+;;                  company-irony))
+;;      (add-hook 'irony-mode-hook
+;;                'irony-cdb-autosetup-compile-options)
+;;      (use-package flycheck-irony
+;;        :ensure t
+;;        :config
+;;        (add-hook 'irony-mode-hook
+;;                  'flycheck-irony-setup))))
+;;  (irony-mode))
+  )
 (add-hook 'c-mode-hook
           'my-c-hook)
 (add-hook 'c++-mode-hook
@@ -518,7 +541,8 @@ Simon Stoltze
               (lambda ()
                 (delete 'elpy-module-company
                         'elpy-modules)
-                (company-mode 0)))))
+;;                (company-mode 0)
+                ))))
 (add-hook 'python-mode-hook
           (lambda ()
             (if (or (eq system-type 'windows-nt)
@@ -526,10 +550,11 @@ Simon Stoltze
                 (setq python-shell-completion-native-disabled-interpreters
                       '("python")))
             (elpy-mode t)
-            (company-mode 0)))
+;;            (company-mode 0))
+          ))
 (add-hook 'inferior-python-mode-hook
           (lambda ()
-            (company-mode 0)
+;;            (company-mode 0)
             (python-shell-switch-to-shell)))
 
 ;; --- Ocaml ---
@@ -541,8 +566,8 @@ Simon Stoltze
   (use-package merlin
     :ensure t
     :config
-    (add-to-list 'company-backends
-                 'merlin-company-backend)
+;;    (add-to-list 'company-backends
+;;                 'merlin-company-backend)
     (use-package flycheck-ocaml
       :ensure t
       :config
@@ -600,209 +625,3 @@ Simon Stoltze
                (setq i (1+ i))))))))
 
 (global-set-key (kbd "<C-tab>") 'rotate-windows)
-
-;; (add-to-list 'load-path "~/.emacs.d/lisp")
-;; (setq backup-directory-alist `(("." . "~/.emacs.d/backups")))
-;; (setq x-select-enable-clipboard t)
-
-;; (require 'package)
-;; (setq package-enable-at-startup nil)
-;; (add-to-list 'package-archives
-;;              '("melpa" . "https://melpa.org/packages/"))
-;; (add-to-list 'package-archives
-;;              '("elpy" . "https://jorgenschaefer.github.io/packages/"))
-;; (when (< emacs-major-version 24)
-;;   (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
-;; (package-initialize)
-
-;; ;; Bootstrap `use-package'
-;; (unless (package-installed-p 'use-package)
-;;   (package-refresh-contents)
-;;   (package-install 'use-package))
-
-;; (unless (display-graphic-p)
-;;   (load-theme (quote hc-zenburn)))
-
-;; (add-hook 'LaTeX-mode-hook 'turn-on-auto-fill)
-
-;; ;; SAGE
-;; (if (eq system-type 'gnu/linux)
-;;     (use-package sage
-;;       :load-path "/usr/lib/sagemath/local/share/emacs"
-;;                                         ;  :init
-;;                                         ;  (add-to-list 'load-path (expand-file-name "/usr/lib/sagemath/local/share/emacs"))
-;;       :config
-;;       (setq sage-command "/usr/lib/sagemath/sage")))
-;; ;(require 'sage "sage")
-
-;; ;; If you want sage-view to typeset all your output and have plot()
-;; ;; commands inline, uncomment the following line and configure sage-view:
-;; ;; (require 'sage-view "sage-view")
-;; ;; (add-hook 'sage-startup-after-prompt-hook 'sage-view)
-;; ;; You can use commands like
-;; ;; (add-hook 'sage-startup-after-prompt-hook 'sage-view-disable-inline-output)
-;; ;; (add-hook 'sage-startup-after-prompt-hook 'sage-view-disable-inline-plots)
-;; ;; to enable some combination of features.  Using sage-view requires a
-;; ;; working LaTeX installation with the preview package.
-
-;; (use-package org-install
-;;   :config
-;;   (define-key global-map "\C-cl" 'org-store-link)
-;;   (define-key global-map "\C-cc" 'org-capture)
-;;   (define-key global-map "\C-cb" 'org-iswitchb)
-;;   (define-key global-map "\C-ca" 'org-agenda)
-;;   (setq org-log-done t))
-
-;; ;; Macaulay 2 start
-;; (if (eq system-type 'gnu/linux)
-;;     (load "~/.emacs-Macaulay2" t))
-;; ;; Macaulay 2 end
-
-;; (use-package iso-transl)
-
-;; (add-hook 'css-mode-hook 'rainbow-mode)
-
-;; (if (eq system-type 'gnu/linux)
-;;     (use-package twittering-mode
-;;       :load-path "~/Documents/git/twittering-mode/"
-;;       :init
-;;                                         ; (add-to-list 'load-path )
-;;                                         ; (require 'twittering-mode)
-;;       :config
-;;       (setq twittering-use-master-password t)
-;;       (setq twittering-icon-mode t)))
-
-;;   (use-package ido
-;;     :config
-;;     (ido-mode t)
-;;     (setq ido-enable-flex-matching t))
-
-;; (setq-default indent-tabs-mode nil)
-;; (setq inferior-lisp-program "sbcl")
-;; (setq slime-default-lisp "sbcl")
-;; (setq slime-contribs '(slime-fancy))
-
-
-;; (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
-
-;; ; http://whattheemacsd.com/buffer-defuns.el-02.html#disqus_thread
-;; (defun rotate-windows ()
-;;   "Rotate your windows"
-;;   (interactive)
-;;   (cond ((not (> (count-windows) 1))
-;;          (message "You can't rotate a single window!"))
-;;         (t
-;;          (setq i 1)
-;;          (setq numWindows (count-windows))
-;;          (while  (< i numWindows)
-;;            (let* ((w1 (elt (window-list) i))
-;;                   (w2 (elt (window-list) (+ (% i numWindows) 1)))
-
-;;                   (b1 (window-buffer w1))
-;;                   (b2 (window-buffer w2))
-
-;;                   (s1 (window-start w1))
-;;                   (s2 (window-start w2)))
-;;              (set-window-buffer w1 b2)
-;;              (set-window-buffer w2 b1)
-;;              (set-window-start w1 s2)
-;;              (set-window-start w2 s1)
-;;              (setq i (1+ i)))))))
-
-;; (global-set-key (kbd "<C-tab>") 'rotate-windows)
-
-;; (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
-;; (use-package mu4e)
-
-;; (add-hook 'c-mode-common-hook
-;;           (lambda ()
-;;             (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
-;;               (ggtags-mode 1))))
-
-
-;; ;; Semantic setup
-;; (progn
-;;   (defun my-semantic-hook ()
-;;     "Hook for semantic to add TAGS to menubar."
-;;     (imenu-add-to-menubar "TAGS"))
-;;   (add-hook 'semantic-init-hooks
-;;             'my-semantic-hook)
-
-;;   (require 'semantic/ia)
-;;   (require 'semantic/bovine/gcc)
-;;   (add-to-list 'semantic-default-submodes
-;;                'global-semanticdb-minor-mode)
-;;   (add-to-list 'semantic-default-submodes
-;;                'global-semantic-idle-local-symbol-highlight-mode)
-;;   (add-to-list 'semantic-default-submodes
-;;                'global-semantic-idle-scheduler-mode)
-;;   (add-to-list 'semantic-default-submodes
-;;                'global-semantic-idle-completions-mode)
-;;   (add-to-list 'semantic-default-submodes
-;;                'global-semantic-idle-summary-mode)
-;;   (add-hook 'c-mode-hook
-;;             '(lambda () (semantic-mode t))))
-
-;; (if (not (eq system-type 'cygwin))
-;;     (use-package magit
-;;       :ensure t
-;;       :bind (("C-x g" . magit-status)     ; Display the main magit popup
-;;              ("C-x M-g" . magit-dispatch-popup))) ; Display keybinds for magit
-;;   )
-
-;; (use-package fish-mode
-;;   :ensure t)
-
-;; ;; ;;ESS - Emacs Speaks Statistics
-;; ;; (use-package ess-site
-;; ;;   :ensure ess
-;; ;;   :config
-;; ;;   (add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
-;; ;;   (add-hook 'org-mode-hook 'org-display-inline-images)
-;; ;;   (use-package ess-smart-underscore
-;; ;;     :ensure t))
-
-;; ;; (use-package stan-mode
-;; ;;   :ensure t
-;; ;;   :init
-;; ;;   (progn
-;; ;;     (use-package stan-snippets
-;; ;;       :ensure t)))
-
-;; ;; (use-package elpy
-;; ;;   :ensure t
-;; ;;   :pin elpy
-;; ;;   :config
-;; ;;   (progn
-;; ;;     (elpy-enable)
-;; ;;     (setq elpy-shell-use-project-root nil)
-;; ;;     ;; Enable elpy in a Python mode
-;; ;;     (add-hook 'python-mode-hook 'elpy-mode)
-;; ;;     (setq elpy-rpc-backend "jedi")
-;; ;;     ;; Open the Python shell in a buffer after sending code to it
-;; ;;     (add-hook 'inferior-python-mode-hook 'python-shell-switch-to-shell)
-;; ;;     ;; Enable pyvenv, which manages Python virtual environments
-;; ;;     (pyvenv-mode 1)
-;; ;;     ;; Tell Python debugger (pdb) to use the current virtual environment
-;; ;;     ;; https://emacs.stackexchange.com/questions/17808/enable-python-pdb-on-emacs-with-virtualenv
-;; ;;     (setq gud-pdb-command-name "python -m pdb ")))
-
-;; (use-package flycheck
-;;   :ensure t
-;;   :init (global-flycheck-mode))
-;; (setq next-line-add-newlines t) ;; Newline at end of file
-;; (add-hook 'before-save-hook
-;;           'delete-trailing-whitespace)
-
-;; ;; Unset suspend keys. Never used anyway
-;; (global-unset-key (kbd "C-z"))
-;; (global-unset-key (kbd "C-x C-z"))
-
-;; (global-prettify-symbols-mode 1)
-;; (setq prettify-symbols-unprettify-at-point 'right-edge)
-
-;; ;; Enable C-x C-u (upcase-region) and C-x C-l (downcase region)
-;; (put 'upcase-region 'disabled nil)
-;; (put 'downcase-region 'disabled nil)
-
-;; (setq-default indent-tabs-mode nil)
