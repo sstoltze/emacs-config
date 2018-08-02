@@ -42,7 +42,7 @@
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (ob-sql-mode company-irony company-irony-c-headers flycheck-irony irony ess company-ghci company-jedi company-ghc intero benchmark-init stan-snippets stan-mode ob elpy ess-smart-underscore flycheck-haskell ghc haskell-mode flycheck-ocaml merlin tuareg slime company company-auctex company-c-headers twittering-mode flycheck fish-completion fish-mode io-mode io-mode-inf magit auto-complete htmlize csv-mode csv auctex pdf-tools org-babel-eval-in-repl excorporate eww-lnum org use-package gnugo)))
+    (auctex use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl org ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-irony flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init auto-complete)))
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#2aa198" :weight bold))))
@@ -338,33 +338,6 @@ Simon Stoltze
     (setq ido-enable-flex-matching t)
     (setq ido-confirm-unique-completion t)
     (ido-mode t)))
-
-;; Disabled because it got annoying when programming
-;; --- Company ---
-;; (use-package company
-;;   :ensure t
-;;   :config
-;;   (if (display-graphic-p)
-;;       (progn
-;;         (require 'color)
-;;         (let ((bg (face-attribute 'default :background)))
-;;           (custom-set-faces
-;;            `(company-tooltip           ((t (:inherit default
-;;                                                      :background
-;;                                                      ,(color-lighten-name bg 2)))))
-;;            `(company-scrollbar-bg      ((t (:background
-;;                                             ,(color-lighten-name bg 10)))))
-;;                                         ; "slate blue"))))
-;;            `(company-scrollbar-fg      ((t (:background
-;;                                             ,(color-lighten-name bg 5)))))
-;;                                         ;"dark slate blue"))))
-;;            `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
-;;            `(company-tooltip-common    ((t (:inherit font-lock-constant-face))))))
-;;         (delete 'company-clang 'company-backends))))
-;; (add-hook 'after-init-hook
-;;           (lambda ()
-;;             (global-company-mode '(not python-mode
-;;                                        elpy-mode))))
 
 ;; --- Semantic ---
 (defun my-semantic-hook ()
