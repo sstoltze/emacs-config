@@ -42,7 +42,7 @@
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (auctex use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl org ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-irony flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init auto-complete)))
+    (auctex use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl org ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init auto-complete)))
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#2aa198" :weight bold))))
@@ -79,20 +79,12 @@
      (320 . "#2896B5")
      (340 . "#2790C3")
      (360 . "#268bd2"))))
- '(vc-annotate-very-old-color nil)
- '(weechat-color-list
-   (quote
-    (unspecified "#002b36" "#073642" "#990A1B" "#dc322f" "#546E00" "#859900" "#7B6000" "#b58900" "#00629D" "#268bd2" "#93115C" "#d33682" "#00736F" "#2aa198" "#839496" "#657b83"))))
+ '(vc-annotate-very-old-color nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(company-scrollbar-bg ((t (:background "slate blue"))))
- '(company-scrollbar-fg ((t (:background "dark slate blue"))))
- '(company-tooltip ((t (:inherit default :background "#1b1e2c"))))
- '(company-tooltip-common ((t (:inherit font-lock-constant-face))))
- '(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
  '(cursor ((t (:background "forest green")))))
 
 ;;; General setup ------------------------------------------------------
@@ -101,20 +93,18 @@
 (set-language-environment    'utf-8)
 (set-selection-coding-system 'utf-8)
 
-(if (not (file-directory-p "~/.emacs.d/lisp"))
-    (make-directory "~/.emacs.d/lisp"))
+;; Setup directories in ~/.emacs.d/
+(dolist (folder '("lisp" "backups" "temp" "autosave"))
+  (let ((dir (concat "~/.emacs.d/" folder)))
+    (if (not (file-directory-p dir))
+        (make-directory dir))))
 (add-to-list 'load-path "~/.emacs.d/lisp/")
-(if (not (file-directory-p "~/.emacs.d/backups"))
-    (make-directory "~/.emacs.d/backups"))
 (setq backup-directory-alist
       `(("." . "~/.emacs.d/backups/")))
-(if (not (file-directory-p "~/.emacs.d/temp"))
-    (make-directory "~/.emacs.d/temp/"))
 (setq temporary-file-directory "~/.emacs.d/temp/")
-(if (not (file-directory-p "~/.emacs.d/autosave"))
-    (make-directory "~/.emacs.d/autosave"))
 (setq auto-save-file-name-transforms
       '((".*" "~/.emacs.d/autosave/" t)))
+
 (setq select-enable-clipboard t)
 
 (if (eq system-type 'windows-nt)
@@ -147,7 +137,7 @@
 (setq-default indent-tabs-mode nil)
 (setq csv-separators (quote (";")))
 
-(show-paren-mode  t)
+(show-paren-mode t)
 (if (functionp 'tool-bar-mode)
     (tool-bar-mode -1))
 
@@ -394,12 +384,6 @@ Simon Stoltze
   :config
   (progn
     (setq haskell-indent-spaces 4)
-;;    (use-package company-ghc
-;;      :ensure t)
-;;    (use-package company-ghci
-;;      :ensure t)
-;;    (add-to-list 'company-backends
-;;                 '(company-ghc company-ghci))
     (use-package intero
       :ensure t
       :config
@@ -416,33 +400,8 @@ Simon Stoltze
 ;; --- C/C++ ---
 (defun my-c-hook ()
   "Hook for C/C++."
-;;  (use-package company-c-headers
-;;   :ensure t
-;;  :init
-;; (add-to-list 'company-backends
-;;                 'company-c-headers))
   (require 'semantic/bovine/gcc)
-  (my-semantic-hook)
-;; (use-package irony
-;;   :ensure t
-;;    :init
-;;    (progn
-;;      (setq w32-pipe-read-delay 0)
-;;      (setq irony-server-w32-pipe-buffer-size (* 64 1024))
-;;      (use-package company-irony-c-headers
-;;        :ensure t)
-;;     (add-to-list 'company-backends
-;;                 '(company-irony-c-headers
-;;                  company-irony))
-;;      (add-hook 'irony-mode-hook
-;;                'irony-cdb-autosetup-compile-options)
-;;      (use-package flycheck-irony
-;;        :ensure t
-;;        :config
-;;        (add-hook 'irony-mode-hook
-;;                  'flycheck-irony-setup))))
-;;  (irony-mode))
-  )
+  (my-semantic-hook))
 (add-hook 'c-mode-hook
           'my-c-hook)
 (add-hook 'c++-mode-hook
@@ -514,7 +473,6 @@ Simon Stoltze
               (lambda ()
                 (delete 'elpy-module-company
                         'elpy-modules)
-;;                (company-mode 0)
                 ))))
 (add-hook 'python-mode-hook
           (lambda ()
@@ -523,11 +481,9 @@ Simon Stoltze
                 (setq python-shell-completion-native-disabled-interpreters
                       '("python")))
             (elpy-mode t)
-;;            (company-mode 0))
           ))
 (add-hook 'inferior-python-mode-hook
           (lambda ()
-;;            (company-mode 0)
             (python-shell-switch-to-shell)))
 
 ;; --- Ocaml ---
@@ -539,8 +495,6 @@ Simon Stoltze
   (use-package merlin
     :ensure t
     :config
-;;    (add-to-list 'company-backends
-;;                 'merlin-company-backend)
     (use-package flycheck-ocaml
       :ensure t
       :config
