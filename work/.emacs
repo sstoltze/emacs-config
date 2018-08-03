@@ -42,7 +42,7 @@
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (auctex use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl org ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init auto-complete)))
+    (auctex use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl org ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#2aa198" :weight bold))))
@@ -267,9 +267,12 @@ Simon Stoltze
     (setq org-indirect-buffer-display 'current-window)
     ;; Use IDO for both buffer and file completion and ido-everywhere to t
     (setq org-completion-use-ido t)
-    ;; Export to .docx
-    (setq org-odt-preferred-output-format "docx")
-    (setq org-odt-convert-processes '(("LibreOffice" "C:\\Progra~1\\LibreOffice\\program\\soffice.exe --headless --convert-to %f%x --outdir %d %i")))
+    ;; At work
+    (when (equal (user-login-name)
+                 "sisto")
+      ;; Export to .docx
+      (setq org-odt-preferred-output-format "docx")
+      (setq org-odt-convert-processes '(("LibreOffice" "C:\\Progra~2\\LibreOffice\\program\\soffice.exe --headless --convert-to %f%x --outdir %d %i"))))
     (setq org-agenda-files (list "~/organizer.org"))
     ;; (if (eq system-type 'cygwin)
     ;;     (setq org-agenda-files
