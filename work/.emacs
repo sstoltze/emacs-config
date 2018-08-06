@@ -42,7 +42,7 @@
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (merlin stan-mode ess flycheck auctex use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl org ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
+    (modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck auctex use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl org ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#2aa198" :weight bold))))
@@ -164,6 +164,41 @@
 (setq make-pointer-invisible  t)
 (setq load-prefer-newer       t)
 
+;; https://www.masteringemacs.org
+(tooltip-mode -1)
+(setq tooltip-use-echo-area t)
+;; List of recent files with C-x C-r
+(require 'recentf)
+(global-set-key (kbd "C-x C-r") 'ido-recentf-open)
+(recentf-mode t)
+(setq recentf-max-saved-items 50)
+(defun ido-recentf-open ()
+  "Use `ido-completing-read' to \\[find-file] a recent file"
+  (interactive)
+  (if (find-file (ido-completing-read "Find recent file: " recentf-list))
+      (message "Opening file...")
+    (message "Aborting")))
+;; M-x re-builder for making regex and searching current buffer
+(require 're-builder)
+(setq reb-re-syntax 'string) ;; 'string avoids double-escaping in eg. \\.
+;; (setq reb-re-syntax 'rx) ;; 'rx is s-expression based, used in code
+;; Make C-x C-x not activate region
+(defun exchange-point-and-mark-no-activate ()
+  "Identical to \\[exchange-point-and-mark] but will not activate the region."
+  (interactive)
+  (exchange-point-and-mark)
+  (deactivate-mark nil))
+(define-key global-map [remap exchange-point-and-mark] 'exchange-point-and-mark-no-activate)
+
+;; --- Paredit ---
+(autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
+(add-hook 'emacs-lisp-mode-hook                  #'enable-paredit-mode)
+(add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
+(add-hook 'ielm-mode-hook                        #'enable-paredit-mode)
+(add-hook 'lisp-mode-hook                        #'enable-paredit-mode)
+(add-hook 'lisp-interaction-mode-hook            #'enable-paredit-mode)
+(add-hook 'scheme-mode-hook                      #'enable-paredit-mode)
+
 ;;; Packages -----------------------------------------------------------
 (require 'package)
 (setq package-enable-at-startup nil)
@@ -190,6 +225,18 @@
   :config
   ;; To disable collection of benchmark data after init is done.
   (add-hook 'after-init-hook 'benchmark-init/deactivate))
+
+;; https://www.masteringemacs.org
+(use-package visible-mark
+  :ensure t
+  :init
+  (defface visible-mark-active
+    '((t (:box t))) ;; (:underline (:color "green" :style wave))
+    "Style for visible mark") ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Face-Attributes.html
+  (setq visible-mark-max    2)
+  (setq visible-mark-faces  '(visible-mark-active
+                              visible-mark-active))
+  (global-visible-mark-mode 1))
 
 ;; --- Flycheck ---
 (use-package flycheck
@@ -407,11 +454,15 @@ Simon Stoltze
   "Hook for C/C++."
   (require 'semantic/bovine/gcc)
   (my-semantic-hook))
+(defun my-cpp-hook ()
+  (use-package modern-cpp-font-lock
+    :ensure t))
 (add-hook 'c-mode-hook
           'my-c-hook)
 (add-hook 'c++-mode-hook
-          'my-c-hook)
-
+          (lambda ()
+            (my-c-hook)
+            (my-cpp-hook)))
 
 ;; --- Java ---
 (add-hook 'java-mode-hook
