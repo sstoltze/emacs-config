@@ -1,3 +1,6 @@
+;;; .emacs --- Init-file
+;;; Commentary:
+;;; Code:
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -166,14 +169,13 @@
 
 ;; https://www.masteringemacs.org
 (tooltip-mode -1)
-(setq tooltip-use-echo-area t)
 ;; List of recent files with C-x C-r
 (require 'recentf)
 (global-set-key (kbd "C-x C-r") 'ido-recentf-open)
 (recentf-mode t)
 (setq recentf-max-saved-items 50)
 (defun ido-recentf-open ()
-  "Use `ido-completing-read' to \\[find-file] a recent file"
+  "Use `ido-completing-read' to \\[find-file] a recent file."
   (interactive)
   (if (find-file (ido-completing-read "Find recent file: " recentf-list))
       (message "Opening file...")
@@ -221,18 +223,21 @@
 (use-package visible-mark
   :ensure t
   :init
+  ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Face-Attributes.html
   (defface visible-mark-active
-    '((((type graphic))       ;; Graphics support
-       (:box t))
-      (t                      ;; No graphics support - no box
-       (:inverse-video t)))   ;; (:underline (:color "green" :style wave))
-    "Style for visible mark") ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Face-Attributes.html
+    '((((type graphic))        ;; Graphics support
+       (:box t))               ;; (:underline (:color "green" :style wave))
+      (t                       ;; No graphics support - no box
+       (:inverse-video t)))    ;;
+    "Style for visible mark"
+    :group 'visible-mark-group)
   (setq visible-mark-max    2)
   (setq visible-mark-faces  '(visible-mark-active
                               visible-mark-active))
   (global-visible-mark-mode 1))
 
 ;; --- Paredit ---
+;; http://pub.gajendra.net/src/paredit-refcard.pdf
 (use-package paredit
   :ensure t
   :config
@@ -306,6 +311,7 @@ Simon Stoltze
 "))))
 
 (defun my-org-hook ()
+  "Org mode hook."
   (progn
     (setq org-time-stamp-custom-formats (quote ("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>")))
     (setq org-log-done t)
@@ -412,7 +418,7 @@ Simon Stoltze
   :defer t
   :config
   (progn
-    (when  (eq  system-type 'cygwin)
+    (when  (eq system-type 'cygwin)
       (defun cyg-slime-to-lisp-translation (filename)
         (replace-regexp-in-string "\n" ""
                                   (shell-command-to-string
@@ -420,7 +426,7 @@ Simon Stoltze
 
       (defun cyg-lisp-to-slime-translation (filename)
         (replace-regexp-in-string "\n" "" (shell-command-to-string
-                                           (format "cygpath.exe --unix %s filename"))))
+                                           (format "cygpath.exe --unix %s" filename))))
       (setq slime-to-lisp-filename-function #'cyg-slime-to-lisp-translation)
       (setq lisp-to-slime-filename-function #'cyg-lisp-to-slime-translation))
     (setq inferior-lisp-program "sbcl --dynamic-space-size 2560")
@@ -461,6 +467,7 @@ Simon Stoltze
   (require 'semantic/bovine/gcc)
   (my-semantic-hook))
 (defun my-cpp-hook ()
+  "C++ specific packages."
   (use-package modern-cpp-font-lock
     :ensure t))
 (add-hook 'c-mode-hook
@@ -553,7 +560,7 @@ Simon Stoltze
   :ensure t
   :defer t
   :config
-  (setq tuareg-font-lock-symbols t)
+  ;; (setq tuareg-font-lock-symbols t) ;; Obsolete
   (use-package merlin
     :ensure t
     :config
@@ -614,3 +621,6 @@ Simon Stoltze
                (setq i (1+ i))))))))
 
 (global-set-key (kbd "<C-tab>") 'rotate-windows)
+
+(provide '.emacs)
+;;; .emacs ends here
