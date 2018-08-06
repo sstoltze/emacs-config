@@ -42,7 +42,7 @@
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck auctex use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl org ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
+    (paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck auctex use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl org ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#2aa198" :weight bold))))
@@ -190,15 +190,6 @@
   (deactivate-mark nil))
 (define-key global-map [remap exchange-point-and-mark] 'exchange-point-and-mark-no-activate)
 
-;; --- Paredit ---
-(autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
-(add-hook 'emacs-lisp-mode-hook                  #'enable-paredit-mode)
-(add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
-(add-hook 'ielm-mode-hook                        #'enable-paredit-mode)
-(add-hook 'lisp-mode-hook                        #'enable-paredit-mode)
-(add-hook 'lisp-interaction-mode-hook            #'enable-paredit-mode)
-(add-hook 'scheme-mode-hook                      #'enable-paredit-mode)
-
 ;;; Packages -----------------------------------------------------------
 (require 'package)
 (setq package-enable-at-startup nil)
@@ -231,12 +222,27 @@
   :ensure t
   :init
   (defface visible-mark-active
-    '((t (:box t))) ;; (:underline (:color "green" :style wave))
+    '((((type graphic))       ;; Graphics support
+       (:box t))
+      (t                      ;; No graphics support - no box
+       (:inverse-video t)))   ;; (:underline (:color "green" :style wave))
     "Style for visible mark") ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Face-Attributes.html
   (setq visible-mark-max    2)
   (setq visible-mark-faces  '(visible-mark-active
                               visible-mark-active))
   (global-visible-mark-mode 1))
+
+;; --- Paredit ---
+(use-package paredit
+  :ensure t
+  :config
+  (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
+  (add-hook 'emacs-lisp-mode-hook                  #'enable-paredit-mode)
+  (add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
+  (add-hook 'ielm-mode-hook                        #'enable-paredit-mode)
+  (add-hook 'lisp-mode-hook                        #'enable-paredit-mode)
+  (add-hook 'lisp-interaction-mode-hook            #'enable-paredit-mode)
+  (add-hook 'scheme-mode-hook                      #'enable-paredit-mode))
 
 ;; --- Flycheck ---
 (use-package flycheck
