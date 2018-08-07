@@ -51,7 +51,7 @@
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck auctex use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl org ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
+    (cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck auctex use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl org ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#2aa198" :weight bold))))
@@ -110,13 +110,17 @@
 (add-to-list 'load-path "~/.emacs.d/lisp/")
 (setq backup-directory-alist
       `(("." . "~/.emacs.d/backups/")))
-(setq temporary-file-directory "~/.emacs.d/temp/")
+(setq temporary-file-directory
+      "~/.emacs.d/temp/")
 (setq auto-save-file-name-transforms
       '((".*" "~/.emacs.d/autosave/" t)))
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-(setq select-enable-clipboard t)
+(setq inhibit-startup-screen  t)
+(setq initial-scratch-message nil)
+
+(setq select-enable-clipboard   t)
 (setq delete-by-moving-to-trash t)
 
 (setq next-line-add-newlines t)
@@ -125,24 +129,16 @@
 
 (setq-default indent-tabs-mode nil)
 
-(show-paren-mode t)
-
 (if (functionp 'tool-bar-mode)
-    (tool-bar-mode -1))
+    (tool-bar-mode   -1))
 (if (boundp 'scroll-bar-mode)
     (scroll-bar-mode -1))
+(tooltip-mode -1)
 
 ;; Column in modeline
 (column-number-mode 1)
 
-(setq inhibit-startup-screen  t)
-(setq initial-scratch-message nil)
-
-(setq ring-bell-function      (lambda ()))
-
-(setq make-pointer-invisible  t)
-(setq load-prefer-newer       t)
-
+;; Time in modeline
 (setq display-time-24hr-format          t)
 (setq display-time-day-and-date         nil)
 (setq display-time-default-load-average nil)
@@ -150,12 +146,19 @@
 (setq display-time-use-mail-icon        nil)
 (display-time-mode t)
 
+(setq ring-bell-function (lambda ()))
+
+(setq make-pointer-invisible t)
+(setq load-prefer-newer      t)
+
 ;; Weeks start monday
 (setq-default calendar-week-start-day 1)
 
 ;; Unset suspend keys. Never used anyway
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-x C-z"))
+
+(show-paren-mode t)
 
 ;; Prettify symbols
 (global-prettify-symbols-mode 1)
@@ -168,20 +171,25 @@
 ;; Provides find-lisp-find-files
 (load-library "find-lisp")
 
+;; Press 'C-x r j e' to go to .emacs
+(set-register ?e '(file . "~/.emacs"))
+
 ;; System specific setup
-(if (eq system-type 'windows-nt)
+(when (eq system-type 'windows-nt)
     (setq default-directory (concat "C:/Users/"
                                     (user-login-name)
-                                    "/Desktop/")))
-;; tramp
-(when (eq window-system 'w32)
-  (setq tramp-default-method "plink")
-  (let ((putty-directory "C:\Program Files (x86)\PuTTY\plink.exe"))
-    (when (and (not (string-match putty-directory
-                                  (getenv "PATH")))
-               (file-directory-p putty-directory))
-      (setenv "PATH" (concat putty-directory ";" (getenv "PATH")))
-      (add-to-list 'exec-path putty-directory))))
+                                    "/Desktop/"))
+    ;; tramp
+    (let ((plink-file "C:\\Program Files (x86)\\PuTTY\\plink.exe"))
+      (when (file-exists-p plink-file)
+        (setq tramp-default-method "plink")
+        (when (not (string-match plink-file
+                                 (getenv "PATH")))
+          (setenv "PATH" (concat plink-file
+                                 ";"
+                                 (getenv "PATH")))
+          (add-to-list 'exec-path
+                       plink-file)))))
 
 (global-font-lock-mode        t)
 (setq gc-cons-threshold       (* 100 1024 1024)) ;; 100 mb
@@ -190,8 +198,6 @@
       ;; jit-lock-stealth-load 200
       jit-lock-chunk-size     1000
       jit-lock-defer-time     0.05)
-
-;; (tooltip-mode -1)
 
 ;; List of recent files with C-x C-r
 (require 'recentf)
@@ -206,8 +212,9 @@
     (message "Aborting")))
 
 ;; M-x re-builder for making regex and searching current buffer
+;; 'string avoids double-escaping in eg. \\.
 (require 're-builder)
-(setq reb-re-syntax 'string) ;; 'string avoids double-escaping in eg. \\.
+(setq reb-re-syntax 'string)
 
 ;; Make C-x C-x not activate region
 (defun exchange-point-and-mark-no-activate ()
@@ -359,21 +366,6 @@ Simon Stoltze
       (setq org-odt-preferred-output-format "docx")
       (setq org-odt-convert-processes '(("LibreOffice" "C:\\Progra~2\\LibreOffice\\program\\soffice.exe --headless --convert-to %f%x --outdir %d %i"))))
     (setq org-agenda-files (list "~/organizer.org"))
-    ;; (if (eq system-type 'cygwin)
-    ;;     (setq org-agenda-files
-    ;;           (append
-    ;;            (quote ("/cygdrive/c/Users/sisto/AppData/Roaming/noter.org"
-    ;;                    "/cygdrive/c/Users/sisto/AppData/Roaming/calendar.org"
-    ;;                    "/cygdrive/c/Users/sisto/AppData/Roaming/organizer.org"))
-    ;;            (find-lisp-find-files
-    ;;             "/cygdrive/c/Users/sisto/Desktop/noter"
-    ;;             "\.org$")))
-    ;;   (setq org-agenda-files
-    ;;         (append
-    ;;          (quote ("~/noter.org" "~/calendar.org" "~/organizer.org"))
-    ;;          (find-lisp-find-files
-    ;;           "C:\\Users\\sisto\\Desktop\\noter"
-    ;;           "\.org$"))))
     ;; Refile settings
     ;; Exclude DONE state tasks from refile targets
     (defun bh/verify-refile-target ()
@@ -383,7 +375,7 @@ Simon Stoltze
   ;; org babel evaluate
   (require' ob)
   (progn
-    ;; make org mode allow eval of some langs
+    ;; Make org mode allow eval of some langs
     (org-babel-do-load-languages
      'org-babel-load-languages
      '((ditaa      . t)
@@ -447,7 +439,6 @@ Simon Stoltze
         (replace-regexp-in-string "\n" ""
                                   (shell-command-to-string
                                    (format "cygpath.exe --windows %s" filename))))
-
       (defun cyg-lisp-to-slime-translation (filename)
         (replace-regexp-in-string "\n" "" (shell-command-to-string
                                            (format "cygpath.exe --unix %s" filename))))
@@ -516,9 +507,8 @@ Simon Stoltze
 (if (not (eq system-type 'cygwin))
     (use-package magit
       :ensure t
-      :bind (("C-x g" . magit-status)     ; Display the main magit popup
-             ("C-x M-g" . magit-dispatch-popup))) ; Display keybinds for magit
-  )
+      :bind (("C-x g"   . magit-status)           ; Display the main magit popup
+             ("C-x M-g" . magit-dispatch-popup)))); Display keybinds for magit
 
 ;; --- Fish ---
 (use-package fish-mode
