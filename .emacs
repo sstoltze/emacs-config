@@ -1,5 +1,11 @@
 ;;; .emacs --- Init-file
+
 ;;; Commentary:
+;;;   Inspiration:
+;;;    - https://www.masteringemacs.org/
+;;;    - https://writequit.org/org/settings.html
+;;;    - https://home.elis.nu/emacs/
+
 ;;; Code:
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -108,12 +114,34 @@
 (setq auto-save-file-name-transforms
       '((".*" "~/.emacs.d/autosave/" t)))
 
-(setq select-enable-clipboard t)
+(defalias 'yes-or-no-p 'y-or-n-p)
 
-(if (eq system-type 'windows-nt)
-    (setq default-directory (concat "C:/Users/"
-                                    (user-login-name)
-                                    "/Desktop/")))
+(setq select-enable-clipboard t)
+(setq delete-by-moving-to-trash t)
+
+(setq next-line-add-newlines t)
+(add-hook 'before-save-hook
+          'delete-trailing-whitespace)
+
+(setq-default indent-tabs-mode nil)
+
+(show-paren-mode t)
+
+(if (functionp 'tool-bar-mode)
+    (tool-bar-mode -1))
+(if (boundp 'scroll-bar-mode)
+    (scroll-bar-mode -1))
+
+;; Column in modeline
+(column-number-mode 1)
+
+(setq inhibit-startup-screen  t)
+(setq initial-scratch-message nil)
+
+(setq ring-bell-function      (lambda ()))
+
+(setq make-pointer-invisible  t)
+(setq load-prefer-newer       t)
 
 (setq display-time-24hr-format          t)
 (setq display-time-day-and-date         nil)
@@ -122,14 +150,14 @@
 (setq display-time-use-mail-icon        nil)
 (display-time-mode t)
 
-(setq next-line-add-newlines t) ;; Newline at end of file
-(add-hook 'before-save-hook
-          'delete-trailing-whitespace)
+;; Weeks start monday
+(setq-default calendar-week-start-day 1)
 
 ;; Unset suspend keys. Never used anyway
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-x C-z"))
 
+;; Prettify symbols
 (global-prettify-symbols-mode 1)
 (setq prettify-symbols-unprettify-at-point 'right-edge)
 
@@ -137,23 +165,24 @@
 (put 'upcase-region   'disabled nil)
 (put 'downcase-region 'disabled nil)
 
-(setq-default indent-tabs-mode nil)
-(setq csv-separators (quote (";")))
+;; Provides find-lisp-find-files
+(load-library "find-lisp")
 
-(show-paren-mode t)
-(if (functionp 'tool-bar-mode)
-    (tool-bar-mode -1))
+;; System specific setup
+(if (eq system-type 'windows-nt)
+    (setq default-directory (concat "C:/Users/"
+                                    (user-login-name)
+                                    "/Desktop/")))
+;; tramp
+(when (eq window-system 'w32)
+  (setq tramp-default-method "plink")
+  (let ((putty-directory "C:\Program Files (x86)\PuTTY\plink.exe"))
+    (when (and (not (string-match putty-directory
+                                  (getenv "PATH")))
+               (file-directory-p putty-directory))
+      (setenv "PATH" (concat putty-directory ";" (getenv "PATH")))
+      (add-to-list 'exec-path putty-directory))))
 
-(load-library "find-lisp") ;; Provides find-lisp-find-files
-
-;; https://home.elis.nu/emacs/
-(setq-default calendar-week-start-day 1) ; Weeks start monday
-(defalias 'yes-or-no-p 'y-or-n-p)
-(column-number-mode 1)
-(if (boundp 'scroll-bar-mode)
-    (scroll-bar-mode -1))
-
-;; https://writequit.org/org/settings.html
 (global-font-lock-mode        t)
 (setq gc-cons-threshold       (* 100 1024 1024)) ;; 100 mb
 ;; Allow font-lock-mode to do background parsing
@@ -161,14 +190,9 @@
       ;; jit-lock-stealth-load 200
       jit-lock-chunk-size     1000
       jit-lock-defer-time     0.05)
-(setq inhibit-startup-screen  t)
-(setq initial-scratch-message nil)
-(setq ring-bell-function      (lambda ()))
-(setq make-pointer-invisible  t)
-(setq load-prefer-newer       t)
 
-;; https://www.masteringemacs.org
-(tooltip-mode -1)
+;; (tooltip-mode -1)
+
 ;; List of recent files with C-x C-r
 (require 'recentf)
 (global-set-key (kbd "C-x C-r") 'ido-recentf-open)
@@ -180,10 +204,11 @@
   (if (find-file (ido-completing-read "Find recent file: " recentf-list))
       (message "Opening file...")
     (message "Aborting")))
+
 ;; M-x re-builder for making regex and searching current buffer
 (require 're-builder)
 (setq reb-re-syntax 'string) ;; 'string avoids double-escaping in eg. \\.
-;; (setq reb-re-syntax 'rx) ;; 'rx is s-expression based, used in code
+
 ;; Make C-x C-x not activate region
 (defun exchange-point-and-mark-no-activate ()
   "Identical to \\[exchange-point-and-mark] but will not activate the region."
@@ -219,7 +244,6 @@
   ;; To disable collection of benchmark data after init is done.
   (add-hook 'after-init-hook 'benchmark-init/deactivate))
 
-;; https://www.masteringemacs.org
 (use-package visible-mark
   :ensure t
   :init
@@ -434,12 +458,19 @@ Simon Stoltze
     (setq slime-contribs '(slime-fancy))))
 
 ;; --- LaTeX ---
+;; Install auctex
+(use-package tex
+  :ensure auctex
+  :defer t)
 (add-hook 'LaTeX-mode-hook
           'turn-on-auto-fill)
 
 ;; --- HTML/CSS ---
 (add-hook 'css-mode-hook
           'rainbow-mode)
+
+;; --- CSV ---
+(setq csv-separators (quote (";")))
 
 ;; --- Haskell ---
 (use-package haskell-mode
@@ -560,7 +591,6 @@ Simon Stoltze
   :ensure t
   :defer t
   :config
-  ;; (setq tuareg-font-lock-symbols t) ;; Obsolete
   (use-package merlin
     :ensure t
     :config
@@ -571,29 +601,26 @@ Simon Stoltze
 (add-hook 'tuareg-mode-hook
           'merlin-mode)
 
-;; Twitter
-(if (eq system-type 'gnu/linux)
-    (use-package twittering-mode
-      :ensure t
-                                        ;  :init
-                                        ; (add-to-list 'load-path )
-                                        ; (require 'twittering-mode)
-      :config
-      (setq twittering-use-master-password t)
-      (setq twittering-icon-mode t)))
+;; --- Twitter ---
+(use-package twittering-mode
+  :ensure t
+  :config
+  (setq twittering-use-master-password t)
+  (setq twittering-icon-mode t))
 
-;; Macaulay 2
-(if (eq system-type 'gnu/linux)
-    (load "~/.emacs-Macaulay2" t))
+;; --- Linux specific ---
+(when (eq system-type 'gnu/linux)
+  ;; Macaulay 2
+  (let ((macaulay-file "~/.emacs-Macaulay2"))
+    (if (file-exists-p macaulay-file)
+        (load macaulay-file t)))
 
-;; SAGE
-(if (eq system-type 'gnu/linux)
+  ;; SAGE
+  (when (directory-exists-p "/usr/lib/sagemath")
     (use-package sage
       :load-path "/usr/lib/sagemath/local/share/emacs"
-                                        ;  :init
-                                        ;  (add-to-list 'load-path (expand-file-name "/usr/lib/sagemath/local/share/emacs"))
       :config
-      (setq sage-command "/usr/lib/sagemath/sage")))
+      (setq sage-command "/usr/lib/sagemath/sage"))))
 
 ;; Rotate windows on C-<tab>
 ; http://whattheemacsd.com/buffer-defuns.el-02.html#disqus_thread
