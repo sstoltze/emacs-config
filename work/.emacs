@@ -168,9 +168,6 @@
 (put 'upcase-region   'disabled nil)
 (put 'downcase-region 'disabled nil)
 
-;; Provides find-lisp-find-files
-(load-library "find-lisp")
-
 ;; Press 'C-x r j e' to go to .emacs
 (set-register ?e '(file . "~/.emacs"))
 
@@ -295,51 +292,53 @@
 (setq org-startup-folded nil)
 (setq org-startup-indented t)
 (setq org-startup-with-inline-images t)
-(if (not (file-exists-p "~/organizer.org"))
-    (write-region ""                ; Start - What to write
-                  nil               ; End - Ignored when start is string
-                  "~/organizer.org" ; Filename
-                  t                 ; Append
-                  nil               ; Visit
-                  nil               ; Lockname
-                  'excl))           ; Mustbenew - error if already exists
-(setq org-default-notes-file "~/organizer.org")
-(set-register ?o (cons 'file "~/organizer.org"))
-(setq org-capture-templates
-      (quote
-       (("t" "Task" entry
-         (file+headline "~/organizer.org" "Tasks")
-         "* TODO %?
+(let ((default-org-file "~/organizer.org"))
+  (if (not (file-exists-p default-org-file))
+      (write-region ""                ; Start - What to write
+                    nil               ; End - Ignored when start is string
+                    default-org-file  ; Filename
+                    t                 ; Append
+                    nil               ; Visit
+                    nil               ; Lockname
+                    'excl))           ; Mustbenew - error if already exists
+  (setq org-default-notes-file default-org-file)
+  (setq org-agenda-files (list default-org-file))
+  (set-register ?o (cons 'file default-org-file))
+  (setq org-capture-templates
+        (quote
+         (("t" "Task" entry
+           (file+headline default-org-file "Tasks")
+           "* TODO %?
 %U
 %a
 ")
-        ("r" "respond" entry
-         (file "~/organizer.org")
-         "* NEXT Respond to %:from on %:subject
+          ("r" "respond" entry
+           (file default-org-file)
+           "* NEXT Respond to %:from on %:subject
 SCHEDULED: %t
 %U
 %a
 ")
-        ("n" "note" entry
-         (file+headline "~/noter.org" "Notes")
-         "* %? :NOTE:
+          ("n" "note" entry
+           (file+headline "~/noter.org" "Notes")
+           "* %? :NOTE:
 %U
 %a
 ")
-        ("j" "Journal" entry
-         (file+olp+datetree "~/organizer.org")
-         "* %?
+          ("j" "Journal" entry
+           (file+olp+datetree default-org-file)
+           "* %?
 %U
 ")
-        ("m" "Meeting" entry
-         (file
-          (lambda nil
-            (buffer-file-name)))
-         "* %? - %u
+          ("m" "Meeting" entry
+           (file
+            (lambda nil
+              (buffer-file-name)))
+           "* %? - %u
 :ATTENDEES:
 Simon Stoltze
 :END:
-"))))
+")))))
 
 (defun my-org-hook ()
   "Org mode hook."
@@ -360,12 +359,12 @@ Simon Stoltze
     ;; Use IDO for both buffer and file completion and ido-everywhere to t
     (setq org-completion-use-ido t)
     ;; At work
-    (when (equal (user-login-name)
-                 "sisto")
+    (when (and (eq system-type 'windows-nt)
+               (file-exists-p "C:\\Progra~2\\LibreOffice\\program\\soffice.exe")
+               (equal (user-login-name) "sisto")) ;; Just for work
       ;; Export to .docx
       (setq org-odt-preferred-output-format "docx")
       (setq org-odt-convert-processes '(("LibreOffice" "C:\\Progra~2\\LibreOffice\\program\\soffice.exe --headless --convert-to %f%x --outdir %d %i"))))
-    (setq org-agenda-files (list "~/organizer.org"))
     ;; Refile settings
     ;; Exclude DONE state tasks from refile targets
     (defun bh/verify-refile-target ()
@@ -484,8 +483,11 @@ Simon Stoltze
           'turn-on-haskell-indent)
 
 ;; --- C/C++ ---
-(defun my-c-hook ()
+(defun common-c-hook ()
   "Hook for C/C++."
+  (c-set-style "bsd")
+  (setq c-basic-offset 2
+        tab-width 2)
   (require 'semantic/bovine/gcc)
   (my-semantic-hook))
 (defun my-cpp-hook ()
@@ -493,10 +495,10 @@ Simon Stoltze
   (use-package modern-cpp-font-lock
     :ensure t))
 (add-hook 'c-mode-hook
-          'my-c-hook)
+          'common-c-hook)
 (add-hook 'c++-mode-hook
           (lambda ()
-            (my-c-hook)
+            (common-c-hook)
             (my-cpp-hook)))
 
 ;; --- Java ---
