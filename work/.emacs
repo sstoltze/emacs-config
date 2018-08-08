@@ -5,6 +5,7 @@
 ;;;    - https://www.masteringemacs.org/
 ;;;    - https://writequit.org/org/settings.html
 ;;;    - https://home.elis.nu/emacs/
+;;;    - https://pages.sachachua.com/.emacs.d/Sacha.html
 
 ;;; Code:
 (custom-set-variables
@@ -51,7 +52,7 @@
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck auctex use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl org ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
+    (multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck auctex use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl org ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#2aa198" :weight bold))))
@@ -109,7 +110,7 @@
         (make-directory dir))))
 (add-to-list 'load-path "~/.emacs.d/lisp/")
 (setq backup-directory-alist
-      `(("." . "~/.emacs.d/backups/")))
+      '(("." . "~/.emacs.d/backups/")))
 (setq temporary-file-directory
       "~/.emacs.d/temp/")
 (setq auto-save-file-name-transforms
@@ -171,6 +172,10 @@
 ;; Press 'C-x r j e' to go to .emacs
 (set-register ?e '(file . "~/.emacs"))
 
+;; Personal info
+(setq user-full-name    "Simon Stoltze"
+      user-mail-address "sstoltze@gmail.com")
+
 ;; System specific setup
 (when (eq system-type 'windows-nt)
     (setq default-directory (concat "C:/Users/"
@@ -196,11 +201,28 @@
       jit-lock-chunk-size     1000
       jit-lock-defer-time     0.05)
 
+;; Use disk space
+(setq delete-old-versions -1)
+(setq version-control t)
+(setq vc-make-backup-files t)
+
+;; Save history
+(setq savehist-file "~/.emacs.d/savehist")
+(savehist-mode 1)
+(setq history-length t)
+(setq history-delete-duplicates t)
+(setq savehist-save-minibuffer-history 1)
+(setq savehist-additional-variables
+      '(kill-ring
+        search-ring
+        regexp-search-ring))
+
 ;; List of recent files with C-x C-r
 (require 'recentf)
 (global-set-key (kbd "C-x C-r") 'ido-recentf-open)
 (recentf-mode t)
-(setq recentf-max-saved-items 50)
+(setq recentf-max-saved-items 50
+      recentf-max-menu-items 15)
 (defun ido-recentf-open ()
   "Use `ido-completing-read' to \\[find-file] a recent file."
   (interactive)
@@ -220,6 +242,35 @@
   (exchange-point-and-mark)
   (deactivate-mark nil))
 (define-key global-map [remap exchange-point-and-mark] 'exchange-point-and-mark-no-activate)
+
+(defun my/smarter-move-beginning-of-line (arg)
+  "Move point back to indentation of beginning of line.
+
+Move point to the first non-whitespace character on this line.
+If point is already there, move to the beginning of the line.
+Effectively toggle between the first non-whitespace character and
+the beginning of the line.
+
+If ARG is not nil or 1, move forward ARG - 1 lines first.  If
+point reaches the beginning or end of the buffer, stop there."
+  (interactive "^p")
+  (setq arg (or arg 1))
+
+  ;; Move lines first
+  (when (/= arg 1)
+    (let ((line-move-visual nil))
+      (forward-line (1- arg))))
+
+  (let ((orig-point (point)))
+    (back-to-indentation)
+    (when (= orig-point (point))
+      (move-beginning-of-line 1))))
+
+;; remap C-a to `smarter-move-beginning-of-line'
+(global-set-key [remap move-beginning-of-line]
+                'my/smarter-move-beginning-of-line)
+(global-set-key (kbd "RET")
+                'newline-and-indent)
 
 ;;; Packages -----------------------------------------------------------
 (require 'package)
@@ -242,12 +293,14 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
+;; --- Benchmark init ---
 (use-package benchmark-init
   :ensure t
   :config
   ;; To disable collection of benchmark data after init is done.
   (add-hook 'after-init-hook 'benchmark-init/deactivate))
 
+;; --- Visible mark ---
 (use-package visible-mark
   :ensure t
   :init
@@ -408,6 +461,20 @@ Simon Stoltze
     (setq ido-confirm-unique-completion t)
     (ido-mode t)))
 
+;; --- Multiple cursors ---
+(use-package multiple-cursors
+  :ensure t
+  :bind
+  (("C-c m t" . mc/mark-all-like-this)
+   ("C-c m m" . mc/mark-all-like-this-dwim)
+   ("C-c m l" . mc/edit-lines)
+   ("C-c m e" . mc/edit-ends-of-lines)
+   ("C-c m a" . mc/edit-beginnings-of-lines)
+   ("C-c m n" . mc/mark-next-like-this)
+   ("C-c m p" . mc/mark-previous-like-this)
+   ("C-c m s" . mc/mark-sgml-tag-pair)
+   ("C-c m d" . mc/mark-all-like-this-in-defun)))
+
 ;; --- Semantic ---
 (defun my-semantic-hook ()
   "Hook for semantic to add TAGS to menubar."
@@ -454,6 +521,13 @@ Simon Stoltze
   :defer t)
 (add-hook 'LaTeX-mode-hook
           'turn-on-auto-fill)
+
+;; --- Text ---
+;; visual-line-mode only pretends to insert linebreaks
+(remove-hook 'text-mode-hook
+             #'turn-on-auto-fill)
+(add-hook 'text-mode-hook
+          'turn-on-visual-line-mode)
 
 ;; --- HTML/CSS ---
 (add-hook 'css-mode-hook
