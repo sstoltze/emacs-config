@@ -6,6 +6,7 @@
 ;;;    - https://writequit.org/org/settings.html
 ;;;    - https://home.elis.nu/emacs/
 ;;;    - https://pages.sachachua.com/.emacs.d/Sacha.html
+;;;    - https://github.com/jorgenschaefer/Config/blob/master/emacs.el
 
 ;;; Code:
 (custom-set-variables
@@ -109,20 +110,21 @@
     (if (not (file-directory-p dir))
         (make-directory dir))))
 (add-to-list 'load-path "~/.emacs.d/lisp/")
-(setq backup-directory-alist
-      '(("." . "~/.emacs.d/backups/")))
-(setq temporary-file-directory
-      "~/.emacs.d/temp/")
-(setq auto-save-file-name-transforms
-      '((".*" "~/.emacs.d/autosave/" t)))
+(setq backup-directory-alist         '(("." . "~/.emacs.d/backups/"))
+      temporary-file-directory        "~/.emacs.d/temp/"
+      auto-save-file-name-transforms '((".*" "~/.emacs.d/autosave/" t)))
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-(setq inhibit-startup-screen  t)
-(setq initial-scratch-message nil)
+(setq inhibit-startup-screen    t
+      initial-scratch-message   nil
+      load-prefer-newer         t
+      select-enable-clipboard   t
+      delete-by-moving-to-trash t)
 
-(setq select-enable-clipboard   t)
-(setq delete-by-moving-to-trash t)
+(setq completion-ignore-case t
+      read-file-name-completion-ignore-case t
+      read-buffer-completion-ignore-case t)
 
 (setq next-line-add-newlines t)
 (add-hook 'before-save-hook
@@ -130,11 +132,10 @@
 
 (setq-default indent-tabs-mode nil)
 
-(if (functionp 'tool-bar-mode)
-    (tool-bar-mode   -1))
-(if (boundp 'scroll-bar-mode)
-    (scroll-bar-mode -1))
-(tooltip-mode -1)
+;; Disable various modes
+(dolist (mode '(tool-bar-mode scroll-bar-mode tooltip-mode))
+  (when (fboundp mode)
+    (funcall mode -1)))
 
 ;; Column in modeline
 (column-number-mode 1)
@@ -150,7 +151,6 @@
 (setq ring-bell-function (lambda ()))
 
 (setq make-pointer-invisible t)
-(setq load-prefer-newer      t)
 
 ;; Weeks start monday
 (setq-default calendar-week-start-day 1)
@@ -202,9 +202,10 @@
       jit-lock-defer-time     0.05)
 
 ;; Use disk space
-(setq delete-old-versions -1)
-(setq version-control t)
-(setq vc-make-backup-files t)
+(setq delete-old-versions  -1
+      version-control      t
+      vc-make-backup-files t
+      backup-by-copying    t)
 
 ;; Save history
 (setq savehist-file "~/.emacs.d/savehist")
