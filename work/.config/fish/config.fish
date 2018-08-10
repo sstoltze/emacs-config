@@ -13,7 +13,7 @@ end
 set -x VISUAL "emacs -nw "
 set -x EDITOR "emacs -nw "
 set PATH /usr/bin/ $PATH
-set PATH C:/Io/bin C:/Io/lib $PATH
+set PATH /cygdrive/c/Io/bin /cygdrive/c/Io/lib $PATH
 set PATH /cygdrive/c/Program\ Files\ \(x86\)/UiPath/Studio/ $PATH
 
 set pink      ff99ff
@@ -43,4 +43,3 @@ set __fish_git_prompt_char_stashstate      '↩'
 #        exec startx
 #    end
 #end
-
