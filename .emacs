@@ -98,7 +98,9 @@
  ;; If there is more than one, they won't work right.
  '(cursor ((t (:background "forest green")))))
 
-;;; General setup ------------------------------------------------------
+;;; *** General setup ***
+
+;; Encoding
 (prefer-coding-system        'utf-8)
 (set-default-coding-systems  'utf-8)
 (set-language-environment    'utf-8)
@@ -113,6 +115,34 @@
 (setq backup-directory-alist         '(("." . "~/.emacs.d/backups/"))
       temporary-file-directory        "~/.emacs.d/temp/"
       auto-save-file-name-transforms '((".*" "~/.emacs.d/autosave/" t)))
+
+;; Prepare use-package
+(require 'package)
+(setq package-enable-at-startup nil)
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/"))
+(add-to-list 'package-archives
+             '("elpy" . "https://jorgenschaefer.github.io/packages/"))
+(add-to-list 'package-archives
+             '("org" . "https://orgmode.org/elpa/"))
+(when (< emacs-major-version 24)
+  (add-to-list 'package-archives
+               '("gnu" . "http://elpa.gnu.org/packages/")))
+(package-initialize)
+
+;; Bootstrap `use-package'
+;; For TLS on windows: http://alpha.gnu.org/gnu/emacs/pretest/windows/
+;; Download correct -dep file (x86_64) and unpack in emacs install directory
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+;; --- Benchmark init ---
+(use-package benchmark-init
+  :ensure t
+  :config
+  ;; To disable collection of benchmark data after init is done.
+  (add-hook 'after-init-hook 'benchmark-init/deactivate))
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -137,24 +167,6 @@
   (when (fboundp mode)
     (funcall mode -1)))
 
-;; Column in modeline
-(column-number-mode 1)
-
-;; Time in modeline
-(setq display-time-24hr-format          t)
-(setq display-time-day-and-date         nil)
-(setq display-time-default-load-average nil)
-(setq display-time-format               nil)
-(setq display-time-use-mail-icon        nil)
-(display-time-mode t)
-
-(setq ring-bell-function (lambda ()))
-
-(setq make-pointer-invisible t)
-
-;; Weeks start monday
-(setq-default calendar-week-start-day 1)
-
 ;; Unset suspend keys. Never used anyway
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-x C-z"))
@@ -176,7 +188,60 @@
 (setq user-full-name    "Simon Stoltze"
       user-mail-address "sstoltze@gmail.com")
 
-;; System specific setup
+(setq ring-bell-function (lambda ()))
+
+(setq make-pointer-invisible t)
+
+(global-font-lock-mode        t)
+(setq gc-cons-threshold       (* 100 1024 1024)) ;; 100 mb
+;; Allow font-lock-mode to do background parsing
+(setq jit-lock-stealth-time   1
+      ;; jit-lock-stealth-load 200
+      jit-lock-chunk-size     1000
+      jit-lock-defer-time     0.05)
+
+;; Use disk space
+(setq delete-old-versions  -1
+      version-control      t
+      vc-make-backup-files t
+      backup-by-copying    t)
+
+;; --- Modeline ---
+;; Column in modeline
+(column-number-mode 1)
+
+;; Time in modeline
+(setq display-time-24hr-format          t)
+(setq display-time-day-and-date         nil)
+(setq display-time-default-load-average nil)
+(setq display-time-format               nil)
+(setq display-time-use-mail-icon        nil)
+(display-time-mode t)
+
+;; --- Calendar ---
+;; Weeks start monday
+(setq-default calendar-week-start-day 1)
+;; Week number in calendar
+(copy-face font-lock-constant-face 'calendar-iso-week-face)
+(set-face-attribute 'calendar-iso-week-face nil
+                    :height 0.6
+                    :foreground "dim grey")
+(copy-face font-lock-constant-face 'calendar-iso-week-header-face)
+(set-face-attribute 'calendar-iso-week-header-face nil
+                    :height 0.6
+                    :foreground "dark slate grey")
+(setq calendar-intermonth-text
+      '(propertize
+        (format "%2d"
+                (car
+                 (calendar-iso-from-absolute
+                  (calendar-absolute-from-gregorian (list month day year)))))
+        'font-lock-face 'calendar-iso-week-face))
+(setq calendar-intermonth-header
+      (propertize "Wk"
+                  'font-lock-face 'calendar-iso-week-header-face))
+
+;; --- Windows specific ---
 (when (eq system-type 'windows-nt)
     (setq default-directory (concat "C:/Users/"
                                     (user-login-name)
@@ -193,21 +258,7 @@
           (add-to-list 'exec-path
                        plink-file)))))
 
-(global-font-lock-mode        t)
-(setq gc-cons-threshold       (* 100 1024 1024)) ;; 100 mb
-;; Allow font-lock-mode to do background parsing
-(setq jit-lock-stealth-time   1
-      ;; jit-lock-stealth-load 200
-      jit-lock-chunk-size     1000
-      jit-lock-defer-time     0.05)
-
-;; Use disk space
-(setq delete-old-versions  -1
-      version-control      t
-      vc-make-backup-files t
-      backup-by-copying    t)
-
-;; Save history
+;; --- Save history ---
 (setq savehist-file "~/.emacs.d/savehist")
 (savehist-mode 1)
 (setq history-length t)
@@ -218,7 +269,7 @@
         search-ring
         regexp-search-ring))
 
-;; List of recent files with C-x C-r
+;; --- List of recent files ---
 (require 'recentf)
 (global-set-key (kbd "C-x C-r") 'ido-recentf-open)
 (recentf-mode t)
@@ -231,6 +282,7 @@
       (message "Opening file...")
     (message "Aborting")))
 
+;; --- re-builder ---
 ;; M-x re-builder for making regex and searching current buffer
 ;; 'string avoids double-escaping in eg. \\.
 (require 're-builder)
@@ -244,6 +296,7 @@
   (deactivate-mark nil))
 (define-key global-map [remap exchange-point-and-mark] 'exchange-point-and-mark-no-activate)
 
+;; Better C-a
 (defun my/smarter-move-beginning-of-line (arg)
   "Move point back to indentation of beginning of line.
 
@@ -273,34 +326,7 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "RET")
                 'newline-and-indent)
 
-;;; Packages -----------------------------------------------------------
-(require 'package)
-(setq package-enable-at-startup nil)
-(add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/"))
-(add-to-list 'package-archives
-             '("elpy" . "https://jorgenschaefer.github.io/packages/"))
-(add-to-list 'package-archives
-             '("org" . "https://orgmode.org/elpa/"))
-(when (< emacs-major-version 24)
-  (add-to-list 'package-archives
-               '("gnu" . "http://elpa.gnu.org/packages/")))
-(package-initialize)
-
-;; Bootstrap `use-package'
-;; For TLS on windows: http://alpha.gnu.org/gnu/emacs/pretest/windows/
-;; Download correct -dep file (x86_64) and unpack in emacs install directory
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-
-;; --- Benchmark init ---
-(use-package benchmark-init
-  :ensure t
-  :config
-  ;; To disable collection of benchmark data after init is done.
-  (add-hook 'after-init-hook 'benchmark-init/deactivate))
-
+;;; *** Packages ***
 ;; --- Visible mark ---
 (use-package visible-mark
   :ensure t
