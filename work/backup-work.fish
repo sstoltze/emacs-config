@@ -23,7 +23,7 @@ cd ~
 echo "emacs-config:"
 cp -H -t ~/git/emacs-config ~/.emacs # Universal configuration, should only need to store one
 cp -rH -t ~/git/emacs-config/work ~/.config ~/backup-work.fish ~/move-to-zip.fish ~/check-status.fish ~/update.fish ~/.gitconfig ~/.gitignore ~/color-test.fish /cygdrive/c/Users/sisto/Pictures/background ~/prog
-rm -r ~/git/emacs-config/work/.config/fish/generated_completions
+rm -r ~/git/emacs-config/work/.config/fish/generated_completions ~/git/emacs-config/work/.config/fish/fishd.* ~/git/emacs-config/work/.config/fish/\#* ~/git/emacs-config/work/.config/fish/fish_history
 cd ~/git/emacs-config
 handle_git
 cd ~
