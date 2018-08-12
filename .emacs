@@ -709,7 +709,7 @@ Simon Stoltze
         (load macaulay-file t)))
 
   ;; SAGE
-  (when (directory-exists-p "/usr/lib/sagemath")
+  (when (file-directory-p "/usr/lib/sagemath")
     (use-package sage
       :load-path "/usr/lib/sagemath/local/share/emacs"
       :config
