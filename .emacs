@@ -639,7 +639,7 @@ Simon Stoltze
       :ensure t)))
 
 ;; --- Python ---
-;; python -m pip install --upgrade jedi rope black flake8 yapf autopep8
+;; python -m pip install --upgrade jedi rope black flake8 yapf autopep8 elpy
 (use-package elpy
   :ensure t
   :pin elpy
