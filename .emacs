@@ -344,6 +344,35 @@ point reaches the beginning or end of the buffer, stop there."
                               visible-mark-active))
   (global-visible-mark-mode 1))
 
+;; --- Dired ---
+(use-package dired
+  :bind ("C-x C-j" . dired-jump)
+  :config
+  (progn
+    (use-package dired-x
+      :init
+      (setq-default dired-omit-files-p t)
+      :config
+      (add-to-list 'dired-omit-extensions ".DS_Store"))
+    (customize-set-variable 'diredp-hide-details-initially-flag nil)
+    (use-package dired-aux
+      :init
+      (use-package dired-async))
+    (put 'dired-find-alternate-file 'disabled nil)
+    (setq ls-lisp-dirs-first                  t
+          dired-recursive-copies              'always
+          dired-recursive-deletes             'always
+          dired-dwim-target                   t
+          ;; -F marks links with @
+          dired-ls-F-marks-symlinks           t
+          delete-by-moving-to-trash           t
+          ;; Auto refresh dired
+          global-auto-revert-non-file-buffers t
+          wdired-allow-to-change-permissions  t)
+    (add-hook 'dired-mode-hook
+              (lambda ()
+                (hl-line-mode 1)))))
+
 ;; --- Paredit ---
 ;; http://pub.gajendra.net/src/paredit-refcard.pdf
 (use-package paredit
