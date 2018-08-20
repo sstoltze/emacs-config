@@ -53,7 +53,7 @@
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck auctex use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl org ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
+    (guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck auctex use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl org ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#2aa198" :weight bold))))
@@ -96,7 +96,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- ;; Default is 'green', 'burlywood' is the string colour
  '(cursor ((t (:background "burlywood")))))
 
 ;;; *** General setup ***
@@ -345,6 +344,12 @@ point reaches the beginning or end of the buffer, stop there."
                               visible-mark-active))
   (global-visible-mark-mode 1))
 
+(use-package guru-mode
+  :ensure t
+  :init
+  ;;(setq guru-warn-only t)
+  (guru-global-mode 1))
+
 ;; --- Dired ---
 (use-package dired
   :bind ("C-x C-j" . dired-jump)
@@ -582,9 +587,12 @@ Simon Stoltze
 ;; --- Text ---
 ;; visual-line-mode only pretends to insert linebreaks
 (remove-hook 'text-mode-hook
-             #'turn-on-auto-fill)
+             'turn-on-auto-fill)
 (add-hook 'text-mode-hook
           'turn-on-visual-line-mode)
+
+;; --- Ediff ---
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
 
 ;; --- HTML/CSS ---
 (add-hook 'css-mode-hook
