@@ -407,7 +407,7 @@ point reaches the beginning or end of the buffer, stop there."
 (setq org-startup-folded nil)
 (setq org-startup-indented t)
 (setq org-startup-with-inline-images t)
-(let ((default-org-file "~/organizer.org"))
+(let ((default-org-file "~/.emacs.d/organizer.org"))
   (if (not (file-exists-p default-org-file))
       (write-region ""                ; Start - What to write
                     nil               ; End - Ignored when start is string
