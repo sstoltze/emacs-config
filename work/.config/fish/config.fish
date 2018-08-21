@@ -9,6 +9,9 @@ end
 set -x VISUAL "emacs -nw "
 set -x EDITOR "emacs -nw "
 
+set -x XDG_CONFIG_HOME "$HOME/.config"
+set -x XDG_DATA_HOME "$HOME/.local/share"
+
 set pink      ff99ff
 set dark_pink cc99ff
 
