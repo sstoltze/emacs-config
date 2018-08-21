@@ -30,24 +30,13 @@
  '(custom-enabled-themes (quote (deeper-blue)))
  '(custom-safe-themes
    (quote
-    ("e11569fd7e31321a33358ee4b232c2d3cf05caccd90f896e1df6cab228191109" "40c66989886b3f05b0c4f80952f128c6c4600f85b1f0996caa1fa1479e20c082" "ce557950466bf42096853c6dac6875b9ae9c782b8665f62478980cc5e3b6028d" "693f5a81a3728c2548efb4118c81941933cf0f7b614f9f3133101395e5830152" "bcc6775934c9adf5f3bd1f428326ce0dcd34d743a92df48c128e6438b815b44f" "f5eb916f6bd4e743206913e6f28051249de8ccfd070eae47b5bde31ee813d55f" "ac2b1fed9c0f0190045359327e963ddad250e131fbf332e80d371b2e1dbc1dc4" "28ec8ccf6190f6a73812df9bc91df54ce1d6132f18b4c8fcc85d45298569eb53" "e80932ca56b0f109f8545576531d3fc79487ca35a9a9693b62bf30d6d08c9aaf" "935cc557b01242fc7b4d3f803902d14d1b3afae5123624a2f924255f641f7f01" "7ce5ae5476aadfa57ffbfffd41c2d3f4aaa4e7f21de6646a76f10b2a7eaa105b" "108b3724e0d684027c713703f663358779cc6544075bc8fd16ae71470497304f" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "007b69ffec046a5842e34fea287b23c49175dfd6c6d5a0d9cdf150a2e8a8979f" default)))
+    ("491417843dee886b649cf0dd70c8c86c8bccbbe373239058ba9900b348bad5cf" default)))
  '(custom-theme-directory "~/.emacs.d/themes/")
  '(doc-view-continuous t)
  '(elpy-modules
    (quote
     (elpy-module-eldoc elpy-module-flymake elpy-module-pyvenv elpy-module-highlight-indentation elpy-module-yasnippet elpy-module-django elpy-module-sane-defaults)))
  '(fci-rule-color "#073642")
- '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
- '(highlight-tail-colors
-   (quote
-    (("#073642" . 0)
-     ("#546E00" . 20)
-     ("#00736F" . 30)
-     ("#00629D" . 50)
-     ("#7B6000" . 60)
-     ("#8B2C02" . 70)
-     ("#93115C" . 85)
-     ("#073642" . 100))))
  '(nrepl-message-colors
    (quote
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
@@ -96,7 +85,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(cursor ((t (:background "burlywood")))))
+ '(cursor ((t (:background "burlywood"))))
+ '(ediff-odd-diff-B ((t (:background "Grey60")))))
 
 ;;; *** General setup ***
 
@@ -592,7 +582,10 @@ Simon Stoltze
           'turn-on-visual-line-mode)
 
 ;; --- Ediff ---
-(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+;; Ignore whitespace, no popup-window and split horizontally
+(setq ediff-diff-options "-w"
+      ediff-window-setup-function 'ediff-setup-windows-plain
+      ediff-split-window-function 'split-window-horizontally)
 
 ;; --- HTML/CSS ---
 (add-hook 'css-mode-hook
