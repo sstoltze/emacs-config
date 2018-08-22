@@ -337,7 +337,7 @@ point reaches the beginning or end of the buffer, stop there."
 (use-package guru-mode
   :ensure t
   :init
-  ;;(setq guru-warn-only t)
+  (setq guru-warn-only t)
   (guru-global-mode 1))
 
 ;; --- Dired ---
@@ -747,8 +747,22 @@ Simon Stoltze
       :config
       (setq sage-command "/usr/lib/sagemath/sage"))))
 
+;; Work
+;; Write function to download programs and store them automatically for ediff
+(when (and (eq system-type 'windows-nt)
+           (equal (user-login-name) "sisto"))
+  (use-package cobol-mode
+    :ensure t
+    :init
+    (setq auto-mode-alist
+          (append
+           '(("\\.cob\\'" . cobol-mode)
+             ("\\.cbl\\'" . cobol-mode)
+             ("\\.cpy\\'" . cobol-mode))
+           auto-mode-alist))))
+
 ;; Rotate windows on C-<tab>
-; http://whattheemacsd.com/buffer-defuns.el-02.html#disqus_thread
+                                        ; http://whattheemacsd.com/buffer-defuns.el-02.html#disqus_thread
 (defun rotate-windows ()
   "Rotate your windows."
   (interactive)
