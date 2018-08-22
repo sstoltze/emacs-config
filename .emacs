@@ -762,7 +762,7 @@ Simon Stoltze
            auto-mode-alist))))
 
 ;; Rotate windows on C-<tab>
-                                        ; http://whattheemacsd.com/buffer-defuns.el-02.html#disqus_thread
+;; http://whattheemacsd.com/buffer-defuns.el-02.html#disqus_thread
 (defun rotate-windows ()
   "Rotate your windows."
   (interactive)
