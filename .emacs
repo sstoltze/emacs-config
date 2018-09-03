@@ -388,7 +388,12 @@ point reaches the beginning or end of the buffer, stop there."
 ;; --- Flycheck ---
 (use-package flycheck
   :ensure t
-  :config (global-flycheck-mode))
+  :defer t
+  :config
+  (add-hook 'prog-mode-hook 'flycheck-mode)
+  (add-hook 'text-mode-hook 'flycheck-mode)
+;  (global-flycheck-mode)
+  )
 
 ;; --- org-mode ---
 (require 'org-install)
@@ -641,11 +646,10 @@ Simon Stoltze
           'my-semantic-hook)
 
 ;; --- Magit ---
-(if (not (eq system-type 'cygwin))
-    (use-package magit
-      :ensure t
-      :bind (("C-x g"   . magit-status)           ; Display the main magit popup
-             ("C-x M-g" . magit-dispatch-popup)))); Display keybinds for magit
+(use-package magit
+  :ensure t
+  :bind (("C-x g"   . magit-status)           ; Display the main magit popup
+         ("C-x M-g" . magit-dispatch-popup))) ; Display keybinds for magit
 
 ;; --- Fish ---
 (use-package fish-mode
