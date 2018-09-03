@@ -90,22 +90,6 @@
 
 ;;; *** General setup ***
 
-;; Encoding
-(prefer-coding-system        'utf-8)
-(set-default-coding-systems  'utf-8)
-(set-language-environment    'utf-8)
-(set-selection-coding-system 'utf-8)
-
-;; Setup directories in ~/.emacs.d/
-(dolist (folder '("lisp" "backups" "temp" "autosave"))
-  (let ((dir (concat "~/.emacs.d/" folder)))
-    (if (not (file-directory-p dir))
-        (make-directory dir))))
-(add-to-list 'load-path "~/.emacs.d/lisp/")
-(setq backup-directory-alist         '(("." . "~/.emacs.d/backups/"))
-      temporary-file-directory        "~/.emacs.d/temp/"
-      auto-save-file-name-transforms '((".*" "~/.emacs.d/autosave/" t)))
-
 ;; Prepare use-package
 (require 'package)
 (setq package-enable-at-startup nil)
@@ -133,6 +117,22 @@
   :config
   ;; To disable collection of benchmark data after init is done.
   (add-hook 'after-init-hook 'benchmark-init/deactivate))
+
+;; Encoding
+(prefer-coding-system        'utf-8)
+(set-default-coding-systems  'utf-8)
+(set-language-environment    'utf-8)
+(set-selection-coding-system 'utf-8)
+
+;; Setup directories in ~/.emacs.d/
+(dolist (folder '("lisp" "backups" "temp" "autosave"))
+  (let ((dir (concat "~/.emacs.d/" folder)))
+    (if (not (file-directory-p dir))
+        (make-directory dir))))
+(add-to-list 'load-path "~/.emacs.d/lisp/")
+(setq backup-directory-alist         '(("." . "~/.emacs.d/backups/"))
+      temporary-file-directory        "~/.emacs.d/temp/"
+      auto-save-file-name-transforms '((".*" "~/.emacs.d/autosave/" t)))
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -628,7 +628,7 @@ Simon Stoltze
   (c-set-style "bsd")
   (setq c-basic-offset 2
         tab-width 2)
-  (require 'semantic/bovine/gcc)
+  ;(require 'semantic/bovine/gcc)
   (my-semantic-hook))
 (defun my-cpp-hook ()
   "C++ specific packages."
@@ -794,6 +794,22 @@ Simon Stoltze
                (setq i (1+ i))))))))
 
 (global-set-key (kbd "<C-tab>") 'rotate-windows)
+
+;; Set initial frame size and position
+(defun my/set-initial-frame ()
+  (let* ((width-factor  0.80)
+         (height-factor 0.80)
+         (position-factor 3)
+ 	 (a-width  (* (display-pixel-width)  width-factor))
+         (a-height (* (display-pixel-height) height-factor))
+         (a-left (truncate (/ (- (display-pixel-width)  a-width)  position-factor)))
+ 	 (a-top  (truncate (/ (- (display-pixel-height) a-height) position-factor))))
+    (set-frame-position (selected-frame) a-left a-top)
+    (set-frame-size     (selected-frame) (truncate a-width) (truncate a-height) t)))
+(setq frame-resize-pixelwise t)
+(when window-system
+  (my/set-initial-frame))
+;(add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 (provide '.emacs)
 ;;; .emacs ends here
