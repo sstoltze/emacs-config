@@ -3,6 +3,7 @@
 	email = sisto@sd.dk
 [core]
 	editor = emacs
+	autocrlf = true
         #excludesFile = /home/sisto/.gitignore
 [alias]
         lg           = !"git lg2"
