@@ -152,9 +152,6 @@
 
 (setq-default indent-tabs-mode nil)
 
-;; Alt-enter toggles fullscreen
-(global-set-key (kbd "M-RET") 'toggle-frame-fullscreen)
-
 ;; Disable various modes
 (dolist (mode '(tool-bar-mode scroll-bar-mode tooltip-mode))
   (when (fboundp mode)
@@ -796,7 +793,7 @@ Simon Stoltze
 (global-set-key (kbd "<C-tab>") 'rotate-windows)
 
 ;; Set initial frame size and position
-(defun my/set-initial-frame ()
+(defun my/set-normal-frame ()
   (let* ((width-factor  0.80)
          (height-factor 0.80)
          (position-factor 3)
@@ -806,10 +803,46 @@ Simon Stoltze
  	 (a-top  (truncate (/ (- (display-pixel-height) a-height) position-factor))))
     (set-frame-position (selected-frame) a-left a-top)
     (set-frame-size     (selected-frame) (truncate a-width) (truncate a-height) t)))
+
+(defun my/set-small-frame ()
+  (set-frame-position (selected-frame) 0 0)
+  (set-frame-size     (selected-frame) (truncate (/ (display-pixel-width) 2.5)) (truncate (* (display-pixel-height) 0.9)) t))
+
+;; Frame resizing
 (setq frame-resize-pixelwise t)
 (when window-system
-  (my/set-initial-frame))
-;(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+  (my/set-normal-frame))
+
+;; Alt-enter toggles screensize
+(defvar *window-status* 0)
+(defvar *max-window-options* 3)
+(defvar *fullscreen-set* nil)
+(defun toggle-window (arg)
+  (interactive "P")
+  (when arg
+    (message "%s" arg)
+    (setq *window-status* (mod (prefix-numeric-value arg)
+                               *max-window-options*)))
+  (cond ((and (= *window-status* 0)
+              (not *fullscreen-set*))
+         ;; Fullscreen
+         (toggle-frame-fullscreen)
+         (setq *fullscreen-set* t))
+        ;; Small
+        ((= *window-status* 1)
+         (when *fullscreen-set*
+           (toggle-frame-fullscreen)
+           (setq *fullscreen-set* nil))
+         (my/set-small-frame))
+        ;; Normal
+        ((= *window-status* 2)
+         (when *fullscreen-set*
+           (toggle-frame-fullscreen)
+           (setq *fullscreen-set* nil))
+         (my/set-normal-frame)))
+  (setq *window-status* (mod (1+ *window-status*)
+                             *max-window-options*)))
+(global-set-key (kbd "M-RET") 'toggle-window)
 
 (provide '.emacs)
 ;;; .emacs ends here
