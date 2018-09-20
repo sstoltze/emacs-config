@@ -248,6 +248,15 @@
           (add-to-list 'exec-path
                        plink-file)))))
 
+;; --- Linux specific ---
+(when (eq system-type 'gnu/linux)
+  ;; SAGE
+  (when (file-directory-p "/usr/lib/sagemath")
+    (use-package sage
+      :load-path "/usr/lib/sagemath/local/share/emacs"
+      :config
+      (setq sage-command "/usr/lib/sagemath/sage"))))
+
 ;; --- Save history ---
 (setq savehist-file "~/.emacs.d/savehist")
 (savehist-mode 1)
@@ -736,20 +745,6 @@ Simon Stoltze
   :config
   (setq twittering-use-master-password t)
   (setq twittering-icon-mode t))
-
-;; --- Linux specific ---
-(when (eq system-type 'gnu/linux)
-  ;; Macaulay 2
-  (let ((macaulay-file "~/.emacs-Macaulay2"))
-    (if (file-exists-p macaulay-file)
-        (load macaulay-file t)))
-
-  ;; SAGE
-  (when (file-directory-p "/usr/lib/sagemath")
-    (use-package sage
-      :load-path "/usr/lib/sagemath/local/share/emacs"
-      :config
-      (setq sage-command "/usr/lib/sagemath/sage"))))
 
 ;; Work
 ;; Write function to download programs and store them automatically for ediff
