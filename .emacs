@@ -803,10 +803,12 @@ Simon Stoltze
  	 (a-top  (truncate (/ (- (display-pixel-height) a-height) position-factor))))
     (set-frame-position (selected-frame) a-left a-top)
     (set-frame-size     (selected-frame) (truncate a-width) (truncate a-height) t)))
-
-(defun my/set-small-frame ()
+(defun my/set-left-small-frame ()
   (set-frame-position (selected-frame) 0 0)
-  (set-frame-size     (selected-frame) (truncate (/ (display-pixel-width) 2.5)) (truncate (* (display-pixel-height) 0.9)) t))
+  (set-frame-size     (selected-frame) (truncate (/ (display-pixel-width) 2.2)) (truncate (* (display-pixel-height) 0.9)) t))
+(defun my/set-right-small-frame ()
+  (set-frame-position (selected-frame) -1 0)
+  (set-frame-size     (selected-frame) (truncate (/ (display-pixel-width) 2.2)) (truncate (* (display-pixel-height) 0.9)) t))
 
 ;; Frame resizing
 (setq frame-resize-pixelwise t)
@@ -814,34 +816,34 @@ Simon Stoltze
   (my/set-normal-frame))
 
 ;; Alt-enter toggles screensize
+(defmacro handle-fullscreen-mode (func)
+  `(progn
+      (when *fullscreen-set*
+        (toggle-frame-fullscreen)
+        (setq *fullscreen-set* nil))
+      (,func)))
 (defvar *window-status* 0)
-(defvar *max-window-options* 3)
+(defvar *window-options* (list
+                          (lambda ()
+                            (when (not *fullscreen-set*)
+                              (toggle-frame-fullscreen)
+                              (setq *fullscreen-set* t)))
+                          (lambda ()
+                            (handle-fullscreen-mode my/set-left-small-frame))
+                          (lambda ()
+                            (handle-fullscreen-mode my/set-right-small-frame))
+                          (lambda ()
+                            (handle-fullscreen-mode my/set-normal-frame))))
 (defvar *fullscreen-set* nil)
 (defun toggle-window (arg)
   (interactive "P")
   (when arg
     (message "%s" arg)
     (setq *window-status* (mod (prefix-numeric-value arg)
-                               *max-window-options*)))
-  (cond ((and (= *window-status* 0)
-              (not *fullscreen-set*))
-         ;; Fullscreen
-         (toggle-frame-fullscreen)
-         (setq *fullscreen-set* t))
-        ;; Small
-        ((= *window-status* 1)
-         (when *fullscreen-set*
-           (toggle-frame-fullscreen)
-           (setq *fullscreen-set* nil))
-         (my/set-small-frame))
-        ;; Normal
-        ((= *window-status* 2)
-         (when *fullscreen-set*
-           (toggle-frame-fullscreen)
-           (setq *fullscreen-set* nil))
-         (my/set-normal-frame)))
+                               (length *window-options*))))
+  (funcall (nth *window-status* *window-options*))
   (setq *window-status* (mod (1+ *window-status*)
-                             *max-window-options*)))
+                             (length *window-options*))))
 (global-set-key (kbd "M-RET") 'toggle-window)
 
 (provide '.emacs)
