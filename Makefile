@@ -1,6 +1,6 @@
-common_packages = emacs fish git
-linux_packages = $(common_packages) awesome
-cygwin_packages = $(common_packages)
+common_packages = emacs fish
+linux_packages = $(common_packages) awesome git
+cygwin_packages = $(common_packages) gitcyg
 
 .PHONY: install pull linux update cygwin uninstall linux-remove cygwin-remove
 
