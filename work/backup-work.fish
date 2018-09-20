@@ -26,10 +26,10 @@ handle_git
 cd ~
 
 echo "emacs-config:"
-cp -H  -t ~/git/emacs-config                   ~/.emacs
+cp -H  -t ~/git/emacs-config/emacs             /cygdrive/C/Users/$USER/AppData/Roaming/.emacs
 cp -rH -t ~/git/emacs-config/work              ~/backup-work.fish ~/move-to-zip.fish ~/check-status.fish ~/update.fish ~/.gitconfig ~/color-test.fish /cygdrive/c/Users/sisto/Pictures/background ~/prog
 cp -rH -t ~/git/emacs-config/work/.config      ~/.config/mintty
-cp -rH -t ~/git/emacs-config/work/.config/fish ~/.config/fish/config.fish ~/.config/fish/functions
+cp -rH -t ~/git/emacs-config/fish/.config/fish ~/.config/fish/config.fish ~/.config/fish/functions
 cd ~/git/emacs-config
 handle_git
 cd ~
