@@ -33,9 +33,13 @@ linux-remove:
 
 cygwin: # Make link for C:/users/sisto/AppData/Roaming/.emacs somehow...
 	stow -t ~ $(cygwin_packages)
+	cp emacs/.emacs /cygdrive/C/Users/$$USER/AppData/Roaming
 
 cygwin-remove:
 	stow -D -t ~ $(cygwin_packages)
 
 new-comp: install
 	chsh -s /usr/bin/fish
+
+windows:
+	cp /cygdrive/C/Users/$$USER/AppData/Roaming.emacs emacs/
