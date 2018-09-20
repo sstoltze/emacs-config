@@ -9,14 +9,14 @@ cygwin_packages = $(common_packages)
 install:
 ifeq ($(shell uname),Linux)
 	make linux
-else ifeq ($(shell uname),cygwin) # check name for cygwin here
+else ifeq ($(findstring CYGWIN,$(shell uname)),CYGWIN) # check name for cygwin here
 	make cygwin
 endif
 
 uninstall:
 ifeq ($(shell uname),Linux)
 	make linux-remove
-else ifeq ($(shell uname),cygwin) # check name for cygwin here
+else ifeq ($(findstring CYGWIN,$(shell uname)),CYGWIN) # check name for cygwin here
 	make cygwin-remove
 endif
 
