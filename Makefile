@@ -26,13 +26,13 @@ pull:
 	git pull
 
 linux:
-	stow -t ~ $(linux_packages)
+	stow --no-folding -t ~ $(linux_packages)
 
 linux-remove:
 	stow -D -t ~ $(linux_packages)
 
-cygwin: # Make link for C:/users/sisto/AppData/Roaming/.emacs somehow...
-	stow -t ~ $(cygwin_packages)
+cygwin:
+	stow --no-folding -t ~ $(cygwin_packages)
 	cp emacs/.emacs /cygdrive/C/Users/$$USER/AppData/Roaming
 
 cygwin-remove:
