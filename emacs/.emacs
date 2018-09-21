@@ -42,7 +42,7 @@
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (auctex rainbow-mode org guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
+    (haskell-mode auctex rainbow-mode org guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#2aa198" :weight bold))))
