@@ -172,7 +172,7 @@
 (put 'downcase-region 'disabled nil)
 
 ;; Press 'C-x r j e' to go to .emacs
-(set-register ?e '(file . "~/.emacs"))
+(set-register ?e '(file . "~/.emacs.d/init.el"))
 
 ;; Personal info
 (setq user-full-name    "Simon Stoltze"
