@@ -42,7 +42,7 @@
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (org guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck auctex use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
+    (auctex rainbow-mode org guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#2aa198" :weight bold))))
@@ -231,32 +231,6 @@
       (propertize "Wk"
                   'font-lock-face 'calendar-iso-week-header-face))
 
-;; --- Windows specific ---
-(when (eq system-type 'windows-nt)
-    (setq default-directory (concat "C:/Users/"
-                                    (user-login-name)
-                                    "/Desktop/"))
-    ;; tramp
-    (let ((plink-file "C:\\Program Files (x86)\\PuTTY\\plink.exe"))
-      (when (file-exists-p plink-file)
-        (setq tramp-default-method "plink")
-        (when (not (string-match plink-file
-                                 (getenv "PATH")))
-          (setenv "PATH" (concat plink-file
-                                 ";"
-                                 (getenv "PATH")))
-          (add-to-list 'exec-path
-                       plink-file)))))
-
-;; --- Linux specific ---
-(when (eq system-type 'gnu/linux)
-  ;; SAGE
-  (when (file-directory-p "/usr/lib/sagemath")
-    (use-package sage
-      :load-path "/usr/lib/sagemath/local/share/emacs"
-      :config
-      (setq sage-command "/usr/lib/sagemath/sage"))))
-
 ;; --- Save history ---
 (setq savehist-file "~/.emacs.d/savehist")
 (savehist-mode 1)
@@ -318,7 +292,6 @@ point reaches the beginning or end of the buffer, stop there."
     (back-to-indentation)
     (when (= orig-point (point))
       (move-beginning-of-line 1))))
-
 ;; remap C-a to `smarter-move-beginning-of-line'
 (global-set-key [remap move-beginning-of-line]
                 'my/smarter-move-beginning-of-line)
@@ -395,11 +368,9 @@ point reaches the beginning or end of the buffer, stop there."
 (use-package flycheck
   :ensure t
   :defer t
-  :config
+  :init
   (add-hook 'prog-mode-hook 'flycheck-mode)
-  (add-hook 'text-mode-hook 'flycheck-mode)
-;  (global-flycheck-mode)
-  )
+  (add-hook 'text-mode-hook 'flycheck-mode))
 
 ;; --- org-mode ---
 (require 'org-install)
@@ -584,16 +555,17 @@ Simon Stoltze
 ;; Install auctex
 (use-package tex
   :ensure auctex
-  :defer t)
-(add-hook 'LaTeX-mode-hook
-          'turn-on-auto-fill)
+  :defer t
+  :init
+  (add-hook 'LaTeX-mode-hook
+            'turn-on-auto-fill))
 
 ;; --- Text ---
 ;; visual-line-mode only pretends to insert linebreaks
 (remove-hook 'text-mode-hook
              'turn-on-auto-fill)
-(add-hook 'text-mode-hook
-          'turn-on-visual-line-mode)
+(add-hook    'text-mode-hook
+             'turn-on-visual-line-mode)
 
 ;; --- Ediff ---
 ;; Ignore whitespace, no popup-window and split horizontally
@@ -602,8 +574,12 @@ Simon Stoltze
       ediff-split-window-function 'split-window-horizontally)
 
 ;; --- HTML/CSS ---
-(add-hook 'css-mode-hook
-          'rainbow-mode)
+(use-package rainbow-mode
+  :ensure t
+  :defer t
+  :init
+  (add-hook 'css-mode-hook
+            'rainbow-mode))
 
 ;; --- CSV ---
 (setq csv-separators (quote (";")))
@@ -612,6 +588,9 @@ Simon Stoltze
 (use-package haskell-mode
   :ensure t
   :defer t
+  :init
+  (add-hook 'haskell-mode-hook
+            'turn-on-haskell-indent)
   :config
   (progn
     (setq haskell-indent-spaces 4)
@@ -625,8 +604,6 @@ Simon Stoltze
       :config
       (add-hook 'haskell-mode-hook
                 'flycheck-haskell-setup))))
-(add-hook 'haskell-mode-hook
-          'turn-on-haskell-indent)
 
 ;; --- C/C++ ---
 (defun common-c-hook ()
@@ -634,7 +611,7 @@ Simon Stoltze
   (c-set-style "bsd")
   (setq c-basic-offset 2
         tab-width 2)
-  ;(require 'semantic/bovine/gcc)
+                                        ;(require 'semantic/bovine/gcc)
   (my-semantic-hook))
 (defun my-cpp-hook ()
   "C++ specific packages."
@@ -688,6 +665,18 @@ Simon Stoltze
   :ensure t
   :pin elpy
   :defer t
+  :init
+  (add-hook 'python-mode-hook
+            (lambda ()
+              (if (or (eq system-type 'windows-nt)
+                      (eq system-type 'ms-dos))
+                  (setq python-shell-completion-native-disabled-interpreters
+                        '("python")))
+              (elpy-mode t)
+              ))
+  (add-hook 'inferior-python-mode-hook
+            (lambda ()
+              (python-shell-switch-to-shell)))
   :config
   (progn
     (setq elpy-shell-use-project-root nil)
@@ -709,24 +698,15 @@ Simon Stoltze
     (add-hook 'after-change-major-mode-hook
               (lambda ()
                 (delete 'elpy-module-company
-                        'elpy-modules)
-                ))))
-(add-hook 'python-mode-hook
-          (lambda ()
-            (if (or (eq system-type 'windows-nt)
-                    (eq system-type 'ms-dos))
-                (setq python-shell-completion-native-disabled-interpreters
-                      '("python")))
-            (elpy-mode t)
-          ))
-(add-hook 'inferior-python-mode-hook
-          (lambda ()
-            (python-shell-switch-to-shell)))
+                        'elpy-modules)))))
 
 ;; --- Ocaml ---
 (use-package tuareg
   :ensure t
   :defer t
+  :init
+  (add-hook 'tuareg-mode-hook
+            'merlin-mode)
   :config
   (use-package merlin
     :ensure t
@@ -735,8 +715,6 @@ Simon Stoltze
       :ensure t
       :config
       (flycheck-ocaml-setup))))
-(add-hook 'tuareg-mode-hook
-          'merlin-mode)
 
 ;; --- Twitter ---
 (use-package twittering-mode
@@ -746,8 +724,34 @@ Simon Stoltze
   (setq twittering-use-master-password t)
   (setq twittering-icon-mode t))
 
-;; Work
-;; Write function to download programs and store them automatically for ediff
+;; --- Windows specific ---
+(when (eq system-type 'windows-nt)
+  (setq default-directory (concat "C:/Users/"
+                                  (user-login-name)
+                                  "/Desktop/"))
+  ;; tramp
+  (let ((plink-file "C:\\Program Files (x86)\\PuTTY\\plink.exe"))
+    (when (file-exists-p plink-file)
+      (setq tramp-default-method "plink")
+      (when (not (string-match plink-file
+                               (getenv "PATH")))
+        (setenv "PATH" (concat plink-file
+                               ";"
+                               (getenv "PATH")))
+        (add-to-list 'exec-path
+                     plink-file)))))
+
+;; --- Linux specific ---
+(when (eq system-type 'gnu/linux)
+  ;; SAGE
+  (when (file-directory-p "/usr/lib/sagemath")
+    (use-package sage
+      :defer t
+      :load-path "/usr/lib/sagemath/local/share/emacs"
+      :config
+      (setq sage-command "/usr/lib/sagemath/sage"))))
+
+;; --- Work specific ---
 (when (and (eq system-type 'windows-nt)
            (equal (user-login-name) "sisto"))
   (use-package cobol-mode
@@ -784,7 +788,6 @@ Simon Stoltze
                (set-window-start w1 s2)
                (set-window-start w2 s1)
                (setq i (1+ i))))))))
-
 (global-set-key (kbd "<C-tab>") 'rotate-windows)
 
 ;; Set initial frame size and position
@@ -813,10 +816,10 @@ Simon Stoltze
 ;; Alt-enter toggles screensize
 (defmacro handle-fullscreen-mode (func)
   `(progn
-      (when *fullscreen-set*
-        (toggle-frame-fullscreen)
-        (setq *fullscreen-set* nil))
-      (,func)))
+     (when *fullscreen-set*
+       (toggle-frame-fullscreen)
+       (setq *fullscreen-set* nil))
+     (,func)))
 (defvar *window-status* 0)
 (defvar *window-options* (list
                           (lambda ()
