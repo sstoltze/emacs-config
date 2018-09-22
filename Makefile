@@ -1,11 +1,11 @@
-common_packages   = fish
+common_packages   = fish git
 common_no_folding = emacs
-linux_packages    = $(common_packages) awesome git
+linux_packages    = $(common_packages) awesome
 linux_no_folding  = $(common_no_folding)
-cygwin_packages   = $(common_packages) gitcyg
+cygwin_packages   = $(common_packages)
 cygwin_no_folding = $(common_no_folding)
 
-.PHONY: install pull linux update cygwin uninstall linux-remove cygwin-remove windows windows-remove new-comp
+.PHONY: install uninstall update linux linux-remove cygwin cygwin-remove windows windows-remove work work-remove new-comp
 
 .DEFAULT_GOAL:=update
 
@@ -23,22 +23,21 @@ else ifeq ($(findstring CYGWIN,$(shell uname)),CYGWIN)
 	make cygwin-remove
 endif
 
-update: pull install
-
-pull:
+update:
 	git pull
+	make install
 
 linux:
+	stow              -S -t ~ $(linux_packages)
 	stow --no-folding -S -t ~ $(linux_no_folding)
-	stow -S -t ~ $(linux_packages)
 
 linux-remove:
 	stow -D -t ~ $(linux_packages)
 	stow -D -t ~ $(linux_no_folding)
 
 cygwin: windows
+	stow              -S -t ~ $(cygwin_packages)
 	stow --no-folding -S -t ~ $(cygwin_no_folding)
-	stow -S -t ~ $(cygwin_packages)
 
 cygwin-remove: windows-remove
 	stow -D -t ~ $(cygwin_packages)
@@ -51,6 +50,20 @@ windows:
 windows-remove:
 	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.emacs.d/init.el
 	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig
+
+work:
+	stow -D -t ~ git
+	stow -S -t ~ git-work
+ifeq ($(findstring CYGWIN,$(shell uname)),CYGWIN)
+	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig
+	cp git-work/.gitconfig /cygdrive/C/Users/$$USER/AppData/Roaming/
+endif
+
+work-remove:
+	stow -D -t ~ git-work
+ifeq ($(findstring CYGWIN,$(shell uname)),CYGWIN)
+	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig
+endif
 
 new-comp: install
 	chsh -s /usr/bin/fish
