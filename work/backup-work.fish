@@ -27,7 +27,7 @@ cd ~
 
 echo "emacs-config:"
 # Files handled by stow, in case I mess it up somehow
-cp -H  -t ~/git/emacs-config/work         /cygdrive/C/Users/$USER/AppData/Roaming/.emacs ~.gitconfig
+cp -H  -t ~/git/emacs-config/work         /cygdrive/C/Users/$USER/AppData/Roaming/.emacs.d/init.el ~/.gitconfig
 cp -H  -t ~/git/emacs-config/work/.gitconfig-windows /cygdrive/C/Users/$USER/AppData/Roaming/.gitconfig
 cp -rH -t ~/git/emacs-config/work         ~/backup-work.fish ~/move-to-zip.fish ~/check-status.fish ~/update.fish ~/color-test.fish /cygdrive/c/Users/sisto/Pictures/background ~/prog
 cp -rH -t ~/git/emacs-config/work/.config ~/.config/mintty
