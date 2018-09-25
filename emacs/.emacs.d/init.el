@@ -196,7 +196,8 @@
 (setq delete-old-versions  -1
       version-control      t
       vc-make-backup-files t
-      backup-by-copying    t)
+      backup-by-copying    t
+      vc-follow-symlinks   t)
 
 ;; --- Modeline ---
 ;; Column in modeline
