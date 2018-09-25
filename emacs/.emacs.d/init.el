@@ -157,6 +157,8 @@
   (when (fboundp mode)
     (funcall mode -1)))
 
+(setq uniquify-buffer-name-style 'forward)
+
 ;; Unset suspend keys. Never used anyway
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-x C-z"))
@@ -396,46 +398,22 @@ point reaches the beginning or end of the buffer, stop there."
   (set-register ?o (cons 'file default-org-file))
   (setq org-capture-templates
         (quote
-         (("t" "Task" entry
-           (file+headline default-org-file "Tasks")
-           "* TODO %?
-%U
-%a
-")
-          ("r" "respond" entry
-           (file default-org-file)
-           "* NEXT Respond to %:from on %:subject
-SCHEDULED: %t
-%U
-%a
-")
-          ("n" "note" entry
-           (file+headline "~/noter.org" "Notes")
-           "* %? :NOTE:
-%U
-%a
-")
-          ("j" "Journal" entry
-           (file+olp+datetree default-org-file)
-           "* %?
-%U
-")
-          ("m" "Meeting" entry
-           (file
-            (lambda nil
-              (buffer-file-name)))
-           "* %? - %u
-:ATTENDEES:
-Simon Stoltze
-:END:
-")))))
-
+         (("t" "TODO" entry (file+headline default-org-file "Tasks")
+           "* TODO %?\n%U\n%a\n"
+           :clock-in t :clock-resume t)
+          ("m" "Meeting" entry (file (lambda nil (buffer-file-name)))
+           "* %? - %u :MEETING:\n:ATTENDEES:\nSimon Stoltze\n:END:\n"
+           :clock-in t :clock-resume t)
+          ("n" "Next" entry (file+headline default-org-file "Tasks")
+           "* NEXT %?\n%U\nDEADLINE: %t")))))
 (defun my-org-hook ()
   "Org mode hook."
   (progn
+    (setq org-use-fast-todo-selection t)
+    (setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+                              (sequence "WAITING(w)")))
     (setq org-time-stamp-custom-formats (quote ("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>")))
     (setq org-log-done t)
-
     (setq org-refile-targets (quote ((nil :maxlevel . 9)
                                      (org-agenda-files :maxlevel . 9))))
     ;; Use full outline paths for refile targets - we file directly with IDO
@@ -756,6 +734,7 @@ Simon Stoltze
            (equal (user-login-name) "sisto"))
   (use-package cobol-mode
     :ensure t
+    :defer t
     :init
     (setq auto-mode-alist
           (append
