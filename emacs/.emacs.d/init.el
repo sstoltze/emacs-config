@@ -246,24 +246,25 @@
         search-ring
         regexp-search-ring))
 
-;; --- List of recent files ---
-(require 'recentf)
-(global-set-key (kbd "C-x C-r") 'ido-recentf-open)
-(recentf-mode t)
-(setq recentf-max-saved-items 50
-      recentf-max-menu-items 15)
-(defun ido-recentf-open ()
-  "Use `ido-completing-read' to \\[find-file] a recent file."
-  (interactive)
-  (if (find-file (ido-completing-read "Find recent file: " recentf-list))
-      (message "Opening file...")
-    (message "Aborting")))
+;; Not really used...
+;; ;; --- List of recent files ---
+;; (require 'recentf)
+;; (global-set-key (kbd "C-x C-r") 'ido-recentf-open)
+;; (recentf-mode t)
+;; (setq recentf-max-saved-items 50
+;;       recentf-max-menu-items 15)
+;; (defun ido-recentf-open ()
+;;   "Use `ido-completing-read' to \\[find-file] a recent file."
+;;   (interactive)
+;;   (if (find-file (ido-completing-read "Find recent file: " recentf-list))
+;;       (message "Opening file...")
+;;     (message "Aborting")))
 
-;; --- re-builder ---
-;; M-x re-builder for making regex and searching current buffer
-;; 'string avoids double-escaping in eg. \\.
-(require 're-builder)
-(setq reb-re-syntax 'string)
+;; ;; --- re-builder ---
+;; ;; M-x re-builder for making regex and searching current buffer
+;; ;; 'string avoids double-escaping in eg. \\.
+;; (require 're-builder)
+;; (setq reb-re-syntax 'string)
 
 ;; Make C-x C-x not activate region
 (defun exchange-point-and-mark-no-activate ()
@@ -753,7 +754,8 @@ point reaches the beginning or end of the buffer, stop there."
                     :name "All Inboxes"
                     :query "maildir:/Exchange/Inbox OR maildir:/gmail/Inbox"
                     :key ?i))
-      (setq mu4e-show-images t)
+      (setq mu4e-view-show-images t)
+      ;;(when (fboundp 'imagemagick-register-types)         (imagemagick-register-types))
       ;; Why would I want to leave my message open after I've sent it?
       (setq message-kill-buffer-on-exit t)
       ;; Don't ask for a 'context' upon opening mu4e
@@ -871,6 +873,7 @@ point reaches the beginning or end of the buffer, stop there."
        (toggle-frame-fullscreen)
        (setq *fullscreen-set* nil))
      (,func)))
+(defvar *fullscreen-set* nil)
 (defvar *window-status* 0)
 (defvar *window-options* (list
                           (lambda ()
@@ -883,7 +886,6 @@ point reaches the beginning or end of the buffer, stop there."
                             (handle-fullscreen-mode my/set-right-small-frame))
                           (lambda ()
                             (handle-fullscreen-mode my/set-normal-frame))))
-(defvar *fullscreen-set* nil)
 (defun toggle-window (arg)
   (interactive "P")
   (when arg
