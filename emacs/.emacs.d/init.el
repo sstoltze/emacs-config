@@ -32,6 +32,7 @@
    (quote
     ("491417843dee886b649cf0dd70c8c86c8bccbbe373239058ba9900b348bad5cf" default)))
  '(custom-theme-directory "~/.emacs.d/themes/")
+ '(diredp-hide-details-initially-flag nil t)
  '(doc-view-continuous t)
  '(elpy-modules
    (quote
@@ -42,7 +43,7 @@
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (haskell-mode auctex rainbow-mode org guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
+    (mu4e-alert haskell-mode auctex rainbow-mode org guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#2aa198" :weight bold))))
@@ -722,6 +723,68 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;; --- Linux specific ---
 (when (eq system-type 'gnu/linux)
+  ;; Mu4e
+  (when (file-directory-p "/usr/local/share/emacs/site-lisp/mu4e")
+    (use-package mu4e
+      :defer t
+      :load-path "/usr/local/share/emacs/site-lisp/mu/mu4e"
+      :config
+      (setq mu4e-maildir "~/.mail")
+      (setq mu4e-get-mail-command "mbsync -a")
+      (setq
+       user-mail-address "sstoltze@gmail.com" ;; Probably reset this when multiple mailboxes
+       user-full-name  "Simon Stoltze")
+      ;; Include a bookmark to open all of my inboxes
+      (add-to-list 'mu4e-bookmarks
+                   (make-mu4e-bookmark
+                    :name "All Inboxes"
+                    :query "maildir:/Exchange/Inbox OR maildir:/gmail/Inbox"
+                    :key ?i))
+      ;; This allows me to use 'helm' to select mailboxes
+      (setq mu4e-completing-read-function 'completing-read)
+      ;; Why would I want to leave my message open after I've sent it?
+      (setq message-kill-buffer-on-exit t)
+      ;; Don't ask for a 'context' upon opening mu4e
+      (setq mu4e-context-policy 'pick-first)
+      ;; Don't ask to quit... why is this the default?
+      (setq mu4e-confirm-quit nil)
+      ;; Fix "Duplicate UID" when moving messages
+      (setq mu4e-change-filenames-when-moving t)
+      (setq mu4e-contexts
+            (list (make-mu4e-context
+                   :name "gmail"
+                   :match-func (lambda (msg) (when msg
+                                          (string-prefix-p "/Gmail" (mu4e-message-field msg :maildir))))
+                   :vars '(
+                           (mu4e-trash-folder . "/gmail/[Gmail].Trash")
+                           (mu4e-refile-folder . "/gmail/[Gmail].Archive")
+                           ))
+                  (make-mu4e-context
+                   :name "Exchange"
+                   :match-func (lambda (msg) (when msg
+                                          (string-prefix-p "/Exchange" (mu4e-message-field msg :maildir))))
+                   :vars '(
+                           (mu4e-trash-folder . "/Exchange/Deleted Items")
+                           (mu4e-refile-folder . exchange-mu4e-refile-folder)
+                           ))
+                  ))
+      (use-package mu4e-alert
+        :ensure t
+        :after mu4e
+        :init
+        (setq mu4e-alert-interesting-mail-query
+              (concat
+               "flag:unread maildir:/Exchange/Inbox"
+               " OR "
+               "flag:unread maildir:/Gmail/Inbox"
+               ))
+        (mu4e-alert-enable-mode-line-display)
+        (defun gjstein-refresh-mu4e-alert-mode-line ()
+          (interactive)
+          (mu4e~proc-kill)
+          (mu4e-alert-enable-mode-line-display)
+          )
+        (run-with-timer 0 600 'gjstein-refresh-mu4e-alert-mode-line))))
   ;; SAGE
   (when (file-directory-p "/usr/lib/sagemath")
     (use-package sage

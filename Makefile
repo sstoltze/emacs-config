@@ -1,11 +1,11 @@
 common_packages   = fish git
 common_no_folding = emacs
-linux_packages    = $(common_packages) awesome
+linux_packages    = $(common_packages) awesome mbsync systemd
 linux_no_folding  = $(common_no_folding)
 cygwin_packages   = $(common_packages)
 cygwin_no_folding = $(common_no_folding)
 
-.PHONY: install uninstall update linux linux-remove cygwin cygwin-remove windows windows-remove work work-remove new-comp
+.PHONY: install uninstall update linux linux-remove cygwin cygwin-remove windows windows-remove work work-remove new-comp mbsync-setup
 
 .DEFAULT_GOAL:=update
 
@@ -67,3 +67,7 @@ endif
 
 new-comp: install
 	chsh -s /usr/bin/fish
+
+mbsync-setup:
+	$(shell test -s /home/$$USER/.gnupg/pubring.gpg || gpg2 --generate-key)
+	$(shell test -s /home/$$USER/.mailpass.gpg || gpg2 -o ~/.mailpass.gpg -r $$USER -e) # Enter password in file
