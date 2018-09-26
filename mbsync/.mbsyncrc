@@ -5,7 +5,7 @@ Host imap.gmail.com
 User sstoltze@gmail.com
 # Pass ***************
 # To store the password in an encrypted file use PassCmd instead of Pass
-PassCmd "gpg2 -q --for-your-eyes-only --no-tty -d ~/.mailpass.gpg"
+PassCmd "gpg2 -q --for-your-eyes-only --no-tty --batch -d ~/.mail/.mailpass.gpg"
 #
 # Use SSL
 SSLType IMAPS
@@ -35,3 +35,36 @@ Patterns *
 Create Both
 # Save the synchronization state files in the relevant directory
 SyncState *
+
+#IMAPAccount work
+#Host outlook.office365.com
+#Port 993
+#User "sisto@eg.dk"
+#AuthMechs Login
+# To store the password in an encrypted file use PassCmd instead of Pass
+#PassCmd "gpg2 -q --for-your-eyes-only --no-tty --batch -d ~/.mail/.workpass.gpg"
+#
+# Use SSL
+# UseIMAPS no
+# RequireSSL no
+# UseTLSv1 no
+#SSLType IMAPS
+#CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+#IMAPStore work-remote
+#Account work
+
+#MaildirStore work-local
+#Subfolders Verbatim
+# The trailing "/" is important
+#Path ~/.mail/Exchange/
+#Inbox ~/.mail/Exchange/Inbox
+
+#Channel work
+#Master :work-remote:
+#Slave :work-local:
+#Patterns *
+# Automatically create missing mailboxes, both locally and on the server
+#Create Both
+# Save the synchronization state files in the relevant directory
+#SyncState *
