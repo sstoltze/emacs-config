@@ -591,7 +591,7 @@ point reaches the beginning or end of the buffer, stop there."
   (c-set-style "bsd")
   (setq c-basic-offset 2
         tab-width 2)
-                                        ;(require 'semantic/bovine/gcc)
+  ;;(require 'semantic/bovine/gcc)
   (my-semantic-hook))
 (defun my-cpp-hook ()
   "C++ specific packages."
@@ -704,6 +704,16 @@ point reaches the beginning or end of the buffer, stop there."
   (setq twittering-use-master-password t)
   (setq twittering-icon-mode t))
 
+;; --- Outline minor mode ---
+(add-hook 'prog-mode-hook
+          (lambda () (outline-minor-mode 1)))
+(add-hook 'org-mode-hook
+          (lambda () (outline-minor-mode 1)))
+(add-hook 'outline-minor-mode-hook
+          (lambda ()
+            (local-set-key (kbd "C-z")
+                           outline-mode-prefix-map)))
+
 ;; --- Windows specific ---
 (when (eq system-type 'windows-nt)
   (setq default-directory (concat "C:/Users/"
@@ -731,6 +741,7 @@ point reaches the beginning or end of the buffer, stop there."
       :config
       (setq mu4e-maildir "~/.mail")
       (setq mu4e-get-mail-command "mbsync -a")
+      ;; These allow entry of passphrase in emacs
       (setq epa-pinentry-mode 'loopback)
       (pinentry-start)
       (setq
