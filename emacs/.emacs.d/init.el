@@ -723,7 +723,7 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;; --- Linux specific ---
 (when (eq system-type 'gnu/linux)
-  ;; Mu4e
+  ;; --- Mu4e ---
   (when (file-directory-p "/usr/local/share/emacs/site-lisp/mu4e")
     (use-package mu4e
       :defer t
@@ -731,6 +731,8 @@ point reaches the beginning or end of the buffer, stop there."
       :config
       (setq mu4e-maildir "~/.mail")
       (setq mu4e-get-mail-command "mbsync -a")
+      (setq epa-pinentry-mode 'loopback)
+      (pinentry-start)
       (setq
        user-mail-address "sstoltze@gmail.com" ;; Probably reset this when multiple mailboxes
        user-full-name  "Simon Stoltze")
@@ -740,8 +742,7 @@ point reaches the beginning or end of the buffer, stop there."
                     :name "All Inboxes"
                     :query "maildir:/Exchange/Inbox OR maildir:/gmail/Inbox"
                     :key ?i))
-      ;; This allows me to use 'helm' to select mailboxes
-      (setq mu4e-completing-read-function 'completing-read)
+      (setq mu4e-show-images t)
       ;; Why would I want to leave my message open after I've sent it?
       (setq message-kill-buffer-on-exit t)
       ;; Don't ask for a 'context' upon opening mu4e
@@ -757,8 +758,7 @@ point reaches the beginning or end of the buffer, stop there."
                                           (string-prefix-p "/Gmail" (mu4e-message-field msg :maildir))))
                    :vars '(
                            (mu4e-trash-folder . "/gmail/[Gmail].Trash")
-                           (mu4e-refile-folder . "/gmail/[Gmail].Archive")
-                           ))
+                           (mu4e-refile-folder . "/gmail/[Gmail].Archive")))
                   (make-mu4e-context
                    :name "Exchange"
                    :match-func (lambda (msg) (when msg
@@ -766,26 +766,23 @@ point reaches the beginning or end of the buffer, stop there."
                    :vars '(
                            (mu4e-trash-folder . "/Exchange/Deleted Items")
                            (mu4e-refile-folder . exchange-mu4e-refile-folder)
-                           ))
-                  ))
+                           ))))
       (use-package mu4e-alert
         :ensure t
-        :after mu4e
         :init
         (setq mu4e-alert-interesting-mail-query
               (concat
                "flag:unread maildir:/Exchange/Inbox"
                " OR "
-               "flag:unread maildir:/Gmail/Inbox"
-               ))
+               "flag:unread maildir:/Gmail/Inbox"))
+        (setq mu4e-alert-email-notification-types '(count))
         (mu4e-alert-enable-mode-line-display)
         (defun gjstein-refresh-mu4e-alert-mode-line ()
           (interactive)
           (mu4e~proc-kill)
-          (mu4e-alert-enable-mode-line-display)
-          )
+          (mu4e-alert-enable-mode-line-display))
         (run-with-timer 0 600 'gjstein-refresh-mu4e-alert-mode-line))))
-  ;; SAGE
+  ;; --- SAGE ---
   (when (file-directory-p "/usr/lib/sagemath")
     (use-package sage
       :defer t
