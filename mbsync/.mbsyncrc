@@ -3,8 +3,8 @@ IMAPAccount gmail
 # Address to connect to
 Host imap.gmail.com
 User sstoltze@gmail.com
-# Pass ***************
 # To store the password in an encrypted file use PassCmd instead of Pass
+# Use 'gpg2 -o ~/.mail/.mailpass.gpg -r $user -e' and enter password <RET> C-d
 PassCmd "gpg2 -q --for-your-eyes-only --no-tty --batch -d ~/.mail/.mailpass.gpg"
 #
 # Use SSL
@@ -36,35 +36,36 @@ Create Both
 # Save the synchronization state files in the relevant directory
 SyncState *
 
-#IMAPAccount work
-#Host outlook.office365.com
+IMAPAccount work
+Host outlook.office365.com
 #Port 993
-#User "sisto@eg.dk"
-#AuthMechs Login
-# To store the password in an encrypted file use PassCmd instead of Pass
-#PassCmd "gpg2 -q --for-your-eyes-only --no-tty --batch -d ~/.mail/.workpass.gpg"
+User "sisto@eg.dk"
+AuthMechs Login
+# For Office365, setup an app password and store it in the file
+PassCmd "gpg2 -q --for-your-eyes-only --no-tty --batch -d ~/.mail/.workpass.gpg"
 #
 # Use SSL
 # UseIMAPS no
 # RequireSSL no
 # UseTLSv1 no
-#SSLType IMAPS
-#CertificateFile /etc/ssl/certs/ca-certificates.crt
+SSLType IMAPS
+SSLVersion TLSv1.2
+CertificateFile /etc/ssl/certs/ca-certificates.crt
 
-#IMAPStore work-remote
-#Account work
+IMAPStore work-remote
+Account work
 
-#MaildirStore work-local
-#Subfolders Verbatim
+MaildirStore work-local
+Subfolders Verbatim
 # The trailing "/" is important
-#Path ~/.mail/Exchange/
-#Inbox ~/.mail/Exchange/Inbox
+Path ~/.mail/Exchange/
+Inbox ~/.mail/Exchange/Inbox
 
-#Channel work
-#Master :work-remote:
-#Slave :work-local:
-#Patterns *
+Channel work
+Master :work-remote:
+Slave :work-local:
+Patterns *
 # Automatically create missing mailboxes, both locally and on the server
-#Create Both
+Create Both
 # Save the synchronization state files in the relevant directory
-#SyncState *
+SyncState *
