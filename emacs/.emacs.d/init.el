@@ -466,6 +466,12 @@ point reaches the beginning or end of the buffer, stop there."
                              (my-org-hook)))
 
 ;; --- Ido ---
+;; * Tips:
+;; ** C-p makes ido only match beginning of names
+;; ** While doing C-x C-f:
+;; *** C-d will open dired
+;; *** M-d will search in subdirs
+;; *** M-m will create a subdirectory
 (use-package ido
   :ensure t
   :config
@@ -477,6 +483,13 @@ point reaches the beginning or end of the buffer, stop there."
     (setq ido-default-buffer-method 'selected-window)
     (setq ido-enable-flex-matching t)
     (setq ido-confirm-unique-completion t)
+    ;; Do not need to confirm when creating new buffer
+    (setq ido-create-new-buffer 'always)
+    ;; Order files are shown in
+    (setq ido-file-extensions-order '(".org" ".py" ".el" ".emacs"
+                                      ".lisp" ".c" ".hs" ".txt"))
+    ;; Ignore case when searching
+    (setq ido-case-fold t)
     (ido-mode t)))
 
 ;; --- Multiple cursors ---
@@ -550,9 +563,11 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;; --- Ediff ---
 ;; Ignore whitespace, no popup-window and split horizontally
-(setq ediff-diff-options "-w"
-      ediff-window-setup-function 'ediff-setup-windows-plain
-      ediff-split-window-function 'split-window-horizontally)
+(add-hook 'ediff-before-setup-hook
+          (lambda ()
+            (setq ediff-diff-options "-w"
+                  ediff-window-setup-function 'ediff-setup-windows-plain
+                  ediff-split-window-function 'split-window-horizontally)))
 
 ;; --- HTML/CSS ---
 (use-package rainbow-mode
