@@ -546,7 +546,6 @@ point reaches the beginning or end of the buffer, stop there."
     (setq slime-contribs '(slime-fancy))))
 
 ;; --- LaTeX ---
-;; Install auctex
 (use-package tex
   :ensure auctex
   :defer t
@@ -751,10 +750,14 @@ point reaches the beginning or end of the buffer, stop there."
   (set-frame-position (selected-frame) -1 0)
   (set-frame-size     (selected-frame) (truncate (/ (display-pixel-width) 2.2)) (truncate (* (display-pixel-height) 0.9)) t))
 
-;; Frame resizing
-(setq frame-resize-pixelwise t)
-(when (display-graphic-p)
-  (my/set-normal-frame))
+;; Frame resizing and theme
+(cond ((display-graphic-p)
+       (setq frame-resize-pixelwise t)
+       (my/set-normal-frame))
+      (t (use-package zenburn-theme
+           :ensure t
+           :config
+           (load-theme 'zenburn t))))
 
 ;; --- System specific ---
 (cond
