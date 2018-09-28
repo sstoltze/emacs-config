@@ -32,6 +32,7 @@
    (quote
     ("491417843dee886b649cf0dd70c8c86c8bccbbe373239058ba9900b348bad5cf" default)))
  '(custom-theme-directory "~/.emacs.d/themes/")
+ '(diredp-hide-details-initially-flag nil t)
  '(doc-view-continuous t)
  '(elpy-modules
    (quote
@@ -42,7 +43,7 @@
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (haskell-mode auctex rainbow-mode org guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
+    (outline-magic mu4e-alert haskell-mode auctex rainbow-mode org guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#2aa198" :weight bold))))
@@ -114,8 +115,8 @@
 ;; --- Benchmark init ---
 (use-package benchmark-init
   :ensure t
-  :config
   ;; To disable collection of benchmark data after init is done.
+  :config
   (add-hook 'after-init-hook 'benchmark-init/deactivate))
 
 ;; Encoding
@@ -157,6 +158,8 @@
   (when (fboundp mode)
     (funcall mode -1)))
 
+(setq uniquify-buffer-name-style 'forward)
+
 ;; Unset suspend keys. Never used anyway
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-x C-z"))
@@ -194,7 +197,8 @@
 (setq delete-old-versions  -1
       version-control      t
       vc-make-backup-files t
-      backup-by-copying    t)
+      backup-by-copying    t
+      vc-follow-symlinks   t)
 
 ;; --- Modeline ---
 ;; Column in modeline
@@ -242,24 +246,25 @@
         search-ring
         regexp-search-ring))
 
-;; --- List of recent files ---
-(require 'recentf)
-(global-set-key (kbd "C-x C-r") 'ido-recentf-open)
-(recentf-mode t)
-(setq recentf-max-saved-items 50
-      recentf-max-menu-items 15)
-(defun ido-recentf-open ()
-  "Use `ido-completing-read' to \\[find-file] a recent file."
-  (interactive)
-  (if (find-file (ido-completing-read "Find recent file: " recentf-list))
-      (message "Opening file...")
-    (message "Aborting")))
+;; Not really used...
+;; ;; --- List of recent files ---
+;; (require 'recentf)
+;; (global-set-key (kbd "C-x C-r") 'ido-recentf-open)
+;; (recentf-mode t)
+;; (setq recentf-max-saved-items 50
+;;       recentf-max-menu-items 15)
+;; (defun ido-recentf-open ()
+;;   "Use `ido-completing-read' to \\[find-file] a recent file."
+;;   (interactive)
+;;   (if (find-file (ido-completing-read "Find recent file: " recentf-list))
+;;       (message "Opening file...")
+;;     (message "Aborting")))
 
-;; --- re-builder ---
-;; M-x re-builder for making regex and searching current buffer
-;; 'string avoids double-escaping in eg. \\.
-(require 're-builder)
-(setq reb-re-syntax 'string)
+;; ;; --- re-builder ---
+;; ;; M-x re-builder for making regex and searching current buffer
+;; ;; 'string avoids double-escaping in eg. \\.
+;; (require 're-builder)
+;; (setq reb-re-syntax 'string)
 
 ;; Make C-x C-x not activate region
 (defun exchange-point-and-mark-no-activate ()
@@ -396,46 +401,22 @@ point reaches the beginning or end of the buffer, stop there."
   (set-register ?o (cons 'file default-org-file))
   (setq org-capture-templates
         (quote
-         (("t" "Task" entry
-           (file+headline default-org-file "Tasks")
-           "* TODO %?
-%U
-%a
-")
-          ("r" "respond" entry
-           (file default-org-file)
-           "* NEXT Respond to %:from on %:subject
-SCHEDULED: %t
-%U
-%a
-")
-          ("n" "note" entry
-           (file+headline "~/noter.org" "Notes")
-           "* %? :NOTE:
-%U
-%a
-")
-          ("j" "Journal" entry
-           (file+olp+datetree default-org-file)
-           "* %?
-%U
-")
-          ("m" "Meeting" entry
-           (file
-            (lambda nil
-              (buffer-file-name)))
-           "* %? - %u
-:ATTENDEES:
-Simon Stoltze
-:END:
-")))))
-
+         (("t" "TODO" entry (file+headline default-org-file "Tasks")
+           "* TODO %?\n%U\n%a\n"
+           :clock-in t :clock-resume t)
+          ("m" "Meeting" entry (file (lambda nil (buffer-file-name)))
+           "* %? - %u :MEETING:\n:ATTENDEES:\nSimon Stoltze\n:END:\n"
+           :clock-in t :clock-resume t)
+          ("n" "Next" entry (file+headline default-org-file "Tasks")
+           "* NEXT %?\n%U\nDEADLINE: %t")))))
 (defun my-org-hook ()
   "Org mode hook."
   (progn
+    (setq org-use-fast-todo-selection t)
+    (setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+                              (sequence "WAITING(w)")))
     (setq org-time-stamp-custom-formats (quote ("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>")))
     (setq org-log-done t)
-
     (setq org-refile-targets (quote ((nil :maxlevel . 9)
                                      (org-agenda-files :maxlevel . 9))))
     ;; Use full outline paths for refile targets - we file directly with IDO
@@ -485,6 +466,12 @@ Simon Stoltze
                              (my-org-hook)))
 
 ;; --- Ido ---
+;; * Tips:
+;; ** C-p makes ido only match beginning of names
+;; ** While doing C-x C-f:
+;; *** C-d will open dired
+;; *** M-d will search in subdirs
+;; *** M-m will create a subdirectory
 (use-package ido
   :ensure t
   :config
@@ -496,6 +483,13 @@ Simon Stoltze
     (setq ido-default-buffer-method 'selected-window)
     (setq ido-enable-flex-matching t)
     (setq ido-confirm-unique-completion t)
+    ;; Do not need to confirm when creating new buffer
+    (setq ido-create-new-buffer 'always)
+    ;; Order files are shown in
+    (setq ido-file-extensions-order '(".org" ".py" ".el" ".emacs"
+                                      ".lisp" ".c" ".hs" ".txt"))
+    ;; Ignore case when searching
+    (setq ido-case-fold t)
     (ido-mode t)))
 
 ;; --- Multiple cursors ---
@@ -569,9 +563,11 @@ Simon Stoltze
 
 ;; --- Ediff ---
 ;; Ignore whitespace, no popup-window and split horizontally
-(setq ediff-diff-options "-w"
-      ediff-window-setup-function 'ediff-setup-windows-plain
-      ediff-split-window-function 'split-window-horizontally)
+(add-hook 'ediff-before-setup-hook
+          (lambda ()
+            (setq ediff-diff-options "-w"
+                  ediff-window-setup-function 'ediff-setup-windows-plain
+                  ediff-split-window-function 'split-window-horizontally)))
 
 ;; --- HTML/CSS ---
 (use-package rainbow-mode
@@ -596,12 +592,12 @@ Simon Stoltze
     (setq haskell-indent-spaces 4)
     (use-package intero
       :ensure t
-      :config
+      :init
       (add-hook 'haskell-mode-hook
                 'intero-mode))
     (use-package flycheck-haskell
       :ensure t
-      :config
+      :init
       (add-hook 'haskell-mode-hook
                 'flycheck-haskell-setup))))
 
@@ -611,7 +607,7 @@ Simon Stoltze
   (c-set-style "bsd")
   (setq c-basic-offset 2
         tab-width 2)
-                                        ;(require 'semantic/bovine/gcc)
+  ;;(require 'semantic/bovine/gcc)
   (my-semantic-hook))
 (defun my-cpp-hook ()
   "C++ specific packages."
@@ -666,17 +662,17 @@ Simon Stoltze
   :pin elpy
   :defer t
   :init
-  (add-hook 'python-mode-hook
-            (lambda ()
-              (if (or (eq system-type 'windows-nt)
-                      (eq system-type 'ms-dos))
-                  (setq python-shell-completion-native-disabled-interpreters
-                        '("python")))
-              (elpy-mode t)
-              ))
-  (add-hook 'inferior-python-mode-hook
-            (lambda ()
-              (python-shell-switch-to-shell)))
+  (progn
+    ;; Silence warning when guessing indent, default is 4 spaces
+    (setq python-indent-guess-indent-offset-verbose nil)
+    (add-hook 'python-mode-hook '(lambda ()
+                                   (if (or (eq system-type 'windows-nt)
+                                           (eq system-type 'ms-dos))
+                                       (setq python-shell-completion-native-disabled-interpreters
+                                             '("python")))
+                                   (elpy-mode t)))
+    (add-hook 'inferior-python-mode-hook '(lambda ()
+                                            (python-shell-switch-to-shell))))
   :config
   (progn
     (setq elpy-shell-use-project-root nil)
@@ -724,71 +720,18 @@ Simon Stoltze
   (setq twittering-use-master-password t)
   (setq twittering-icon-mode t))
 
-;; --- Windows specific ---
-(when (eq system-type 'windows-nt)
-  (setq default-directory (concat "C:/Users/"
-                                  (user-login-name)
-                                  "/Desktop/"))
-  ;; tramp
-  (let ((plink-file "C:\\Program Files (x86)\\PuTTY\\plink.exe"))
-    (when (file-exists-p plink-file)
-      (setq tramp-default-method "plink")
-      (when (not (string-match plink-file
-                               (getenv "PATH")))
-        (setenv "PATH" (concat plink-file
-                               ";"
-                               (getenv "PATH")))
-        (add-to-list 'exec-path
-                     plink-file)))))
-
-;; --- Linux specific ---
-(when (eq system-type 'gnu/linux)
-  ;; SAGE
-  (when (file-directory-p "/usr/lib/sagemath")
-    (use-package sage
-      :defer t
-      :load-path "/usr/lib/sagemath/local/share/emacs"
-      :config
-      (setq sage-command "/usr/lib/sagemath/sage"))))
-
-;; --- Work specific ---
-(when (and (eq system-type 'windows-nt)
-           (equal (user-login-name) "sisto"))
-  (use-package cobol-mode
-    :ensure t
-    :init
-    (setq auto-mode-alist
-          (append
-           '(("\\.cob\\'" . cobol-mode)
-             ("\\.cbl\\'" . cobol-mode)
-             ("\\.cpy\\'" . cobol-mode))
-           auto-mode-alist))))
-
-;; Rotate windows on C-<tab>
-;; http://whattheemacsd.com/buffer-defuns.el-02.html#disqus_thread
-(defun rotate-windows ()
-  "Rotate your windows."
-  (interactive)
-  (cond ((not (> (count-windows) 1))
-         (message "You can't rotate a single window!"))
-        (t
-         (let ((i 1)
-               (numWindows (count-windows)))
-           (while  (< i numWindows)
-             (let* ((w1 (elt (window-list) i))
-                    (w2 (elt (window-list) (+ (% i numWindows) 1)))
-
-                    (b1 (window-buffer w1))
-                    (b2 (window-buffer w2))
-
-                    (s1 (window-start w1))
-                    (s2 (window-start w2)))
-               (set-window-buffer w1 b2)
-               (set-window-buffer w2 b1)
-               (set-window-start w1 s2)
-               (set-window-start w2 s1)
-               (setq i (1+ i))))))))
-(global-set-key (kbd "<C-tab>") 'rotate-windows)
+;; --- Outline minor mode ---
+(add-hook 'prog-mode-hook
+          (lambda () (outline-minor-mode 1)))
+(add-hook 'org-mode-hook
+          (lambda () (outline-minor-mode 1)))
+(add-hook 'outline-minor-mode-hook
+          (lambda ()
+            (use-package outline-magic
+              :ensure t
+              :bind (("<C-tab>" . 'outline-cycle)))
+            (local-set-key (kbd "C-z")
+                           outline-mode-prefix-map)))
 
 ;; Set initial frame size and position
 (defun my/set-normal-frame ()
@@ -810,39 +753,144 @@ Simon Stoltze
 
 ;; Frame resizing
 (setq frame-resize-pixelwise t)
-(when window-system
+(when (display-graphic-p)
   (my/set-normal-frame))
 
-;; Alt-enter toggles screensize
-(defmacro handle-fullscreen-mode (func)
-  `(progn
-     (when *fullscreen-set*
-       (toggle-frame-fullscreen)
-       (setq *fullscreen-set* nil))
-     (,func)))
-(defvar *window-status* 0)
-(defvar *window-options* (list
-                          (lambda ()
-                            (when (not *fullscreen-set*)
-                              (toggle-frame-fullscreen)
-                              (setq *fullscreen-set* t)))
-                          (lambda ()
-                            (handle-fullscreen-mode my/set-left-small-frame))
-                          (lambda ()
-                            (handle-fullscreen-mode my/set-right-small-frame))
-                          (lambda ()
-                            (handle-fullscreen-mode my/set-normal-frame))))
-(defvar *fullscreen-set* nil)
-(defun toggle-window (arg)
-  (interactive "P")
-  (when arg
-    (message "%s" arg)
-    (setq *window-status* (mod (prefix-numeric-value arg)
+;; --- System specific ---
+(cond
+ ;; --- Windows specific ---
+ ((eq system-type 'windows-nt)
+  (setq default-directory (concat "C:/Users/"
+                                  (user-login-name)
+                                  "/Desktop/"))
+  ;; tramp
+  (let ((plink-file "C:\\Program Files (x86)\\PuTTY\\plink.exe"))
+    (when (file-exists-p plink-file)
+      (setq tramp-default-method "plink")
+      (when (not (string-match plink-file
+                               (getenv "PATH")))
+        (setenv "PATH" (concat plink-file
+                               ";"
+                               (getenv "PATH")))
+        (add-to-list 'exec-path
+                     plink-file))))
+
+  ;; Alt-enter toggles screensize
+  ;; Only needed on windows
+  (defmacro handle-fullscreen-mode (func)
+    `(progn
+       (when *fullscreen-set*
+         (toggle-frame-fullscreen)
+         (setq *fullscreen-set* nil))
+       (,func)))
+  (defvar *fullscreen-set* nil)
+  (defvar *window-status* 0)
+  (defvar *window-options* (list
+                            (lambda ()
+                              (when (not *fullscreen-set*)
+                                (toggle-frame-fullscreen)
+                                (setq *fullscreen-set* t)))
+                            (lambda ()
+                              (handle-fullscreen-mode my/set-left-small-frame))
+                            (lambda ()
+                              (handle-fullscreen-mode my/set-right-small-frame))
+                            (lambda ()
+                              (handle-fullscreen-mode my/set-normal-frame))))
+  (defun toggle-window (arg)
+    (interactive "P")
+    (when arg
+      (message "%s" arg)
+      (setq *window-status* (mod (prefix-numeric-value arg)
+                                 (length *window-options*))))
+    (funcall (nth *window-status* *window-options*))
+    (setq *window-status* (mod (1+ *window-status*)
                                (length *window-options*))))
-  (funcall (nth *window-status* *window-options*))
-  (setq *window-status* (mod (1+ *window-status*)
-                             (length *window-options*))))
-(global-set-key (kbd "M-RET") 'toggle-window)
+  (global-set-key (kbd "M-RET") 'toggle-window)
+
+  ;; --- Work specific ---
+  (when (and (eq system-type 'windows-nt)
+             (equal (user-login-name) "sisto"))
+    (use-package cobol-mode
+      :ensure t
+      :defer t
+      :init
+      (setq auto-mode-alist
+            (append
+             '(("\\.cob\\'" . cobol-mode)
+               ("\\.cbl\\'" . cobol-mode)
+               ("\\.cpy\\'" . cobol-mode))
+             auto-mode-alist)))))
+
+ ;; --- Linux specific ---
+ ((eq system-type 'gnu/linux)
+  ;; --- Mu4e ---
+  (when (file-directory-p "/usr/local/share/emacs/site-lisp/mu4e")
+    (use-package mu4e
+      :defer t
+      :load-path "/usr/local/share/emacs/site-lisp/mu/mu4e"
+      :config
+      (setq mu4e-maildir "~/.mail")
+      (setq mu4e-get-mail-command "mbsync -a")
+      ;; These allow entry of passphrase in emacs
+      (setq epa-pinentry-mode 'loopback)
+      (pinentry-start)
+      (setq
+       user-mail-address "sstoltze@gmail.com" ;; Probably reset this when multiple mailboxes
+       user-full-name  "Simon Stoltze")
+      ;; Include a bookmark to open all of my inboxes
+      (add-to-list 'mu4e-bookmarks
+                   (make-mu4e-bookmark
+                    :name "All Inboxes"
+                    :query "maildir:/Exchange/Inbox OR maildir:/gmail/Inbox"
+                    :key ?i))
+      (setq mu4e-view-show-images t)
+      ;;(when (fboundp 'imagemagick-register-types)         (imagemagick-register-types))
+      ;; Why would I want to leave my message open after I've sent it?
+      (setq message-kill-buffer-on-exit t)
+      ;; Don't ask for a 'context' upon opening mu4e
+      (setq mu4e-context-policy 'pick-first)
+      ;; Don't ask to quit... why is this the default?
+      (setq mu4e-confirm-quit nil)
+      ;; Fix "Duplicate UID" when moving messages
+      (setq mu4e-change-filenames-when-moving t)
+      (setq mu4e-contexts
+            (list (make-mu4e-context
+                   :name "gmail"
+                   :match-func (lambda (msg) (when msg
+                                          (string-prefix-p "/Gmail" (mu4e-message-field msg :maildir))))
+                   :vars '(
+                           (mu4e-trash-folder . "/gmail/[Gmail].Trash")
+                           (mu4e-refile-folder . "/gmail/[Gmail].Archive")))
+                  (make-mu4e-context
+                   :name "Exchange"
+                   :match-func (lambda (msg) (when msg
+                                          (string-prefix-p "/Exchange" (mu4e-message-field msg :maildir))))
+                   :vars '(
+                           (mu4e-trash-folder . "/Exchange/Deleted Items")
+                           (mu4e-refile-folder . exchange-mu4e-refile-folder)
+                           ))))
+      (use-package mu4e-alert
+        :ensure t
+        :init
+        (setq mu4e-alert-interesting-mail-query
+              (concat
+               "flag:unread maildir:/Exchange/Inbox"
+               " OR "
+               "flag:unread maildir:/Gmail/Inbox"))
+        (setq mu4e-alert-email-notification-types '(count))
+        (mu4e-alert-enable-mode-line-display)
+        (defun gjstein-refresh-mu4e-alert-mode-line ()
+          (interactive)
+          (mu4e~proc-kill)
+          (mu4e-alert-enable-mode-line-display))
+        (run-with-timer 0 600 'gjstein-refresh-mu4e-alert-mode-line))))
+  ;; --- SAGE ---
+  (when (file-directory-p "/usr/lib/sagemath")
+    (use-package sage
+      :defer t
+      :load-path "/usr/lib/sagemath/local/share/emacs"
+      :config
+      (setq sage-command "/usr/lib/sagemath/sage")))))
 
 (provide '.emacs)
 ;;; .emacs ends here

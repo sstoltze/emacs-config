@@ -546,7 +546,6 @@ point reaches the beginning or end of the buffer, stop there."
     (setq slime-contribs '(slime-fancy))))
 
 ;; --- LaTeX ---
-;; Install auctex
 (use-package tex
   :ensure auctex
   :defer t
@@ -733,8 +732,37 @@ point reaches the beginning or end of the buffer, stop there."
             (local-set-key (kbd "C-z")
                            outline-mode-prefix-map)))
 
-;; --- Windows specific ---
-(when (eq system-type 'windows-nt)
+;; Set initial frame size and position
+(defun my/set-normal-frame ()
+  (let* ((width-factor  0.80)
+         (height-factor 0.80)
+         (position-factor 3)
+ 	 (a-width  (* (display-pixel-width)  width-factor))
+         (a-height (* (display-pixel-height) height-factor))
+         (a-left (truncate (/ (- (display-pixel-width)  a-width)  position-factor)))
+ 	 (a-top  (truncate (/ (- (display-pixel-height) a-height) position-factor))))
+    (set-frame-position (selected-frame) a-left a-top)
+    (set-frame-size     (selected-frame) (truncate a-width) (truncate a-height) t)))
+(defun my/set-left-small-frame ()
+  (set-frame-position (selected-frame) 0 0)
+  (set-frame-size     (selected-frame) (truncate (/ (display-pixel-width) 2.2)) (truncate (* (display-pixel-height) 0.9)) t))
+(defun my/set-right-small-frame ()
+  (set-frame-position (selected-frame) -1 0)
+  (set-frame-size     (selected-frame) (truncate (/ (display-pixel-width) 2.2)) (truncate (* (display-pixel-height) 0.9)) t))
+
+;; Frame resizing and theme
+(cond ((display-graphic-p)
+       (setq frame-resize-pixelwise t)
+       (my/set-normal-frame))
+      (t (use-package zenburn-theme
+           :ensure t
+           :config
+           (load-theme 'zenburn t))))
+
+;; --- System specific ---
+(cond
+ ;; --- Windows specific ---
+ ((eq system-type 'windows-nt)
   (setq default-directory (concat "C:/Users/"
                                   (user-login-name)
                                   "/Desktop/"))
@@ -748,10 +776,56 @@ point reaches the beginning or end of the buffer, stop there."
                                ";"
                                (getenv "PATH")))
         (add-to-list 'exec-path
-                     plink-file)))))
+                     plink-file))))
 
-;; --- Linux specific ---
-(when (eq system-type 'gnu/linux)
+  ;; Alt-enter toggles screensize
+  ;; Only needed on windows
+  (defmacro handle-fullscreen-mode (func)
+    `(progn
+       (when *fullscreen-set*
+         (toggle-frame-fullscreen)
+         (setq *fullscreen-set* nil))
+       (,func)))
+  (defvar *fullscreen-set* nil)
+  (defvar *window-status* 0)
+  (defvar *window-options* (list
+                            (lambda ()
+                              (when (not *fullscreen-set*)
+                                (toggle-frame-fullscreen)
+                                (setq *fullscreen-set* t)))
+                            (lambda ()
+                              (handle-fullscreen-mode my/set-left-small-frame))
+                            (lambda ()
+                              (handle-fullscreen-mode my/set-right-small-frame))
+                            (lambda ()
+                              (handle-fullscreen-mode my/set-normal-frame))))
+  (defun toggle-window (arg)
+    (interactive "P")
+    (when arg
+      (message "%s" arg)
+      (setq *window-status* (mod (prefix-numeric-value arg)
+                                 (length *window-options*))))
+    (funcall (nth *window-status* *window-options*))
+    (setq *window-status* (mod (1+ *window-status*)
+                               (length *window-options*))))
+  (global-set-key (kbd "M-RET") 'toggle-window)
+
+  ;; --- Work specific ---
+  (when (and (eq system-type 'windows-nt)
+             (equal (user-login-name) "sisto"))
+    (use-package cobol-mode
+      :ensure t
+      :defer t
+      :init
+      (setq auto-mode-alist
+            (append
+             '(("\\.cob\\'" . cobol-mode)
+               ("\\.cbl\\'" . cobol-mode)
+               ("\\.cpy\\'" . cobol-mode))
+             auto-mode-alist)))))
+
+ ;; --- Linux specific ---
+ ((eq system-type 'gnu/linux)
   ;; --- Mu4e ---
   (when (file-directory-p "/usr/local/share/emacs/site-lisp/mu4e")
     (use-package mu4e
@@ -819,75 +893,7 @@ point reaches the beginning or end of the buffer, stop there."
       :defer t
       :load-path "/usr/lib/sagemath/local/share/emacs"
       :config
-      (setq sage-command "/usr/lib/sagemath/sage"))))
-
-;; --- Work specific ---
-(when (and (eq system-type 'windows-nt)
-           (equal (user-login-name) "sisto"))
-  (use-package cobol-mode
-    :ensure t
-    :defer t
-    :init
-    (setq auto-mode-alist
-          (append
-           '(("\\.cob\\'" . cobol-mode)
-             ("\\.cbl\\'" . cobol-mode)
-             ("\\.cpy\\'" . cobol-mode))
-           auto-mode-alist))))
-
-;; Set initial frame size and position
-(defun my/set-normal-frame ()
-  (let* ((width-factor  0.80)
-         (height-factor 0.80)
-         (position-factor 3)
- 	 (a-width  (* (display-pixel-width)  width-factor))
-         (a-height (* (display-pixel-height) height-factor))
-         (a-left (truncate (/ (- (display-pixel-width)  a-width)  position-factor)))
- 	 (a-top  (truncate (/ (- (display-pixel-height) a-height) position-factor))))
-    (set-frame-position (selected-frame) a-left a-top)
-    (set-frame-size     (selected-frame) (truncate a-width) (truncate a-height) t)))
-(defun my/set-left-small-frame ()
-  (set-frame-position (selected-frame) 0 0)
-  (set-frame-size     (selected-frame) (truncate (/ (display-pixel-width) 2.2)) (truncate (* (display-pixel-height) 0.9)) t))
-(defun my/set-right-small-frame ()
-  (set-frame-position (selected-frame) -1 0)
-  (set-frame-size     (selected-frame) (truncate (/ (display-pixel-width) 2.2)) (truncate (* (display-pixel-height) 0.9)) t))
-
-;; Frame resizing
-(setq frame-resize-pixelwise t)
-(when window-system
-  (my/set-normal-frame))
-
-;; Alt-enter toggles screensize
-(defmacro handle-fullscreen-mode (func)
-  `(progn
-     (when *fullscreen-set*
-       (toggle-frame-fullscreen)
-       (setq *fullscreen-set* nil))
-     (,func)))
-(defvar *fullscreen-set* nil)
-(defvar *window-status* 0)
-(defvar *window-options* (list
-                          (lambda ()
-                            (when (not *fullscreen-set*)
-                              (toggle-frame-fullscreen)
-                              (setq *fullscreen-set* t)))
-                          (lambda ()
-                            (handle-fullscreen-mode my/set-left-small-frame))
-                          (lambda ()
-                            (handle-fullscreen-mode my/set-right-small-frame))
-                          (lambda ()
-                            (handle-fullscreen-mode my/set-normal-frame))))
-(defun toggle-window (arg)
-  (interactive "P")
-  (when arg
-    (message "%s" arg)
-    (setq *window-status* (mod (prefix-numeric-value arg)
-                               (length *window-options*))))
-  (funcall (nth *window-status* *window-options*))
-  (setq *window-status* (mod (1+ *window-status*)
-                             (length *window-options*))))
-(global-set-key (kbd "M-RET") 'toggle-window)
+      (setq sage-command "/usr/lib/sagemath/sage")))))
 
 (provide '.emacs)
 ;;; .emacs ends here
