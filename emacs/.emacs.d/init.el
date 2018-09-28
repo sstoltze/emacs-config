@@ -43,7 +43,7 @@
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (mu4e-alert haskell-mode auctex rainbow-mode org guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
+    (outline-magic mu4e-alert haskell-mode auctex rainbow-mode org guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#2aa198" :weight bold))))
@@ -115,8 +115,8 @@
 ;; --- Benchmark init ---
 (use-package benchmark-init
   :ensure t
-  :config
   ;; To disable collection of benchmark data after init is done.
+  :config
   (add-hook 'after-init-hook 'benchmark-init/deactivate))
 
 ;; Encoding
@@ -592,12 +592,12 @@ point reaches the beginning or end of the buffer, stop there."
     (setq haskell-indent-spaces 4)
     (use-package intero
       :ensure t
-      :config
+      :init
       (add-hook 'haskell-mode-hook
                 'intero-mode))
     (use-package flycheck-haskell
       :ensure t
-      :config
+      :init
       (add-hook 'haskell-mode-hook
                 'flycheck-haskell-setup))))
 
@@ -662,17 +662,17 @@ point reaches the beginning or end of the buffer, stop there."
   :pin elpy
   :defer t
   :init
-  (add-hook 'python-mode-hook
-            (lambda ()
-              (if (or (eq system-type 'windows-nt)
-                      (eq system-type 'ms-dos))
-                  (setq python-shell-completion-native-disabled-interpreters
-                        '("python")))
-              (elpy-mode t)
-              ))
-  (add-hook 'inferior-python-mode-hook
-            (lambda ()
-              (python-shell-switch-to-shell)))
+  (progn
+    ;; Silence warning when guessing indent, default is 4 spaces
+    (setq python-indent-guess-indent-offset-verbose nil)
+    (add-hook 'python-mode-hook '(lambda ()
+                                   (if (or (eq system-type 'windows-nt)
+                                           (eq system-type 'ms-dos))
+                                       (setq python-shell-completion-native-disabled-interpreters
+                                             '("python")))
+                                   (elpy-mode t)))
+    (add-hook 'inferior-python-mode-hook '(lambda ()
+                                            (python-shell-switch-to-shell))))
   :config
   (progn
     (setq elpy-shell-use-project-root nil)
@@ -727,6 +727,9 @@ point reaches the beginning or end of the buffer, stop there."
           (lambda () (outline-minor-mode 1)))
 (add-hook 'outline-minor-mode-hook
           (lambda ()
+            (use-package outline-magic
+              :ensure t
+              :bind (("<C-tab>" . 'outline-cycle)))
             (local-set-key (kbd "C-z")
                            outline-mode-prefix-map)))
 
@@ -831,32 +834,6 @@ point reaches the beginning or end of the buffer, stop there."
              ("\\.cbl\\'" . cobol-mode)
              ("\\.cpy\\'" . cobol-mode))
            auto-mode-alist))))
-
-;; Rotate windows on C-<tab>
-;; http://whattheemacsd.com/buffer-defuns.el-02.html#disqus_thread
-(defun rotate-windows ()
-  "Rotate your windows."
-  (interactive)
-  (cond ((not (> (count-windows) 1))
-         (message "You can't rotate a single window!"))
-        (t
-         (let ((i 1)
-               (numWindows (count-windows)))
-           (while  (< i numWindows)
-             (let* ((w1 (elt (window-list) i))
-                    (w2 (elt (window-list) (+ (% i numWindows) 1)))
-
-                    (b1 (window-buffer w1))
-                    (b2 (window-buffer w2))
-
-                    (s1 (window-start w1))
-                    (s2 (window-start w2)))
-               (set-window-buffer w1 b2)
-               (set-window-buffer w2 b1)
-               (set-window-start w1 s2)
-               (set-window-start w2 s1)
-               (setq i (1+ i))))))))
-(global-set-key (kbd "<C-tab>") 'rotate-windows)
 
 ;; Set initial frame size and position
 (defun my/set-normal-frame ()
