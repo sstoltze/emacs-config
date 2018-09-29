@@ -5,7 +5,7 @@ linux_no_folding  = $(common_no_folding)
 cygwin_packages   = $(common_packages)
 cygwin_no_folding = $(common_no_folding)
 
-.PHONY: install uninstall update linux linux-remove cygwin cygwin-remove windows windows-remove work work-remove new-comp mbsync-setup
+.PHONY: install uninstall update linux linux-remove cygwin cygwin-remove windows windows-remove work work-remove new-comp mbsync-setup remove-work remove update-work work-update
 
 .DEFAULT_GOAL:=update
 
@@ -22,6 +22,8 @@ ifeq ($(shell uname),Linux)
 else ifeq ($(findstring CYGWIN,$(shell uname)),CYGWIN)
 	make cygwin-remove
 endif
+
+remove: uninstall
 
 update:
 	git pull
@@ -64,6 +66,12 @@ work-remove:
 ifeq ($(findstring CYGWIN,$(shell uname)),CYGWIN)
 	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig
 endif
+
+remove-work: work-remove
+
+update-work: work-remove update work
+
+work-update: update-work
 
 new-comp: install
 	chsh -s /usr/bin/fish
