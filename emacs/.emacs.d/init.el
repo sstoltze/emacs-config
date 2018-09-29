@@ -431,11 +431,11 @@ point reaches the beginning or end of the buffer, stop there."
     (setq org-completion-use-ido t)
     ;; At work
     (when (and (eq system-type 'windows-nt)
-               (file-exists-p "C:\\Progra~2\\LibreOffice\\program\\soffice.exe")
+               (file-exists-p "C:/Progra~2/LibreOffice/program/soffice.exe")
                (equal (user-login-name) "sisto")) ;; Just for work
       ;; Export to .docx
       (setq org-odt-preferred-output-format "docx")
-      (setq org-odt-convert-processes '(("LibreOffice" "C:\\Progra~2\\LibreOffice\\program\\soffice.exe --headless --convert-to %f%x --outdir %d %i"))))
+      (setq org-odt-convert-processes '(("LibreOffice" "C:/Progra~2/LibreOffice/program/soffice.exe --headless --convert-to %f%x --outdir %d %i"))))
     ;; Refile settings
     ;; Exclude DONE state tasks from refile targets
     (defun bh/verify-refile-target ()
@@ -768,7 +768,7 @@ point reaches the beginning or end of the buffer, stop there."
                                   (user-login-name)
                                   "/Desktop/"))
   ;; tramp
-  (let ((plink-file "C:\\Program Files (x86)\\PuTTY\\plink.exe"))
+  (let ((plink-file "C:/Program Files (x86)/PuTTY/plink.exe"))
     (when (file-exists-p plink-file)
       (setq tramp-default-method "plink")
       (when (not (string-match plink-file
