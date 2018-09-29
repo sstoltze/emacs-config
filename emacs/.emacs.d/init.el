@@ -767,7 +767,7 @@ point reaches the beginning or end of the buffer, stop there."
   (setq default-directory (concat "C:/Users/"
                                   (user-login-name)
                                   "/Desktop/"))
-  ;; tramp
+  ;; tramp - C-x C-f /ftp:<user>@host: C-d to open dired
   (let ((plink-file "C:/Program Files (x86)/PuTTY/plink.exe"))
     (when (file-exists-p plink-file)
       (setq tramp-default-method "plink")
@@ -780,7 +780,6 @@ point reaches the beginning or end of the buffer, stop there."
                      plink-file))))
 
   ;; Alt-enter toggles screensize
-  ;; Only needed on windows
   (defmacro handle-fullscreen-mode (func)
     `(progn
        (when *fullscreen-set*
