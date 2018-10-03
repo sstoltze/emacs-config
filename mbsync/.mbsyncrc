@@ -5,7 +5,7 @@ Host imap.gmail.com
 User sstoltze@gmail.com
 # To store the password in an encrypted file use PassCmd instead of Pass
 # Use 'gpg2 -o ~/.mail/.mailpass.gpg -r $user -e' and enter password <RET> C-d
-PassCmd "gpg2 -q --for-your-eyes-only --no-tty --batch -d ~/.mail/.mailpass.gpg"
+PassCmd "gpg2 -q --for-your-eyes-only --no-tty -d ~/.mail/.mailpass.gpg"
 #
 # Use SSL
 SSLType IMAPS
