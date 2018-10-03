@@ -1,12 +1,12 @@
 ;;; .emacs --- Init-file
 
 ;;; Commentary:
-;;;   Inspiration:
-;;;    - https://www.masteringemacs.org/
-;;;    - https://writequit.org/org/settings.html
-;;;    - https://home.elis.nu/emacs/
-;;;    - https://pages.sachachua.com/.emacs.d/Sacha.html
-;;;    - https://github.com/jorgenschaefer/Config/blob/master/emacs.el
+;;   Inspiration:
+;;    - https://www.masteringemacs.org/
+;;    - https://writequit.org/org/settings.html
+;;    - https://home.elis.nu/emacs/
+;;    - https://pages.sachachua.com/.emacs.d/Sacha.html
+;;    - https://github.com/jorgenschaefer/Config/blob/master/emacs.el
 
 ;;; Code:
 (custom-set-variables
@@ -91,7 +91,7 @@
 
 ;;; *** General setup ***
 
-;; Prepare use-package
+;;;; --- Use-package ---
 (require 'package)
 (setq package-enable-at-startup nil)
 (add-to-list 'package-archives
@@ -112,19 +112,20 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-;; --- Benchmark init ---
+;;;; --- Benchmark init ---
 (use-package benchmark-init
   :ensure t
   ;; To disable collection of benchmark data after init is done.
   :config
   (add-hook 'after-init-hook 'benchmark-init/deactivate))
 
-;; Encoding
+;;;; --- Encoding ---
 (prefer-coding-system        'utf-8)
 (set-default-coding-systems  'utf-8)
 (set-language-environment    'utf-8)
 (set-selection-coding-system 'utf-8)
 
+;;;; --- Setup ---
 ;; Setup directories in ~/.emacs.d/
 (dolist (folder '("lisp" "backups" "temp" "autosave"))
   (let ((dir (concat "~/.emacs.d/" folder)))
@@ -135,6 +136,12 @@
       temporary-file-directory        "~/.emacs.d/temp/"
       auto-save-file-name-transforms '((".*" "~/.emacs.d/autosave/" t)))
 
+;; Disable various modes
+(dolist (mode '(tool-bar-mode scroll-bar-mode tooltip-mode))
+  (when (fboundp mode)
+    (funcall mode -1)))
+
+;; Make it easier to answer prompts
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 (setq inhibit-startup-screen    t
@@ -143,27 +150,28 @@
       select-enable-clipboard   t
       delete-by-moving-to-trash t)
 
+;; Make case insensitive
 (setq completion-ignore-case t
       read-file-name-completion-ignore-case t
       read-buffer-completion-ignore-case t)
 
+;; Add newlines when scrolling a file
 (setq next-line-add-newlines t)
+;; Delete extra lines and spaces when saving
 (add-hook 'before-save-hook
           'delete-trailing-whitespace)
 
+;; Do not use tabs
 (setq-default indent-tabs-mode nil)
 
-;; Disable various modes
-(dolist (mode '(tool-bar-mode scroll-bar-mode tooltip-mode))
-  (when (fboundp mode)
-    (funcall mode -1)))
-
+;; Add directory name to buffer if name is not unique
 (setq uniquify-buffer-name-style 'forward)
 
 ;; Unset suspend keys. Never used anyway
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-x C-z"))
 
+;; Show matching parens
 (show-paren-mode t)
 
 ;; Prettify symbols
@@ -174,17 +182,20 @@
 (put 'upcase-region   'disabled nil)
 (put 'downcase-region 'disabled nil)
 
-;; Press 'C-x r j e' to go to .emacs
+;; Press 'C-x r j e' to go to init.el
 (set-register ?e '(file . "~/.emacs.d/init.el"))
 
 ;; Personal info
 (setq user-full-name    "Simon Stoltze"
       user-mail-address "sstoltze@gmail.com")
 
+;; Disable the bell
 (setq ring-bell-function (lambda ()))
 
+;; Remove mouse pointer while typing
 (setq make-pointer-invisible t)
 
+;; Font lock
 (global-font-lock-mode        t)
 (setq gc-cons-threshold       (* 100 1024 1024)) ;; 100 mb
 ;; Allow font-lock-mode to do background parsing
@@ -200,7 +211,7 @@
       backup-by-copying    t
       vc-follow-symlinks   t)
 
-;; --- Modeline ---
+;;;; --- Modeline ---
 ;; Column in modeline
 (column-number-mode 1)
 
@@ -212,7 +223,7 @@
 (setq display-time-use-mail-icon        nil)
 (display-time-mode t)
 
-;; --- Calendar ---
+;;;; --- Calendar ---
 ;; Weeks start monday
 (setq-default calendar-week-start-day 1)
 ;; Week number in calendar
@@ -235,7 +246,7 @@
       (propertize "Wk"
                   'font-lock-face 'calendar-iso-week-header-face))
 
-;; --- Save history ---
+;; Save history
 (setq savehist-file "~/.emacs.d/savehist")
 (savehist-mode 1)
 (setq history-length t)
@@ -245,26 +256,6 @@
       '(kill-ring
         search-ring
         regexp-search-ring))
-
-;; Not really used...
-;; ;; --- List of recent files ---
-;; (require 'recentf)
-;; (global-set-key (kbd "C-x C-r") 'ido-recentf-open)
-;; (recentf-mode t)
-;; (setq recentf-max-saved-items 50
-;;       recentf-max-menu-items 15)
-;; (defun ido-recentf-open ()
-;;   "Use `ido-completing-read' to \\[find-file] a recent file."
-;;   (interactive)
-;;   (if (find-file (ido-completing-read "Find recent file: " recentf-list))
-;;       (message "Opening file...")
-;;     (message "Aborting")))
-
-;; ;; --- re-builder ---
-;; ;; M-x re-builder for making regex and searching current buffer
-;; ;; 'string avoids double-escaping in eg. \\.
-;; (require 're-builder)
-;; (setq reb-re-syntax 'string)
 
 ;; Make C-x C-x not activate region
 (defun exchange-point-and-mark-no-activate ()
@@ -304,7 +295,8 @@ point reaches the beginning or end of the buffer, stop there."
                 'newline-and-indent)
 
 ;;; *** Packages ***
-;; --- Visible mark ---
+
+;;;; --- Visible mark ---
 (use-package visible-mark
   :ensure t
   :init
@@ -321,13 +313,14 @@ point reaches the beginning or end of the buffer, stop there."
                               visible-mark-active))
   (global-visible-mark-mode 1))
 
+;;;; --- Guru-mode ----
 (use-package guru-mode
   :ensure t
   :init
   (setq guru-warn-only t)
   (guru-global-mode 1))
 
-;; --- Dired ---
+;;;; --- Dired ---
 (use-package dired
   :bind ("C-x C-j" . dired-jump)
   :config
@@ -356,7 +349,7 @@ point reaches the beginning or end of the buffer, stop there."
               (lambda ()
                 (hl-line-mode 1)))))
 
-;; --- Paredit ---
+;;;; --- Paredit ---
 ;; http://pub.gajendra.net/src/paredit-refcard.pdf
 (use-package paredit
   :ensure t
@@ -369,7 +362,7 @@ point reaches the beginning or end of the buffer, stop there."
   (add-hook 'lisp-interaction-mode-hook            #'enable-paredit-mode)
   (add-hook 'scheme-mode-hook                      #'enable-paredit-mode))
 
-;; --- Flycheck ---
+;;;; --- Flycheck ---
 (use-package flycheck
   :ensure t
   :defer t
@@ -377,7 +370,7 @@ point reaches the beginning or end of the buffer, stop there."
   (add-hook 'prog-mode-hook 'flycheck-mode)
   (add-hook 'text-mode-hook 'flycheck-mode))
 
-;; --- org-mode ---
+;;;; --- Org ---
 (require 'org-install)
 (define-key global-map "\C-cl" 'org-store-link)
 (define-key global-map "\C-cc" 'org-capture)
@@ -465,13 +458,13 @@ point reaches the beginning or end of the buffer, stop there."
                              (org-display-inline-images)
                              (my-org-hook)))
 
-;; --- Ido ---
-;; * Tips:
-;; ** C-p makes ido only match beginning of names
-;; ** While doing C-x C-f:
-;; *** C-d will open dired
-;; *** M-d will search in subdirs
-;; *** M-m will create a subdirectory
+;;;; --- Ido ---
+;;;;; Tips:
+;;;;; C-p makes ido only match beginning of names
+;;;;; While doing C-x C-f:
+;;;;; - C-d will open dired
+;;;;; - M-d will search in subdirs
+;;;;; - M-m will create a subdirectory
 (use-package ido
   :ensure t
   :config
@@ -492,7 +485,7 @@ point reaches the beginning or end of the buffer, stop there."
     (setq ido-case-fold t)
     (ido-mode t)))
 
-;; --- Multiple cursors ---
+;;;; --- Multiple cursors ---
 (use-package multiple-cursors
   :ensure t
   :bind
@@ -506,7 +499,7 @@ point reaches the beginning or end of the buffer, stop there."
    ("C-c m s" . mc/mark-sgml-tag-pair)
    ("C-c m d" . mc/mark-all-like-this-in-defun)))
 
-;; --- Semantic ---
+;;;; --- Semantic ---
 (defun my-semantic-hook ()
   "Hook for semantic to add TAGS to menubar."
   (imenu-add-to-menubar "TAGS")
@@ -525,7 +518,7 @@ point reaches the beginning or end of the buffer, stop there."
                'global-semantic-idle-summary-mode)
   (semantic-mode t))
 
-;; --- Lisp ---
+;;;; --- Lisp ---
 (use-package slime
   :ensure t
   :defer t
@@ -545,7 +538,7 @@ point reaches the beginning or end of the buffer, stop there."
     (setq slime-default-lisp "sbcl")
     (setq slime-contribs '(slime-fancy))))
 
-;; --- LaTeX ---
+;;;; --- LaTeX ---
 (use-package tex
   :ensure auctex
   :defer t
@@ -553,14 +546,14 @@ point reaches the beginning or end of the buffer, stop there."
   (add-hook 'LaTeX-mode-hook
             'turn-on-auto-fill))
 
-;; --- Text ---
+;;;; --- Text-mode ---
 ;; visual-line-mode only pretends to insert linebreaks
 (remove-hook 'text-mode-hook
              'turn-on-auto-fill)
 (add-hook    'text-mode-hook
              'turn-on-visual-line-mode)
 
-;; --- Ediff ---
+;;;; --- Ediff ---
 ;; Ignore whitespace, no popup-window and split horizontally
 (add-hook 'ediff-before-setup-hook
           (lambda ()
@@ -568,7 +561,7 @@ point reaches the beginning or end of the buffer, stop there."
                   ediff-window-setup-function 'ediff-setup-windows-plain
                   ediff-split-window-function 'split-window-horizontally)))
 
-;; --- HTML/CSS ---
+;;;; --- HTML/CSS ---
 (use-package rainbow-mode
   :ensure t
   :defer t
@@ -576,10 +569,10 @@ point reaches the beginning or end of the buffer, stop there."
   (add-hook 'css-mode-hook
             'rainbow-mode))
 
-;; --- CSV ---
+;;;; --- CSV ---
 (setq csv-separators (quote (";")))
 
-;; --- Haskell ---
+;;;; --- Haskell ---
 (use-package haskell-mode
   :ensure t
   :defer t
@@ -600,7 +593,7 @@ point reaches the beginning or end of the buffer, stop there."
       (add-hook 'haskell-mode-hook
                 'flycheck-haskell-setup))))
 
-;; --- C/C++ ---
+;;;; --- C/C++ ---
 (defun common-c-hook ()
   "Hook for C/C++."
   (c-set-style "bsd")
@@ -619,22 +612,22 @@ point reaches the beginning or end of the buffer, stop there."
             (common-c-hook)
             (my-cpp-hook)))
 
-;; --- Java ---
+;;;; --- Java ---
 (add-hook 'java-mode-hook
           'my-semantic-hook)
 
-;; --- Magit ---
+;;;; --- Magit ---
 (use-package magit
   :ensure t
   :bind (("C-x g"   . magit-status)           ; Display the main magit popup
          ("C-x M-g" . magit-dispatch-popup))) ; Display keybinds for magit
 
-;; --- Fish ---
+;;;; --- Fish ---
 (use-package fish-mode
   :defer t
   :ensure t)
 
-;; --- ESS - Emacs Speaks Statistics ---
+;;;; --- ESS - Emacs Speaks Statistics ---
 (use-package ess-site
   :ensure ess
   :defer t
@@ -644,7 +637,7 @@ point reaches the beginning or end of the buffer, stop there."
       :defer t
       :ensure t)))
 
-;; --- Stan ---
+;;;; --- Stan ---
 (use-package stan-mode
   :ensure t
   :defer t
@@ -654,7 +647,7 @@ point reaches the beginning or end of the buffer, stop there."
       :defer t
       :ensure t)))
 
-;; --- Python ---
+;;;; --- Python ---
 ;; python -m pip install --upgrade jedi rope black flake8 yapf autopep8 elpy
 (use-package elpy
   :ensure t
@@ -695,7 +688,7 @@ point reaches the beginning or end of the buffer, stop there."
                 (delete 'elpy-module-company
                         'elpy-modules)))))
 
-;; --- Ocaml ---
+;;;; --- Ocaml ---
 (use-package tuareg
   :ensure t
   :defer t
@@ -711,7 +704,7 @@ point reaches the beginning or end of the buffer, stop there."
       :config
       (flycheck-ocaml-setup))))
 
-;; --- Twitter ---
+;;;; --- Twitter ---
 (use-package twittering-mode
   :ensure t
   :defer t
@@ -719,7 +712,10 @@ point reaches the beginning or end of the buffer, stop there."
   (setq twittering-use-master-password t)
   (setq twittering-icon-mode t))
 
-;; --- Outline minor mode ---
+;;;; --- Outline ---
+;; For elisp:
+;; - ;;; is a headline
+;; - ;;;; is on the same level as a top-level sexp
 (add-hook 'prog-mode-hook
           (lambda () (outline-minor-mode 1)))
 (add-hook 'org-mode-hook
@@ -732,6 +728,7 @@ point reaches the beginning or end of the buffer, stop there."
             (local-set-key (kbd "C-z")
                            outline-mode-prefix-map)))
 
+;;;; --- Frame-setup ---
 ;; Set initial frame size and position
 (defun my/set-normal-frame ()
   (let* ((width-factor  0.80)
@@ -751,16 +748,16 @@ point reaches the beginning or end of the buffer, stop there."
   (set-frame-size     (selected-frame) (truncate (/ (display-pixel-width) 2.2)) (truncate (* (display-pixel-height) 0.9)) t))
 
 ;; Frame resizing and theme
-(cond ((display-graphic-p)
+(cond ((display-graphic-p) ;; Window system
        (setq frame-resize-pixelwise t)
        (my/set-normal-frame))
-      ;; Theme for terminal
-      (t (use-package hc-zenburn-theme
-           :ensure t
-           :config
-           (load-theme 'hc-zenburn t))))
+      (t ;; Terminal
+       (use-package hc-zenburn-theme
+         :ensure t
+         :config
+         (load-theme 'hc-zenburn t))))
 
-;; --- System specific ---
+;;;; --- System specific ---
 (cond
  ;; --- Windows specific ---
  ((eq system-type 'windows-nt)
@@ -810,7 +807,7 @@ point reaches the beginning or end of the buffer, stop there."
                                (length *window-options*))))
   (global-set-key (kbd "M-RET") 'toggle-window)
 
-  ;; --- Work specific ---
+  ;;;;; --- Work specific ---
   (when (and (eq system-type 'windows-nt)
              (equal (user-login-name) "sisto"))
     (use-package cobol-mode
@@ -833,6 +830,7 @@ point reaches the beginning or end of the buffer, stop there."
       :load-path "/usr/local/share/emacs/site-lisp/mu/mu4e"
       :config
       (setq mu4e-maildir "~/.mail")
+      ;; May have to run mbsync in console first to enter password
       (setq mu4e-get-mail-command "mbsync -a")
       ;; These allow entry of passphrase in emacs
       (setq epa-pinentry-mode 'loopback)
