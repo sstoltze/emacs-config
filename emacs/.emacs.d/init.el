@@ -704,11 +704,19 @@ point reaches the beginning or end of the buffer, stop there."
       :config
       (flycheck-ocaml-setup))))
 
+;;;; --- EPA ---
+(defun my/setup-epa ()
+  "Quick setup for EPA."
+  ;; These allow entry of passphrase in emacs
+  (setq epa-pinentry-mode 'loopback)
+  (pinentry-start))
+
 ;;;; --- Twitter ---
 (use-package twittering-mode
   :ensure t
   :defer t
   :config
+  (my/setup-epa)
   (setq twittering-use-master-password t)
   (setq twittering-icon-mode t))
 
@@ -832,9 +840,7 @@ point reaches the beginning or end of the buffer, stop there."
       (setq mu4e-maildir "~/.mail")
       ;; May have to run mbsync in console first to enter password
       (setq mu4e-get-mail-command "mbsync -a")
-      ;; These allow entry of passphrase in emacs
-      (setq epa-pinentry-mode 'loopback)
-      (pinentry-start)
+      (my/setup-epa)
       (setq
        user-mail-address "sstoltze@gmail.com" ;; Probably reset this when multiple mailboxes
        user-full-name  "Simon Stoltze")
