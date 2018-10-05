@@ -355,6 +355,43 @@ point reaches the beginning or end of the buffer, stop there."
               (lambda ()
                 (hl-line-mode 1)))))
 
+;;;; --- Eshell ---
+(use-package eshell
+  :bind ("C-c e" . eshell)
+  :config
+  (require 'em-smart)
+  (add-hook 'eshell-mode-hook
+            (lambda () (eshell-smart-initialize)))
+  (setq eshell-save-history-on-exit      t
+        eshell-glob-case-insensitive     t
+        eshell-error-if-no-glob          t
+        eshell-cmpl-cycle-completions    t
+        eshell-where-to-jump             'begin
+        eshell-review-quick-commands     nil
+        eshell-smart-space-goes-to-end   t
+        ;eshell-scroll-to-bottom-on-input t
+        )
+  (setq eshell-prompt-function
+        (lambda ()
+          (concat (format-time-string "%H:%M" (current-time))
+                  " "
+                  (propertize (user-login-name)
+                              'face (list :foreground "light sky blue"))
+                  " "
+                  (propertize (eshell/pwd)
+                              'face (list :foreground "light goldenrod"))
+                  (propertize (or (ignore-errors (format " (%s)"
+                                                         (vc-responsible-backend
+                                                          default-directory)))
+                                  "")
+                              'face (list :foreground "pale goldenrod"))
+                  (propertize " >"
+                              'face (list :foreground "light goldenrod"))
+                  ;; This resets text properties
+                  " ")))
+  (setq eshell-prompt-regexp "^[0-9]\\{1,2\\}:[0-9]\\{2\\} .+ .+ > ")
+  )
+
 ;;;; --- Paredit ---
 ;; http://pub.gajendra.net/src/paredit-refcard.pdf
 (use-package paredit
