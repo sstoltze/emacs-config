@@ -385,7 +385,7 @@ point reaches the beginning or end of the buffer, stop there."
                   (propertize (user-login-name)
                               'face (list :foreground "light sky blue"))
                   " "
-                  (propertize (eshell/pwd)
+                  (propertize (fish-path (eshell/pwd) 20)
                               'face (list :foreground "light goldenrod"))
                   (propertize (sstoltze/make-vc-prompt)
                               'face (list :foreground "pale goldenrod"))
@@ -396,7 +396,8 @@ point reaches the beginning or end of the buffer, stop there."
   (setq eshell-prompt-regexp "^[0-9]\\{1,2\\}:[0-9]\\{2\\} .+ .+ > "))
 (defun sstoltze/make-vc-prompt ()
   "Small helper for eshell-prompt-function.
-If includes git branch-name if magit is loaded.
+If includes git branch-name if magit is loaded
+and tries to emulate the fish git prompt.
 
 Can be replaced with:
 \(or (ignore-errors (format \" (%s)\"
@@ -404,14 +405,60 @@ Can be replaced with:
                             default-directory)))
     \"\")"
   (let ((vc-response (or (ignore-errors (format "%s"
-                                                (vc-responsible-backend default-directory)))
+                                                (vc-responsible-backend
+                                                 default-directory)))
                          "")))
-    (when (equal vc-response "Git")
-      (setq vc-response (or (ignore-errors (magit-get-current-branch))
-                            "Git")))
-    (if (equal vc-response "")
-        ""
-      (format " (%s)" vc-response))))
+    (cond ((equal vc-response "Git")
+           (let ((branch    (or (ignore-errors (magit-get-current-branch))
+                                "Git"))
+                 (untracked (or (ignore-errors (length (magit-untracked-files)))
+                                0))
+                 (unstaged  (or (ignore-errors (length (magit-unstaged-files)))
+                                0))
+                 (staged    (or (ignore-errors (length (magit-staged-files)))
+                                0)))
+             (format " (%s%s%s%s%s)"
+                     branch
+                     (if (> (+ untracked unstaged staged) 0)
+                         "|"
+                       (if (equal branch "Git")
+                           ""
+                         "|✔"))
+                     (if (> untracked 0)
+                         (format "…%s" untracked)
+                       "")
+                     (if (> unstaged 0)
+                         (format "+%s" unstaged)
+                       "")
+                     (if (> staged 0)
+                         (format "→%s" staged)
+                       "")
+                     )))
+          ((equal vc-response "") "")
+          (t (format " (%s)" vc-response)))))
+(defun fish-path (path max-len)
+  "Return a potentially trimmed-down version of the directory PATH, replacing
+parent directories with their initial characters to try to get the character
+length of PATH (sans directory slashes) down to MAX-LEN."
+  (let* ((components (split-string (abbreviate-file-name path) "/"))
+         (len (+ (1- (length components))
+                 (seq-reduce '+ (mapcar 'length components) 0)))
+         (str ""))
+    (while (and (> len max-len)
+                (cdr components))
+      (setq str (concat str
+                        (cond ((= 0 (length (car components))) "/")
+                              ((= 1 (length (car components)))
+                               (concat (car components) "/"))
+                              (t
+                               (if (string= "."
+                                            (string (elt (car components) 0)))
+                                   (concat (substring (car components) 0 2)
+                                           "/")
+                                 (string (elt (car components) 0) ?/)))))
+            len (- len (1- (length (car components))))
+            components (cdr components)))
+    (concat str (seq-reduce (lambda (a b) (concat a "/" b)) (cdr components) (car components)))))
 
 ;;;; --- Paredit ---
 ;; http://pub.gajendra.net/src/paredit-refcard.pdf
