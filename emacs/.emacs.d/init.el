@@ -363,15 +363,16 @@ point reaches the beginning or end of the buffer, stop there."
   (add-hook 'eshell-mode-hook
             (lambda ()
               (eshell-smart-initialize)
-              (eshell/alias "emacs" "find-file $1")))
-  (setq eshell-save-history-on-exit      t
-        eshell-glob-case-insensitive     t
-        eshell-error-if-no-glob          t
-        eshell-cmpl-cycle-completions    nil
-        eshell-cmpl-ignore-case          t
-        eshell-where-to-jump             'begin
-        eshell-review-quick-commands     nil
-        eshell-smart-space-goes-to-end   t
+              (eshell/alias "emacs" "find-file $1")
+              (eshell/alias "magit" "magit-status")))
+  (setq eshell-save-history-on-exit             t
+        eshell-glob-case-insensitive            t
+        eshell-error-if-no-glob                 t
+        eshell-cmpl-cycle-completions           nil
+        eshell-cmpl-ignore-case                 t
+        eshell-where-to-jump                    'begin
+        eshell-review-quick-commands            nil
+        eshell-smart-space-goes-to-end          t
         eshell-destroy-buffer-when-process-dies t ;; Possibly buggy
         ;; May have to do with scrolling on output from continous commands
         ;;eshell-scroll-to-bottom-on-input t
@@ -470,23 +471,23 @@ Can be replaced with:
   "Org mode hook."
   (progn
     (setq
-          org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
-                              (sequence "WAITING(w)"))
-          org-time-stamp-custom-formats (quote ("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>"))
-          org-refile-targets (quote ((nil :maxlevel . 9)
-                                     (org-agenda-files :maxlevel . 9)))
-          org-use-fast-todo-selection t
-          org-log-done t
-          ;; Use full outline paths for refile targets - we file directly with IDO
-          org-refile-use-outline-path t
-          ;; Targets complete directly with IDO
-          org-outline-path-complete-in-steps nil
-          ;; Allow refile to create parent tasks with confirmation
-          org-refile-allow-creating-parent-nodes (quote confirm)
-          ;; Use the current window for indirect buffer display
-          org-indirect-buffer-display 'current-window
-          ;; Use IDO for both buffer and file completion and ido-everywhere to t
-          org-completion-use-ido t)
+     org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+                         (sequence "WAITING(w)"))
+     org-time-stamp-custom-formats (quote ("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>"))
+     org-refile-targets (quote ((nil :maxlevel . 9)
+                                (org-agenda-files :maxlevel . 9)))
+     org-use-fast-todo-selection t
+     org-log-done t
+     ;; Use full outline paths for refile targets - we file directly with IDO
+     org-refile-use-outline-path t
+     ;; Targets complete directly with IDO
+     org-outline-path-complete-in-steps nil
+     ;; Allow refile to create parent tasks with confirmation
+     org-refile-allow-creating-parent-nodes (quote confirm)
+     ;; Use the current window for indirect buffer display
+     org-indirect-buffer-display 'current-window
+     ;; Use IDO for both buffer and file completion and ido-everywhere to t
+     org-completion-use-ido t)
     ;; At work
     (when (and (eq system-type 'windows-nt)
                (file-exists-p "C:/Progra~2/LibreOffice/program/soffice.exe")
@@ -833,9 +834,11 @@ Can be replaced with:
 (cond
  ;; --- Windows specific ---
  ((eq system-type 'windows-nt)
-  (setq default-directory (concat "C:/Users/"
-                                  (user-login-name)
-                                  "/Desktop/"))
+  (let ((desktop-dir (concat "C:/Users/"
+                             (user-login-name)
+                             "/Desktop/")))
+    (setq default-directory desktop-dir)
+    (set-register ?d (cons 'file desktop-dir))) ;; No idea if this works
   ;; tramp - C-x C-f /ftp:<user>@host: C-d to open dired
   (let ((plink-file "C:/Program Files (x86)/PuTTY/plink.exe"))
     (when (file-exists-p plink-file)
@@ -907,7 +910,6 @@ Can be replaced with:
             mu4e-get-mail-command "mbsync -a"
             user-full-name  "Simon Stoltze"
             mu4e-view-show-images t
-            ;;(when (fboundp 'imagemagick-register-types)         (imagemagick-register-types))
             ;; Why would I want to leave my message open after I've sent it?
             message-kill-buffer-on-exit t
             ;; Don't ask for a 'context' upon opening mu4e
