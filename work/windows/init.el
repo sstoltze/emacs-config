@@ -1,12 +1,12 @@
 ;;; .emacs --- Init-file
 
 ;;; Commentary:
-;;;   Inspiration:
-;;;    - https://www.masteringemacs.org/
-;;;    - https://writequit.org/org/settings.html
-;;;    - https://home.elis.nu/emacs/
-;;;    - https://pages.sachachua.com/.emacs.d/Sacha.html
-;;;    - https://github.com/jorgenschaefer/Config/blob/master/emacs.el
+;;   Inspiration:
+;;    - https://www.masteringemacs.org/
+;;    - https://writequit.org/org/settings.html
+;;    - https://home.elis.nu/emacs/
+;;    - https://pages.sachachua.com/.emacs.d/Sacha.html
+;;    - https://github.com/jorgenschaefer/Config/blob/master/emacs.el
 
 ;;; Code:
 (custom-set-variables
@@ -43,7 +43,7 @@
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (outline-magic mu4e-alert haskell-mode auctex rainbow-mode org guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
+    (diminish hc-zenburn-theme outline-magic mu4e-alert haskell-mode auctex rainbow-mode org guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#2aa198" :weight bold))))
@@ -91,7 +91,7 @@
 
 ;;; *** General setup ***
 
-;; Prepare use-package
+;;;; --- Use-package ---
 (require 'package)
 (setq package-enable-at-startup nil)
 (add-to-list 'package-archives
@@ -112,19 +112,20 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-;; --- Benchmark init ---
+;;;; --- Benchmark init ---
 (use-package benchmark-init
   :ensure t
-  ;; To disable collection of benchmark data after init is done.
   :config
+  ;; To disable collection of benchmark data after init is done.
   (add-hook 'after-init-hook 'benchmark-init/deactivate))
 
-;; Encoding
+;;;; --- Encoding ---
 (prefer-coding-system        'utf-8)
 (set-default-coding-systems  'utf-8)
 (set-language-environment    'utf-8)
 (set-selection-coding-system 'utf-8)
 
+;;;; --- Setup ---
 ;; Setup directories in ~/.emacs.d/
 (dolist (folder '("lisp" "backups" "temp" "autosave"))
   (let ((dir (concat "~/.emacs.d/" folder)))
@@ -132,38 +133,70 @@
         (make-directory dir))))
 (add-to-list 'load-path "~/.emacs.d/lisp/")
 (setq backup-directory-alist         '(("." . "~/.emacs.d/backups/"))
-      temporary-file-directory        "~/.emacs.d/temp/"
-      auto-save-file-name-transforms '((".*" "~/.emacs.d/autosave/" t)))
-
-(defalias 'yes-or-no-p 'y-or-n-p)
-
-(setq inhibit-startup-screen    t
-      initial-scratch-message   nil
-      load-prefer-newer         t
-      select-enable-clipboard   t
-      delete-by-moving-to-trash t)
-
-(setq completion-ignore-case t
-      read-file-name-completion-ignore-case t
-      read-buffer-completion-ignore-case t)
-
-(setq next-line-add-newlines t)
-(add-hook 'before-save-hook
-          'delete-trailing-whitespace)
-
-(setq-default indent-tabs-mode nil)
+      temporary-file-directory       "~/.emacs.d/temp/"
+      auto-save-file-name-transforms '((".*" "~/.emacs.d/autosave/" t))
+      savehist-file                  "~/.emacs.d/savehist")
 
 ;; Disable various modes
 (dolist (mode '(tool-bar-mode scroll-bar-mode tooltip-mode))
   (when (fboundp mode)
     (funcall mode -1)))
 
-(setq uniquify-buffer-name-style 'forward)
+;; Make it easier to answer prompts
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+(setq inhibit-startup-screen                t
+      initial-scratch-message               nil
+      load-prefer-newer                     t
+      select-enable-clipboard               t
+      delete-by-moving-to-trash             t
+
+      ;; Make case insensitive
+      completion-ignore-case                t
+      read-file-name-completion-ignore-case t
+      read-buffer-completion-ignore-case    t
+
+      ;; Use disk space
+      delete-old-versions                  -1
+      version-control                       t
+      vc-make-backup-files                  t
+      backup-by-copying                     t
+      vc-follow-symlinks                    t
+
+      ;; Add newlines when scrolling a file
+      next-line-add-newlines                t
+
+      ;; Remove mouse pointer while typing
+      make-pointer-invisible                t
+
+      ;; Garbage collector
+      gc-cons-threshold (* 100 1024 1024) ;; 100 mb
+
+      ;; Personal info
+      user-full-name    "Simon Stoltze"
+      user-mail-address "sstoltze@gmail.com"
+
+      ;; Disable the bell
+      ring-bell-function (lambda ())
+
+      ;; Add directory name to buffer if name is not unique
+      uniquify-buffer-name-style 'forward)
+
+
+;; Weeks start monday
+(setq-default calendar-week-start-day 1
+              ;; Do not use tabs
+              indent-tabs-mode        nil)
+
+;; Delete extra lines and spaces when saving
+(add-hook 'before-save-hook
+          'delete-trailing-whitespace)
 
 ;; Unset suspend keys. Never used anyway
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-x C-z"))
 
+;; Show matching parens
 (show-paren-mode t)
 
 ;; Prettify symbols
@@ -174,47 +207,36 @@
 (put 'upcase-region   'disabled nil)
 (put 'downcase-region 'disabled nil)
 
-;; Press 'C-x r j e' to go to .emacs
+;; Press 'C-x r j e' to go to init.el
 (set-register ?e '(file . "~/.emacs.d/init.el"))
 
-;; Personal info
-(setq user-full-name    "Simon Stoltze"
-      user-mail-address "sstoltze@gmail.com")
-
-(setq ring-bell-function (lambda ()))
-
-(setq make-pointer-invisible t)
-
-(global-font-lock-mode        t)
-(setq gc-cons-threshold       (* 100 1024 1024)) ;; 100 mb
-;; Allow font-lock-mode to do background parsing
+;; Font lock
+(global-font-lock-mode t)
 (setq jit-lock-stealth-time   1
-      ;; jit-lock-stealth-load 200
       jit-lock-chunk-size     1000
       jit-lock-defer-time     0.05)
 
-;; Use disk space
-(setq delete-old-versions  -1
-      version-control      t
-      vc-make-backup-files t
-      backup-by-copying    t
-      vc-follow-symlinks   t)
+;; Save history
+(savehist-mode 1)
+(setq history-length                   t
+      history-delete-duplicates        t
+      savehist-save-minibuffer-history 1
+      savehist-additional-variables    '(kill-ring
+                                         search-ring
+                                         regexp-search-ring))
 
-;; --- Modeline ---
+;;;; --- Modeline ---
 ;; Column in modeline
 (column-number-mode 1)
 
 ;; Time in modeline
-(setq display-time-24hr-format          t)
-(setq display-time-day-and-date         nil)
-(setq display-time-default-load-average nil)
-(setq display-time-format               nil)
-(setq display-time-use-mail-icon        nil)
+(setq display-time-24hr-format          t
+      display-time-day-and-date         nil
+      display-time-default-load-average nil
+      display-time-use-mail-icon        t)
 (display-time-mode t)
 
-;; --- Calendar ---
-;; Weeks start monday
-(setq-default calendar-week-start-day 1)
+;;;; --- Calendar ---
 ;; Week number in calendar
 (copy-face font-lock-constant-face 'calendar-iso-week-face)
 (set-face-attribute 'calendar-iso-week-face nil
@@ -224,47 +246,14 @@
 (set-face-attribute 'calendar-iso-week-header-face nil
                     :height 0.6
                     :foreground "dark slate grey")
-(setq calendar-intermonth-text
-      '(propertize
-        (format "%2d"
-                (car
-                 (calendar-iso-from-absolute
-                  (calendar-absolute-from-gregorian (list month day year)))))
-        'font-lock-face 'calendar-iso-week-face))
-(setq calendar-intermonth-header
-      (propertize "Wk"
-                  'font-lock-face 'calendar-iso-week-header-face))
-
-;; --- Save history ---
-(setq savehist-file "~/.emacs.d/savehist")
-(savehist-mode 1)
-(setq history-length t)
-(setq history-delete-duplicates t)
-(setq savehist-save-minibuffer-history 1)
-(setq savehist-additional-variables
-      '(kill-ring
-        search-ring
-        regexp-search-ring))
-
-;; Not really used...
-;; ;; --- List of recent files ---
-;; (require 'recentf)
-;; (global-set-key (kbd "C-x C-r") 'ido-recentf-open)
-;; (recentf-mode t)
-;; (setq recentf-max-saved-items 50
-;;       recentf-max-menu-items 15)
-;; (defun ido-recentf-open ()
-;;   "Use `ido-completing-read' to \\[find-file] a recent file."
-;;   (interactive)
-;;   (if (find-file (ido-completing-read "Find recent file: " recentf-list))
-;;       (message "Opening file...")
-;;     (message "Aborting")))
-
-;; ;; --- re-builder ---
-;; ;; M-x re-builder for making regex and searching current buffer
-;; ;; 'string avoids double-escaping in eg. \\.
-;; (require 're-builder)
-;; (setq reb-re-syntax 'string)
+(setq calendar-intermonth-text '(propertize
+                                 (format "%2d"
+                                         (car
+                                          (calendar-iso-from-absolute
+                                           (calendar-absolute-from-gregorian (list month day year)))))
+                                 'font-lock-face 'calendar-iso-week-face)
+      calendar-intermonth-header (propertize "Wk"
+                                             'font-lock-face 'calendar-iso-week-header-face))
 
 ;; Make C-x C-x not activate region
 (defun exchange-point-and-mark-no-activate ()
@@ -304,7 +293,13 @@ point reaches the beginning or end of the buffer, stop there."
                 'newline-and-indent)
 
 ;;; *** Packages ***
-;; --- Visible mark ---
+
+;;;; --- Diminish ---
+;; Remove some things from modeline
+(use-package diminish
+  :ensure t)
+
+;;;; --- Visible mark ---
 (use-package visible-mark
   :ensure t
   :init
@@ -316,18 +311,20 @@ point reaches the beginning or end of the buffer, stop there."
        (:inverse-video t)))    ;;
     "Style for visible mark"
     :group 'visible-mark-group)
-  (setq visible-mark-max    2)
+  (setq visible-mark-max    1)
   (setq visible-mark-faces  '(visible-mark-active
                               visible-mark-active))
   (global-visible-mark-mode 1))
 
+;;;; --- Guru-mode ----
 (use-package guru-mode
   :ensure t
+  :diminish guru-mode
   :init
   (setq guru-warn-only t)
   (guru-global-mode 1))
 
-;; --- Dired ---
+;;;; --- Dired ---
 (use-package dired
   :bind ("C-x C-j" . dired-jump)
   :config
@@ -356,10 +353,11 @@ point reaches the beginning or end of the buffer, stop there."
               (lambda ()
                 (hl-line-mode 1)))))
 
-;; --- Paredit ---
+;;;; --- Paredit ---
 ;; http://pub.gajendra.net/src/paredit-refcard.pdf
 (use-package paredit
   :ensure t
+  :diminish paredit-mode
   :config
   (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
   (add-hook 'emacs-lisp-mode-hook                  #'enable-paredit-mode)
@@ -369,24 +367,25 @@ point reaches the beginning or end of the buffer, stop there."
   (add-hook 'lisp-interaction-mode-hook            #'enable-paredit-mode)
   (add-hook 'scheme-mode-hook                      #'enable-paredit-mode))
 
-;; --- Flycheck ---
+;;;; --- Flycheck ---
 (use-package flycheck
   :ensure t
   :defer t
+  :diminish flycheck-mode
   :init
   (add-hook 'prog-mode-hook 'flycheck-mode)
   (add-hook 'text-mode-hook 'flycheck-mode))
 
-;; --- org-mode ---
+;;;; --- Org ---
 (require 'org-install)
 (define-key global-map "\C-cl" 'org-store-link)
 (define-key global-map "\C-cc" 'org-capture)
 (define-key global-map "\C-cb" 'org-iswitchb)
 (define-key global-map "\C-ca" 'org-agenda)
-(setq org-ellipsis "…")
-(setq org-startup-folded nil)
-(setq org-startup-indented t)
-(setq org-startup-with-inline-images t)
+(setq org-ellipsis                   "…"
+      org-startup-folded             nil
+      org-startup-indented           t
+      org-startup-with-inline-images t)
 (let ((default-org-file "~/.emacs.d/organizer.org"))
   (if (not (file-exists-p default-org-file))
       (write-region ""                ; Start - What to write
@@ -396,8 +395,8 @@ point reaches the beginning or end of the buffer, stop there."
                     nil               ; Visit
                     nil               ; Lockname
                     'excl))           ; Mustbenew - error if already exists
-  (setq org-default-notes-file default-org-file)
-  (setq org-agenda-files (list default-org-file))
+  (setq org-default-notes-file default-org-file
+        org-agenda-files (list default-org-file))
   (set-register ?o (cons 'file default-org-file))
   (setq org-capture-templates
         (quote
@@ -412,30 +411,31 @@ point reaches the beginning or end of the buffer, stop there."
 (defun my-org-hook ()
   "Org mode hook."
   (progn
-    (setq org-use-fast-todo-selection t)
-    (setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
-                              (sequence "WAITING(w)")))
-    (setq org-time-stamp-custom-formats (quote ("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>")))
-    (setq org-log-done t)
-    (setq org-refile-targets (quote ((nil :maxlevel . 9)
-                                     (org-agenda-files :maxlevel . 9))))
-    ;; Use full outline paths for refile targets - we file directly with IDO
-    (setq org-refile-use-outline-path t)
-    ;; Targets complete directly with IDO
-    (setq org-outline-path-complete-in-steps nil)
-    ;; Allow refile to create parent tasks with confirmation
-    (setq org-refile-allow-creating-parent-nodes (quote confirm))
-    ;; Use the current window for indirect buffer display
-    (setq org-indirect-buffer-display 'current-window)
-    ;; Use IDO for both buffer and file completion and ido-everywhere to t
-    (setq org-completion-use-ido t)
+    (setq
+          org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+                              (sequence "WAITING(w)"))
+          org-time-stamp-custom-formats (quote ("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>"))
+          org-refile-targets (quote ((nil :maxlevel . 9)
+                                     (org-agenda-files :maxlevel . 9)))
+          org-use-fast-todo-selection t
+          org-log-done t
+          ;; Use full outline paths for refile targets - we file directly with IDO
+          org-refile-use-outline-path t
+          ;; Targets complete directly with IDO
+          org-outline-path-complete-in-steps nil
+          ;; Allow refile to create parent tasks with confirmation
+          org-refile-allow-creating-parent-nodes (quote confirm)
+          ;; Use the current window for indirect buffer display
+          org-indirect-buffer-display 'current-window
+          ;; Use IDO for both buffer and file completion and ido-everywhere to t
+          org-completion-use-ido t)
     ;; At work
     (when (and (eq system-type 'windows-nt)
-               (file-exists-p "C:\\Progra~2\\LibreOffice\\program\\soffice.exe")
+               (file-exists-p "C:/Progra~2/LibreOffice/program/soffice.exe")
                (equal (user-login-name) "sisto")) ;; Just for work
       ;; Export to .docx
-      (setq org-odt-preferred-output-format "docx")
-      (setq org-odt-convert-processes '(("LibreOffice" "C:\\Progra~2\\LibreOffice\\program\\soffice.exe --headless --convert-to %f%x --outdir %d %i"))))
+      (setq org-odt-preferred-output-format "docx"
+            org-odt-convert-processes '(("LibreOffice" "C:/Progra~2/LibreOffice/program/soffice.exe --headless --convert-to %f%x --outdir %d %i"))))
     ;; Refile settings
     ;; Exclude DONE state tasks from refile targets
     (defun bh/verify-refile-target ()
@@ -465,34 +465,34 @@ point reaches the beginning or end of the buffer, stop there."
                              (org-display-inline-images)
                              (my-org-hook)))
 
-;; --- Ido ---
-;; * Tips:
-;; ** C-p makes ido only match beginning of names
-;; ** While doing C-x C-f:
-;; *** C-d will open dired
-;; *** M-d will search in subdirs
-;; *** M-m will create a subdirectory
+;;;; --- Ido ---
+;;;;; Tips:
+;;;;; C-p makes ido only match beginning of names
+;;;;; While doing C-x C-f:
+;;;;; - C-d will open dired
+;;;;; - M-d will search in subdirs
+;;;;; - M-m will create a subdirectory
 (use-package ido
   :ensure t
   :config
   (progn
-    (setq ido-everywhere t)
-    (setq ido-max-directory-size 100000)
-    ;; Use the current window when visiting files and buffers with ido
-    (setq ido-default-file-method 'selected-window)
-    (setq ido-default-buffer-method 'selected-window)
-    (setq ido-enable-flex-matching t)
-    (setq ido-confirm-unique-completion t)
-    ;; Do not need to confirm when creating new buffer
-    (setq ido-create-new-buffer 'always)
-    ;; Order files are shown in
-    (setq ido-file-extensions-order '(".org" ".py" ".el" ".emacs"
+    (setq ido-everywhere t
+          ido-max-directory-size 100000
+          ;; Use the current window when visiting files and buffers with ido
+          ido-default-file-method 'selected-window
+          ido-default-buffer-method 'selected-window
+          ido-enable-flex-matching t
+          ido-confirm-unique-completion t
+          ;; Do not need to confirm when creating new buffer
+          ido-create-new-buffer 'always
+          ;; Ignore case when searching
+          ido-case-fold t
+          ;; Order files are shown in
+          ido-file-extensions-order '(".org" ".py" ".el" ".emacs"
                                       ".lisp" ".c" ".hs" ".txt"))
-    ;; Ignore case when searching
-    (setq ido-case-fold t)
     (ido-mode t)))
 
-;; --- Multiple cursors ---
+;;;; --- Multiple cursors ---
 (use-package multiple-cursors
   :ensure t
   :bind
@@ -506,7 +506,7 @@ point reaches the beginning or end of the buffer, stop there."
    ("C-c m s" . mc/mark-sgml-tag-pair)
    ("C-c m d" . mc/mark-all-like-this-in-defun)))
 
-;; --- Semantic ---
+;;;; --- Semantic ---
 (defun my-semantic-hook ()
   "Hook for semantic to add TAGS to menubar."
   (imenu-add-to-menubar "TAGS")
@@ -525,7 +525,7 @@ point reaches the beginning or end of the buffer, stop there."
                'global-semantic-idle-summary-mode)
   (semantic-mode t))
 
-;; --- Lisp ---
+;;;; --- Lisp ---
 (use-package slime
   :ensure t
   :defer t
@@ -539,13 +539,13 @@ point reaches the beginning or end of the buffer, stop there."
       (defun cyg-lisp-to-slime-translation (filename)
         (replace-regexp-in-string "\n" "" (shell-command-to-string
                                            (format "cygpath.exe --unix %s" filename))))
-      (setq slime-to-lisp-filename-function #'cyg-slime-to-lisp-translation)
-      (setq lisp-to-slime-filename-function #'cyg-lisp-to-slime-translation))
-    (setq inferior-lisp-program "sbcl --dynamic-space-size 2560")
-    (setq slime-default-lisp "sbcl")
-    (setq slime-contribs '(slime-fancy))))
+      (setq slime-to-lisp-filename-function #'cyg-slime-to-lisp-translation
+            lisp-to-slime-filename-function #'cyg-lisp-to-slime-translation))
+    (setq inferior-lisp-program "sbcl --dynamic-space-size 2560"
+          slime-default-lisp "sbcl"
+          slime-contribs '(slime-fancy))))
 
-;; --- LaTeX ---
+;;;; --- LaTeX ---
 (use-package tex
   :ensure auctex
   :defer t
@@ -553,14 +553,14 @@ point reaches the beginning or end of the buffer, stop there."
   (add-hook 'LaTeX-mode-hook
             'turn-on-auto-fill))
 
-;; --- Text ---
+;;;; --- Text-mode ---
 ;; visual-line-mode only pretends to insert linebreaks
 (remove-hook 'text-mode-hook
              'turn-on-auto-fill)
 (add-hook    'text-mode-hook
              'turn-on-visual-line-mode)
 
-;; --- Ediff ---
+;;;; --- Ediff ---
 ;; Ignore whitespace, no popup-window and split horizontally
 (add-hook 'ediff-before-setup-hook
           (lambda ()
@@ -568,7 +568,7 @@ point reaches the beginning or end of the buffer, stop there."
                   ediff-window-setup-function 'ediff-setup-windows-plain
                   ediff-split-window-function 'split-window-horizontally)))
 
-;; --- HTML/CSS ---
+;;;; --- HTML/CSS ---
 (use-package rainbow-mode
   :ensure t
   :defer t
@@ -576,10 +576,10 @@ point reaches the beginning or end of the buffer, stop there."
   (add-hook 'css-mode-hook
             'rainbow-mode))
 
-;; --- CSV ---
+;;;; --- CSV ---
 (setq csv-separators (quote (";")))
 
-;; --- Haskell ---
+;;;; --- Haskell ---
 (use-package haskell-mode
   :ensure t
   :defer t
@@ -600,7 +600,7 @@ point reaches the beginning or end of the buffer, stop there."
       (add-hook 'haskell-mode-hook
                 'flycheck-haskell-setup))))
 
-;; --- C/C++ ---
+;;;; --- C/C++ ---
 (defun common-c-hook ()
   "Hook for C/C++."
   (c-set-style "bsd")
@@ -619,22 +619,22 @@ point reaches the beginning or end of the buffer, stop there."
             (common-c-hook)
             (my-cpp-hook)))
 
-;; --- Java ---
+;;;; --- Java ---
 (add-hook 'java-mode-hook
           'my-semantic-hook)
 
-;; --- Magit ---
+;;;; --- Magit ---
 (use-package magit
   :ensure t
   :bind (("C-x g"   . magit-status)           ; Display the main magit popup
          ("C-x M-g" . magit-dispatch-popup))) ; Display keybinds for magit
 
-;; --- Fish ---
+;;;; --- Fish ---
 (use-package fish-mode
   :defer t
   :ensure t)
 
-;; --- ESS - Emacs Speaks Statistics ---
+;;;; --- ESS - Emacs Speaks Statistics ---
 (use-package ess-site
   :ensure ess
   :defer t
@@ -644,7 +644,7 @@ point reaches the beginning or end of the buffer, stop there."
       :defer t
       :ensure t)))
 
-;; --- Stan ---
+;;;; --- Stan ---
 (use-package stan-mode
   :ensure t
   :defer t
@@ -654,7 +654,7 @@ point reaches the beginning or end of the buffer, stop there."
       :defer t
       :ensure t)))
 
-;; --- Python ---
+;;;; --- Python ---
 ;; python -m pip install --upgrade jedi rope black flake8 yapf autopep8 elpy
 (use-package elpy
   :ensure t
@@ -674,8 +674,8 @@ point reaches the beginning or end of the buffer, stop there."
                                             (python-shell-switch-to-shell))))
   :config
   (progn
-    (setq elpy-shell-use-project-root nil)
-    (setq elpy-rpc-backend "jedi")
+    (setq elpy-shell-use-project-root nil
+          elpy-rpc-backend "jedi")
     (elpy-enable)
     ;; Enable pyvenv, which manages Python virtual environments
     (pyvenv-mode 1)
@@ -695,7 +695,7 @@ point reaches the beginning or end of the buffer, stop there."
                 (delete 'elpy-module-company
                         'elpy-modules)))))
 
-;; --- Ocaml ---
+;;;; --- Ocaml ---
 (use-package tuareg
   :ensure t
   :defer t
@@ -711,15 +711,26 @@ point reaches the beginning or end of the buffer, stop there."
       :config
       (flycheck-ocaml-setup))))
 
-;; --- Twitter ---
+;;;; --- EPA ---
+(defun my/setup-epa ()
+  "Quick setup for EPA."
+  ;; These allow entry of passphrase in emacs
+  (setq epa-pinentry-mode 'loopback)
+  (pinentry-start))
+
+;;;; --- Twitter ---
 (use-package twittering-mode
   :ensure t
   :defer t
   :config
-  (setq twittering-use-master-password t)
-  (setq twittering-icon-mode t))
+  (my/setup-epa)
+  (setq twittering-use-master-password t
+        twittering-icon-mode           t))
 
-;; --- Outline minor mode ---
+;;;; --- Outline ---
+;; For elisp:
+;; - ;;; is a headline
+;; - ;;;; is on the same level as a top-level sexp
 (add-hook 'prog-mode-hook
           (lambda () (outline-minor-mode 1)))
 (add-hook 'org-mode-hook
@@ -727,11 +738,13 @@ point reaches the beginning or end of the buffer, stop there."
 (add-hook 'outline-minor-mode-hook
           (lambda ()
             (use-package outline-magic
+              :diminish outline-minor-mode
               :ensure t
               :bind (("<C-tab>" . 'outline-cycle)))
             (local-set-key (kbd "C-z")
                            outline-mode-prefix-map)))
 
+;;;; --- Frame-setup ---
 ;; Set initial frame size and position
 (defun my/set-normal-frame ()
   (let* ((width-factor  0.80)
@@ -751,23 +764,24 @@ point reaches the beginning or end of the buffer, stop there."
   (set-frame-size     (selected-frame) (truncate (/ (display-pixel-width) 2.2)) (truncate (* (display-pixel-height) 0.9)) t))
 
 ;; Frame resizing and theme
-(cond ((display-graphic-p)
+(cond ((display-graphic-p) ;; Window system
        (setq frame-resize-pixelwise t)
        (my/set-normal-frame))
-      (t (use-package zenburn-theme
-           :ensure t
-           :config
-           (load-theme 'zenburn t))))
+      (t ;; Terminal
+       (use-package hc-zenburn-theme
+         :ensure t
+         :config
+         (load-theme 'hc-zenburn t))))
 
-;; --- System specific ---
+;;;; --- System specific ---
 (cond
  ;; --- Windows specific ---
  ((eq system-type 'windows-nt)
   (setq default-directory (concat "C:/Users/"
                                   (user-login-name)
                                   "/Desktop/"))
-  ;; tramp
-  (let ((plink-file "C:\\Program Files (x86)\\PuTTY\\plink.exe"))
+  ;; tramp - C-x C-f /ftp:<user>@host: C-d to open dired
+  (let ((plink-file "C:/Program Files (x86)/PuTTY/plink.exe"))
     (when (file-exists-p plink-file)
       (setq tramp-default-method "plink")
       (when (not (string-match plink-file
@@ -779,7 +793,6 @@ point reaches the beginning or end of the buffer, stop there."
                      plink-file))))
 
   ;; Alt-enter toggles screensize
-  ;; Only needed on windows
   (defmacro handle-fullscreen-mode (func)
     `(progn
        (when *fullscreen-set*
@@ -810,7 +823,7 @@ point reaches the beginning or end of the buffer, stop there."
                                (length *window-options*))))
   (global-set-key (kbd "M-RET") 'toggle-window)
 
-  ;; --- Work specific ---
+  ;;;;; --- Work specific ---
   (when (and (eq system-type 'windows-nt)
              (equal (user-login-name) "sisto"))
     (use-package cobol-mode
@@ -832,46 +845,44 @@ point reaches the beginning or end of the buffer, stop there."
       :defer t
       :load-path "/usr/local/share/emacs/site-lisp/mu/mu4e"
       :config
-      (setq mu4e-maildir "~/.mail")
-      (setq mu4e-get-mail-command "mbsync -a")
-      ;; These allow entry of passphrase in emacs
-      (setq epa-pinentry-mode 'loopback)
-      (pinentry-start)
-      (setq
-       user-mail-address "sstoltze@gmail.com" ;; Probably reset this when multiple mailboxes
-       user-full-name  "Simon Stoltze")
+      (my/setup-epa)
+      (setq mu4e-maildir "~/.mail"
+            ;; May have to run mbsync in console first to enter password
+            mu4e-get-mail-command "mbsync -a"
+
+            user-mail-address "sstoltze@gmail.com" ;; Probably reset this when multiple mailboxes
+            user-full-name  "Simon Stoltze"
+            mu4e-view-show-images t
+            ;;(when (fboundp 'imagemagick-register-types)         (imagemagick-register-types))
+            ;; Why would I want to leave my message open after I've sent it?
+            message-kill-buffer-on-exit t
+            ;; Don't ask for a 'context' upon opening mu4e
+            mu4e-context-policy 'pick-first
+            ;; Don't ask to quit... why is this the default?
+            mu4e-confirm-quit nil
+            ;; Fix "Duplicate UID" when moving messages
+            mu4e-change-filenames-when-moving t
+            mu4e-contexts (list (make-mu4e-context
+                                 :name "gmail"
+                                 :match-func (lambda (msg) (when msg
+                                                        (string-prefix-p "/Gmail" (mu4e-message-field msg :maildir))))
+                                 :vars '(
+                                         (mu4e-trash-folder . "/gmail/[Gmail].Trash")
+                                         (mu4e-refile-folder . "/gmail/[Gmail].Archive")))
+                                (make-mu4e-context
+                                 :name "Exchange"
+                                 :match-func (lambda (msg) (when msg
+                                                        (string-prefix-p "/Exchange" (mu4e-message-field msg :maildir))))
+                                 :vars '(
+                                         (mu4e-trash-folder . "/Exchange/Deleted Items")
+                                         (mu4e-refile-folder . exchange-mu4e-refile-folder)
+                                         ))))
       ;; Include a bookmark to open all of my inboxes
       (add-to-list 'mu4e-bookmarks
                    (make-mu4e-bookmark
                     :name "All Inboxes"
                     :query "maildir:/Exchange/Inbox OR maildir:/gmail/Inbox"
                     :key ?i))
-      (setq mu4e-view-show-images t)
-      ;;(when (fboundp 'imagemagick-register-types)         (imagemagick-register-types))
-      ;; Why would I want to leave my message open after I've sent it?
-      (setq message-kill-buffer-on-exit t)
-      ;; Don't ask for a 'context' upon opening mu4e
-      (setq mu4e-context-policy 'pick-first)
-      ;; Don't ask to quit... why is this the default?
-      (setq mu4e-confirm-quit nil)
-      ;; Fix "Duplicate UID" when moving messages
-      (setq mu4e-change-filenames-when-moving t)
-      (setq mu4e-contexts
-            (list (make-mu4e-context
-                   :name "gmail"
-                   :match-func (lambda (msg) (when msg
-                                          (string-prefix-p "/Gmail" (mu4e-message-field msg :maildir))))
-                   :vars '(
-                           (mu4e-trash-folder . "/gmail/[Gmail].Trash")
-                           (mu4e-refile-folder . "/gmail/[Gmail].Archive")))
-                  (make-mu4e-context
-                   :name "Exchange"
-                   :match-func (lambda (msg) (when msg
-                                          (string-prefix-p "/Exchange" (mu4e-message-field msg :maildir))))
-                   :vars '(
-                           (mu4e-trash-folder . "/Exchange/Deleted Items")
-                           (mu4e-refile-folder . exchange-mu4e-refile-folder)
-                           ))))
       (use-package mu4e-alert
         :ensure t
         :init
@@ -879,8 +890,8 @@ point reaches the beginning or end of the buffer, stop there."
               (concat
                "flag:unread maildir:/Exchange/Inbox"
                " OR "
-               "flag:unread maildir:/Gmail/Inbox"))
-        (setq mu4e-alert-email-notification-types '(count))
+               "flag:unread maildir:/Gmail/Inbox")
+              mu4e-alert-email-notification-types '(count))
         (mu4e-alert-enable-mode-line-display)
         (defun gjstein-refresh-mu4e-alert-mode-line ()
           (interactive)
