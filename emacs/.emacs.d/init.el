@@ -369,8 +369,9 @@ point reaches the beginning or end of the buffer, stop there."
         eshell-where-to-jump             'begin
         eshell-review-quick-commands     nil
         eshell-smart-space-goes-to-end   t
-        ;eshell-scroll-to-bottom-on-input t
+        ;eshell-scroll-to-bottom-on-input t ;; No idea what this does
         )
+  (setq eshell-banner-message "")
   (setq eshell-prompt-function
         (lambda ()
           (concat (format-time-string "%H:%M" (current-time))
