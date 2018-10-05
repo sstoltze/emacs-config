@@ -174,7 +174,9 @@
 
       ;; Personal info
       user-full-name    "Simon Stoltze"
-      user-mail-address "sstoltze@gmail.com"
+      user-mail-address (cond ((equal (user-login-name)
+                                      "sisto")          "sisto@sd.dk" )
+                              (t                        "sstoltze@gmail.com"))
 
       ;; Disable the bell
       ring-bell-function (lambda ())
