@@ -297,7 +297,7 @@ point reaches the beginning or end of the buffer, stop there."
 ;;; *** Packages ***
 
 ;;;; --- Diminish ---
-;; Remove some things from modeline
+;; Remove some things from modeline. Used by use-package.
 (use-package diminish
   :ensure t)
 
