@@ -361,15 +361,20 @@ point reaches the beginning or end of the buffer, stop there."
   :config
   (require 'em-smart)
   (add-hook 'eshell-mode-hook
-            (lambda () (eshell-smart-initialize)))
+            (lambda ()
+              (eshell-smart-initialize)
+              (eshell/alias "emacs" "find-file $1")))
   (setq eshell-save-history-on-exit      t
         eshell-glob-case-insensitive     t
         eshell-error-if-no-glob          t
-        eshell-cmpl-cycle-completions    t
+        eshell-cmpl-cycle-completions    nil
+        eshell-cmpl-ignore-case          t
         eshell-where-to-jump             'begin
         eshell-review-quick-commands     nil
         eshell-smart-space-goes-to-end   t
-        ;eshell-scroll-to-bottom-on-input t ;; No idea what this does
+        eshell-destroy-buffer-when-process-dies t ;; Possibly buggy
+        ;; May have to do with scrolling on output from continous commands
+        ;;eshell-scroll-to-bottom-on-input t
         )
   (setq eshell-banner-message "")
   (setq eshell-prompt-function
@@ -381,23 +386,36 @@ point reaches the beginning or end of the buffer, stop there."
                   " "
                   (propertize (eshell/pwd)
                               'face (list :foreground "light goldenrod"))
-                  (propertize (or (ignore-errors (format " (%s)"
-                                                         (vc-responsible-backend
-                                                          default-directory)))
-                                  "")
+                  (propertize (sstoltze/make-vc-prompt)
                               'face (list :foreground "pale goldenrod"))
                   (propertize " >"
                               'face (list :foreground "light goldenrod"))
                   ;; This resets text properties
                   " ")))
-  (setq eshell-prompt-regexp "^[0-9]\\{1,2\\}:[0-9]\\{2\\} .+ .+ > ")
-  )
+  (setq eshell-prompt-regexp "^[0-9]\\{1,2\\}:[0-9]\\{2\\} .+ .+ > "))
+(defun sstoltze/make-vc-prompt ()
+  "Small helper for eshell-prompt-function.
+If includes git branch-name if magit is loaded.
+
+Can be replaced with:
+\(or (ignore-errors (format \" (%s)\"
+                           (vc-responsible-backend
+                            default-directory)))
+    \"\")"
+  (let ((vc-response (or (ignore-errors (format "%s"
+                                                (vc-responsible-backend default-directory)))
+                         "")))
+    (when (equal vc-response "Git")
+      (setq vc-response (or (ignore-errors (magit-get-current-branch))
+                            "Git")))
+    (if (equal vc-response "")
+        ""
+      (format " (%s)" vc-response))))
 
 ;;;; --- Paredit ---
 ;; http://pub.gajendra.net/src/paredit-refcard.pdf
 (use-package paredit
   :ensure t
-  :diminish paredit-mode
   :config
   (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
   (add-hook 'emacs-lisp-mode-hook                  #'enable-paredit-mode)
@@ -773,8 +791,6 @@ point reaches the beginning or end of the buffer, stop there."
 ;; - ;;;; is on the same level as a top-level sexp
 (add-hook 'prog-mode-hook
           (lambda () (outline-minor-mode 1)))
-(add-hook 'org-mode-hook
-          (lambda () (outline-minor-mode 1)))
 (add-hook 'outline-minor-mode-hook
           (lambda ()
             (use-package outline-magic
@@ -889,8 +905,6 @@ point reaches the beginning or end of the buffer, stop there."
       (setq mu4e-maildir "~/.mail"
             ;; May have to run mbsync in console first to enter password
             mu4e-get-mail-command "mbsync -a"
-
-            user-mail-address "sstoltze@gmail.com" ;; Probably reset this when multiple mailboxes
             user-full-name  "Simon Stoltze"
             mu4e-view-show-images t
             ;;(when (fboundp 'imagemagick-register-types)         (imagemagick-register-types))
