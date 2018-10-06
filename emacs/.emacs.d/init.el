@@ -360,6 +360,9 @@ point reaches the beginning or end of the buffer, stop there."
   :bind ("C-c e" . eshell)
   :config
   (require 'em-smart)
+  (require 'esh-module)
+  (with-eval-after-load "esh-module"
+    (add-to-list 'eshell-modules-list 'eshell-tramp))
   (add-hook 'eshell-mode-hook
             (lambda ()
               (eshell-smart-initialize)
@@ -375,6 +378,8 @@ point reaches the beginning or end of the buffer, stop there."
                                                      (delete-dups
                                                       (ring-elements eshell-history-ring))))))
               (local-set-key (kbd "C-c C-h") 'eshell-list-history)))
+  (setq password-cache t           ;; enable password caching
+        password-cache-expiry 600) ;; time in seconds
   (setq eshell-save-history-on-exit             t
         eshell-history-size                     256000
         eshell-glob-case-insensitive            t
@@ -384,6 +389,8 @@ point reaches the beginning or end of the buffer, stop there."
         eshell-where-to-jump                    'begin
         eshell-review-quick-commands            nil
         eshell-smart-space-goes-to-end          t
+        ;;eshell-prefer-lisp-functions            t
+        ;;eshell-prefer-lisp-variables            t
         eshell-destroy-buffer-when-process-dies t ;; Possibly buggy
         ;; May have to do with scrolling on output from continous commands
         ;;eshell-scroll-to-bottom-on-input t
@@ -407,8 +414,8 @@ point reaches the beginning or end of the buffer, stop there."
                     (propertize " >"
                                 'face (list :foreground standard-colour))
                     ;; This resets text properties
-                    " "))))
-  (setq eshell-prompt-regexp "^[0-9]\\{1,2\\}:[0-9]\\{2\\} .+ .+ > "))
+                    " ")))
+        eshell-prompt-regexp "^[0-9]\\{1,2\\}:[0-9]\\{2\\} .+ .+ > "))
 
 (defun sstoltze/make-vc-prompt ()
   "Small helper for eshell-prompt-function.
@@ -607,7 +614,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
        (R          . t)
        (latex      . t)
        (sql        . t)))
-    (setq org-confirm-babel-evaluate nil)
+    (setq org-confirm-babel-evaluate nil
+          org-src-fontify-natively t)
     (add-hook 'org-babel-after-execute-hook
               'org-display-inline-images)))
 (add-hook 'org-mode-hook #'(lambda ()
@@ -640,7 +648,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
           ido-case-fold t
           ;; Order files are shown in
           ido-file-extensions-order '(".org" ".py" ".el" ".emacs"
-                                      ".lisp" ".c" ".hs" ".txt"))
+                                      ".lisp" ".c" ".hs" ".txt" ".R"))
     (ido-mode t)))
 
 ;;;; --- Multiple cursors ---
