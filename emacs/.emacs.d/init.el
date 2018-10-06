@@ -364,7 +364,8 @@ point reaches the beginning or end of the buffer, stop there."
             (lambda ()
               (eshell-smart-initialize)
               (eshell/alias "emacs" "find-file $1")
-              (eshell/alias "magit" "magit-status")))
+              (eshell/alias "magit" "magit-status")
+              (eshell/alias "less" "cat $1")))
   (setq eshell-save-history-on-exit             t
         eshell-glob-case-insensitive            t
         eshell-error-if-no-glob                 t
@@ -380,20 +381,25 @@ point reaches the beginning or end of the buffer, stop there."
   (setq eshell-banner-message "")
   (setq eshell-prompt-function
         (lambda ()
-          (concat (format-time-string "%H:%M" (current-time))
-                  " "
-                  (propertize (user-login-name)
-                              'face (list :foreground "light sky blue"))
-                  " "
-                  (propertize (fish-path (eshell/pwd) 20)
-                              'face (list :foreground "light goldenrod"))
-                  (propertize (sstoltze/make-vc-prompt)
-                              'face (list :foreground "pale goldenrod"))
-                  (propertize " >"
-                              'face (list :foreground "light goldenrod"))
-                  ;; This resets text properties
-                  " ")))
+          (let ((standard-colour "light goldenrod")
+                (time-colour     "gray")
+                (user-colour     "light sky blue"))
+            (concat (propertize (format-time-string "%H:%M"
+                                                    (current-time))
+                                'face (list :foreground time-colour))
+                    " "
+                    (propertize (user-login-name)
+                                'face (list :foreground user-colour))
+                    " "
+                    (propertize (fish-path (eshell/pwd) 20)
+                                'face (list :foreground standard-colour))
+                    (sstoltze/make-vc-prompt)
+                    (propertize " >"
+                                'face (list :foreground standard-colour))
+                    ;; This resets text properties
+                    " "))))
   (setq eshell-prompt-regexp "^[0-9]\\{1,2\\}:[0-9]\\{2\\} .+ .+ > "))
+
 (defun sstoltze/make-vc-prompt ()
   "Small helper for eshell-prompt-function.
 If includes git branch-name if magit is loaded
@@ -404,38 +410,67 @@ Can be replaced with:
                            (vc-responsible-backend
                             default-directory)))
     \"\")"
-  (let ((vc-response (or (ignore-errors (format "%s"
+  (let ((standard-colour  "pale goldenrod")
+        (untracked-colour "red")
+        (unstaged-colour  "yellow green")
+        (staged-colour    "royal blue")
+        (vc-response (or (ignore-errors (format "%s"
                                                 (vc-responsible-backend
                                                  default-directory)))
                          "")))
     (cond ((equal vc-response "Git")
-           (let ((branch    (or (ignore-errors (magit-get-current-branch))
+           (let ((branch    (or (ignore-errors
+                                  (magit-get-current-branch))
                                 "Git"))
-                 (untracked (or (ignore-errors (length (magit-untracked-files)))
+                 (untracked (or (ignore-errors
+                                  (length (magit-untracked-files)))
                                 0))
-                 (unstaged  (or (ignore-errors (length (magit-unstaged-files)))
+                 (unstaged  (or (ignore-errors
+                                  (length (magit-unstaged-files)))
                                 0))
-                 (staged    (or (ignore-errors (length (magit-staged-files)))
+                 (staged    (or (ignore-errors
+                                  (length (magit-staged-files)))
                                 0)))
-             (format " (%s%s%s%s%s)"
-                     branch
-                     (if (> (+ untracked unstaged staged) 0)
-                         "|"
-                       (if (equal branch "Git")
-                           ""
-                         "|✔"))
-                     (if (> untracked 0)
-                         (format "…%s" untracked)
-                       "")
-                     (if (> unstaged 0)
-                         (format "+%s" unstaged)
-                       "")
-                     (if (> staged 0)
-                         (format "→%s" staged)
-                       "")
-                     )))
-          ((equal vc-response "") "")
-          (t (format " (%s)" vc-response)))))
+             (concat (propertize " ("
+                                 'face (list :foreground
+                                             standard-colour))
+                     (propertize branch
+                                 'face (list :foreground
+                                             standard-colour))
+                     (propertize (if (> (+ untracked unstaged staged) 0)
+                                     "|"
+                                   (if (equal branch "Git")
+                                       ""
+                                     "|✔"))
+                                 'face (list :foreground
+                                             standard-colour))
+                     (propertize (if (> untracked 0)
+                                     (format "…%s" untracked)
+                                   "")
+                                 'face (list :foreground
+                                             untracked-colour))
+                     (propertize (if (> unstaged 0)
+                                     (format "+%s" unstaged)
+                                   "")
+                                 'face (list :foreground
+                                             unstaged-colour))
+                     (propertize (if (> staged 0)
+                                     (format "→%s" staged)
+                                   "")
+                                 'face (list :foreground
+                                             staged-colour))
+                     (propertize ")"
+                                 'face (list :foreground
+                                             standard-colour)))))
+          ((equal vc-response "")
+           (propertize  ""
+                        'face (list :foreground
+                                    standard-colour)))
+          (t
+           (propertize (format " (%s)" vc-response)
+                       'face (list :foreground
+                                   standard-colour))))))
+
 (defun fish-path (path max-len)
   "Return a potentially trimmed-down version of the directory PATH, replacing
 parent directories with their initial characters to try to get the character
