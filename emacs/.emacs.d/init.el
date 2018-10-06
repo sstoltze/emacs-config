@@ -586,7 +586,17 @@ length of PATH (sans directory slashes) down to MAX-LEN."
      ;; Use the current window for indirect buffer display
      org-indirect-buffer-display 'current-window
      ;; Use IDO for both buffer and file completion and ido-everywhere to t
-     org-completion-use-ido t)
+     org-completion-use-ido t
+     ;; Author, email, date of creation, validation link at bottom of exported html
+     org-html-postamble nil
+     org-html-html5-fancy t
+     org-html-doctype "html5")
+    ;; Two options for literate programming.
+    ;; Usage is as for SRC and EXAMPLE blocks, <pr<TAB> to expand
+    (add-to-list 'org-structure-template-alist ;; A property drawer with correct settings for org-babel
+                 '("pr" ":PROPERTIES:\n:header-args: :results output silent :tangle yes :session *?*\n:END:"))
+    (add-to-list 'org-structure-template-alist ;; A source block with header-args for exporting an image
+                 '("si" "#+BEGIN_SRC ? :results output graphics :file ./\n\n#+END_SRC"))
     ;; At work
     (when (and (eq system-type 'windows-nt)
                (file-exists-p "C:/Progra~2/LibreOffice/program/soffice.exe")
