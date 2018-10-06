@@ -365,8 +365,18 @@ point reaches the beginning or end of the buffer, stop there."
               (eshell-smart-initialize)
               (eshell/alias "emacs" "find-file $1")
               (eshell/alias "magit" "magit-status")
-              (eshell/alias "less" "cat $1")))
+              (eshell/alias "less" "cat $1")
+              (local-set-key (kbd "C-c h")
+                             (lambda ()
+                               "Ido interface to eshell history."
+                               (interactive) ;; Maybe insert move-to-end-of-buffer here
+                               (insert
+                                (ido-completing-read "History: "
+                                                     (delete-dups
+                                                      (ring-elements eshell-history-ring))))))
+              (local-set-key (kbd "C-c C-h") 'eshell-list-history)))
   (setq eshell-save-history-on-exit             t
+        eshell-history-size                     256000
         eshell-glob-case-insensitive            t
         eshell-error-if-no-glob                 t
         eshell-cmpl-cycle-completions           nil
