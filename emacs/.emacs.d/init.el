@@ -363,7 +363,9 @@ point reaches the beginning or end of the buffer, stop there."
   (require 'em-smart)
   (require 'esh-module)
   (with-eval-after-load "esh-module"
-    (add-to-list 'eshell-modules-list 'eshell-tramp))
+    (add-to-list 'eshell-modules-list 'eshell-tramp)
+    (setq password-cache t           ;; enable password caching
+          password-cache-expiry 600)) ;; time in seconds
   (add-hook 'eshell-mode-hook
             (lambda ()
               (eshell-smart-initialize)
@@ -379,8 +381,6 @@ point reaches the beginning or end of the buffer, stop there."
                                                      (delete-dups
                                                       (ring-elements eshell-history-ring))))))
               (local-set-key (kbd "C-c C-h") 'eshell-list-history)))
-  (setq password-cache t           ;; enable password caching
-        password-cache-expiry 600) ;; time in seconds
   (setq eshell-save-history-on-exit             t
         eshell-history-size                     256000
         eshell-glob-case-insensitive            t
@@ -390,14 +390,14 @@ point reaches the beginning or end of the buffer, stop there."
         eshell-where-to-jump                    'begin
         eshell-review-quick-commands            nil
         eshell-smart-space-goes-to-end          t
+        eshell-destroy-buffer-when-process-dies t ;; Possibly buggy
         ;;eshell-prefer-lisp-functions            t
         ;;eshell-prefer-lisp-variables            t
-        eshell-destroy-buffer-when-process-dies t ;; Possibly buggy
         ;; May have to do with scrolling on output from continous commands
         ;;eshell-scroll-to-bottom-on-input t
         )
-  (setq eshell-banner-message "")
-  (setq eshell-prompt-function
+  (setq eshell-banner-message ""
+        eshell-prompt-function
         (lambda ()
           (let ((standard-colour "light goldenrod")
                 (time-colour     "gray")
@@ -418,6 +418,8 @@ point reaches the beginning or end of the buffer, stop there."
                     " ")))
         eshell-prompt-regexp "^[0-9]\\{1,2\\}:[0-9]\\{2\\} .+ .+ > "))
 
+;; Could consider making the colours parameters to be
+;; able to change them when calling in eshell-prompt-function
 (defun sstoltze/make-vc-prompt ()
   "Small helper for eshell-prompt-function.
 If includes git branch-name if magit is loaded
@@ -617,14 +619,14 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     ;; Make org mode allow eval of some langs
     (org-babel-do-load-languages
      'org-babel-load-languages
-     '((ditaa      . t)
-       (lisp       . t)
+     '((lisp       . t)
        (emacs-lisp . t)
        (python     . t)
        (ruby       . t)
        (R          . t)
        (latex      . t)
-       (sql        . t)))
+       (sql        . t)
+       (stan       . t)))
     (setq org-confirm-babel-evaluate nil
           org-src-fontify-natively t)
     (add-hook 'org-babel-after-execute-hook
@@ -660,7 +662,17 @@ length of PATH (sans directory slashes) down to MAX-LEN."
           ;; Order files are shown in
           ido-file-extensions-order '(".org" ".py" ".el" ".emacs"
                                       ".lisp" ".c" ".hs" ".txt" ".R"))
-    (ido-mode t)))
+    (ido-mode t)
+    ;; Allow editing of read-only files
+    (defun help/ido-find-file ()
+      "Find file as root if necessary.
+
+Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
+      (unless (and buffer-file-name
+                   (file-writable-p buffer-file-name))
+        (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
+
+    (advice-add #'ido-find-file :after #'help/ido-find-file)))
 
 ;;;; --- Multiple cursors ---
 (use-package multiple-cursors
