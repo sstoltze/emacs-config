@@ -150,9 +150,9 @@ function updatevolume(widget)
 
         local volume = string.match(status, "(%d?%d?%d)%%") or "0"
 	volume = string.format("% 3d", volume)
-	 
+
 	status = string.match(status, "%[(o[^%]]*)%]") or "off"
-	 
+
 	if string.find(status, "on", 1, true) then
 	   volume = "Vol:" .. volume .. "%"
 	else
@@ -181,7 +181,7 @@ spotimer:connect_signal("timeout", function()
 	     	old_l = l
 	     	naughty.notify({text = l, icon = "/home/simon/Documents/icons/Spotify-icon-32.png", icon_size = 16})
 	end
-	
+
 end)
 spotimer:start()
 
@@ -210,7 +210,7 @@ divider:set_text(" | ")
 
 bat = wibox.widget.textbox() -- center
 bat_t = awful.tooltip({ objects = { bat }, })
-vicious.register(bat, vicious.widgets.bat, 
+vicious.register(bat, vicious.widgets.bat,
 	function (widgets, args)
 		 local f = io.popen("acpi -V | head -1 | cut -d ' ' -f 5")
 		 local l = "Error"
@@ -282,7 +282,7 @@ local function set_wallpaper(s)
 --            wallpaper = wallpaper(s)
 --        end
 --        gears.wallpaper.maximized(wallpaper, s, true)
---    end  
+--    end
     awful.util.spawn_with_shell("feh --bg-fill --randomize /home/simon/Dropbox/comp/wallpapers/torment/*")
 end
 
@@ -293,7 +293,7 @@ awful.screen.connect_for_each_screen(function(s)
     -- Wallpaper
     set_wallpaper(s)
 
-    -- Each screen has its own tag table. 
+    -- Each screen has its own tag table.
 --    awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
     awful.tag({ "Main", "Net", "Music", "Math", "Video", "Skype", 7, 8, "VPN"  }, s, awful.layout.layouts[3])
 
@@ -454,33 +454,33 @@ globalkeys = awful.util.table.join(
     -- Menubar
     awful.key({ modkey }, "p", function() menubar.show() end,
               {description = "show the menubar", group = "launcher"}),
-        awful.key({ }, "XF86AudioLowerVolume",
-    	function () 
+    awful.key({ }, "XF86AudioLowerVolume",
+    	function ()
 		 awful.util.spawn_with_shell("amixer -q sset Master 5%-")
 		 -- updatevolume(tbvolume) -- The previous command takes too long to complete, so this is usually not relevant
 	end, {description = "volume down", group = "launcher"}),
     awful.key({ }, "XF86AudioRaiseVolume",
-    	function () 
-		 awful.util.spawn_with_shell("amixer -q sset Master 5%+") 
+    	function ()
+		 awful.util.spawn_with_shell("amixer -q sset Master 5%+")
 		 -- updatevolume(tbvolume) -- See above
 	end, {description = "volume up", group = "launcher"}),
     awful.key({ }, "XF86AudioMute",
-    	function () 
+    	function ()
 		 awful.util.spawn_with_shell("amixer -D pulse set Master toggle")
 		 -- updatevolume(tbvolume) -- See above
 	end, {description = "volume mute", group = "launcher"}),
         awful.key({ modkey, }, ".",
-        function ()
+        function () -- Currently does not work... spotify and dbus are not friends
                  awful.util.spawn_with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause")
                  -- "xdotool key --window (xdotool search --name 'Spotify' | head -n1) 'XF86AudioPlay'")
         end),
     awful.key({ modkey, }, ",",
-        function ()
+        function () -- Currently does not work... spotify and dbus are not friends
                  awful.util.spawn_with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous")
---                 awful.util.spawn_with_shell("xdotool key --window (xdotool search --name 'Spotify' | head -n1) 'XF86AudioPrev'")  
+--                 awful.util.spawn_with_shell("xdotool key --window (xdotool search --name 'Spotify' | head -n1) 'XF86AudioPrev'")
 	end),
     awful.key({ modkey, }, "-",
-        function ()
+        function () -- Currently does not work... spotify and dbus are not friends
                  awful.util.spawn_with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next")
 --                 awful.util.spawn_with_shell("xdotool key --window (xdotool search --name 'Spotify' | head -n1) 'XF86AudioNext'")
 	end)
