@@ -382,21 +382,42 @@ point reaches the beginning or end of the buffer, stop there."
                                                      (delete-dups
                                                       (ring-elements eshell-history-ring))))))
               (local-set-key (kbd "C-c C-h") 'eshell-list-history)))
-  (setq eshell-save-history-on-exit             t
+  ;; Send message when command finishes and buffer is not active
+  ;; Alternatively, look at package 'alert'
+  (add-hook 'eshell-kill-hook
+            (lambda (process status)
+              "Shows process and status in minibuffer when a command finishes."
+              (let ((buffer (process-buffer process)))
+                ;; To check buffer not focused, use
+                ;;   (eq buffer (window-buffer (selected-window)))
+                ;; Check buffer is not visible
+                (if (not (get-buffer-window buffer))
+                    (message "%s: %s."
+                             process
+                             ;; Replace final newline with nothing
+                             (replace-regexp-in-string "\n\\'" ""
+                                                       status))))))
+  (setq eshell-ls-use-colors                    t
+        ;; History
+        eshell-save-history-on-exit             t
         eshell-history-size                     256000
+        eshell-hist-ignoredups                  t
+        ;; Globbing
         eshell-glob-case-insensitive            t
         eshell-error-if-no-glob                 t
+        ;; Completion
         eshell-cmpl-cycle-completions           nil
         eshell-cmpl-ignore-case                 t
+        ;; Remain at start of command after enter
         eshell-where-to-jump                    'begin
         eshell-review-quick-commands            nil
-        eshell-smart-space-goes-to-end          t
-        eshell-destroy-buffer-when-process-dies t ;; Possibly buggy
-        ;;eshell-prefer-lisp-functions            t
-        ;;eshell-prefer-lisp-variables            t
-        ;; Only scroll on new output when already at bottom of shell
+        ;; Close buffer on exit
+        eshell-destroy-buffer-when-process-dies t
+        ;; Scrolling
         eshell-scroll-to-bottom-on-input        nil
-        eshell-scroll-show-maximum-output       t)
+        ehsell-scroll-to-bottom-on-output       nil
+        eshell-scroll-show-maximum-output       t
+        eshell-smart-space-goes-to-end          t)
   (setq eshell-banner-message ""
         eshell-prompt-function
         (lambda ()
@@ -731,7 +752,7 @@ Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
   :defer t
   :config
   (progn
-    (when  (eq system-type 'cygwin)
+    (when (eq system-type 'cygwin)
       (defun cyg-slime-to-lisp-translation (filename)
         (replace-regexp-in-string "\n" ""
                                   (shell-command-to-string
