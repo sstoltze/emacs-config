@@ -393,9 +393,9 @@ point reaches the beginning or end of the buffer, stop there."
         eshell-destroy-buffer-when-process-dies t ;; Possibly buggy
         ;;eshell-prefer-lisp-functions            t
         ;;eshell-prefer-lisp-variables            t
-        ;; May have to do with scrolling on output from continous commands
-        ;;eshell-scroll-to-bottom-on-input t
-        )
+        ;; Only scroll on new output when already at bottom of shell
+        eshell-scroll-to-bottom-on-input        nil
+        eshell-scroll-show-maximum-output       t)
   (setq eshell-banner-message ""
         eshell-prompt-function
         (lambda ()
@@ -564,7 +564,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          (("t" "TODO" entry (file+headline default-org-file "Tasks")
            "* TODO %?\n%U\n%a\n"
            :clock-in t :clock-resume t)
-          ("m" "Meeting" entry (file (lambda nil (buffer-file-name)))
+          ("m" "Meeting" entry (file (lambda () (or (buffer-file-name)
+                                               default-org-file)))
            "* %? - %u :MEETING:\n:ATTENDEES:\nSimon Stoltze\n:END:\n"
            :clock-in t :clock-resume t)
           ("n" "Next" entry (file+headline default-org-file "Tasks")
