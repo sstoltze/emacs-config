@@ -128,7 +128,7 @@
 
 ;;;; --- Setup ---
 ;; Setup directories in ~/.emacs.d/
-(dolist (folder '("lisp" "backups" "temp" "autosave"))
+(dolist (folder '("lisp" "backups" "temp" "autosave" "org-files"))
   (let ((dir (concat "~/.emacs.d/" folder)))
     (if (not (file-directory-p dir))
         (make-directory dir))))
@@ -139,7 +139,7 @@
       savehist-file                  "~/.emacs.d/savehist")
 
 ;; Disable various modes
-(dolist (mode '(tool-bar-mode scroll-bar-mode tooltip-mode))
+(dolist (mode '(tool-bar-mode scroll-bar-mode tooltip-mode menu-bar-mode))
   (when (fboundp mode)
     (funcall mode -1)))
 
@@ -158,11 +158,12 @@
       read-buffer-completion-ignore-case    t
 
       ;; Use disk space
-      delete-old-versions                  -1
       version-control                       t
+      delete-old-versions                   nil
       vc-make-backup-files                  t
       backup-by-copying                     t
       vc-follow-symlinks                    t
+      kept-new-versions                     64
 
       ;; Add newlines when scrolling a file
       next-line-add-newlines                t
@@ -547,29 +548,41 @@ length of PATH (sans directory slashes) down to MAX-LEN."
       org-startup-folded             nil
       org-startup-indented           t
       org-startup-with-inline-images t)
-(let ((default-org-file "~/.emacs.d/organizer.org"))
-  (if (not (file-exists-p default-org-file))
-      (write-region ""                ; Start - What to write
-                    nil               ; End - Ignored when start is string
-                    default-org-file  ; Filename
-                    t                 ; Append
-                    nil               ; Visit
-                    nil               ; Lockname
-                    'excl))           ; Mustbenew - error if already exists
+(let ((default-org-file "~/.emacs.d/org-files/journal.org")
+      (work-org-file    "~/.emacs.d/org-files/work.org"))
+  (dolist (org-file (list default-org-file work-org-file))
+          (if (not (file-exists-p org-file))
+              (write-region "* Tasks\n"         ; Start - What to write
+                            nil               ; End - Ignored when start is string
+                            org-file          ; Filename
+                            t                 ; Append
+                            nil               ; Visit
+                            nil               ; Lockname
+                            'excl)))          ; Mustbenew - error if already exists
   (setq org-default-notes-file default-org-file
-        org-agenda-files (list default-org-file))
+        org-agenda-files (list default-org-file work-org-file))
   (set-register ?o (cons 'file default-org-file))
+  (set-register ?w (cons 'file work-org-file))
   (setq org-capture-templates
-        (quote
-         (("t" "TODO" entry (file+headline default-org-file "Tasks")
+        `(("j" "Note"      entry (file+datetree ,default-org-file)
+           "* %?"
+           :empty-lines 1)
+          ("w" "Work-note" entry (file+datetree ,work-org-file)
+           "* %?"
+           :empty-lines 1)
+          ("t" "TODO"      entry (file+headline ,default-org-file "Tasks")
            "* TODO %?\n%U\n%a\n"
-           :clock-in t :clock-resume t)
-          ("m" "Meeting" entry (file (lambda () (or (buffer-file-name)
-                                               default-org-file)))
+           :clock-in t :clock-resume t
+           :empty-lines 1)
+          ("m" "Meeting"   entry (file (lambda () (or (buffer-file-name)
+                                                 ,work-org-file)))
            "* %? - %u :MEETING:\n:ATTENDEES:\nSimon Stoltze\n:END:\n"
-           :clock-in t :clock-resume t)
-          ("n" "Next" entry (file+headline default-org-file "Tasks")
-           "* NEXT %?\n%U\nDEADLINE: %t")))))
+           :clock-in t :clock-resume t
+           :empty-lines 1)
+          ("n" "Next"      entry (file+headline ,default-org-file "Tasks")
+           "* NEXT %?\n%U\nDEADLINE: %t"
+           :clock-in t :clock-resume t
+           :empty-lines 1))))
 (defun my-org-hook ()
   "Org mode hook."
   (progn
@@ -580,6 +593,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
      org-refile-targets (quote ((nil :maxlevel . 9)
                                 (org-agenda-files :maxlevel . 9)))
      org-use-fast-todo-selection t
+     ;; Allow editing invisible region if it does that you would expect
+     org-catch-invisible-edits 'smart
      org-log-done t
      ;; Use full outline paths for refile targets - we file directly with IDO
      org-refile-use-outline-path t
