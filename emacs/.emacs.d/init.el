@@ -559,6 +559,22 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (add-hook 'prog-mode-hook 'flycheck-mode)
   (add-hook 'text-mode-hook 'flycheck-mode))
 
+;;;; --- Auto-insert ---
+;; Insert into file, but mark unmodified
+(setq auto-insert       'other
+      ;; Do not ask when inserting
+      auto-insert-query nil)
+;; Only do it for org-mode
+(add-hook 'org-mode-hook 'auto-insert)
+(with-eval-after-load 'autoinsert
+  (define-auto-insert '("\\.org\\'" . "Org header")
+    '(nil
+      "#+AUTHOR: " user-full-name \n
+      "#+EMAIL: " user-mail-address \n
+      "#+DATE: " (format-time-string "%Y-%m-%d" (current-time)) \n
+      "#+OPTIONS: toc:nil title:nil author:nil email:nil date:nil creator:nil" \n
+      "* " )))
+
 ;;;; --- Org ---
 (require 'org-install)
 (define-key global-map "\C-cl" 'org-store-link)
@@ -582,7 +598,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                             'excl)))          ; Mustbenew - error if already exists
   (setq org-default-notes-file default-org-file
         org-agenda-files (list default-org-file work-org-file))
-  (set-register ?o (cons 'file default-org-file))
+  (set-register ?j (cons 'file default-org-file))
   (set-register ?w (cons 'file work-org-file))
   (setq org-capture-templates
         `(("j" "Note"      entry (file+datetree ,default-org-file)
@@ -671,9 +687,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     (add-hook 'org-babel-after-execute-hook
               'org-display-inline-images)))
 (add-hook 'org-mode-hook #'(lambda ()
-                             (visual-line-mode)
-                             (org-indent-mode)
-                             (org-display-inline-images)
+                             (visual-line-mode 1)
+                             (org-indent-mode  1)
                              (my-org-hook)))
 
 ;;;; --- Ido ---
