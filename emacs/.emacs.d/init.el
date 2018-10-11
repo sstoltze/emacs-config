@@ -206,6 +206,18 @@
 ;; Prettify symbols
 (global-prettify-symbols-mode 1)
 (setq prettify-symbols-unprettify-at-point 'right-edge)
+;; C-x 8 RET to find and insert unicode char
+(add-hook 'prog-mode-hook (lambda ()
+                            (mapc (lambda (pair)
+                                    (push pair prettify-symbols-alist))
+                                  '(("<="  . ?≤)
+                                    (">="  . ?≥)
+                                    ("!="  . ?≠) ;; C
+                                    ("/="  . ?≠) ;; Lisp
+                                    ("->"  . ?→)
+                                    ("<-"  . ?←)
+                                    ("=>"  . ?⇒)
+                                    ("..." . ?…)))))
 
 ;; Enable C-x C-u (upcase-region) and C-x C-l (downcase region)
 (put 'upcase-region   'disabled nil)
