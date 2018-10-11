@@ -44,7 +44,7 @@
  '(org-export-backends (quote (ascii beamer html icalendar latex md odt)))
  '(package-selected-packages
    (quote
-    (diminish hc-zenburn-theme outline-magic mu4e-alert haskell-mode auctex rainbow-mode org guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
+    (ob-async diminish hc-zenburn-theme outline-magic mu4e-alert haskell-mode auctex rainbow-mode org guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#2aa198" :weight bold))))
@@ -159,7 +159,7 @@
 
       ;; Use disk space
       version-control                       t
-      delete-old-versions                   nil
+      delete-old-versions                   t
       vc-make-backup-files                  t
       backup-by-copying                     t
       vc-follow-symlinks                    t
@@ -385,6 +385,7 @@ point reaches the beginning or end of the buffer, stop there."
               (eshell/alias "emacs" "find-file $1")
               (eshell/alias "magit" "magit-status")
               (eshell/alias "less" "cat $1")
+              (eshell/alias "python" "python3 $*")
               (local-set-key (kbd "C-c h")
                              (lambda ()
                                "Ido interface to eshell history."
@@ -681,7 +682,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
       (not (member (nth 2 (org-heading-components)) org-done-keywords)))
     (setq org-refile-target-verify-function 'bh/verify-refile-target))
   ;; org babel evaluate
-  (require' ob)
+  (require 'ob)
+  (use-package ob-async
+    :ensure t
+    :defer t)
   (progn
     ;; Make org mode allow eval of some langs
     (org-babel-do-load-languages
@@ -695,7 +699,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
        (sql        . t)
        (stan       . t)))
     (setq org-confirm-babel-evaluate nil
-          org-src-fontify-natively t)
+          org-src-fontify-natively   t
+          org-babel-python-command   "python3")
     (add-hook 'org-babel-after-execute-hook
               'org-display-inline-images)))
 (add-hook 'org-mode-hook #'(lambda ()
