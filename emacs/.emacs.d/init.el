@@ -44,7 +44,7 @@
  '(org-export-backends (quote (ascii beamer html icalendar latex md odt)))
  '(package-selected-packages
    (quote
-    (flx counsel ob-async diminish hc-zenburn-theme outline-magic mu4e-alert haskell-mode auctex rainbow-mode org guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
+    (avy flx counsel ob-async diminish hc-zenburn-theme outline-magic mu4e-alert haskell-mode auctex rainbow-mode org guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#2aa198" :weight bold))))
@@ -733,6 +733,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     ;; Better fuzzy-matching
     (use-package flx
       :ensure t)
+    ;; Avy for finding matches in swiper, C-'
+    (use-package avy
+      :ensure t)
     (ivy-mode 1)
     (counsel-mode 1)
     (global-set-key (kbd "C-s") 'swiper)
@@ -740,7 +743,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     ;;(global-set-key (kbd "C-r") 'swiper)
     ;; Allow "M-x lis-pac" to match "M-x list-packages"
     (setq ivy-re-builders-alist '((swiper . ivy--regex-plus)
-                                  (t . ivy--regex-fuzzy)))))
+                                  (t      . ivy--regex-fuzzy)))))
 
 ;;;; --- Multiple cursors ---
 (use-package multiple-cursors
