@@ -41,9 +41,10 @@
  '(nrepl-message-colors
    (quote
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
+ '(org-export-backends (quote (ascii beamer html icalendar latex md odt)))
  '(package-selected-packages
    (quote
-    (diminish hc-zenburn-theme outline-magic mu4e-alert haskell-mode auctex rainbow-mode org guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
+    (ob-async diminish hc-zenburn-theme outline-magic mu4e-alert haskell-mode auctex rainbow-mode org guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#2aa198" :weight bold))))
@@ -127,7 +128,7 @@
 
 ;;;; --- Setup ---
 ;; Setup directories in ~/.emacs.d/
-(dolist (folder '("lisp" "backups" "temp" "autosave"))
+(dolist (folder '("lisp" "backups" "temp" "autosave" "org-files"))
   (let ((dir (concat "~/.emacs.d/" folder)))
     (if (not (file-directory-p dir))
         (make-directory dir))))
@@ -138,7 +139,7 @@
       savehist-file                  "~/.emacs.d/savehist")
 
 ;; Disable various modes
-(dolist (mode '(tool-bar-mode scroll-bar-mode tooltip-mode))
+(dolist (mode '(tool-bar-mode scroll-bar-mode tooltip-mode menu-bar-mode))
   (when (fboundp mode)
     (funcall mode -1)))
 
@@ -157,11 +158,12 @@
       read-buffer-completion-ignore-case    t
 
       ;; Use disk space
-      delete-old-versions                  -1
       version-control                       t
+      delete-old-versions                   t
       vc-make-backup-files                  t
       backup-by-copying                     t
       vc-follow-symlinks                    t
+      kept-new-versions                     64
 
       ;; Add newlines when scrolling a file
       next-line-add-newlines                t
@@ -204,6 +206,18 @@
 ;; Prettify symbols
 (global-prettify-symbols-mode 1)
 (setq prettify-symbols-unprettify-at-point 'right-edge)
+;; C-x 8 RET to find and insert unicode char
+(add-hook 'prog-mode-hook (lambda ()
+                            (mapc (lambda (pair)
+                                    (push pair prettify-symbols-alist))
+                                  '(("<="  . ?≤)
+                                    (">="  . ?≥)
+                                    ("!="  . ?≠) ;; C
+                                    ("/="  . ?≠) ;; Lisp
+                                    ("->"  . ?→)
+                                    ("<-"  . ?←)
+                                    ("=>"  . ?⇒)
+                                    ("..." . ?…)))))
 
 ;; Enable C-x C-u (upcase-region) and C-x C-l (downcase region)
 (put 'upcase-region   'disabled nil)
@@ -297,7 +311,7 @@ point reaches the beginning or end of the buffer, stop there."
 ;;; *** Packages ***
 
 ;;;; --- Diminish ---
-;; Remove some things from modeline
+;; Remove some things from modeline. Used by use-package.
 (use-package diminish
   :ensure t)
 
@@ -355,11 +369,191 @@ point reaches the beginning or end of the buffer, stop there."
               (lambda ()
                 (hl-line-mode 1)))))
 
+;;;; --- Eshell ---
+(use-package eshell
+  :bind ("C-c e" . eshell)
+  :config
+  (require 'em-smart)
+  (require 'esh-module)
+  (with-eval-after-load "esh-module"
+    (add-to-list 'eshell-modules-list 'eshell-tramp)
+    (setq password-cache t           ;; enable password caching
+          password-cache-expiry 600)) ;; time in seconds
+  (add-hook 'eshell-mode-hook
+            (lambda ()
+              (eshell-smart-initialize)
+              (eshell/alias "emacs" "find-file $1")
+              (eshell/alias "magit" "magit-status")
+              (eshell/alias "less" "cat $1")
+              (eshell/alias "python" "python3 $*")
+              (local-set-key (kbd "C-c h")
+                             (lambda ()
+                               "Ido interface to eshell history."
+                               (interactive) ;; Maybe insert move-to-end-of-buffer here
+                               (insert
+                                (ido-completing-read "History: "
+                                                     (delete-dups
+                                                      (ring-elements eshell-history-ring))))))
+              (local-set-key (kbd "C-c C-h") 'eshell-list-history)))
+  ;; Send message when command finishes and buffer is not active
+  ;; Alternatively, look at package 'alert'
+  (add-hook 'eshell-kill-hook
+            (lambda (process status)
+              "Shows process and status in minibuffer when a command finishes."
+              (let ((buffer (process-buffer process)))
+                ;; To check buffer not focused, use
+                ;;   (eq buffer (window-buffer (selected-window)))
+                ;; Check buffer is not visible
+                (if (not (get-buffer-window buffer))
+                    (message "%s: %s."
+                             process
+                             ;; Replace final newline with nothing
+                             (replace-regexp-in-string "\n\\'" ""
+                                                       status))))))
+  (setq eshell-ls-use-colors                    t
+        ;; History
+        eshell-save-history-on-exit             t
+        eshell-history-size                     256000
+        eshell-hist-ignoredups                  t
+        ;; Globbing
+        eshell-glob-case-insensitive            t
+        eshell-error-if-no-glob                 t
+        ;; Completion
+        eshell-cmpl-cycle-completions           nil
+        eshell-cmpl-ignore-case                 t
+        ;; Remain at start of command after enter
+        eshell-where-to-jump                    'begin
+        eshell-review-quick-commands            nil
+        ;; Close buffer on exit
+        eshell-destroy-buffer-when-process-dies t
+        ;; Scrolling
+        eshell-scroll-to-bottom-on-input        nil
+        ehsell-scroll-to-bottom-on-output       nil
+        eshell-scroll-show-maximum-output       t
+        eshell-smart-space-goes-to-end          t)
+  (setq eshell-banner-message ""
+        eshell-prompt-function
+        (lambda ()
+          (let ((standard-colour "light goldenrod")
+                (time-colour     "gray")
+                (user-colour     "light sky blue"))
+            (concat (propertize (format-time-string "%H:%M"
+                                                    (current-time))
+                                'face (list :foreground time-colour))
+                    " "
+                    (propertize (user-login-name)
+                                'face (list :foreground user-colour))
+                    " "
+                    (propertize (fish-path (eshell/pwd) 20)
+                                'face (list :foreground standard-colour))
+                    (sstoltze/make-vc-prompt)
+                    (propertize " >"
+                                'face (list :foreground standard-colour))
+                    ;; This resets text properties
+                    " ")))
+        eshell-prompt-regexp "^[0-9]\\{1,2\\}:[0-9]\\{2\\} .+ .+ > "))
+
+;; Could consider making the colours parameters to be
+;; able to change them when calling in eshell-prompt-function
+(defun sstoltze/make-vc-prompt ()
+  "Small helper for eshell-prompt-function.
+If includes git branch-name if magit is loaded
+and tries to emulate the fish git prompt.
+
+Can be replaced with:
+\(or (ignore-errors (format \" (%s)\"
+                           (vc-responsible-backend
+                            default-directory)))
+    \"\")"
+  (let ((standard-colour  "pale goldenrod")
+        (untracked-colour "red")
+        (unstaged-colour  "yellow green")
+        (staged-colour    "royal blue")
+        (vc-response (or (ignore-errors (format "%s"
+                                                (vc-responsible-backend
+                                                 default-directory)))
+                         "")))
+    (cond ((equal vc-response "Git")
+           (let ((branch    (or (ignore-errors
+                                  (magit-get-current-branch))
+                                "Git"))
+                 (untracked (or (ignore-errors
+                                  (length (magit-untracked-files)))
+                                0))
+                 (unstaged  (or (ignore-errors
+                                  (length (magit-unstaged-files)))
+                                0))
+                 (staged    (or (ignore-errors
+                                  (length (magit-staged-files)))
+                                0)))
+             (concat (propertize " ("
+                                 'face (list :foreground
+                                             standard-colour))
+                     (propertize branch
+                                 'face (list :foreground
+                                             standard-colour))
+                     (propertize (if (> (+ untracked unstaged staged) 0)
+                                     "|"
+                                   (if (equal branch "Git")
+                                       ""
+                                     "|✔"))
+                                 'face (list :foreground
+                                             standard-colour))
+                     (propertize (if (> untracked 0)
+                                     (format "…%s" untracked)
+                                   "")
+                                 'face (list :foreground
+                                             untracked-colour))
+                     (propertize (if (> unstaged 0)
+                                     (format "+%s" unstaged)
+                                   "")
+                                 'face (list :foreground
+                                             unstaged-colour))
+                     (propertize (if (> staged 0)
+                                     (format "→%s" staged)
+                                   "")
+                                 'face (list :foreground
+                                             staged-colour))
+                     (propertize ")"
+                                 'face (list :foreground
+                                             standard-colour)))))
+          ((equal vc-response "")
+           (propertize  ""
+                        'face (list :foreground
+                                    standard-colour)))
+          (t
+           (propertize (format " (%s)" vc-response)
+                       'face (list :foreground
+                                   standard-colour))))))
+
+(defun fish-path (path max-len)
+  "Return a potentially trimmed-down version of the directory PATH, replacing
+parent directories with their initial characters to try to get the character
+length of PATH (sans directory slashes) down to MAX-LEN."
+  (let* ((components (split-string (abbreviate-file-name path) "/"))
+         (len (+ (1- (length components))
+                 (seq-reduce '+ (mapcar 'length components) 0)))
+         (str ""))
+    (while (and (> len max-len)
+                (cdr components))
+      (setq str (concat str
+                        (cond ((= 0 (length (car components))) "/")
+                              ((= 1 (length (car components)))
+                               (concat (car components) "/"))
+                              (t
+                               (if (string= "."
+                                            (string (elt (car components) 0)))
+                                   (concat (substring (car components) 0 2)
+                                           "/")
+                                 (string (elt (car components) 0) ?/)))))
+            len (- len (1- (length (car components))))
+            components (cdr components)))
+    (concat str (seq-reduce (lambda (a b) (concat a "/" b)) (cdr components) (car components)))))
+
 ;;;; --- Paredit ---
 ;; http://pub.gajendra.net/src/paredit-refcard.pdf
 (use-package paredit
   :ensure t
-  :diminish paredit-mode
   :config
   (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
   (add-hook 'emacs-lisp-mode-hook                  #'enable-paredit-mode)
@@ -378,6 +572,22 @@ point reaches the beginning or end of the buffer, stop there."
   (add-hook 'prog-mode-hook 'flycheck-mode)
   (add-hook 'text-mode-hook 'flycheck-mode))
 
+;;;; --- Auto-insert ---
+;; Insert into file, but mark unmodified
+(setq auto-insert       'other
+      ;; Do not ask when inserting
+      auto-insert-query nil)
+;; Only do it for org-mode
+(add-hook 'org-mode-hook 'auto-insert)
+(with-eval-after-load 'autoinsert
+  (define-auto-insert '("\\.org\\'" . "Org header")
+    '(nil
+      "#+AUTHOR: " user-full-name \n
+      "#+EMAIL: " user-mail-address \n
+      "#+DATE: " (format-time-string "%Y-%m-%d" (current-time)) \n
+      "#+OPTIONS: toc:nil title:nil author:nil email:nil date:nil creator:nil" \n
+      "* " )))
+
 ;;;; --- Org ---
 (require 'org-install)
 (define-key global-map "\C-cl" 'org-store-link)
@@ -388,49 +598,76 @@ point reaches the beginning or end of the buffer, stop there."
       org-startup-folded             nil
       org-startup-indented           t
       org-startup-with-inline-images t)
-(let ((default-org-file "~/.emacs.d/organizer.org"))
-  (if (not (file-exists-p default-org-file))
-      (write-region ""                ; Start - What to write
-                    nil               ; End - Ignored when start is string
-                    default-org-file  ; Filename
-                    t                 ; Append
-                    nil               ; Visit
-                    nil               ; Lockname
-                    'excl))           ; Mustbenew - error if already exists
+(let ((default-org-file "~/.emacs.d/org-files/journal.org")
+      (work-org-file    "~/.emacs.d/org-files/work.org"))
+  (dolist (org-file (list default-org-file work-org-file))
+          (if (not (file-exists-p org-file))
+              (write-region "* Tasks\n"         ; Start - What to write
+                            nil               ; End - Ignored when start is string
+                            org-file          ; Filename
+                            t                 ; Append
+                            nil               ; Visit
+                            nil               ; Lockname
+                            'excl)))          ; Mustbenew - error if already exists
   (setq org-default-notes-file default-org-file
-        org-agenda-files (list default-org-file))
-  (set-register ?o (cons 'file default-org-file))
+        org-agenda-files (list default-org-file work-org-file))
+  (set-register ?j (cons 'file default-org-file))
+  (set-register ?w (cons 'file work-org-file))
   (setq org-capture-templates
-        (quote
-         (("t" "TODO" entry (file+headline default-org-file "Tasks")
+        `(("j" "Note"      entry (file+datetree ,default-org-file)
+           "* %?"
+           :empty-lines 1)
+          ("w" "Work-note" entry (file+datetree ,work-org-file)
+           "* %?"
+           :empty-lines 1)
+          ("t" "TODO"      entry (file+headline ,default-org-file "Tasks")
            "* TODO %?\n%U\n%a\n"
-           :clock-in t :clock-resume t)
-          ("m" "Meeting" entry (file (lambda nil (buffer-file-name)))
+           :clock-in t :clock-resume t
+           :empty-lines 1)
+          ("m" "Meeting"   entry (file (lambda () (or (buffer-file-name)
+                                                 ,work-org-file)))
            "* %? - %u :MEETING:\n:ATTENDEES:\nSimon Stoltze\n:END:\n"
-           :clock-in t :clock-resume t)
-          ("n" "Next" entry (file+headline default-org-file "Tasks")
-           "* NEXT %?\n%U\nDEADLINE: %t")))))
+           :clock-in t :clock-resume t
+           :empty-lines 1)
+          ("n" "Next"      entry (file+headline ,default-org-file "Tasks")
+           "* NEXT %?\n%U\nDEADLINE: %t"
+           :clock-in t :clock-resume t
+           :empty-lines 1))))
 (defun my-org-hook ()
   "Org mode hook."
   (progn
     (setq
-          org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
-                              (sequence "WAITING(w)"))
-          org-time-stamp-custom-formats (quote ("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>"))
-          org-refile-targets (quote ((nil :maxlevel . 9)
-                                     (org-agenda-files :maxlevel . 9)))
-          org-use-fast-todo-selection t
-          org-log-done t
-          ;; Use full outline paths for refile targets - we file directly with IDO
-          org-refile-use-outline-path t
-          ;; Targets complete directly with IDO
-          org-outline-path-complete-in-steps nil
-          ;; Allow refile to create parent tasks with confirmation
-          org-refile-allow-creating-parent-nodes (quote confirm)
-          ;; Use the current window for indirect buffer display
-          org-indirect-buffer-display 'current-window
-          ;; Use IDO for both buffer and file completion and ido-everywhere to t
-          org-completion-use-ido t)
+     org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+                         (sequence "WAITING(w)"))
+     org-time-stamp-custom-formats (quote ("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>"))
+     org-refile-targets (quote ((nil :maxlevel . 9)
+                                (org-agenda-files :maxlevel . 9)))
+     org-use-fast-todo-selection t
+     ;; Allow editing invisible region if it does that you would expect
+     org-catch-invisible-edits 'smart
+     org-log-done t
+     ;; Use full outline paths for refile targets - we file directly with IDO
+     org-refile-use-outline-path t
+     ;; Targets complete directly with IDO
+     org-outline-path-complete-in-steps nil
+     ;; Allow refile to create parent tasks with confirmation
+     org-refile-allow-creating-parent-nodes (quote confirm)
+     ;; Use the current window for indirect buffer display
+     org-indirect-buffer-display 'current-window
+     ;; Use IDO for both buffer and file completion and ido-everywhere to t
+     org-completion-use-ido t
+     ;; Author, email, date of creation, validation link at bottom of exported html
+     org-html-postamble nil
+     org-html-html5-fancy t
+     org-html-doctype "html5")
+    ;; Two options for literate programming.
+    ;; Usage is as for SRC and EXAMPLE blocks, <pr<TAB> to expand
+    (add-to-list 'org-structure-template-alist ;; A property drawer with correct settings for org-babel
+                 '("pr" ":PROPERTIES:\n:header-args: :results output :tangle yes :session *?*\n:END:"))
+    (add-to-list 'org-structure-template-alist ;; A source block with header-args for exporting an image
+                 '("si" "#+BEGIN_SRC ? :results graphics :file ./images/\n\n#+END_SRC"))
+    (add-to-list 'org-structure-template-alist ;; A source block with silent enabled
+                 '("ss" "#+BEGIN_SRC ? :results silent\n\n#+END_SRC"))
     ;; At work
     (when (and (eq system-type 'windows-nt)
                (file-exists-p "C:/Progra~2/LibreOffice/program/soffice.exe")
@@ -445,26 +682,30 @@ point reaches the beginning or end of the buffer, stop there."
       (not (member (nth 2 (org-heading-components)) org-done-keywords)))
     (setq org-refile-target-verify-function 'bh/verify-refile-target))
   ;; org babel evaluate
-  (require' ob)
+  (require 'ob)
+  (use-package ob-async
+    :ensure t
+    :defer t)
   (progn
     ;; Make org mode allow eval of some langs
     (org-babel-do-load-languages
      'org-babel-load-languages
-     '((ditaa      . t)
-       (lisp       . t)
+     '((lisp       . t)
        (emacs-lisp . t)
        (python     . t)
        (ruby       . t)
        (R          . t)
        (latex      . t)
-       (sql        . t)))
-    (setq org-confirm-babel-evaluate nil)
+       (sql        . t)
+       (stan       . t)))
+    (setq org-confirm-babel-evaluate nil
+          org-src-fontify-natively   t
+          org-babel-python-command   "python3")
     (add-hook 'org-babel-after-execute-hook
               'org-display-inline-images)))
 (add-hook 'org-mode-hook #'(lambda ()
-                             (visual-line-mode)
-                             (org-indent-mode)
-                             (org-display-inline-images)
+                             (visual-line-mode 1)
+                             (org-indent-mode  1)
                              (my-org-hook)))
 
 ;;;; --- Ido ---
@@ -491,8 +732,18 @@ point reaches the beginning or end of the buffer, stop there."
           ido-case-fold t
           ;; Order files are shown in
           ido-file-extensions-order '(".org" ".py" ".el" ".emacs"
-                                      ".lisp" ".c" ".hs" ".txt"))
-    (ido-mode t)))
+                                      ".lisp" ".c" ".hs" ".txt" ".R"))
+    (ido-mode t)
+    ;; Allow editing of read-only files
+    (defun help/ido-find-file ()
+      "Find file as root if necessary.
+
+Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
+      (unless (and buffer-file-name
+                   (file-writable-p buffer-file-name))
+        (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
+
+    (advice-add #'ido-find-file :after #'help/ido-find-file)))
 
 ;;;; --- Multiple cursors ---
 (use-package multiple-cursors
@@ -533,7 +784,7 @@ point reaches the beginning or end of the buffer, stop there."
   :defer t
   :config
   (progn
-    (when  (eq system-type 'cygwin)
+    (when (eq system-type 'cygwin)
       (defun cyg-slime-to-lisp-translation (filename)
         (replace-regexp-in-string "\n" ""
                                   (shell-command-to-string
@@ -735,8 +986,6 @@ point reaches the beginning or end of the buffer, stop there."
 ;; - ;;;; is on the same level as a top-level sexp
 (add-hook 'prog-mode-hook
           (lambda () (outline-minor-mode 1)))
-(add-hook 'org-mode-hook
-          (lambda () (outline-minor-mode 1)))
 (add-hook 'outline-minor-mode-hook
           (lambda ()
             (use-package outline-magic
@@ -779,9 +1028,11 @@ point reaches the beginning or end of the buffer, stop there."
 (cond
  ;; --- Windows specific ---
  ((eq system-type 'windows-nt)
-  (setq default-directory (concat "C:/Users/"
-                                  (user-login-name)
-                                  "/Desktop/"))
+  (let ((desktop-dir (concat "C:/Users/"
+                             (user-login-name)
+                             "/Desktop/")))
+    (setq default-directory desktop-dir)
+    (set-register ?d (cons 'file desktop-dir))) ;; No idea if this works
   ;; tramp - C-x C-f /ftp:<user>@host: C-d to open dired
   (let ((plink-file "C:/Program Files (x86)/PuTTY/plink.exe"))
     (when (file-exists-p plink-file)
@@ -851,11 +1102,8 @@ point reaches the beginning or end of the buffer, stop there."
       (setq mu4e-maildir "~/.mail"
             ;; May have to run mbsync in console first to enter password
             mu4e-get-mail-command "mbsync -a"
-
-            user-mail-address "sstoltze@gmail.com" ;; Probably reset this when multiple mailboxes
             user-full-name  "Simon Stoltze"
             mu4e-view-show-images t
-            ;;(when (fboundp 'imagemagick-register-types)         (imagemagick-register-types))
             ;; Why would I want to leave my message open after I've sent it?
             message-kill-buffer-on-exit t
             ;; Don't ask for a 'context' upon opening mu4e
