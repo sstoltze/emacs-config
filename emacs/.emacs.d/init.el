@@ -38,13 +38,64 @@
    (quote
     (elpy-module-eldoc elpy-module-flymake elpy-module-pyvenv elpy-module-highlight-indentation elpy-module-yasnippet elpy-module-django elpy-module-sane-defaults)))
  '(fci-rule-color "#073642")
+ ;; All of this to change the face of the major mode in C-x b...
+ '(ivy-rich--display-transformers-list
+   (quote
+    (ivy-switch-buffer
+     (:columns
+      ((ivy-rich-candidate
+        (:width 30))
+       (ivy-rich-switch-buffer-size
+        (:width 7))
+       (ivy-rich-switch-buffer-indicators
+        (:width 4 :face error :align right))
+       (ivy-rich-switch-buffer-major-mode
+        (:width 12 :face font-lock-doc-face))
+       (ivy-rich-switch-buffer-project
+        (:width 15 :face success))
+       (ivy-rich-switch-buffer-path
+        (:width
+         (lambda
+           (x)
+           (ivy-rich-switch-buffer-shorten-path x
+                                                (ivy-rich-minibuffer-width 0.3))))))
+      :predicate
+      (lambda
+        (cand)
+        (get-buffer cand)))
+     counsel-M-x
+     (:columns
+      ((counsel-M-x-transformer
+        (:width 40))
+       (ivy-rich-counsel-function-docstring
+        (:face font-lock-doc-face))))
+     counsel-describe-function
+     (:columns
+      ((counsel-describe-function-transformer
+        (:width 40))
+       (ivy-rich-counsel-function-docstring
+        (:face font-lock-doc-face))))
+     counsel-describe-variable
+     (:columns
+      ((counsel-describe-variable-transformer
+        (:width 40))
+       (ivy-rich-counsel-variable-docstring
+        (:face font-lock-doc-face))))
+     counsel-recentf
+     (:columns
+      ((ivy-rich-candidate
+        (:width 0.8))
+       (ivy-rich-file-last-modified-time
+        (:face font-lock-comment-face)))))))
+ '(ivy-rich-mode t)
+ '(ivy-rich-path-style (quote abbrev))
  '(nrepl-message-colors
    (quote
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(org-export-backends (quote (ascii beamer html icalendar latex md odt)))
  '(package-selected-packages
    (quote
-    (avy flx counsel ob-async diminish hc-zenburn-theme outline-magic mu4e-alert haskell-mode auctex rainbow-mode org guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
+    (ivy-rich avy flx counsel ob-async diminish hc-zenburn-theme outline-magic mu4e-alert haskell-mode auctex rainbow-mode org guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#2aa198" :weight bold))))
@@ -728,7 +779,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;;;;; Doing C-x C-f, C-M-j will create currently entered text as file-name
 (use-package counsel
   :ensure t
-  :config
+  ;; This doesn't really work as expected
+  ;;(global-set-key (kbd "C-r") 'swiper)
+  :bind (("C-s"     . swiper)
+         ("C-x C-r" . counsel-recentf))
+  :init
   (progn
     ;; Better fuzzy-matching
     (use-package flx
@@ -736,11 +791,14 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     ;; Avy for finding matches in swiper, C-'
     (use-package avy
       :ensure t)
+    ;; Add info to ivy-buffers like 'M-x' or 'C-x b'
+    (use-package ivy-rich
+      :ensure t
+      :config
+      (setq ivy-rich-path-style 'abbrev)
+      (ivy-rich-mode 1))
     (ivy-mode 1)
     (counsel-mode 1)
-    (global-set-key (kbd "C-s") 'swiper)
-    ;; This doesn't really work as expected
-    ;;(global-set-key (kbd "C-r") 'swiper)
     ;; Allow "M-x lis-pac" to match "M-x list-packages"
     (setq ivy-re-builders-alist '((swiper . ivy--regex-plus)
                                   (t      . ivy--regex-fuzzy)))))
