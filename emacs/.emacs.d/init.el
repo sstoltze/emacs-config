@@ -128,7 +128,7 @@
 
 ;;;; --- Setup ---
 ;; Setup directories in ~/.emacs.d/
-(dolist (folder '("lisp" "backups" "temp" "autosave" "org-files"))
+(dolist (folder '("lisp" "backups" "temp" "autosave" "org-files" "org-files/gtd"))
   (let ((dir (concat "~/.emacs.d/" folder)))
     (if (not (file-directory-p dir))
         (make-directory dir))))
@@ -598,40 +598,60 @@ length of PATH (sans directory slashes) down to MAX-LEN."
       org-startup-folded             nil
       org-startup-indented           t
       org-startup-with-inline-images t)
-(let ((default-org-file "~/.emacs.d/org-files/journal.org")
-      (work-org-file    "~/.emacs.d/org-files/work.org"))
-  (dolist (org-file (list default-org-file work-org-file))
+;; Most GTD setup is taken from https://emacs.cafe/emacs/orgmode/gtd/2017/06/30/orgmode-gtd.html
+(let ((default-org-file "~/.emacs.d/org-files/gtd/default.org")   ;; Unsorted items
+      (project-org-file "~/.emacs.d/org-files/gtd/projects.org")  ;; Currently active projects
+      (archive-org-file "~/.emacs.d/org-files/gtd/archive.org")   ;; Projects that are currently waiting for something else
+      (schedule-org-file "~/.emacs.d/org-files/gtd/schedule.org") ;; C-c C-s to schedule. C-c C-d to deadline
+      (journal-org-file "~/.emacs.d/org-files/journal.org"))
+  (dolist (org-file (list default-org-file project-org-file archive-org-file schedule-org-file journal-org-file))
           (if (not (file-exists-p org-file))
-              (write-region "* Tasks\n"         ; Start - What to write
+              (write-region (concat "#+AUTHOR: "
+                                    user-full-name
+                                    "\n#+EMAIL: "
+                                    user-mail-address
+                                    "\n#+DATE: "
+                                    (format-time-string "%Y-%m-%d" (current-time))
+                                    "\n#+OPTIONS: toc:nil title:nil author:nil email:nil date:nil creator:nil\n") ; Start - What to write
                             nil               ; End - Ignored when start is string
                             org-file          ; Filename
                             t                 ; Append
                             nil               ; Visit
                             nil               ; Lockname
                             'excl)))          ; Mustbenew - error if already exists
-  (setq org-default-notes-file default-org-file
-        org-agenda-files (list default-org-file work-org-file))
-  (set-register ?j (cons 'file default-org-file))
-  (set-register ?w (cons 'file work-org-file))
+  (setq org-default-notes-file journal-org-file
+        org-agenda-files (list default-org-file
+                               project-org-file
+                               schedule-org-file
+                               journal-org-file)
+        ;; Possibly change levels here
+        org-refile-targets `((,project-org-file  :maxlevel . 3)
+                             (,schedule-org-file :level    . 1)
+                             (,archive-org-file  :level    . 1)
+                             (,journal-org-file  :maxlevel . 3)))
+  (set-register ?d (cons 'file default-org-file))
+  (set-register ?a (cons 'file archive-org-file))
+  (set-register ?p (cons 'file project-org-file))
+  (set-register ?s (cons 'file schedule-org-file))
+  (set-register ?j (cons 'file journal-org-file))
   (setq org-capture-templates
-        `(("j" "Note"      entry (file+datetree ,default-org-file)
+        `(("j" "Note"      entry (file+datetree ,journal-org-file)
            "* %?"
            :empty-lines 1)
-          ("w" "Work-note" entry (file+datetree ,work-org-file)
-           "* %?"
-           :empty-lines 1)
-          ("t" "TODO"      entry (file+headline ,default-org-file "Tasks")
+          ("t" "TODO"      entry (file+headline ,default-org-file "Unsorted")
            "* TODO %?\n%U\n%a\n"
            :clock-in t :clock-resume t
            :empty-lines 1)
-          ("m" "Meeting"   entry (file (lambda () (or (buffer-file-name)
-                                                 ,work-org-file)))
+          ("m" "Meeting"   entry (file ,default-org-file) ;; (lambda () (or (buffer-file-name) ,default-org-file))
            "* %? - %u :MEETING:\n:ATTENDEES:\nSimon Stoltze\n:END:\n"
            :clock-in t :clock-resume t
            :empty-lines 1)
-          ("n" "Next"      entry (file+headline ,default-org-file "Tasks")
+          ("n" "Next"      entry (file+headline ,default-org-file "Unsorted")
            "* NEXT %?\n%U\nDEADLINE: %t"
            :clock-in t :clock-resume t
+           :empty-lines 1)
+          ("s" "Schedule"  entry (file+headline ,schedule-org-file "Schedule")
+           "* %i%?\n%U"
            :empty-lines 1))))
 (defun my-org-hook ()
   "Org mode hook."
@@ -640,8 +660,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
      org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
                          (sequence "WAITING(w)"))
      org-time-stamp-custom-formats (quote ("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>"))
-     org-refile-targets (quote ((nil :maxlevel . 9)
-                                (org-agenda-files :maxlevel . 9)))
      org-use-fast-todo-selection t
      ;; Allow editing invisible region if it does that you would expect
      org-catch-invisible-edits 'smart
