@@ -44,7 +44,7 @@
  '(org-export-backends (quote (ascii beamer html icalendar latex md odt)))
  '(package-selected-packages
    (quote
-    (ob-async diminish hc-zenburn-theme outline-magic mu4e-alert haskell-mode auctex rainbow-mode org guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
+    (flx counsel ob-async diminish hc-zenburn-theme outline-magic mu4e-alert haskell-mode auctex rainbow-mode org guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#2aa198" :weight bold))))
@@ -388,10 +388,10 @@ point reaches the beginning or end of the buffer, stop there."
               (eshell/alias "python" "python3 $*")
               (local-set-key (kbd "C-c h")
                              (lambda ()
-                               "Ido interface to eshell history."
+                               "Ivy interface to eshell history."
                                (interactive) ;; Maybe insert move-to-end-of-buffer here
                                (insert
-                                (ido-completing-read "History: "
+                                (ivy-completing-read "History: "
                                                      (delete-dups
                                                       (ring-elements eshell-history-ring))))))
               (local-set-key (kbd "C-c C-h") 'eshell-list-history)))
@@ -664,7 +664,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
      ;; Allow editing invisible region if it does that you would expect
      org-catch-invisible-edits 'smart
      org-log-done t
-     ;; Use full outline paths for refile targets - we file directly with IDO
      org-refile-use-outline-path t
      ;; Targets complete directly with IDO
      org-outline-path-complete-in-steps nil
@@ -672,8 +671,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
      org-refile-allow-creating-parent-nodes (quote confirm)
      ;; Use the current window for indirect buffer display
      org-indirect-buffer-display 'current-window
-     ;; Use IDO for both buffer and file completion and ido-everywhere to t
-     org-completion-use-ido t
      ;; Author, email, date of creation, validation link at bottom of exported html
      org-html-postamble nil
      org-html-html5-fancy t
@@ -726,42 +723,24 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                              (org-indent-mode  1)
                              (my-org-hook)))
 
-;;;; --- Ido ---
-;;;;; Tips:
-;;;;; C-p makes ido only match beginning of names
-;;;;; While doing C-x C-f:
-;;;;; - C-d will open dired
-;;;;; - M-d will search in subdirs
-;;;;; - M-m will create a subdirectory
-(use-package ido
+;;;; --- Ivy ---
+;;;;; Counsel pulls in ivy and swiper
+;;;;; Doing C-x C-f, C-M-j will create currently entered text as file-name
+(use-package counsel
   :ensure t
   :config
   (progn
-    (setq ido-everywhere t
-          ido-max-directory-size 100000
-          ;; Use the current window when visiting files and buffers with ido
-          ido-default-file-method 'selected-window
-          ido-default-buffer-method 'selected-window
-          ido-enable-flex-matching t
-          ido-confirm-unique-completion t
-          ;; Do not need to confirm when creating new buffer
-          ido-create-new-buffer 'always
-          ;; Ignore case when searching
-          ido-case-fold t
-          ;; Order files are shown in
-          ido-file-extensions-order '(".org" ".py" ".el" ".emacs"
-                                      ".lisp" ".c" ".hs" ".txt" ".R"))
-    (ido-mode t)
-    ;; Allow editing of read-only files
-    (defun help/ido-find-file ()
-      "Find file as root if necessary.
-
-Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
-      (unless (and buffer-file-name
-                   (file-writable-p buffer-file-name))
-        (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
-
-    (advice-add #'ido-find-file :after #'help/ido-find-file)))
+    ;; Better fuzzy-matching
+    (use-package flx
+      :ensure t)
+    (ivy-mode 1)
+    (counsel-mode 1)
+    (global-set-key (kbd "C-s") 'swiper)
+    ;; This doesn't really work as expected
+    ;;(global-set-key (kbd "C-r") 'swiper)
+    ;; Allow "M-x lis-pac" to match "M-x list-packages"
+    (setq ivy-re-builders-alist '((swiper . ivy--regex-plus)
+                                  (t . ivy--regex-fuzzy)))))
 
 ;;;; --- Multiple cursors ---
 (use-package multiple-cursors
@@ -897,8 +876,11 @@ Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
 ;;;; --- Magit ---
 (use-package magit
   :ensure t
-  :bind (("C-x g"   . magit-status)           ; Display the main magit popup
-         ("C-x M-g" . magit-dispatch-popup))) ; Display keybinds for magit
+  :bind (("C-x g"   . magit-status)          ; Display the main magit popup
+         ("C-x M-g" . magit-dispatch-popup)) ; Display keybinds for magit
+  :config
+  (setq magit-completing-read-function 'ivy-completing-read))
+
 
 ;;;; --- Fish ---
 (use-package fish-mode
