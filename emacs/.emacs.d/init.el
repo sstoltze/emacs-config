@@ -335,6 +335,7 @@ point reaches the beginning or end of the buffer, stop there."
 ;;;; --- Guru-mode ----
 (use-package guru-mode
   :ensure t
+  ;; Always enabled, do not show in mode-line
   :diminish guru-mode
   :init
   (setq guru-warn-only t)
@@ -567,6 +568,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package flycheck
   :ensure t
   :defer t
+  ;; Always enabled, do not show in mode-line
   :diminish flycheck-mode
   :init
   (add-hook 'prog-mode-hook 'flycheck-mode)
@@ -728,6 +730,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;;;;; Doing C-x C-f, C-M-j will create currently entered text as file-name
 (use-package counsel
   :ensure t
+  ;; Always enabled, do not show in mode-line
+  :diminish counsel-mode
+  :diminish ivy-mode
   ;; This doesn't really work as expected
   ;;(global-set-key (kbd "C-r") 'swiper)
   :bind (("C-s"     . swiper)
@@ -1052,16 +1057,13 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;; For elisp:
 ;; - ;;; is a headline
 ;; - ;;;; is on the same level as a top-level sexp
-(add-hook 'prog-mode-hook
-          (lambda () (outline-minor-mode 1)))
-(add-hook 'outline-minor-mode-hook
-          (lambda ()
-            (use-package outline-magic
-              :diminish outline-minor-mode
-              :ensure t
-              :bind (("<C-tab>" . 'outline-cycle)))
-            (local-set-key (kbd "C-z")
-                           outline-mode-prefix-map)))
+(use-package outline-magic
+  :ensure t
+  :hook (prog-mode . outline-minor-mode)
+  ;; Always enabled, do not show in mode-line
+  :diminish outline-minor-mode
+  :bind        (("<C-tab>" . 'outline-cycle))
+  :bind-keymap ("C-z"      . outline-mode-prefix-map))
 
 ;;;; --- Frame-setup ---
 ;; Set initial frame size and position
