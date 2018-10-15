@@ -35,3 +35,8 @@ Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
         (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
 
     (advice-add #'ido-find-file :after #'help/ido-find-file)))
+
+;;;; Ivy
+;; Avy for finding matches in swiper, C-'
+    (use-package avy
+      :ensure t)

@@ -38,57 +38,6 @@
    (quote
     (elpy-module-eldoc elpy-module-flymake elpy-module-pyvenv elpy-module-highlight-indentation elpy-module-yasnippet elpy-module-django elpy-module-sane-defaults)))
  '(fci-rule-color "#073642")
- ;; All of this to change the face of the major mode in C-x b...
- '(ivy-rich--display-transformers-list
-   (quote
-    (ivy-switch-buffer
-     (:columns
-      ((ivy-rich-candidate
-        (:width 30))
-       (ivy-rich-switch-buffer-size
-        (:width 7))
-       (ivy-rich-switch-buffer-indicators
-        (:width 4 :face error :align right))
-       (ivy-rich-switch-buffer-major-mode
-        (:width 12 :face font-lock-doc-face))
-       (ivy-rich-switch-buffer-project
-        (:width 15 :face success))
-       (ivy-rich-switch-buffer-path
-        (:width
-         (lambda
-           (x)
-           (ivy-rich-switch-buffer-shorten-path x
-                                                (ivy-rich-minibuffer-width 0.3))))))
-      :predicate
-      (lambda
-        (cand)
-        (get-buffer cand)))
-     counsel-M-x
-     (:columns
-      ((counsel-M-x-transformer
-        (:width 40))
-       (ivy-rich-counsel-function-docstring
-        (:face font-lock-doc-face))))
-     counsel-describe-function
-     (:columns
-      ((counsel-describe-function-transformer
-        (:width 40))
-       (ivy-rich-counsel-function-docstring
-        (:face font-lock-doc-face))))
-     counsel-describe-variable
-     (:columns
-      ((counsel-describe-variable-transformer
-        (:width 40))
-       (ivy-rich-counsel-variable-docstring
-        (:face font-lock-doc-face))))
-     counsel-recentf
-     (:columns
-      ((ivy-rich-candidate
-        (:width 0.8))
-       (ivy-rich-file-last-modified-time
-        (:face font-lock-comment-face)))))))
- '(ivy-rich-mode t)
- '(ivy-rich-path-style (quote abbrev))
  '(nrepl-message-colors
    (quote
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
@@ -232,7 +181,7 @@
                               (t                        "sstoltze@gmail.com"))
 
       ;; Disable the bell
-      ring-bell-function (lambda ())
+      ring-bell-function 'ignore
 
       ;; Add directory name to buffer if name is not unique
       uniquify-buffer-name-style 'forward)
@@ -656,20 +605,20 @@ length of PATH (sans directory slashes) down to MAX-LEN."
       (schedule-org-file "~/.emacs.d/org-files/gtd/schedule.org") ;; C-c C-s to schedule. C-c C-d to deadline
       (journal-org-file "~/.emacs.d/org-files/journal.org"))
   (dolist (org-file (list default-org-file project-org-file archive-org-file schedule-org-file journal-org-file))
-          (if (not (file-exists-p org-file))
-              (write-region (concat "#+AUTHOR: "
-                                    user-full-name
-                                    "\n#+EMAIL: "
-                                    user-mail-address
-                                    "\n#+DATE: "
-                                    (format-time-string "%Y-%m-%d" (current-time))
-                                    "\n#+OPTIONS: toc:nil title:nil author:nil email:nil date:nil creator:nil\n") ; Start - What to write
-                            nil               ; End - Ignored when start is string
-                            org-file          ; Filename
-                            t                 ; Append
-                            nil               ; Visit
-                            nil               ; Lockname
-                            'excl)))          ; Mustbenew - error if already exists
+    (if (not (file-exists-p org-file))
+        (write-region (concat "#+AUTHOR: "
+                              user-full-name
+                              "\n#+EMAIL: "
+                              user-mail-address
+                              "\n#+DATE: "
+                              (format-time-string "%Y-%m-%d" (current-time))
+                              "\n#+OPTIONS: toc:nil title:nil author:nil email:nil date:nil creator:nil\n") ; Start - What to write
+                      nil               ; End - Ignored when start is string
+                      org-file          ; Filename
+                      t                 ; Append
+                      nil               ; Visit
+                      nil               ; Lockname
+                      'excl)))          ; Mustbenew - error if already exists
   (setq org-default-notes-file journal-org-file
         org-agenda-files (list default-org-file
                                project-org-file
@@ -774,7 +723,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                              (org-indent-mode  1)
                              (my-org-hook)))
 
-;;;; --- Ivy ---
+;;;; --- Counsel / Swiper / Ivy ---
 ;;;;; Counsel pulls in ivy and swiper
 ;;;;; Doing C-x C-f, C-M-j will create currently entered text as file-name
 (use-package counsel
@@ -782,26 +731,84 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; This doesn't really work as expected
   ;;(global-set-key (kbd "C-r") 'swiper)
   :bind (("C-s"     . swiper)
-         ("C-x C-r" . counsel-recentf))
+         ("C-x C-r" . counsel-recentf)
+         ("C-c C-r" . ivy-resume))
   :init
   (progn
     ;; Better fuzzy-matching
     (use-package flx
       :ensure t)
-    ;; Avy for finding matches in swiper, C-'
-    (use-package avy
-      :ensure t)
+    ;; Allow "M-x lis-pac" to match "M-x list-packages"
+    (setq ivy-re-builders-alist        '((swiper . ivy--regex-plus)
+                                         (t      . ivy--regex-fuzzy))
+          ;; With the above, we do not need the initial ^ in the prompts
+          ivy-initial-inputs-alist     '()
+          ;; Allows selecting the prompt with C-p (same as C-M-j)
+          ivy-use-selectable-prompt    t
+          ;; Use ivy while in minibuffer to e.g. insert variable names
+          ;; when doing counsel-set-variable
+          enable-recursive-minibuffers t)
+    ;; Show how deep the minibuffer goes
+    (minibuffer-depth-indicate-mode 1)
+    (ivy-mode 1)
+    (counsel-mode 1)
     ;; Add info to ivy-buffers like 'M-x' or 'C-x b'
     (use-package ivy-rich
       :ensure t
+      :defer 1
       :config
       (setq ivy-rich-path-style 'abbrev)
-      (ivy-rich-mode 1))
-    (ivy-mode 1)
-    (counsel-mode 1)
-    ;; Allow "M-x lis-pac" to match "M-x list-packages"
-    (setq ivy-re-builders-alist '((swiper . ivy--regex-plus)
-                                  (t      . ivy--regex-fuzzy)))))
+      (ivy-rich-mode 1)
+      ;; All of this to change the face of the major mode in C-x b...
+      :custom
+      (ivy-rich--display-transformers-list
+       (quote
+        (ivy-switch-buffer
+         (:columns
+          ((ivy-rich-candidate
+            (:width 30))
+           (ivy-rich-switch-buffer-size
+            (:width 7))
+           (ivy-rich-switch-buffer-indicators
+            (:width 4 :face error :align right))
+           (ivy-rich-switch-buffer-major-mode
+            (:width 12 :face font-lock-doc-face))
+           (ivy-rich-switch-buffer-project
+            (:width 15 :face success))
+           (ivy-rich-switch-buffer-path
+            (:width
+             (lambda
+               (x)
+               (ivy-rich-switch-buffer-shorten-path x
+                                                    (ivy-rich-minibuffer-width 0.3))))))
+          :predicate
+          (lambda
+            (cand)
+            (get-buffer cand)))
+         counsel-M-x
+         (:columns
+          ((counsel-M-x-transformer
+            (:width 40))
+           (ivy-rich-counsel-function-docstring
+            (:face font-lock-doc-face))))
+         counsel-describe-function
+         (:columns
+          ((counsel-describe-function-transformer
+            (:width 40))
+           (ivy-rich-counsel-function-docstring
+            (:face font-lock-doc-face))))
+         counsel-describe-variable
+         (:columns
+          ((counsel-describe-variable-transformer
+            (:width 40))
+           (ivy-rich-counsel-variable-docstring
+            (:face font-lock-doc-face))))
+         counsel-recentf
+         (:columns
+          ((ivy-rich-candidate
+            (:width 0.8))
+           (ivy-rich-file-last-modified-time
+            (:face font-lock-comment-face))))))))))
 
 ;;;; --- Multiple cursors ---
 (use-package multiple-cursors
@@ -1089,22 +1096,12 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (cond
  ;; --- Windows specific ---
  ((eq system-type 'windows-nt)
+  ;; Default directory
   (let ((desktop-dir (concat "C:/Users/"
                              (user-login-name)
                              "/Desktop/")))
     (setq default-directory desktop-dir)
-    (set-register ?d (cons 'file desktop-dir))) ;; No idea if this works
-  ;; tramp - C-x C-f /ftp:<user>@host: C-d to open dired
-  (let ((plink-file "C:/Program Files (x86)/PuTTY/plink.exe"))
-    (when (file-exists-p plink-file)
-      (setq tramp-default-method "plink")
-      (when (not (string-match plink-file
-                               (getenv "PATH")))
-        (setenv "PATH" (concat plink-file
-                               ";"
-                               (getenv "PATH")))
-        (add-to-list 'exec-path
-                     plink-file))))
+    (set-register ?d (cons 'file desktop-dir)))
 
   ;; Alt-enter toggles screensize
   (defmacro handle-fullscreen-mode (func)
@@ -1137,6 +1134,19 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                                (length *window-options*))))
   (global-set-key (kbd "M-RET") 'toggle-window)
 
+  ;; --- Tramp - Windows ---
+  ;; C-x C-f /plink:<user>@host: ENTER
+  (let ((plink-file "C:/Program Files (x86)/PuTTY/plink.exe"))
+    (when (file-exists-p plink-file)
+      (setq tramp-default-method "plink")
+      (when (not (string-match plink-file
+                               (getenv "PATH")))
+        (setenv "PATH" (concat plink-file
+                               ";"
+                               (getenv "PATH")))
+        (add-to-list 'exec-path
+                     plink-file))))
+
   ;;;;; --- Work specific ---
   (when (and (eq system-type 'windows-nt)
              (equal (user-login-name) "sisto"))
@@ -1153,6 +1163,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 
  ;; --- Linux specific ---
  ((eq system-type 'gnu/linux)
+  ;; --- Tramp - Linux ---
+  (setq tramp-default-method "ssh")
+
   ;; --- Mu4e ---
   (when (file-directory-p "/usr/local/share/emacs/site-lisp/mu4e")
     (use-package mu4e
@@ -1209,6 +1222,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
           (mu4e~proc-kill)
           (mu4e-alert-enable-mode-line-display))
         (run-with-timer 0 600 'gjstein-refresh-mu4e-alert-mode-line))))
+
   ;; --- SAGE ---
   (when (file-directory-p "/usr/lib/sagemath")
     (use-package sage
