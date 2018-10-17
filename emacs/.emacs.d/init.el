@@ -287,6 +287,7 @@ point reaches the beginning or end of the buffer, stop there."
 ;;;; --- Dired ---
 (use-package dired
   :bind ("C-x C-j" . dired-jump)
+  :hook ((dired-mode . hl-line-mode))
   :config
   (progn
     (use-package dired-x
@@ -308,14 +309,40 @@ point reaches the beginning or end of the buffer, stop there."
           delete-by-moving-to-trash           t
           ;; Auto refresh dired
           global-auto-revert-non-file-buffers t
-          wdired-allow-to-change-permissions  t)
-    (add-hook 'dired-mode-hook
-              (lambda ()
-                (hl-line-mode 1)))))
+          wdired-allow-to-change-permissions  t)))
 
 ;;;; --- Eshell ---
 (use-package eshell
-  :bind ("C-c e" . eshell)
+  :bind (("C-c e" . eshell))
+  :hook ((eshell-mode . (lambda ()
+                          (eshell-smart-initialize)
+                          (eshell/alias "emacs"  "find-file $1")
+                          (eshell/alias "magit"  "magit-status")
+                          (eshell/alias "less"   "cat $1")
+                          (eshell/alias "python" "python3 $*")
+                          (local-set-key (kbd "C-c h")
+                                         (lambda ()
+                                           "Ivy interface to eshell history."
+                                           (interactive) ;; Maybe insert move-to-end-of-buffer here
+                                           (insert
+                                            (ivy-completing-read "History: "
+                                                                 (delete-dups
+                                                                  (ring-elements eshell-history-ring))))))
+                          (local-set-key (kbd "C-c C-h") 'eshell-list-history)))
+         ;; Send message when command finishes and buffer is not active
+         ;; Alternatively, look at package 'alert'
+         (eshell-kill . (lambda (process status)
+                          "Shows process and status in minibuffer when a command finishes."
+                          (let ((buffer (process-buffer process)))
+                            ;; To check buffer not focused, use
+                            ;;   (eq buffer (window-buffer (selected-window)))
+                            ;; Check buffer is not visible
+                            (if (not (get-buffer-window buffer))
+                                (message "%s: %s."
+                                         process
+                                         ;; Replace final newline with nothing
+                                         (replace-regexp-in-string "\n\\'" ""
+                                                                   status)))))))
   :config
   (require 'em-smart)
   (require 'esh-module)
@@ -323,37 +350,6 @@ point reaches the beginning or end of the buffer, stop there."
     (add-to-list 'eshell-modules-list 'eshell-tramp)
     (setq password-cache t           ;; enable password caching
           password-cache-expiry 600)) ;; time in seconds
-  (add-hook 'eshell-mode-hook
-            (lambda ()
-              (eshell-smart-initialize)
-              (eshell/alias "emacs" "find-file $1")
-              (eshell/alias "magit" "magit-status")
-              (eshell/alias "less" "cat $1")
-              (eshell/alias "python" "python3 $*")
-              (local-set-key (kbd "C-c h")
-                             (lambda ()
-                               "Ivy interface to eshell history."
-                               (interactive) ;; Maybe insert move-to-end-of-buffer here
-                               (insert
-                                (ivy-completing-read "History: "
-                                                     (delete-dups
-                                                      (ring-elements eshell-history-ring))))))
-              (local-set-key (kbd "C-c C-h") 'eshell-list-history)))
-  ;; Send message when command finishes and buffer is not active
-  ;; Alternatively, look at package 'alert'
-  (add-hook 'eshell-kill-hook
-            (lambda (process status)
-              "Shows process and status in minibuffer when a command finishes."
-              (let ((buffer (process-buffer process)))
-                ;; To check buffer not focused, use
-                ;;   (eq buffer (window-buffer (selected-window)))
-                ;; Check buffer is not visible
-                (if (not (get-buffer-window buffer))
-                    (message "%s: %s."
-                             process
-                             ;; Replace final newline with nothing
-                             (replace-regexp-in-string "\n\\'" ""
-                                                       status))))))
   (setq eshell-ls-use-colors                    t
         ;; History
         eshell-save-history-on-exit             t
@@ -510,12 +506,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;;;; --- Flycheck ---
 (use-package flycheck
   :ensure t
-  :defer t
+  :defer tn
   ;; Always enabled, do not show in mode-line
   :diminish flycheck-mode
-  :init
-  (add-hook 'prog-mode-hook 'flycheck-mode)
-  (add-hook 'text-mode-hook 'flycheck-mode))
+  :hook ((prog-mode . flycheck-mode)
+         (text-mode . flycheck-mode)))
 
 ;;;; --- Auto-insert ---
 ;; Insert into file, but mark unmodified
@@ -796,9 +791,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package rainbow-mode
   :ensure t
   :defer t
-  :init
-  (add-hook 'css-mode-hook
-            'rainbow-mode))
+  :hook ((css-mode . rainbow-mode)))
 
 ;;;; --- CSV ---
 (setq csv-separators (quote (";")))
@@ -807,22 +800,18 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package haskell-mode
   :ensure t
   :defer t
+  :hook ((haskell-mode-hook . turn-on-haskell-indent))
   :init
-  (add-hook 'haskell-mode-hook
-            'turn-on-haskell-indent)
+  (use-package intero
+      :ensure t
+      :hook ((haskell-mode-hook . intero-mode)))
   :config
   (progn
     (setq haskell-indent-spaces 4)
-    (use-package intero
-      :ensure t
-      :init
-      (add-hook 'haskell-mode-hook
-                'intero-mode))
-    (use-package flycheck-haskell
-      :ensure t
-      :init
-      (add-hook 'haskell-mode-hook
-                'flycheck-haskell-setup))))
+    ;; (use-package flycheck-haskell ;; Should be part of intero
+    ;;   :ensure t
+    ;;   :hook ((haskell-mode-hook . flycheck-haskell-setup)))
+    ))
 
 ;;;; --- C/C++ ---
 (defun common-c-hook ()
@@ -926,12 +915,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package tuareg
   :ensure t
   :defer t
-  :init
-  (add-hook 'tuareg-mode-hook
-            'merlin-mode)
   :config
   (use-package merlin
     :ensure t
+    :hook ((tuareg-mode . merlin-mode))
     :config
     (use-package flycheck-ocaml
       :ensure t
@@ -961,11 +948,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package outline-magic
   :ensure t
   :defer t
-  :hook (prog-mode . outline-minor-mode)
+  :hook ((prog-mode . outline-minor-mode))
   ;; Always enabled, do not show in mode-line
   :diminish outline-minor-mode
-  :bind        (("<C-tab>" . 'outline-cycle))
-  :bind-keymap ("C-z"      . outline-mode-prefix-map))
+  :bind        (("<C-tab>" . outline-cycle))
+  :bind-keymap (("C-z"     . outline-mode-prefix-map)))
 
 ;;;; --- Frame-setup ---
 ;; Set initial frame size and position
