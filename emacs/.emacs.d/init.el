@@ -701,6 +701,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
           enable-recursive-minibuffers t)
     ;; Show how deep the minibuffer goes
     (minibuffer-depth-indicate-mode 1)
+    ;; Sort recentf by timestamp
+    (add-to-list 'ivy-sort-functions-alist
+                 '(counsel-recentf . file-newer-than-file-p))
     ;; Add info to ivy-buffers like 'M-x' or 'C-x b'
     (use-package ivy-rich
       :ensure t
