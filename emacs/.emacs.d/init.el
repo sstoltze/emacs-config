@@ -1,4 +1,4 @@
-;;; .emacs --- Init-file
+;;; init.el --- Init-file
 
 ;;; Commentary:
 ;;   Inspiration:
@@ -1144,5 +1144,5 @@ length of PATH (sans directory slashes) down to MAX-LEN."
       :config
       (setq sage-command "/usr/lib/sagemath/sage")))))
 
-(provide '.emacs)
-;;; .emacs ends here
+(provide 'init)
+;;; init.el ends here
