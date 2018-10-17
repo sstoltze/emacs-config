@@ -517,7 +517,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;;;; --- Flycheck ---
 (use-package flycheck
   :ensure t
-  :defer tn
+  :defer t
   ;; Always enabled, do not show in mode-line
   :diminish flycheck-mode
   :hook ((prog-mode . flycheck-mode)
@@ -850,6 +850,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;;;; --- Magit ---
 (use-package magit
   :ensure t
+  :defer 1
   :bind (("C-x g"   . magit-status)          ; Display the main magit popup
          ("C-x M-g" . magit-dispatch-popup)) ; Display keybinds for magit
   :config
@@ -958,7 +959,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;; - ;;;; is on the same level as a top-level sexp
 (use-package outline-magic
   :ensure t
-  :defer t
   :hook ((prog-mode . outline-minor-mode))
   ;; Always enabled, do not show in mode-line
   :diminish outline-minor-mode
