@@ -23,72 +23,15 @@
      (output-dvi "xdvi")
      (output-pdf "Evince")
      (output-html "xdg-open"))))
- '(ansi-color-faces-vector
-   [default default default italic underline success warning error])
- '(ansi-color-names-vector
-   ["#002b36" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#839496"])
  '(custom-enabled-themes (quote (deeper-blue)))
  '(custom-safe-themes
    (quote
     ("491417843dee886b649cf0dd70c8c86c8bccbbe373239058ba9900b348bad5cf" default)))
  '(custom-theme-directory "~/.emacs.d/themes/")
- '(diredp-hide-details-initially-flag nil t)
  '(doc-view-continuous t)
- '(elpy-modules
-   (quote
-    (elpy-module-eldoc elpy-module-flymake elpy-module-pyvenv elpy-module-highlight-indentation elpy-module-yasnippet elpy-module-django elpy-module-sane-defaults)))
- '(fci-rule-color "#073642")
- '(nrepl-message-colors
-   (quote
-    ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
- '(org-export-backends (quote (ascii beamer html icalendar latex md odt)))
  '(package-selected-packages
    (quote
-    (ivy-rich avy flx counsel ob-async diminish hc-zenburn-theme outline-magic mu4e-alert haskell-mode auctex rainbow-mode org guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
- '(syslog-debug-face
-   (quote
-    ((t :background unspecified :foreground "#2aa198" :weight bold))))
- '(syslog-error-face
-   (quote
-    ((t :background unspecified :foreground "#dc322f" :weight bold))))
- '(syslog-hour-face (quote ((t :background unspecified :foreground "#859900"))))
- '(syslog-info-face
-   (quote
-    ((t :background unspecified :foreground "#268bd2" :weight bold))))
- '(syslog-ip-face (quote ((t :background unspecified :foreground "#b58900"))))
- '(syslog-su-face (quote ((t :background unspecified :foreground "#d33682"))))
- '(syslog-warn-face
-   (quote
-    ((t :background unspecified :foreground "#cb4b16" :weight bold))))
- '(vc-annotate-background nil)
- '(vc-annotate-color-map
-   (quote
-    ((20 . "#dc322f")
-     (40 . "#CF4F1F")
-     (60 . "#C26C0F")
-     (80 . "#b58900")
-     (100 . "#AB8C00")
-     (120 . "#A18F00")
-     (140 . "#989200")
-     (160 . "#8E9500")
-     (180 . "#859900")
-     (200 . "#729A1E")
-     (220 . "#609C3C")
-     (240 . "#4E9D5B")
-     (260 . "#3C9F79")
-     (280 . "#2aa198")
-     (300 . "#299BA6")
-     (320 . "#2896B5")
-     (340 . "#2790C3")
-     (360 . "#268bd2"))))
- '(vc-annotate-very-old-color nil))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(cursor ((t (:background "burlywood"))))
- '(ediff-odd-diff-B ((t (:background "Grey60")))))
+    (ivy-rich avy flx counsel ob-async diminish hc-zenburn-theme outline-magic mu4e-alert haskell-mode auctex rainbow-mode org guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init))))
 
 ;;; *** General setup ***
 
@@ -376,7 +319,7 @@ point reaches the beginning or end of the buffer, stop there."
   :config
   (require 'em-smart)
   (require 'esh-module)
-  (with-eval-after-load "esh-module"
+  (with-eval-after-load 'esh-module
     (add-to-list 'eshell-modules-list 'eshell-tramp)
     (setq password-cache t           ;; enable password caching
           password-cache-expiry 600)) ;; time in seconds
@@ -599,7 +542,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (setq org-ellipsis                   "…"
       org-startup-folded             nil
       org-startup-indented           t
-      org-startup-with-inline-images t)
+      org-startup-with-inline-images t
+      org-export-backends (quote (ascii beamer html icalendar latex md odt)))
 ;; Most GTD setup is taken from https://emacs.cafe/emacs/orgmode/gtd/2017/06/30/orgmode-gtd.html
 (let ((default-org-file "~/.emacs.d/org-files/gtd/default.org")   ;; Unsorted items
       (project-org-file "~/.emacs.d/org-files/gtd/projects.org")  ;; Currently active projects
@@ -743,6 +687,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     ;; Better fuzzy-matching
     (use-package flx
       :ensure t)
+    (ivy-mode 1)
+    (counsel-mode 1)
     ;; Allow "M-x lis-pac" to match "M-x list-packages"
     (setq ivy-re-builders-alist        '((swiper . ivy--regex-plus)
                                          (t      . ivy--regex-fuzzy))
@@ -755,65 +701,15 @@ length of PATH (sans directory slashes) down to MAX-LEN."
           enable-recursive-minibuffers t)
     ;; Show how deep the minibuffer goes
     (minibuffer-depth-indicate-mode 1)
-    (ivy-mode 1)
-    (counsel-mode 1)
     ;; Add info to ivy-buffers like 'M-x' or 'C-x b'
     (use-package ivy-rich
       :ensure t
       :defer 1
       :config
-      (setq ivy-rich-path-style 'abbrev)
       (ivy-rich-mode 1)
-      ;; All of this to change the face of the major mode in C-x b...
-      :custom
-      (ivy-rich--display-transformers-list
-       (quote
-        (ivy-switch-buffer
-         (:columns
-          ((ivy-rich-candidate
-            (:width 30))
-           (ivy-rich-switch-buffer-size
-            (:width 7))
-           (ivy-rich-switch-buffer-indicators
-            (:width 4 :face error :align right))
-           (ivy-rich-switch-buffer-major-mode
-            (:width 12 :face font-lock-doc-face))
-           (ivy-rich-switch-buffer-project
-            (:width 15 :face success))
-           (ivy-rich-switch-buffer-path
-            (:width
-             (lambda
-               (x)
-               (ivy-rich-switch-buffer-shorten-path x
-                                                    (ivy-rich-minibuffer-width 0.3))))))
-          :predicate
-          (lambda
-            (cand)
-            (get-buffer cand)))
-         counsel-M-x
-         (:columns
-          ((counsel-M-x-transformer
-            (:width 40))
-           (ivy-rich-counsel-function-docstring
-            (:face font-lock-doc-face))))
-         counsel-describe-function
-         (:columns
-          ((counsel-describe-function-transformer
-            (:width 40))
-           (ivy-rich-counsel-function-docstring
-            (:face font-lock-doc-face))))
-         counsel-describe-variable
-         (:columns
-          ((counsel-describe-variable-transformer
-            (:width 40))
-           (ivy-rich-counsel-variable-docstring
-            (:face font-lock-doc-face))))
-         counsel-recentf
-         (:columns
-          ((ivy-rich-candidate
-            (:width 0.8))
-           (ivy-rich-file-last-modified-time
-            (:face font-lock-comment-face))))))))))
+      (setq ivy-rich-path-style 'abbrev)
+      ;; The default "Yellow" of deeper-blue is not great
+      (set-face-foreground 'warning "goldenrod1"))))
 
 ;;;; --- Multiple cursors ---
 (use-package multiple-cursors
@@ -890,6 +786,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
             (setq ediff-diff-options "-w"
                   ediff-window-setup-function 'ediff-setup-windows-plain
                   ediff-split-window-function 'split-window-horizontally)))
+(with-eval-after-load 'ediff
+  (set-face-background 'ediff-odd-diff-B "Grey60"))
 
 ;;;; --- HTML/CSS ---
 (use-package rainbow-mode
@@ -1059,6 +957,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;; - ;;;; is on the same level as a top-level sexp
 (use-package outline-magic
   :ensure t
+  :defer t
   :hook (prog-mode . outline-minor-mode)
   ;; Always enabled, do not show in mode-line
   :diminish outline-minor-mode
@@ -1093,6 +992,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          :ensure t
          :config
          (load-theme 'hc-zenburn t))))
+(set-face-background 'cursor           "burlywood")
 
 ;;;; --- System specific ---
 (cond
