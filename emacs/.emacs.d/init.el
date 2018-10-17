@@ -292,13 +292,11 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;;;; --- Dired ---
 (use-package dired
-  :bind ("C-x C-j" . dired-jump)
+  :bind (("C-x C-j"  . dired-jump))
   :hook ((dired-mode . hl-line-mode))
   :config
   (progn
     (use-package dired-x
-      ;; :init
-      ;; (setq-default dired-omit-files-p t)
       :config
       (add-to-list 'dired-omit-extensions ".DS_Store"))
     (customize-set-variable 'diredp-hide-details-initially-flag nil)
@@ -571,21 +569,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                       nil               ; Visit
                       nil               ; Lockname
                       'excl)))          ; Mustbenew - error if already exists
-  (setq org-default-notes-file journal-org-file
-        org-agenda-files (list default-org-file
-                               project-org-file
-                               schedule-org-file
-                               journal-org-file)
-        ;; Possibly change levels here
-        org-refile-targets `((,project-org-file  :maxlevel . 3)
-                             (,schedule-org-file :level    . 1)
-                             (,archive-org-file  :level    . 1)
-                             (,journal-org-file  :maxlevel . 3)))
-  (set-register ?d (cons 'file default-org-file))
-  (set-register ?a (cons 'file archive-org-file))
-  (set-register ?p (cons 'file project-org-file))
-  (set-register ?s (cons 'file schedule-org-file))
-  (set-register ?j (cons 'file journal-org-file))
   (setq org-capture-templates
         `(("j" "Note"      entry (file+datetree ,journal-org-file)
            "* %?"
@@ -604,7 +587,22 @@ length of PATH (sans directory slashes) down to MAX-LEN."
            :empty-lines 1)
           ("s" "Schedule"  entry (file+headline ,schedule-org-file "Schedule")
            "* %i%?\n%U"
-           :empty-lines 1))))
+           :empty-lines 1))
+        org-default-notes-file journal-org-file
+        org-agenda-files (list default-org-file
+                               project-org-file
+                               schedule-org-file
+                               journal-org-file)
+        ;; Possibly change levels here
+        org-refile-targets `((,project-org-file  :maxlevel . 3)
+                             (,schedule-org-file :level    . 1)
+                             (,archive-org-file  :level    . 1)
+                             (,journal-org-file  :maxlevel . 3)))
+  (set-register ?d (cons 'file default-org-file))
+  (set-register ?a (cons 'file archive-org-file))
+  (set-register ?p (cons 'file project-org-file))
+  (set-register ?s (cons 'file schedule-org-file))
+  (set-register ?j (cons 'file journal-org-file)))
 (defun my-org-hook ()
   "Org mode hook."
   (progn
@@ -651,8 +649,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; org babel evaluate
   (require 'ob)
   (use-package ob-async
-    :ensure t
-    :defer t)
+    :ensure t)
   (progn
     ;; Make org mode allow eval of some langs
     (org-babel-do-load-languages
@@ -1089,9 +1086,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
       :config
       (my/setup-epa)
       (setq mu4e-maildir "~/.mail"
-            ;; May have to run mbsync in console first to enter password
+            ;; gpg-agent is set to use pinentry-qt for a dialog box
             mu4e-get-mail-command "mbsync -a"
-            user-full-name  "Simon Stoltze"
             mu4e-view-show-images t
             ;; Why would I want to leave my message open after I've sent it?
             message-kill-buffer-on-exit t
@@ -1101,6 +1097,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
             mu4e-confirm-quit nil
             ;; Fix "Duplicate UID" when moving messages
             mu4e-change-filenames-when-moving t
+            mu4e-completing-read-function 'completing-read
             mu4e-contexts (list (make-mu4e-context
                                  :name "gmail"
                                  :match-func (lambda (msg) (when msg
@@ -1136,7 +1133,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
           (interactive)
           (mu4e~proc-kill)
           (mu4e-alert-enable-mode-line-display))
-        (run-with-timer 0 600 'gjstein-refresh-mu4e-alert-mode-line))))
+        ;; Refresh every 10 minutes
+        (run-with-timer 600 600 'gjstein-refresh-mu4e-alert-mode-line))))
 
   ;; --- SAGE ---
   (when (file-directory-p "/usr/lib/sagemath")
