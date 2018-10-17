@@ -667,7 +667,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
        (stan       . t)))
     (setq org-confirm-babel-evaluate nil
           org-src-fontify-natively   t
-          org-babel-python-command   "python3")
+          org-babel-python-command   "python3"
+          ;org-babel-python-mode      "python3"
+          )
     (add-hook 'org-babel-after-execute-hook
               'org-display-inline-images)))
 (add-hook 'org-mode-hook #'(lambda ()
@@ -814,8 +816,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :hook ((haskell-mode-hook . turn-on-haskell-indent))
   :init
   (use-package intero
-      :ensure t
-      :hook ((haskell-mode-hook . intero-mode)))
+    :ensure t
+    :hook ((haskell-mode-hook . intero-mode)))
   :config
   (progn
     (setq haskell-indent-spaces 4)
@@ -887,22 +889,32 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :ensure t
   :pin elpy
   :defer t
+  :hook ((python-mode . (lambda ()
+                          (if (or (eq system-type 'windows-nt)
+                                  (eq system-type 'ms-dos))
+                              (setq python-shell-completion-native-disabled-interpreters
+                                    '("python")))
+                          (elpy-mode t)))
+         (inferior-python-mode . (lambda ()
+                                   (python-shell-switch-to-shell))))
   :init
   (progn
     ;; Silence warning when guessing indent, default is 4 spaces
     (setq python-indent-guess-indent-offset-verbose nil)
-    (add-hook 'python-mode-hook '(lambda ()
-                                   (if (or (eq system-type 'windows-nt)
-                                           (eq system-type 'ms-dos))
-                                       (setq python-shell-completion-native-disabled-interpreters
-                                             '("python")))
-                                   (elpy-mode t)))
-    (add-hook 'inferior-python-mode-hook '(lambda ()
-                                            (python-shell-switch-to-shell))))
+    (with-eval-after-load 'python
+  (defun python-shell-completion-native-try ()
+    "Return non-nil if can trigger native completion."
+    (let ((python-shell-completion-native-enable t)
+          (python-shell-completion-native-output-timeout
+           python-shell-completion-native-try-output-timeout))
+      (python-shell-completion-native-get-completions
+       (get-buffer-process (current-buffer))
+       nil "_")))))
   :config
   (progn
     (setq elpy-shell-use-project-root nil
-          elpy-rpc-backend "jedi")
+          elpy-rpc-backend "jedi"
+          python-shell-interpreter "python3")
     (elpy-enable)
     ;; Enable pyvenv, which manages Python virtual environments
     (pyvenv-mode 1)
