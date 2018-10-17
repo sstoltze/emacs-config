@@ -53,6 +53,8 @@ switch $system
     case Linux
         # Cabal
         set -x PATH ~/.cabal/bin $PATH
+        # Stack
+        set -x PATH ~/.local/bin $PATH
 
         # start X at login
         if status --is-login
