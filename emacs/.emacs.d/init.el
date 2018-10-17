@@ -353,9 +353,14 @@ point reaches the beginning or end of the buffer, stop there."
   (require 'em-smart)
   (require 'esh-module)
   (with-eval-after-load 'esh-module
-    (add-to-list 'eshell-modules-list 'eshell-tramp)
-    (setq password-cache t           ;; enable password caching
-          password-cache-expiry 600)) ;; time in seconds
+    ;; If not wrapped in this, eshell complains
+    (add-to-list 'eshell-load-hook
+                 (lambda ()
+                   (add-to-list 'eshell-modules-list 'eshell-tramp)
+                   ;; enable password caching
+                   (setq password-cache t
+                         ;; time in seconds
+                         password-cache-expiry 600))))
   (setq eshell-ls-use-colors                    t
         ;; History
         eshell-save-history-on-exit             t
