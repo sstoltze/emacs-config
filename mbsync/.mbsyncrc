@@ -3,10 +3,8 @@ IMAPAccount gmail
 # Address to connect to
 Host imap.gmail.com
 User sstoltze@gmail.com
-# To store the password in an encrypted file use PassCmd instead of Pass
-# Use 'gpg2 -o ~/.mail/.mailpass.gpg -r $user -e' and enter password <RET> C-d
+# Password
 PassCmd "gpg2 -q --for-your-eyes-only --no-tty -d ~/.mail/.mailpass.gpg"
-#
 # Use SSL
 SSLType IMAPS
 SSLVersion TLSv1.2
@@ -43,7 +41,6 @@ User "sisto@eg.dk"
 AuthMechs Login
 # For Office365, setup an app password and store it in the file
 PassCmd "gpg2 -q --for-your-eyes-only --no-tty --batch -d ~/.mail/.workpass.gpg"
-#
 # Use SSL
 # UseIMAPS no
 # RequireSSL no
