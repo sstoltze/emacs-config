@@ -1102,6 +1102,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
             mu4e-change-filenames-when-moving t
             mu4e-html2text-command 'mu4e-shr2text
             mu4e-completing-read-function 'completing-read
+            ;; Header view
+            mu4e-headers-time-format "%R"
+            mu4e-headers-date-format "%F"
             ;; Common options for servers
             message-send-mail-function 'smtpmail-send-it
             smtpmail-stream-type 'starttls
@@ -1138,6 +1141,31 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                     :name "All Inboxes"
                     :query "maildir:/Exchange/Inbox OR maildir:/gmail/Inbox"
                     :key ?i))
+      (add-to-list 'mu4e-bookmarks
+                   (make-mu4e-bookmark
+                    :name "Gmail"
+                    :query "maildir:/gmail/Inbox"
+                    :key ?g)
+                   t)
+      (add-to-list 'mu4e-bookmarks
+                   (make-mu4e-bookmark
+                    :name "Exchange"
+                    :query "maildir:/Exchange/Inbox"
+                    :key ?e)
+                   t)
+      (add-to-list 'mu4e-header-info-custom
+                   '(:account . (:name "Account"
+                                       :shortname "Account"
+                             :help "The account/folder the mail was in."
+                             :function (lambda (msg)
+                                         (let ((path (or (mu4e-message-field msg :maildir)
+                                                         "")))
+                                           (if (string= path "")
+                                               "Mail file is not accessible"
+                                             (nth 1 (split-string path "/"))))))))
+      (add-to-list 'mu4e-headers-fields
+                   '(:account . 8))
+      mu4e-bookmarks
       (use-package mu4e-alert
         :ensure t
         :init
