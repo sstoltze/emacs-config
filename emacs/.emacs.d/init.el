@@ -1097,6 +1097,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
             mu4e-confirm-quit nil
             ;; Fix "Duplicate UID" when moving messages
             mu4e-change-filenames-when-moving t
+            mu4e-html2text-command 'mu4e-shr2text
             mu4e-completing-read-function 'completing-read
             mu4e-contexts (list (make-mu4e-context
                                  :name "gmail"
@@ -1134,7 +1135,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
           (mu4e~proc-kill)
           (mu4e-alert-enable-mode-line-display))
         ;; Refresh every 10 minutes
-        (run-with-timer 600 600 'gjstein-refresh-mu4e-alert-mode-line))))
+        (run-with-timer 600 600 'gjstein-refresh-mu4e-alert-mode-line)
+        (setq sendmail-program "msmtp"))))
 
   ;; --- SAGE ---
   (when (file-directory-p "/usr/lib/sagemath")
