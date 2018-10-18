@@ -1083,6 +1083,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     (use-package mu4e
       :defer t
       :load-path "/usr/local/share/emacs/site-lisp/mu/mu4e"
+      :bind (("C-c q" . mu4e))
       :config
       (my/setup-epa)
       (setq mu4e-maildir "~/.mail"
@@ -1090,6 +1091,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
             mu4e-get-mail-command "mbsync -a"
             mu4e-view-show-images t
             ;; Why would I want to leave my message open after I've sent it?
+            message-kill-buffer-on-exit t
+            ;; Don't keep message buffers around
             message-kill-buffer-on-exit t
             ;; Don't ask for a 'context' upon opening mu4e
             mu4e-context-policy 'pick-first
@@ -1099,21 +1102,36 @@ length of PATH (sans directory slashes) down to MAX-LEN."
             mu4e-change-filenames-when-moving t
             mu4e-html2text-command 'mu4e-shr2text
             mu4e-completing-read-function 'completing-read
-            mu4e-contexts (list (make-mu4e-context
-                                 :name "gmail"
-                                 :match-func (lambda (msg) (when msg
-                                                        (string-prefix-p "/Gmail" (mu4e-message-field msg :maildir))))
-                                 :vars '(
-                                         (mu4e-trash-folder . "/gmail/[Gmail].Trash")
-                                         (mu4e-refile-folder . "/gmail/[Gmail].Archive")))
-                                (make-mu4e-context
-                                 :name "Exchange"
-                                 :match-func (lambda (msg) (when msg
-                                                        (string-prefix-p "/Exchange" (mu4e-message-field msg :maildir))))
-                                 :vars '(
-                                         (mu4e-trash-folder . "/Exchange/Deleted Items")
-                                         (mu4e-refile-folder . exchange-mu4e-refile-folder)
-                                         ))))
+            ;; Common options for servers
+            message-send-mail-function 'smtpmail-send-it
+            smtpmail-stream-type 'starttls
+            ;; Set account-specific details here
+            mu4e-contexts (list
+                           (make-mu4e-context
+                            :name "gmail"
+                            :match-func (lambda (msg) (when msg
+                                                   (string-prefix-p "/gmail" (mu4e-message-field msg :maildir))))
+                            :vars '((user-mail-address . "sstoltze@gmail.com")
+                                    (mu4e-trash-folder . "/gmail/[Gmail].Trash")
+                                    (mu4e-refile-folder . "/gmail/[Gmail].Archive")
+                                    ;; Gmail handles sent messages for us
+                                    (mu4e-sent-messages-behavior . delete)
+                                    (smtpmail-default-smtp-server . "smtp.gmail.com")
+                                    (smtpmail-smtp-server . "smtp.gmail.com")
+                                    (smtpmail-smtp-service . 587)))
+                           (make-mu4e-context
+                            :name "Exchange"
+                            :match-func (lambda (msg) (when msg
+                                                   (string-prefix-p "/Exchange" (mu4e-message-field msg :maildir))))
+                            :vars '((user-mail-address . "sisto@sd.dk")
+                                    (mu4e-trash-folder . "/Exchange/Deleted Items")
+                                    (mu4e-refile-folder . exchange-mu4e-refile-folder)
+                                    ;; Exchange does not handle this for us
+                                    (mu4e-sent-messages-behavior . sent)
+                                    ;; This does not work...
+                                    (smtpmail-default-smtp-server . "smtp.office365.com")
+                                    (smtpmail-smtp-server . "smtp.office365.com")
+                                    (smtpmail-smtp-service . 587)))))
       ;; Include a bookmark to open all of my inboxes
       (add-to-list 'mu4e-bookmarks
                    (make-mu4e-bookmark
@@ -1135,8 +1153,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
           (mu4e~proc-kill)
           (mu4e-alert-enable-mode-line-display))
         ;; Refresh every 10 minutes
-        (run-with-timer 600 600 'gjstein-refresh-mu4e-alert-mode-line)
-        (setq sendmail-program "msmtp"))))
+        (run-with-timer 600 600 'gjstein-refresh-mu4e-alert-mode-line))))
 
   ;; --- SAGE ---
   (when (file-directory-p "/usr/lib/sagemath")
