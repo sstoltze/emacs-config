@@ -664,9 +664,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
        (stan       . t)))
     (setq org-confirm-babel-evaluate nil
           org-src-fontify-natively   t
-          org-babel-python-command   "python3"
-          ;org-babel-python-mode      "python3"
-          )
+          org-babel-python-command   "python3")
     (add-hook 'org-babel-after-execute-hook
               'org-display-inline-images)))
 (add-hook 'org-mode-hook #'(lambda ()
@@ -900,14 +898,14 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     ;; Silence warning when guessing indent, default is 4 spaces
     (setq python-indent-guess-indent-offset-verbose nil)
     (with-eval-after-load 'python
-  (defun python-shell-completion-native-try ()
-    "Return non-nil if can trigger native completion."
-    (let ((python-shell-completion-native-enable t)
-          (python-shell-completion-native-output-timeout
-           python-shell-completion-native-try-output-timeout))
-      (python-shell-completion-native-get-completions
-       (get-buffer-process (current-buffer))
-       nil "_")))))
+      (defun python-shell-completion-native-try ()
+        "Return non-nil if can trigger native completion."
+        (let ((python-shell-completion-native-enable t)
+              (python-shell-completion-native-output-timeout
+               python-shell-completion-native-try-output-timeout))
+          (python-shell-completion-native-get-completions
+           (get-buffer-process (current-buffer))
+           nil "_")))))
   :config
   (progn
     (setq elpy-shell-use-project-root nil
@@ -1137,7 +1135,13 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                                     (mu4e-sent-messages-behavior . sent)
                                     (smtpmail-default-smtp-server . "smtp.office365.com")
                                     (smtpmail-smtp-server . "smtp.office365.com")
-                                    (smtpmail-smtp-service . 587)))))
+                                    (smtpmail-smtp-service . 587)
+                                    (mu4e-compose-signature . (concat "\n"
+                                                                      "Venlig hilsen\n"
+                                                                      "\n"
+                                                                      "Simon Stoltze\n"
+                                                                      "Developer\n"
+                                                                      "Silkeborg Data A/S"))))))
       ;; Include a bookmark to open all of my inboxes
       (add-to-list 'mu4e-bookmarks
                    (make-mu4e-bookmark
@@ -1160,13 +1164,13 @@ length of PATH (sans directory slashes) down to MAX-LEN."
       (add-to-list 'mu4e-header-info-custom
                    '(:account . (:name "Account"
                                        :shortname "Account"
-                             :help "The account/folder the mail was in."
-                             :function (lambda (msg)
-                                         (let ((path (or (mu4e-message-field msg :maildir)
-                                                         "")))
-                                           (if (string= path "")
-                                               "Mail file is not accessible"
-                                             (nth 1 (split-string path "/"))))))))
+                                       :help "The account/folder the mail was in."
+                                       :function (lambda (msg)
+                                                   (let ((path (or (mu4e-message-field msg :maildir)
+                                                                   "")))
+                                                     (if (string= path "")
+                                                         "Mail file is not accessible"
+                                                       (nth 1 (split-string path "/"))))))))
       ;; Add the new header to headers
       (add-to-list 'mu4e-headers-fields
                    '(:account . 8))
