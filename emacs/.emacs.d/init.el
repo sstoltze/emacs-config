@@ -1086,6 +1086,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
       :bind (("C-c q" . mu4e))
       :config
       (my/setup-epa)
+      ;; Authinfo - open in emacs and add lines for each context, e.g.
+      ;; machine <smtp.foo.com> login <mail@address.com> password <secret> port <587>
+      (add-to-list 'auth-sources
+                   "~/.mail/.smtp-auth.gpg")
       (setq mu4e-maildir "~/.mail"
             ;; gpg-agent is set to use pinentry-qt for a dialog box
             mu4e-get-mail-command "mbsync -a"
@@ -1131,7 +1135,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                                     (mu4e-refile-folder . exchange-mu4e-refile-folder)
                                     ;; Exchange does not handle this for us
                                     (mu4e-sent-messages-behavior . sent)
-                                    ;; This does not work...
                                     (smtpmail-default-smtp-server . "smtp.office365.com")
                                     (smtpmail-smtp-server . "smtp.office365.com")
                                     (smtpmail-smtp-service . 587)))))
@@ -1153,6 +1156,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                     :query "maildir:/Exchange/Inbox"
                     :key ?e)
                    t)
+      ;; Headers to see which account a mail is stored in
       (add-to-list 'mu4e-header-info-custom
                    '(:account . (:name "Account"
                                        :shortname "Account"
@@ -1163,9 +1167,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                                            (if (string= path "")
                                                "Mail file is not accessible"
                                              (nth 1 (split-string path "/"))))))))
+      ;; Add the new header to headers
       (add-to-list 'mu4e-headers-fields
                    '(:account . 8))
-      mu4e-bookmarks
       (use-package mu4e-alert
         :ensure t
         :init
