@@ -1,4 +1,4 @@
-;;; .emacs --- Init-file
+;;; init.el --- Init-file
 
 ;;; Commentary:
 ;;   Inspiration:
@@ -23,72 +23,21 @@
      (output-dvi "xdvi")
      (output-pdf "Evince")
      (output-html "xdg-open"))))
- '(ansi-color-faces-vector
-   [default default default italic underline success warning error])
- '(ansi-color-names-vector
-   ["#002b36" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#839496"])
  '(custom-enabled-themes (quote (deeper-blue)))
  '(custom-safe-themes
    (quote
     ("491417843dee886b649cf0dd70c8c86c8bccbbe373239058ba9900b348bad5cf" default)))
  '(custom-theme-directory "~/.emacs.d/themes/")
- '(diredp-hide-details-initially-flag nil t)
  '(doc-view-continuous t)
- '(elpy-modules
-   (quote
-    (elpy-module-eldoc elpy-module-flymake elpy-module-pyvenv elpy-module-highlight-indentation elpy-module-yasnippet elpy-module-django elpy-module-sane-defaults)))
- '(fci-rule-color "#073642")
- '(nrepl-message-colors
-   (quote
-    ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
- '(org-export-backends (quote (ascii beamer html icalendar latex md odt)))
  '(package-selected-packages
    (quote
-    (ob-async diminish hc-zenburn-theme outline-magic mu4e-alert haskell-mode auctex rainbow-mode org guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init)))
- '(syslog-debug-face
-   (quote
-    ((t :background unspecified :foreground "#2aa198" :weight bold))))
- '(syslog-error-face
-   (quote
-    ((t :background unspecified :foreground "#dc322f" :weight bold))))
- '(syslog-hour-face (quote ((t :background unspecified :foreground "#859900"))))
- '(syslog-info-face
-   (quote
-    ((t :background unspecified :foreground "#268bd2" :weight bold))))
- '(syslog-ip-face (quote ((t :background unspecified :foreground "#b58900"))))
- '(syslog-su-face (quote ((t :background unspecified :foreground "#d33682"))))
- '(syslog-warn-face
-   (quote
-    ((t :background unspecified :foreground "#cb4b16" :weight bold))))
- '(vc-annotate-background nil)
- '(vc-annotate-color-map
-   (quote
-    ((20 . "#dc322f")
-     (40 . "#CF4F1F")
-     (60 . "#C26C0F")
-     (80 . "#b58900")
-     (100 . "#AB8C00")
-     (120 . "#A18F00")
-     (140 . "#989200")
-     (160 . "#8E9500")
-     (180 . "#859900")
-     (200 . "#729A1E")
-     (220 . "#609C3C")
-     (240 . "#4E9D5B")
-     (260 . "#3C9F79")
-     (280 . "#2aa198")
-     (300 . "#299BA6")
-     (320 . "#2896B5")
-     (340 . "#2790C3")
-     (360 . "#268bd2"))))
- '(vc-annotate-very-old-color nil))
+    (ivy-rich avy flx counsel ob-async diminish hc-zenburn-theme outline-magic mu4e-alert haskell-mode auctex rainbow-mode org guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(cursor ((t (:background "burlywood"))))
- '(ediff-odd-diff-B ((t (:background "Grey60")))))
+ )
 
 ;;; *** General setup ***
 
@@ -128,7 +77,7 @@
 
 ;;;; --- Setup ---
 ;; Setup directories in ~/.emacs.d/
-(dolist (folder '("lisp" "backups" "temp" "autosave" "org-files"))
+(dolist (folder '("lisp" "backups" "temp" "autosave" "org-files" "org-files/gtd"))
   (let ((dir (concat "~/.emacs.d/" folder)))
     (if (not (file-directory-p dir))
         (make-directory dir))))
@@ -181,7 +130,7 @@
                               (t                        "sstoltze@gmail.com"))
 
       ;; Disable the bell
-      ring-bell-function (lambda ())
+      ring-bell-function 'ignore
 
       ;; Add directory name to buffer if name is not unique
       uniquify-buffer-name-style 'forward)
@@ -335,6 +284,7 @@ point reaches the beginning or end of the buffer, stop there."
 ;;;; --- Guru-mode ----
 (use-package guru-mode
   :ensure t
+  ;; Always enabled, do not show in mode-line
   :diminish guru-mode
   :init
   (setq guru-warn-only t)
@@ -342,12 +292,11 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;;;; --- Dired ---
 (use-package dired
-  :bind ("C-x C-j" . dired-jump)
+  :bind (("C-x C-j"  . dired-jump))
+  :hook ((dired-mode . hl-line-mode))
   :config
   (progn
     (use-package dired-x
-      ;; :init
-      ;; (setq-default dired-omit-files-p t)
       :config
       (add-to-list 'dired-omit-extensions ".DS_Store"))
     (customize-set-variable 'diredp-hide-details-initially-flag nil)
@@ -364,52 +313,52 @@ point reaches the beginning or end of the buffer, stop there."
           delete-by-moving-to-trash           t
           ;; Auto refresh dired
           global-auto-revert-non-file-buffers t
-          wdired-allow-to-change-permissions  t)
-    (add-hook 'dired-mode-hook
-              (lambda ()
-                (hl-line-mode 1)))))
+          wdired-allow-to-change-permissions  t)))
 
 ;;;; --- Eshell ---
 (use-package eshell
-  :bind ("C-c e" . eshell)
+  :bind (("C-c e" . eshell))
+  :hook ((eshell-mode . (lambda ()
+                          (eshell-smart-initialize)
+                          (eshell/alias "emacs"  "find-file $1")
+                          (eshell/alias "magit"  "magit-status")
+                          (eshell/alias "less"   "cat $1")
+                          (eshell/alias "python" "python3 $*")
+                          (local-set-key (kbd "C-c h")
+                                         (lambda ()
+                                           "Ivy interface to eshell history."
+                                           (interactive) ;; Maybe insert move-to-end-of-buffer here
+                                           (insert
+                                            (ivy-completing-read "History: "
+                                                                 (delete-dups
+                                                                  (ring-elements eshell-history-ring))))))
+                          (local-set-key (kbd "C-c C-h") 'eshell-list-history)))
+         ;; Send message when command finishes and buffer is not active
+         ;; Alternatively, look at package 'alert'
+         (eshell-kill . (lambda (process status)
+                          "Shows process and status in minibuffer when a command finishes."
+                          (let ((buffer (process-buffer process)))
+                            ;; To check buffer not focused, use
+                            ;;   (eq buffer (window-buffer (selected-window)))
+                            ;; Check buffer is not visible
+                            (if (not (get-buffer-window buffer))
+                                (message "%s: %s."
+                                         process
+                                         ;; Replace final newline with nothing
+                                         (replace-regexp-in-string "\n\\'" ""
+                                                                   status)))))))
   :config
   (require 'em-smart)
   (require 'esh-module)
-  (with-eval-after-load "esh-module"
-    (add-to-list 'eshell-modules-list 'eshell-tramp)
-    (setq password-cache t           ;; enable password caching
-          password-cache-expiry 600)) ;; time in seconds
-  (add-hook 'eshell-mode-hook
-            (lambda ()
-              (eshell-smart-initialize)
-              (eshell/alias "emacs" "find-file $1")
-              (eshell/alias "magit" "magit-status")
-              (eshell/alias "less" "cat $1")
-              (eshell/alias "python" "python3 $*")
-              (local-set-key (kbd "C-c h")
-                             (lambda ()
-                               "Ido interface to eshell history."
-                               (interactive) ;; Maybe insert move-to-end-of-buffer here
-                               (insert
-                                (ido-completing-read "History: "
-                                                     (delete-dups
-                                                      (ring-elements eshell-history-ring))))))
-              (local-set-key (kbd "C-c C-h") 'eshell-list-history)))
-  ;; Send message when command finishes and buffer is not active
-  ;; Alternatively, look at package 'alert'
-  (add-hook 'eshell-kill-hook
-            (lambda (process status)
-              "Shows process and status in minibuffer when a command finishes."
-              (let ((buffer (process-buffer process)))
-                ;; To check buffer not focused, use
-                ;;   (eq buffer (window-buffer (selected-window)))
-                ;; Check buffer is not visible
-                (if (not (get-buffer-window buffer))
-                    (message "%s: %s."
-                             process
-                             ;; Replace final newline with nothing
-                             (replace-regexp-in-string "\n\\'" ""
-                                                       status))))))
+  (with-eval-after-load 'esh-module
+    ;; If not wrapped in this, eshell complains
+    (add-to-list 'eshell-load-hook
+                 (lambda ()
+                   (add-to-list 'eshell-modules-list 'eshell-tramp)
+                   ;; enable password caching
+                   (setq password-cache t
+                         ;; time in seconds
+                         password-cache-expiry 600))))
   (setq eshell-ls-use-colors                    t
         ;; History
         eshell-save-history-on-exit             t
@@ -567,10 +516,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package flycheck
   :ensure t
   :defer t
+  ;; Always enabled, do not show in mode-line
   :diminish flycheck-mode
-  :init
-  (add-hook 'prog-mode-hook 'flycheck-mode)
-  (add-hook 'text-mode-hook 'flycheck-mode))
+  :hook ((prog-mode . flycheck-mode)
+         (text-mode . flycheck-mode)))
 
 ;;;; --- Auto-insert ---
 ;; Insert into file, but mark unmodified
@@ -597,42 +546,63 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (setq org-ellipsis                   "…"
       org-startup-folded             nil
       org-startup-indented           t
-      org-startup-with-inline-images t)
-(let ((default-org-file "~/.emacs.d/org-files/journal.org")
-      (work-org-file    "~/.emacs.d/org-files/work.org"))
-  (dolist (org-file (list default-org-file work-org-file))
-          (if (not (file-exists-p org-file))
-              (write-region "* Tasks\n"         ; Start - What to write
-                            nil               ; End - Ignored when start is string
-                            org-file          ; Filename
-                            t                 ; Append
-                            nil               ; Visit
-                            nil               ; Lockname
-                            'excl)))          ; Mustbenew - error if already exists
-  (setq org-default-notes-file default-org-file
-        org-agenda-files (list default-org-file work-org-file))
-  (set-register ?j (cons 'file default-org-file))
-  (set-register ?w (cons 'file work-org-file))
+      org-startup-with-inline-images t
+      org-export-backends (quote (ascii beamer html icalendar latex md odt)))
+;; Most GTD setup is taken from https://emacs.cafe/emacs/orgmode/gtd/2017/06/30/orgmode-gtd.html
+(let ((default-org-file "~/.emacs.d/org-files/gtd/default.org")   ;; Unsorted items
+      (project-org-file "~/.emacs.d/org-files/gtd/projects.org")  ;; Currently active projects
+      (archive-org-file "~/.emacs.d/org-files/gtd/archive.org")   ;; Projects that are currently waiting for something else
+      (schedule-org-file "~/.emacs.d/org-files/gtd/schedule.org") ;; C-c C-s to schedule. C-c C-d to deadline
+      (journal-org-file "~/.emacs.d/org-files/journal.org"))
+  (dolist (org-file (list default-org-file project-org-file archive-org-file schedule-org-file journal-org-file))
+    (if (not (file-exists-p org-file))
+        (write-region (concat "#+AUTHOR: "
+                              user-full-name
+                              "\n#+EMAIL: "
+                              user-mail-address
+                              "\n#+DATE: "
+                              (format-time-string "%Y-%m-%d" (current-time))
+                              "\n#+OPTIONS: toc:nil title:nil author:nil email:nil date:nil creator:nil\n") ; Start - What to write
+                      nil               ; End - Ignored when start is string
+                      org-file          ; Filename
+                      t                 ; Append
+                      nil               ; Visit
+                      nil               ; Lockname
+                      'excl)))          ; Mustbenew - error if already exists
   (setq org-capture-templates
-        `(("j" "Note"      entry (file+datetree ,default-org-file)
+        `(("j" "Note"      entry (file+datetree ,journal-org-file)
            "* %?"
            :empty-lines 1)
-          ("w" "Work-note" entry (file+datetree ,work-org-file)
-           "* %?"
-           :empty-lines 1)
-          ("t" "TODO"      entry (file+headline ,default-org-file "Tasks")
+          ("t" "TODO"      entry (file+headline ,default-org-file "Unsorted")
            "* TODO %?\n%U\n%a\n"
            :clock-in t :clock-resume t
            :empty-lines 1)
-          ("m" "Meeting"   entry (file (lambda () (or (buffer-file-name)
-                                                 ,work-org-file)))
+          ("m" "Meeting"   entry (file ,default-org-file) ;; (lambda () (or (buffer-file-name) ,default-org-file))
            "* %? - %u :MEETING:\n:ATTENDEES:\nSimon Stoltze\n:END:\n"
            :clock-in t :clock-resume t
            :empty-lines 1)
-          ("n" "Next"      entry (file+headline ,default-org-file "Tasks")
+          ("n" "Next"      entry (file+headline ,default-org-file "Unsorted")
            "* NEXT %?\n%U\nDEADLINE: %t"
            :clock-in t :clock-resume t
-           :empty-lines 1))))
+           :empty-lines 1)
+          ("s" "Schedule"  entry (file+headline ,schedule-org-file "Schedule")
+           "* %i%?\n%U"
+           :empty-lines 1))
+        org-default-notes-file journal-org-file
+        org-agenda-files (list default-org-file
+                               project-org-file
+                               schedule-org-file
+                               journal-org-file)
+        ;; Possibly change levels here
+        org-refile-targets `((,project-org-file  :maxlevel . 3)
+                             (,schedule-org-file :level    . 1)
+                             (,archive-org-file  :level    . 1)
+                             (,journal-org-file  :maxlevel . 3)))
+  (set-register ?d (cons 'file default-org-file))
+  (set-register ?a (cons 'file archive-org-file))
+  (set-register ?p (cons 'file project-org-file))
+  (set-register ?s (cons 'file schedule-org-file))
+  (set-register ?j (cons 'file journal-org-file)))
 (defun my-org-hook ()
   "Org mode hook."
   (progn
@@ -640,13 +610,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
      org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
                          (sequence "WAITING(w)"))
      org-time-stamp-custom-formats (quote ("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>"))
-     org-refile-targets (quote ((nil :maxlevel . 9)
-                                (org-agenda-files :maxlevel . 9)))
      org-use-fast-todo-selection t
      ;; Allow editing invisible region if it does that you would expect
      org-catch-invisible-edits 'smart
      org-log-done t
-     ;; Use full outline paths for refile targets - we file directly with IDO
      org-refile-use-outline-path t
      ;; Targets complete directly with IDO
      org-outline-path-complete-in-steps nil
@@ -654,8 +621,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
      org-refile-allow-creating-parent-nodes (quote confirm)
      ;; Use the current window for indirect buffer display
      org-indirect-buffer-display 'current-window
-     ;; Use IDO for both buffer and file completion and ido-everywhere to t
-     org-completion-use-ido t
      ;; Author, email, date of creation, validation link at bottom of exported html
      org-html-postamble nil
      org-html-html5-fancy t
@@ -684,8 +649,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; org babel evaluate
   (require 'ob)
   (use-package ob-async
-    :ensure t
-    :defer t)
+    :ensure t)
   (progn
     ;; Make org mode allow eval of some langs
     (org-babel-do-load-languages
@@ -700,7 +664,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
        (stan       . t)))
     (setq org-confirm-babel-evaluate nil
           org-src-fontify-natively   t
-          org-babel-python-command   "python3")
+          org-babel-python-command   "python3"
+          ;org-babel-python-mode      "python3"
+          )
     (add-hook 'org-babel-after-execute-hook
               'org-display-inline-images)))
 (add-hook 'org-mode-hook #'(lambda ()
@@ -708,42 +674,50 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                              (org-indent-mode  1)
                              (my-org-hook)))
 
-;;;; --- Ido ---
-;;;;; Tips:
-;;;;; C-p makes ido only match beginning of names
-;;;;; While doing C-x C-f:
-;;;;; - C-d will open dired
-;;;;; - M-d will search in subdirs
-;;;;; - M-m will create a subdirectory
-(use-package ido
+;;;; --- Counsel / Swiper / Ivy ---
+;;;;; Counsel pulls in ivy and swiper
+;;;;; Doing C-x C-f, C-M-j will create currently entered text as file-name
+(use-package counsel
   :ensure t
-  :config
+  ;; Always enabled, do not show in mode-line
+  :diminish counsel-mode
+  :diminish ivy-mode
+  ;; This doesn't really work as expected
+  ;;(global-set-key (kbd "C-r") 'swiper)
+  :bind (("C-s"     . swiper)
+         ("C-x C-r" . counsel-recentf)
+         ("C-c C-r" . ivy-resume))
+  :init
   (progn
-    (setq ido-everywhere t
-          ido-max-directory-size 100000
-          ;; Use the current window when visiting files and buffers with ido
-          ido-default-file-method 'selected-window
-          ido-default-buffer-method 'selected-window
-          ido-enable-flex-matching t
-          ido-confirm-unique-completion t
-          ;; Do not need to confirm when creating new buffer
-          ido-create-new-buffer 'always
-          ;; Ignore case when searching
-          ido-case-fold t
-          ;; Order files are shown in
-          ido-file-extensions-order '(".org" ".py" ".el" ".emacs"
-                                      ".lisp" ".c" ".hs" ".txt" ".R"))
-    (ido-mode t)
-    ;; Allow editing of read-only files
-    (defun help/ido-find-file ()
-      "Find file as root if necessary.
-
-Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
-      (unless (and buffer-file-name
-                   (file-writable-p buffer-file-name))
-        (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
-
-    (advice-add #'ido-find-file :after #'help/ido-find-file)))
+    ;; Better fuzzy-matching
+    (use-package flx
+      :ensure t)
+    (ivy-mode 1)
+    (counsel-mode 1)
+    ;; Allow "M-x lis-pac" to match "M-x list-packages"
+    (setq ivy-re-builders-alist        '((swiper . ivy--regex-plus)
+                                         (t      . ivy--regex-fuzzy))
+          ;; With the above, we do not need the initial ^ in the prompts
+          ivy-initial-inputs-alist     '()
+          ;; Allows selecting the prompt with C-p (same as C-M-j)
+          ivy-use-selectable-prompt    t
+          ;; Use ivy while in minibuffer to e.g. insert variable names
+          ;; when doing counsel-set-variable
+          enable-recursive-minibuffers t)
+    ;; Show how deep the minibuffer goes
+    (minibuffer-depth-indicate-mode 1)
+    ;; Sort recentf by timestamp
+    (add-to-list 'ivy-sort-functions-alist
+                 '(counsel-recentf . file-newer-than-file-p))
+    ;; Add info to ivy-buffers like 'M-x' or 'C-x b'
+    (use-package ivy-rich
+      :ensure t
+      :defer 1
+      :config
+      (ivy-rich-mode 1)
+      (setq ivy-rich-path-style 'abbrev)
+      ;; The default "Yellow" of deeper-blue is not great
+      (set-face-foreground 'warning "goldenrod1"))))
 
 ;;;; --- Multiple cursors ---
 (use-package multiple-cursors
@@ -820,14 +794,14 @@ Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
             (setq ediff-diff-options "-w"
                   ediff-window-setup-function 'ediff-setup-windows-plain
                   ediff-split-window-function 'split-window-horizontally)))
+(with-eval-after-load 'ediff
+  (set-face-background 'ediff-odd-diff-B "Grey60"))
 
 ;;;; --- HTML/CSS ---
 (use-package rainbow-mode
   :ensure t
   :defer t
-  :init
-  (add-hook 'css-mode-hook
-            'rainbow-mode))
+  :hook ((css-mode . rainbow-mode)))
 
 ;;;; --- CSV ---
 (setq csv-separators (quote (";")))
@@ -836,22 +810,18 @@ Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
 (use-package haskell-mode
   :ensure t
   :defer t
+  :hook ((haskell-mode-hook . turn-on-haskell-indent))
   :init
-  (add-hook 'haskell-mode-hook
-            'turn-on-haskell-indent)
+  (use-package intero
+    :ensure t
+    :hook ((haskell-mode-hook . intero-mode)))
   :config
   (progn
     (setq haskell-indent-spaces 4)
-    (use-package intero
-      :ensure t
-      :init
-      (add-hook 'haskell-mode-hook
-                'intero-mode))
-    (use-package flycheck-haskell
-      :ensure t
-      :init
-      (add-hook 'haskell-mode-hook
-                'flycheck-haskell-setup))))
+    ;; (use-package flycheck-haskell ;; Should be part of intero
+    ;;   :ensure t
+    ;;   :hook ((haskell-mode-hook . flycheck-haskell-setup)))
+    ))
 
 ;;;; --- C/C++ ---
 (defun common-c-hook ()
@@ -879,8 +849,12 @@ Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
 ;;;; --- Magit ---
 (use-package magit
   :ensure t
-  :bind (("C-x g"   . magit-status)           ; Display the main magit popup
-         ("C-x M-g" . magit-dispatch-popup))) ; Display keybinds for magit
+  :defer 1
+  :bind (("C-x g"   . magit-status)          ; Display the main magit popup
+         ("C-x M-g" . magit-dispatch-popup)) ; Display keybinds for magit
+  :config
+  (setq magit-completing-read-function 'ivy-completing-read))
+
 
 ;;;; --- Fish ---
 (use-package fish-mode
@@ -913,22 +887,32 @@ Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
   :ensure t
   :pin elpy
   :defer t
+  :hook ((python-mode . (lambda ()
+                          (if (or (eq system-type 'windows-nt)
+                                  (eq system-type 'ms-dos))
+                              (setq python-shell-completion-native-disabled-interpreters
+                                    '("python")))
+                          (elpy-mode t)))
+         (inferior-python-mode . (lambda ()
+                                   (python-shell-switch-to-shell))))
   :init
   (progn
     ;; Silence warning when guessing indent, default is 4 spaces
     (setq python-indent-guess-indent-offset-verbose nil)
-    (add-hook 'python-mode-hook '(lambda ()
-                                   (if (or (eq system-type 'windows-nt)
-                                           (eq system-type 'ms-dos))
-                                       (setq python-shell-completion-native-disabled-interpreters
-                                             '("python")))
-                                   (elpy-mode t)))
-    (add-hook 'inferior-python-mode-hook '(lambda ()
-                                            (python-shell-switch-to-shell))))
+    (with-eval-after-load 'python
+  (defun python-shell-completion-native-try ()
+    "Return non-nil if can trigger native completion."
+    (let ((python-shell-completion-native-enable t)
+          (python-shell-completion-native-output-timeout
+           python-shell-completion-native-try-output-timeout))
+      (python-shell-completion-native-get-completions
+       (get-buffer-process (current-buffer))
+       nil "_")))))
   :config
   (progn
     (setq elpy-shell-use-project-root nil
-          elpy-rpc-backend "jedi")
+          elpy-rpc-backend "jedi"
+          python-shell-interpreter "python3")
     (elpy-enable)
     ;; Enable pyvenv, which manages Python virtual environments
     (pyvenv-mode 1)
@@ -952,12 +936,10 @@ Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
 (use-package tuareg
   :ensure t
   :defer t
-  :init
-  (add-hook 'tuareg-mode-hook
-            'merlin-mode)
   :config
   (use-package merlin
     :ensure t
+    :hook ((tuareg-mode . merlin-mode))
     :config
     (use-package flycheck-ocaml
       :ensure t
@@ -984,16 +966,13 @@ Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
 ;; For elisp:
 ;; - ;;; is a headline
 ;; - ;;;; is on the same level as a top-level sexp
-(add-hook 'prog-mode-hook
-          (lambda () (outline-minor-mode 1)))
-(add-hook 'outline-minor-mode-hook
-          (lambda ()
-            (use-package outline-magic
-              :diminish outline-minor-mode
-              :ensure t
-              :bind (("<C-tab>" . 'outline-cycle)))
-            (local-set-key (kbd "C-z")
-                           outline-mode-prefix-map)))
+(use-package outline-magic
+  :ensure t
+  :hook ((prog-mode . outline-minor-mode))
+  ;; Always enabled, do not show in mode-line
+  :diminish outline-minor-mode
+  :bind        (("<C-tab>" . outline-cycle))
+  :bind-keymap (("C-z"     . outline-mode-prefix-map)))
 
 ;;;; --- Frame-setup ---
 ;; Set initial frame size and position
@@ -1023,27 +1002,18 @@ Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
          :ensure t
          :config
          (load-theme 'hc-zenburn t))))
+(set-face-background 'cursor           "burlywood")
 
 ;;;; --- System specific ---
 (cond
  ;; --- Windows specific ---
  ((eq system-type 'windows-nt)
+  ;; Default directory
   (let ((desktop-dir (concat "C:/Users/"
                              (user-login-name)
                              "/Desktop/")))
     (setq default-directory desktop-dir)
-    (set-register ?d (cons 'file desktop-dir))) ;; No idea if this works
-  ;; tramp - C-x C-f /ftp:<user>@host: C-d to open dired
-  (let ((plink-file "C:/Program Files (x86)/PuTTY/plink.exe"))
-    (when (file-exists-p plink-file)
-      (setq tramp-default-method "plink")
-      (when (not (string-match plink-file
-                               (getenv "PATH")))
-        (setenv "PATH" (concat plink-file
-                               ";"
-                               (getenv "PATH")))
-        (add-to-list 'exec-path
-                     plink-file))))
+    (set-register ?d (cons 'file desktop-dir)))
 
   ;; Alt-enter toggles screensize
   (defmacro handle-fullscreen-mode (func)
@@ -1076,6 +1046,19 @@ Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
                                (length *window-options*))))
   (global-set-key (kbd "M-RET") 'toggle-window)
 
+  ;; --- Tramp - Windows ---
+  ;; C-x C-f /plink:<user>@host: ENTER
+  (let ((plink-file "C:/Program Files (x86)/PuTTY/plink.exe"))
+    (when (file-exists-p plink-file)
+      (setq tramp-default-method "plink")
+      (when (not (string-match plink-file
+                               (getenv "PATH")))
+        (setenv "PATH" (concat plink-file
+                               ";"
+                               (getenv "PATH")))
+        (add-to-list 'exec-path
+                     plink-file))))
+
   ;;;;; --- Work specific ---
   (when (and (eq system-type 'windows-nt)
              (equal (user-login-name) "sisto"))
@@ -1092,19 +1075,24 @@ Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
 
  ;; --- Linux specific ---
  ((eq system-type 'gnu/linux)
+  ;; --- Tramp - Linux ---
+  (setq tramp-default-method "ssh")
+
   ;; --- Mu4e ---
   (when (file-directory-p "/usr/local/share/emacs/site-lisp/mu4e")
     (use-package mu4e
       :defer t
       :load-path "/usr/local/share/emacs/site-lisp/mu/mu4e"
+      :bind (("C-c q" . mu4e))
       :config
       (my/setup-epa)
       (setq mu4e-maildir "~/.mail"
-            ;; May have to run mbsync in console first to enter password
+            ;; gpg-agent is set to use pinentry-qt for a dialog box
             mu4e-get-mail-command "mbsync -a"
-            user-full-name  "Simon Stoltze"
             mu4e-view-show-images t
             ;; Why would I want to leave my message open after I've sent it?
+            message-kill-buffer-on-exit t
+            ;; Don't keep message buffers around
             message-kill-buffer-on-exit t
             ;; Don't ask for a 'context' upon opening mu4e
             mu4e-context-policy 'pick-first
@@ -1112,27 +1100,72 @@ Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
             mu4e-confirm-quit nil
             ;; Fix "Duplicate UID" when moving messages
             mu4e-change-filenames-when-moving t
-            mu4e-contexts (list (make-mu4e-context
-                                 :name "gmail"
-                                 :match-func (lambda (msg) (when msg
-                                                        (string-prefix-p "/Gmail" (mu4e-message-field msg :maildir))))
-                                 :vars '(
-                                         (mu4e-trash-folder . "/gmail/[Gmail].Trash")
-                                         (mu4e-refile-folder . "/gmail/[Gmail].Archive")))
-                                (make-mu4e-context
-                                 :name "Exchange"
-                                 :match-func (lambda (msg) (when msg
-                                                        (string-prefix-p "/Exchange" (mu4e-message-field msg :maildir))))
-                                 :vars '(
-                                         (mu4e-trash-folder . "/Exchange/Deleted Items")
-                                         (mu4e-refile-folder . exchange-mu4e-refile-folder)
-                                         ))))
+            mu4e-html2text-command 'mu4e-shr2text
+            mu4e-completing-read-function 'completing-read
+            ;; Header view
+            mu4e-headers-time-format "%R"
+            mu4e-headers-date-format "%F"
+            ;; Common options for servers
+            message-send-mail-function 'smtpmail-send-it
+            smtpmail-stream-type 'starttls
+            ;; Set account-specific details here
+            mu4e-contexts (list
+                           (make-mu4e-context
+                            :name "gmail"
+                            :match-func (lambda (msg) (when msg
+                                                   (string-prefix-p "/gmail" (mu4e-message-field msg :maildir))))
+                            :vars '((user-mail-address . "sstoltze@gmail.com")
+                                    (mu4e-trash-folder . "/gmail/[Gmail].Trash")
+                                    (mu4e-refile-folder . "/gmail/[Gmail].Archive")
+                                    ;; Gmail handles sent messages for us
+                                    (mu4e-sent-messages-behavior . delete)
+                                    (smtpmail-default-smtp-server . "smtp.gmail.com")
+                                    (smtpmail-smtp-server . "smtp.gmail.com")
+                                    (smtpmail-smtp-service . 587)))
+                           (make-mu4e-context
+                            :name "Exchange"
+                            :match-func (lambda (msg) (when msg
+                                                   (string-prefix-p "/Exchange" (mu4e-message-field msg :maildir))))
+                            :vars '((user-mail-address . "sisto@sd.dk")
+                                    (mu4e-trash-folder . "/Exchange/Deleted Items")
+                                    (mu4e-refile-folder . exchange-mu4e-refile-folder)
+                                    ;; Exchange does not handle this for us
+                                    (mu4e-sent-messages-behavior . sent)
+                                    ;; This does not work...
+                                    (smtpmail-default-smtp-server . "smtp.office365.com")
+                                    (smtpmail-smtp-server . "smtp.office365.com")
+                                    (smtpmail-smtp-service . 587)))))
       ;; Include a bookmark to open all of my inboxes
       (add-to-list 'mu4e-bookmarks
                    (make-mu4e-bookmark
                     :name "All Inboxes"
                     :query "maildir:/Exchange/Inbox OR maildir:/gmail/Inbox"
                     :key ?i))
+      (add-to-list 'mu4e-bookmarks
+                   (make-mu4e-bookmark
+                    :name "Gmail"
+                    :query "maildir:/gmail/Inbox"
+                    :key ?g)
+                   t)
+      (add-to-list 'mu4e-bookmarks
+                   (make-mu4e-bookmark
+                    :name "Exchange"
+                    :query "maildir:/Exchange/Inbox"
+                    :key ?e)
+                   t)
+      (add-to-list 'mu4e-header-info-custom
+                   '(:account . (:name "Account"
+                                       :shortname "Account"
+                             :help "The account/folder the mail was in."
+                             :function (lambda (msg)
+                                         (let ((path (or (mu4e-message-field msg :maildir)
+                                                         "")))
+                                           (if (string= path "")
+                                               "Mail file is not accessible"
+                                             (nth 1 (split-string path "/"))))))))
+      (add-to-list 'mu4e-headers-fields
+                   '(:account . 8))
+      mu4e-bookmarks
       (use-package mu4e-alert
         :ensure t
         :init
@@ -1147,7 +1180,9 @@ Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
           (interactive)
           (mu4e~proc-kill)
           (mu4e-alert-enable-mode-line-display))
-        (run-with-timer 0 600 'gjstein-refresh-mu4e-alert-mode-line))))
+        ;; Refresh every 10 minutes
+        (run-with-timer 600 600 'gjstein-refresh-mu4e-alert-mode-line))))
+
   ;; --- SAGE ---
   (when (file-directory-p "/usr/lib/sagemath")
     (use-package sage
@@ -1156,5 +1191,5 @@ Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
       :config
       (setq sage-command "/usr/lib/sagemath/sage")))))
 
-(provide '.emacs)
-;;; .emacs ends here
+(provide 'init)
+;;; init.el ends here
