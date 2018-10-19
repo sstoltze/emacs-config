@@ -1,6 +1,6 @@
 common_packages   = fish git
 common_no_folding = emacs
-linux_packages    = $(common_packages) awesome mbsync msmtp gpg # systemd
+linux_packages    = $(common_packages) awesome mbsync gpg
 linux_no_folding  = $(common_no_folding)
 cygwin_packages   = $(common_packages)
 cygwin_no_folding = $(common_no_folding)
