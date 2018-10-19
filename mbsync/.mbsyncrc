@@ -56,8 +56,8 @@ Account work
 MaildirStore work-local
 Subfolders Verbatim
 # The trailing "/" is important
-Path ~/.mail/Exchange/
-Inbox ~/.mail/Exchange/Inbox
+Path ~/.mail/work/
+Inbox ~/.mail/work/Inbox
 
 Channel work
 Master :work-remote:

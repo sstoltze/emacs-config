@@ -1125,11 +1125,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                                     (smtpmail-smtp-server . "smtp.gmail.com")
                                     (smtpmail-smtp-service . 587)))
                            (make-mu4e-context
-                            :name "Exchange"
+                            :name "work"
                             :match-func (lambda (msg) (when msg
-                                                   (string-prefix-p "/Exchange" (mu4e-message-field msg :maildir))))
+                                                   (string-prefix-p "/work" (mu4e-message-field msg :maildir))))
                             :vars '((user-mail-address . "sisto@sd.dk")
-                                    (mu4e-trash-folder . "/Exchange/Deleted Items")
+                                    (mu4e-trash-folder . "/work/Deleted Items")
                                     (mu4e-refile-folder . exchange-mu4e-refile-folder)
                                     ;; Exchange does not handle this for us
                                     (mu4e-sent-messages-behavior . sent)
@@ -1146,7 +1146,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
       (add-to-list 'mu4e-bookmarks
                    (make-mu4e-bookmark
                     :name "All Inboxes"
-                    :query "maildir:/Exchange/Inbox OR maildir:/gmail/Inbox"
+                    :query "maildir:/work/Inbox OR maildir:/gmail/Inbox"
                     :key ?i))
       (add-to-list 'mu4e-bookmarks
                    (make-mu4e-bookmark
@@ -1156,8 +1156,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                    t)
       (add-to-list 'mu4e-bookmarks
                    (make-mu4e-bookmark
-                    :name "Exchange"
-                    :query "maildir:/Exchange/Inbox"
+                    :name "Work"
+                    :query "maildir:/work/Inbox"
                     :key ?e)
                    t)
       ;; Headers to see which account a mail is stored in
@@ -1179,7 +1179,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
         :init
         (setq mu4e-alert-interesting-mail-query
               (concat
-               "flag:unread maildir:/Exchange/Inbox"
+               "flag:unread maildir:/work/Inbox"
                " OR "
                "flag:unread maildir:/Gmail/Inbox")
               mu4e-alert-email-notification-types '(count))
