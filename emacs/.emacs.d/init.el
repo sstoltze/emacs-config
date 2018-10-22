@@ -14,15 +14,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(TeX-DVI-via-PDFTeX nil)
- '(TeX-PDF-mode nil)
- '(TeX-view-program-selection
-   (quote
-    (((output-dvi style-pstricks)
-      "dvips and gv")
-     (output-dvi "xdvi")
-     (output-pdf "Evince")
-     (output-html "xdg-open"))))
  '(custom-enabled-themes (quote (deeper-blue)))
  '(custom-safe-themes
    (quote
@@ -570,7 +561,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                       nil               ; Lockname
                       'excl)))          ; Mustbenew - error if already exists
   (setq org-capture-templates
-        `(("j" "Note"      entry (file+datetree ,journal-org-file)
+        `(("j" "Note"      entry (file+olp+datetree ,journal-org-file)
            "* %?"
            :empty-lines 1)
           ("t" "TODO"      entry (file+headline ,default-org-file "Unsorted")
@@ -776,7 +767,15 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :defer t
   :init
   (add-hook 'LaTeX-mode-hook
-            'turn-on-auto-fill))
+            'turn-on-auto-fill)
+  :config
+  (setq TeX-view-program-selection
+        '(((output-dvi style-pstricks) "dvips and gv")
+          (output-dvi "xdvi")
+          (output-pdf "Evince")
+          (output-html "xdg-open"))
+        TeX-PDF-mode nil
+        TeX-DVI-via-PDFTeX nil))
 
 ;;;; --- Text-mode ---
 ;; visual-line-mode only pretends to insert linebreaks
@@ -848,8 +847,14 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package magit
   :ensure t
   :defer 1
+  ;; Magit turns on auto-revert so a file changed on disk is changed in Emacs
+  ;; This could be an issue...
+  :diminish auto-revert-mode
   :bind (("C-x g"   . magit-status)          ; Display the main magit popup
          ("C-x M-g" . magit-dispatch-popup)) ; Display keybinds for magit
+  :init
+  ;; Remove the startup message about turning on auto-revert
+  (setq magit-no-message (list "Turning on magit-auto-revert-mode..."))
   :config
   (setq magit-completing-read-function 'ivy-completing-read))
 
@@ -860,8 +865,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :ensure t)
 
 ;;;; --- ESS - Emacs Speaks Statistics ---
-(use-package ess-site
-  :ensure ess
+(use-package ess
+  :ensure t
   :defer t
   :config
   (progn
