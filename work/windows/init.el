@@ -14,15 +14,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(TeX-DVI-via-PDFTeX nil)
- '(TeX-PDF-mode nil)
- '(TeX-view-program-selection
-   (quote
-    (((output-dvi style-pstricks)
-      "dvips and gv")
-     (output-dvi "xdvi")
-     (output-pdf "Evince")
-     (output-html "xdg-open"))))
  '(custom-enabled-themes (quote (deeper-blue)))
  '(custom-safe-themes
    (quote
@@ -31,7 +22,7 @@
  '(doc-view-continuous t)
  '(package-selected-packages
    (quote
-    (ivy-rich avy flx counsel ob-async diminish hc-zenburn-theme outline-magic mu4e-alert haskell-mode auctex rainbow-mode org guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum ess-smart-underscore elpy csv-mode csv benchmark-init))))
+    (ivy-rich avy flx counsel ob-async diminish hc-zenburn-theme outline-magic mu4e-alert haskell-mode auctex rainbow-mode org guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum elpy csv-mode csv benchmark-init))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -295,25 +286,24 @@ point reaches the beginning or end of the buffer, stop there."
   :bind (("C-x C-j"  . dired-jump))
   :hook ((dired-mode . hl-line-mode))
   :config
-  (progn
-    (use-package dired-x
-      :config
-      (add-to-list 'dired-omit-extensions ".DS_Store"))
-    (customize-set-variable 'diredp-hide-details-initially-flag nil)
-    (use-package dired-aux
-      :init
-      (use-package dired-async))
-    (put 'dired-find-alternate-file 'disabled nil)
-    (setq ls-lisp-dirs-first                  t
-          dired-recursive-copies              'always
-          dired-recursive-deletes             'always
-          dired-dwim-target                   t
-          ;; -F marks links with @
-          dired-ls-F-marks-symlinks           t
-          delete-by-moving-to-trash           t
-          ;; Auto refresh dired
-          global-auto-revert-non-file-buffers t
-          wdired-allow-to-change-permissions  t)))
+  (use-package dired-x
+    :config
+    (add-to-list 'dired-omit-extensions ".DS_Store"))
+  (customize-set-variable 'diredp-hide-details-initially-flag nil)
+  (use-package dired-aux
+    :init
+    (use-package dired-async))
+  (put 'dired-find-alternate-file 'disabled nil)
+  (setq ls-lisp-dirs-first                  t
+        dired-recursive-copies              'always
+        dired-recursive-deletes             'always
+        dired-dwim-target                   t
+        ;; -F marks links with @
+        dired-ls-F-marks-symlinks           t
+        delete-by-moving-to-trash           t
+        ;; Auto refresh dired
+        global-auto-revert-non-file-buffers t
+        wdired-allow-to-change-permissions  t))
 
 ;;;; --- Eshell ---
 (use-package eshell
@@ -323,7 +313,10 @@ point reaches the beginning or end of the buffer, stop there."
                           (eshell/alias "emacs"  "find-file $1")
                           (eshell/alias "magit"  "magit-status")
                           (eshell/alias "less"   "cat $1")
-                          (eshell/alias "python" "python3 $*")
+                          ;; These last two does not work on windows atm. Probably an issue with the path
+                          (when (eq system-type 'gnu/linux)
+                            (eshell/alias "python" "python3 $*")
+                            (eshell/alias "pip"    "pip3 $*"))
                           (local-set-key (kbd "C-c h")
                                          (lambda ()
                                            "Ivy interface to eshell history."
@@ -379,8 +372,8 @@ point reaches the beginning or end of the buffer, stop there."
         eshell-scroll-to-bottom-on-input        nil
         ehsell-scroll-to-bottom-on-output       nil
         eshell-scroll-show-maximum-output       t
-        eshell-smart-space-goes-to-end          t)
-  (setq eshell-banner-message ""
+        eshell-smart-space-goes-to-end          t
+        eshell-banner-message ""
         eshell-prompt-function
         (lambda ()
           (let ((standard-colour "light goldenrod")
@@ -570,7 +563,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                       nil               ; Lockname
                       'excl)))          ; Mustbenew - error if already exists
   (setq org-capture-templates
-        `(("j" "Note"      entry (file+datetree ,journal-org-file)
+        `(("j" "Note"      entry (file+olp+datetree ,journal-org-file)
            "* %?"
            :empty-lines 1)
           ("t" "TODO"      entry (file+headline ,default-org-file "Unsorted")
@@ -605,70 +598,66 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (set-register ?j (cons 'file journal-org-file)))
 (defun my-org-hook ()
   "Org mode hook."
-  (progn
-    (setq
-     org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
-                         (sequence "WAITING(w)"))
-     org-time-stamp-custom-formats (quote ("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>"))
-     org-use-fast-todo-selection t
-     ;; Allow editing invisible region if it does that you would expect
-     org-catch-invisible-edits 'smart
-     org-log-done t
-     org-refile-use-outline-path t
-     ;; Targets complete directly with IDO
-     org-outline-path-complete-in-steps nil
-     ;; Allow refile to create parent tasks with confirmation
-     org-refile-allow-creating-parent-nodes (quote confirm)
-     ;; Use the current window for indirect buffer display
-     org-indirect-buffer-display 'current-window
-     ;; Author, email, date of creation, validation link at bottom of exported html
-     org-html-postamble nil
-     org-html-html5-fancy t
-     org-html-doctype "html5")
-    ;; Two options for literate programming.
-    ;; Usage is as for SRC and EXAMPLE blocks, <pr<TAB> to expand
-    (add-to-list 'org-structure-template-alist ;; A property drawer with correct settings for org-babel
-                 '("pr" ":PROPERTIES:\n:header-args: :results output :tangle yes :session *?*\n:END:"))
-    (add-to-list 'org-structure-template-alist ;; A source block with header-args for exporting an image
-                 '("si" "#+BEGIN_SRC ? :results graphics :file ./images/\n\n#+END_SRC"))
-    (add-to-list 'org-structure-template-alist ;; A source block with silent enabled
-                 '("ss" "#+BEGIN_SRC ? :results silent\n\n#+END_SRC"))
-    ;; At work
-    (when (and (eq system-type 'windows-nt)
-               (file-exists-p "C:/Progra~2/LibreOffice/program/soffice.exe")
-               (equal (user-login-name) "sisto")) ;; Just for work
-      ;; Export to .docx
-      (setq org-odt-preferred-output-format "docx"
-            org-odt-convert-processes '(("LibreOffice" "C:/Progra~2/LibreOffice/program/soffice.exe --headless --convert-to %f%x --outdir %d %i"))))
-    ;; Refile settings
-    ;; Exclude DONE state tasks from refile targets
-    (defun bh/verify-refile-target ()
-      "Exclude todo keywords with a done state from refile targets."
-      (not (member (nth 2 (org-heading-components)) org-done-keywords)))
-    (setq org-refile-target-verify-function 'bh/verify-refile-target))
+  (setq
+   org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+                       (sequence "WAITING(w)"))
+   org-time-stamp-custom-formats (quote ("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>"))
+   org-use-fast-todo-selection t
+   ;; Allow editing invisible region if it does that you would expect
+   org-catch-invisible-edits 'smart
+   org-log-done t
+   org-refile-use-outline-path t
+   ;; Targets complete directly with IDO
+   org-outline-path-complete-in-steps nil
+   ;; Allow refile to create parent tasks with confirmation
+   org-refile-allow-creating-parent-nodes (quote confirm)
+   ;; Use the current window for indirect buffer display
+   org-indirect-buffer-display 'current-window
+   ;; Author, email, date of creation, validation link at bottom of exported html
+   org-html-postamble nil
+   org-html-html5-fancy t
+   org-html-doctype "html5")
+  ;; Two options for literate programming.
+  ;; Usage is as for SRC and EXAMPLE blocks, <pr<TAB> to expand
+  (add-to-list 'org-structure-template-alist ;; A property drawer with correct settings for org-babel
+               '("pr" ":PROPERTIES:\n:header-args: :results output :tangle yes :session *?*\n:END:"))
+  (add-to-list 'org-structure-template-alist ;; A source block with header-args for exporting an image
+               '("si" "#+BEGIN_SRC ? :results graphics :file ./images/\n\n#+END_SRC"))
+  (add-to-list 'org-structure-template-alist ;; A source block with silent enabled
+               '("ss" "#+BEGIN_SRC ? :results silent\n\n#+END_SRC"))
+  ;; At work
+  (when (and (eq system-type 'windows-nt)
+             (file-exists-p "C:/Progra~2/LibreOffice/program/soffice.exe")
+             (equal (user-login-name) "sisto")) ;; Just for work
+    ;; Export to .docx
+    (setq org-odt-preferred-output-format "docx"
+          org-odt-convert-processes '(("LibreOffice" "C:/Progra~2/LibreOffice/program/soffice.exe --headless --convert-to %f%x --outdir %d %i"))))
+  ;; Refile settings
+  ;; Exclude DONE state tasks from refile targets
+  (defun bh/verify-refile-target ()
+    "Exclude todo keywords with a done state from refile targets."
+    (not (member (nth 2 (org-heading-components)) org-done-keywords)))
+  (setq org-refile-target-verify-function 'bh/verify-refile-target)
   ;; org babel evaluate
   (require 'ob)
   (use-package ob-async
     :ensure t)
-  (progn
-    ;; Make org mode allow eval of some langs
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((lisp       . t)
-       (emacs-lisp . t)
-       (python     . t)
-       (ruby       . t)
-       (R          . t)
-       (latex      . t)
-       (sql        . t)
-       (stan       . t)))
-    (setq org-confirm-babel-evaluate nil
-          org-src-fontify-natively   t
-          org-babel-python-command   "python3"
-          ;org-babel-python-mode      "python3"
-          )
-    (add-hook 'org-babel-after-execute-hook
-              'org-display-inline-images)))
+  ;; Make org mode allow eval of some langs
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((lisp       . t)
+     (emacs-lisp . t)
+     (python     . t)
+     (ruby       . t)
+     (R          . t)
+     (latex      . t)
+     (sql        . t)
+     (stan       . t)))
+  (setq org-confirm-babel-evaluate nil
+        org-src-fontify-natively   t
+        org-babel-python-command   "python3")
+  (add-hook 'org-babel-after-execute-hook
+            'org-display-inline-images))
 (add-hook 'org-mode-hook #'(lambda ()
                              (visual-line-mode 1)
                              (org-indent-mode  1)
@@ -688,36 +677,35 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          ("C-x C-r" . counsel-recentf)
          ("C-c C-r" . ivy-resume))
   :init
-  (progn
-    ;; Better fuzzy-matching
-    (use-package flx
-      :ensure t)
-    (ivy-mode 1)
-    (counsel-mode 1)
-    ;; Allow "M-x lis-pac" to match "M-x list-packages"
-    (setq ivy-re-builders-alist        '((swiper . ivy--regex-plus)
-                                         (t      . ivy--regex-fuzzy))
-          ;; With the above, we do not need the initial ^ in the prompts
-          ivy-initial-inputs-alist     '()
-          ;; Allows selecting the prompt with C-p (same as C-M-j)
-          ivy-use-selectable-prompt    t
-          ;; Use ivy while in minibuffer to e.g. insert variable names
-          ;; when doing counsel-set-variable
-          enable-recursive-minibuffers t)
-    ;; Show how deep the minibuffer goes
-    (minibuffer-depth-indicate-mode 1)
-    ;; Sort recentf by timestamp
-    (add-to-list 'ivy-sort-functions-alist
-                 '(counsel-recentf . file-newer-than-file-p))
-    ;; Add info to ivy-buffers like 'M-x' or 'C-x b'
-    (use-package ivy-rich
-      :ensure t
-      :defer 1
-      :config
-      (ivy-rich-mode 1)
-      (setq ivy-rich-path-style 'abbrev)
-      ;; The default "Yellow" of deeper-blue is not great
-      (set-face-foreground 'warning "goldenrod1"))))
+  ;; Better fuzzy-matching
+  (use-package flx
+    :ensure t)
+  (ivy-mode 1)
+  (counsel-mode 1)
+  ;; Allow "M-x lis-pac" to match "M-x list-packages"
+  (setq ivy-re-builders-alist        '((swiper . ivy--regex-plus)
+                                       (t      . ivy--regex-fuzzy))
+        ;; With the above, we do not need the initial ^ in the prompts
+        ivy-initial-inputs-alist     '()
+        ;; Allows selecting the prompt with C-p (same as C-M-j)
+        ivy-use-selectable-prompt    t
+        ;; Use ivy while in minibuffer to e.g. insert variable names
+        ;; when doing counsel-set-variable
+        enable-recursive-minibuffers t)
+  ;; Show how deep the minibuffer goes
+  (minibuffer-depth-indicate-mode 1)
+  ;; Sort recentf by timestamp
+  (add-to-list 'ivy-sort-functions-alist
+               '(counsel-recentf . file-newer-than-file-p))
+  ;; Add info to ivy-buffers like 'M-x' or 'C-x b'
+  (use-package ivy-rich
+    :ensure t
+    :defer 1
+    :config
+    (ivy-rich-mode 1)
+    (setq ivy-rich-path-style 'abbrev)
+    ;; The default "Yellow" of deeper-blue is not great
+    (set-face-foreground 'warning "goldenrod1")))
 
 ;;;; --- Multiple cursors ---
 (use-package multiple-cursors
@@ -757,20 +745,19 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :ensure t
   :defer t
   :config
-  (progn
-    (when (eq system-type 'cygwin)
-      (defun cyg-slime-to-lisp-translation (filename)
-        (replace-regexp-in-string "\n" ""
-                                  (shell-command-to-string
-                                   (format "cygpath.exe --windows %s" filename))))
-      (defun cyg-lisp-to-slime-translation (filename)
-        (replace-regexp-in-string "\n" "" (shell-command-to-string
-                                           (format "cygpath.exe --unix %s" filename))))
-      (setq slime-to-lisp-filename-function #'cyg-slime-to-lisp-translation
-            lisp-to-slime-filename-function #'cyg-lisp-to-slime-translation))
-    (setq inferior-lisp-program "sbcl --dynamic-space-size 2560"
-          slime-default-lisp "sbcl"
-          slime-contribs '(slime-fancy))))
+  (when (eq system-type 'cygwin)
+    (defun cyg-slime-to-lisp-translation (filename)
+      (replace-regexp-in-string "\n" ""
+                                (shell-command-to-string
+                                 (format "cygpath.exe --windows %s" filename))))
+    (defun cyg-lisp-to-slime-translation (filename)
+      (replace-regexp-in-string "\n" "" (shell-command-to-string
+                                         (format "cygpath.exe --unix %s" filename))))
+    (setq slime-to-lisp-filename-function #'cyg-slime-to-lisp-translation
+          lisp-to-slime-filename-function #'cyg-lisp-to-slime-translation))
+  (setq inferior-lisp-program "sbcl --dynamic-space-size 2560"
+        slime-default-lisp "sbcl"
+        slime-contribs '(slime-fancy)))
 
 ;;;; --- LaTeX ---
 (use-package tex
@@ -778,7 +765,15 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :defer t
   :init
   (add-hook 'LaTeX-mode-hook
-            'turn-on-auto-fill))
+            'turn-on-auto-fill)
+  :config
+  (setq TeX-view-program-selection
+        '(((output-dvi style-pstricks) "dvips and gv")
+          (output-dvi "xdvi")
+          (output-pdf "Evince")
+          (output-html "xdg-open"))
+        TeX-PDF-mode nil
+        TeX-DVI-via-PDFTeX nil))
 
 ;;;; --- Text-mode ---
 ;; visual-line-mode only pretends to insert linebreaks
@@ -816,12 +811,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     :ensure t
     :hook ((haskell-mode-hook . intero-mode)))
   :config
-  (progn
-    (setq haskell-indent-spaces 4)
+  (setq haskell-indent-spaces 4)
     ;; (use-package flycheck-haskell ;; Should be part of intero
     ;;   :ensure t
     ;;   :hook ((haskell-mode-hook . flycheck-haskell-setup)))
-    ))
+    )
 
 ;;;; --- C/C++ ---
 (defun common-c-hook ()
@@ -850,8 +844,14 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package magit
   :ensure t
   :defer 1
+  ;; Magit turns on auto-revert so a file changed on disk is changed in Emacs
+  ;; This could be an issue...
+  :diminish auto-revert-mode
   :bind (("C-x g"   . magit-status)          ; Display the main magit popup
          ("C-x M-g" . magit-dispatch-popup)) ; Display keybinds for magit
+  :init
+  ;; Remove the startup message about turning on auto-revert
+  (setq magit-no-message (list "Turning on magit-auto-revert-mode..."))
   :config
   (setq magit-completing-read-function 'ivy-completing-read))
 
@@ -862,24 +862,18 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :ensure t)
 
 ;;;; --- ESS - Emacs Speaks Statistics ---
-(use-package ess-site
-  :ensure ess
-  :defer t
-  :config
-  (progn
-    (use-package ess-smart-underscore
-      :defer t
-      :ensure t)))
+(use-package ess
+  :ensure t
+  :defer t)
 
 ;;;; --- Stan ---
 (use-package stan-mode
   :ensure t
   :defer t
   :config
-  (progn
-    (use-package stan-snippets
-      :defer t
-      :ensure t)))
+  (use-package stan-snippets
+    :defer t
+    :ensure t))
 
 ;;;; --- Python ---
 ;; python -m pip install --upgrade jedi rope black flake8 yapf autopep8 elpy
@@ -896,41 +890,39 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          (inferior-python-mode . (lambda ()
                                    (python-shell-switch-to-shell))))
   :init
-  (progn
-    ;; Silence warning when guessing indent, default is 4 spaces
-    (setq python-indent-guess-indent-offset-verbose nil)
-    (with-eval-after-load 'python
-  (defun python-shell-completion-native-try ()
-    "Return non-nil if can trigger native completion."
-    (let ((python-shell-completion-native-enable t)
-          (python-shell-completion-native-output-timeout
-           python-shell-completion-native-try-output-timeout))
-      (python-shell-completion-native-get-completions
-       (get-buffer-process (current-buffer))
-       nil "_")))))
+  ;; Silence warning when guessing indent, default is 4 spaces
+  (setq python-indent-guess-indent-offset-verbose nil)
+  (with-eval-after-load 'python
+    (defun python-shell-completion-native-try ()
+      "Return non-nil if can trigger native completion."
+      (let ((python-shell-completion-native-enable t)
+            (python-shell-completion-native-output-timeout
+             python-shell-completion-native-try-output-timeout))
+        (python-shell-completion-native-get-completions
+         (get-buffer-process (current-buffer))
+         nil "_"))))
   :config
-  (progn
-    (setq elpy-shell-use-project-root nil
-          elpy-rpc-backend "jedi"
-          python-shell-interpreter "python3")
-    (elpy-enable)
-    ;; Enable pyvenv, which manages Python virtual environments
-    (pyvenv-mode 1)
-    ;; Tell Python debugger (pdb) to use the current virtual environment
-    ;; https://emacs.stackexchange.com/questions/17808/enable-python-pdb-on-emacs-with-virtualenv
-    (setq gud-pdb-command-name "python -m pdb ")
-    (defun my-restart-python-console ()
-      "Restart python console before evaluate buffer or region to avoid various uncanny conflicts, like not reloding modules even when they are changed"
-      (interactive)
-      (kill-process "Python")
-      (sleep-for 0.15)
-      (kill-buffer "*Python*")
-      (elpy-shell-send-region-or-buffer))
-    (global-set-key (kbd "C-c C-x C-c") 'my-restart-python-console)
-    (add-hook 'after-change-major-mode-hook
-              (lambda ()
-                (delete 'elpy-module-company
-                        'elpy-modules)))))
+  (setq elpy-shell-use-project-root nil
+        elpy-rpc-backend "jedi"
+        python-shell-interpreter "python3")
+  (elpy-enable)
+  ;; Enable pyvenv, which manages Python virtual environments
+  (pyvenv-mode 1)
+  ;; Tell Python debugger (pdb) to use the current virtual environment
+  ;; https://emacs.stackexchange.com/questions/17808/enable-python-pdb-on-emacs-with-virtualenv
+  (setq gud-pdb-command-name "python -m pdb ")
+  (defun my-restart-python-console ()
+    "Restart python console before evaluate buffer or region to avoid various uncanny conflicts, like not reloding modules even when they are changed"
+    (interactive)
+    (kill-process "Python")
+    (sleep-for 0.15)
+    (kill-buffer "*Python*")
+    (elpy-shell-send-region-or-buffer))
+  (global-set-key (kbd "C-c C-x C-c") 'my-restart-python-console)
+  (add-hook 'after-change-major-mode-hook
+            (lambda ()
+              (delete 'elpy-module-company
+                      'elpy-modules))))
 
 ;;;; --- Ocaml ---
 (use-package tuareg
@@ -1048,12 +1040,14 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 
   ;; --- Tramp - Windows ---
   ;; C-x C-f /plink:<user>@host: ENTER
-  (let ((plink-file "C:/Program Files (x86)/PuTTY/plink.exe"))
+  (let* ((plink-folder "C:\\Program Files (x86)\\PuTTY")
+         (plink-file   (concat plink-folder
+                               "\\plink.exe")))
     (when (file-exists-p plink-file)
       (setq tramp-default-method "plink")
-      (when (not (string-match plink-file
+      (when (not (string-match plink-folder
                                (getenv "PATH")))
-        (setenv "PATH" (concat plink-file
+        (setenv "PATH" (concat plink-folder
                                ";"
                                (getenv "PATH")))
         (add-to-list 'exec-path
@@ -1086,6 +1080,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
       :bind (("C-c q" . mu4e))
       :config
       (my/setup-epa)
+      ;; Authinfo - open in emacs and add lines for each context, e.g.
+      ;; machine <smtp.foo.com> login <mail@address.com> password <secret> port <587>
+      (add-to-list 'auth-sources
+                   "~/.mail/.smtp-auth.gpg")
       (setq mu4e-maildir "~/.mail"
             ;; gpg-agent is set to use pinentry-qt for a dialog box
             mu4e-get-mail-command "mbsync -a"
@@ -1123,23 +1121,28 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                                     (smtpmail-smtp-server . "smtp.gmail.com")
                                     (smtpmail-smtp-service . 587)))
                            (make-mu4e-context
-                            :name "Exchange"
+                            :name "work"
                             :match-func (lambda (msg) (when msg
-                                                   (string-prefix-p "/Exchange" (mu4e-message-field msg :maildir))))
+                                                   (string-prefix-p "/work" (mu4e-message-field msg :maildir))))
                             :vars '((user-mail-address . "sisto@sd.dk")
-                                    (mu4e-trash-folder . "/Exchange/Deleted Items")
+                                    (mu4e-trash-folder . "/work/Deleted Items")
                                     (mu4e-refile-folder . exchange-mu4e-refile-folder)
                                     ;; Exchange does not handle this for us
                                     (mu4e-sent-messages-behavior . sent)
-                                    ;; This does not work...
                                     (smtpmail-default-smtp-server . "smtp.office365.com")
                                     (smtpmail-smtp-server . "smtp.office365.com")
-                                    (smtpmail-smtp-service . 587)))))
+                                    (smtpmail-smtp-service . 587)
+                                    (mu4e-compose-signature . (concat "\n"
+                                                                      "Venlig hilsen\n"
+                                                                      "\n"
+                                                                      "Simon Stoltze\n"
+                                                                      "Developer\n"
+                                                                      "Silkeborg Data A/S"))))))
       ;; Include a bookmark to open all of my inboxes
       (add-to-list 'mu4e-bookmarks
                    (make-mu4e-bookmark
                     :name "All Inboxes"
-                    :query "maildir:/Exchange/Inbox OR maildir:/gmail/Inbox"
+                    :query "maildir:/work/Inbox OR maildir:/gmail/Inbox"
                     :key ?i))
       (add-to-list 'mu4e-bookmarks
                    (make-mu4e-bookmark
@@ -1149,29 +1152,30 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                    t)
       (add-to-list 'mu4e-bookmarks
                    (make-mu4e-bookmark
-                    :name "Exchange"
-                    :query "maildir:/Exchange/Inbox"
+                    :name "Work"
+                    :query "maildir:/work/Inbox"
                     :key ?e)
                    t)
+      ;; Headers to see which account a mail is stored in
       (add-to-list 'mu4e-header-info-custom
                    '(:account . (:name "Account"
                                        :shortname "Account"
-                             :help "The account/folder the mail was in."
-                             :function (lambda (msg)
-                                         (let ((path (or (mu4e-message-field msg :maildir)
-                                                         "")))
-                                           (if (string= path "")
-                                               "Mail file is not accessible"
-                                             (nth 1 (split-string path "/"))))))))
+                                       :help "The account/folder the mail was in."
+                                       :function (lambda (msg)
+                                                   (let ((path (or (mu4e-message-field msg :maildir)
+                                                                   "")))
+                                                     (if (string= path "")
+                                                         "Mail file is not accessible"
+                                                       (nth 1 (split-string path "/"))))))))
+      ;; Add the new header to headers
       (add-to-list 'mu4e-headers-fields
                    '(:account . 8))
-      mu4e-bookmarks
       (use-package mu4e-alert
         :ensure t
         :init
         (setq mu4e-alert-interesting-mail-query
               (concat
-               "flag:unread maildir:/Exchange/Inbox"
+               "flag:unread maildir:/work/Inbox"
                " OR "
                "flag:unread maildir:/Gmail/Inbox")
               mu4e-alert-email-notification-types '(count))
