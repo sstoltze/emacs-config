@@ -398,8 +398,6 @@ point reaches the beginning or end of the buffer, stop there."
                    (setq password-cache t
                          ;; time in seconds
                          password-cache-expiry 600))))
-
-
   ;; Could consider making the colours parameters to be
   ;; able to change them when calling in eshell-prompt-function
   (defun sstoltze/make-vc-prompt ()
@@ -472,7 +470,6 @@ Can be replaced with:
              (propertize (format " (%s)" vc-response)
                          'face (list :foreground
                                      standard-colour))))))
-
   (defun fish-path (path max-len)
     "Return a potentially trimmed-down version of the directory PATH, replacing
 parent directories with their initial characters to try to get the character
@@ -691,6 +688,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; Use ivy while in minibuffer to e.g. insert variable names
   ;; when doing counsel-set-variable
   (enable-recursive-minibuffers t)
+  ;; Control whether ./ and ../ shows up in find-file et al
+  ;;(ivy-extra-directories nil)
   :init
   ;; Better fuzzy-matching
   (use-package flx
@@ -770,9 +769,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package tex
   :ensure auctex
   :defer t
-  :init
-  (add-hook 'LaTeX-mode-hook
-            'turn-on-auto-fill)
   :custom
   (TeX-view-program-selection
    '(((output-dvi style-pstricks) "dvips and gv")
@@ -780,7 +776,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
      (output-pdf "Evince")
      (output-html "xdg-open")))
   (TeX-PDF-mode nil)
-  (TeX-DVI-via-PDFTeX nil))
+  (TeX-DVI-via-PDFTeX nil)
+  :init
+  (add-hook 'LaTeX-mode-hook
+            'turn-on-auto-fill))
 
 ;;;; --- Text-mode ---
 ;; visual-line-mode only pretends to insert linebreaks
@@ -813,13 +812,13 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :ensure t
   :defer t
   :hook ((haskell-mode-hook . turn-on-haskell-indent))
+  :custom
+  (haskell-indent-spaces 4)
   :init
   (use-package intero
     :ensure t
     :hook ((haskell-mode-hook . intero-mode)))
-  :custom
-  (haskell-indent-spaces 4)
-    ;; (use-package flycheck-haskell ;; Should be part of intero
+  ;; (use-package flycheck-haskell ;; Should be part of intero
     ;;   :ensure t
     ;;   :hook ((haskell-mode-hook . flycheck-haskell-setup)))
     )
