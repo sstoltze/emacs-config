@@ -22,7 +22,7 @@
  '(doc-view-continuous t)
  '(package-selected-packages
    (quote
-    (lua-mode ivy-rich avy flx counsel ob-async diminish hc-zenburn-theme outline-magic mu4e-alert haskell-mode auctex rainbow-mode org guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum elpy csv-mode csv benchmark-init))))
+    (lua-mode ivy-rich avy flx counsel ob-async diminish hc-zenburn-theme outline-magic mu4e-alert haskell-mode auctex rainbow-mode org guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl ob-sql-mode magit io-mode-inf io-mode intero htmlize flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum elpy csv-mode benchmark-init))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -805,7 +805,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :hook ((css-mode . rainbow-mode)))
 
 ;;;; --- CSV ---
-(setq csv-separators (quote (";")))
+(use-package csv-mode
+  :ensure t
+  :defer t
+  :custom
+  (csv-separators (list ";" "	")))
 
 ;;;; --- Haskell ---
 (use-package haskell-mode
