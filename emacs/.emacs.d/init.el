@@ -1086,8 +1086,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                                "\\plink.exe")))
     (when (file-exists-p plink-file)
       (setq tramp-default-method "plink")
-      (when (not (string-match plink-folder
-                               (getenv "PATH")))
+      (when (not (executable-find "plink.exe"))
         (setenv "PATH" (concat plink-folder
                                ";"
                                (getenv "PATH")))
