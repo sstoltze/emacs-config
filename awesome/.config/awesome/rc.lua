@@ -136,7 +136,7 @@ cal_pipe:close()
 
 calendar:set_markup('<tt><span background="#C1C48B"> ' -- Monospace og rigtig baggrundsfarve
                     .. cal_text
-                    .. string.rep(" ", 58 + (select(2, cal_text:gsub('\n', '\n'))+1)*22 - cal_text:len() + 1) -- Længde (7*22) + <spans> og lign. (58, åbenbart). Dette går nok hurtigt i stykker igen
+                    .. string.rep(" ", 58 + (select(2, cal_text:gsub('\n', '\n'))+1)*22 - cal_text:len()) -- Længde (7*22) + <spans> og lign. (58, åbenbart). Dette går nok hurtigt i stykker igen
                     .. "</span></tt>")
 
 -- Volume
@@ -181,7 +181,6 @@ spotimer:connect_signal("timeout", function()
 	     	old_l = l
 	     	naughty.notify({text = l, icon = "/home/simon/Documents/icons/Spotify-icon-32.png", icon_size = 16})
 	end
-
 end)
 spotimer:start()
 
@@ -197,13 +196,11 @@ cpuwidget:buttons(awful.util.table.join(
 			 awful.util.spawn(terminal .. " -e top")
 		end)))
 
-
 -- RAM usage widget
 memwidget = wibox.widget.textbox()
 vicious.cache(vicious.widgets.mem)
 vicious.register(memwidget, vicious.widgets.mem, "RAM: $2/$3", 71)
                  --update every 71 seconds
-
 
 divider = wibox.widget.textbox() -- center
 divider:set_text(" | ")
@@ -220,15 +217,14 @@ vicious.register(bat, vicious.widgets.bat,
 		 end
 		 f:close()
 		 for h,m in string.gmatch(l,"(%d+):(%d+)") do
-		     -- If discharging battery and time is less than 20 minutes or 10% battery remaining, text is red
-		     if args[1] == "-" and (tonumber(h) == 0 and tonumber(m) < 20 or args[2] < 10) then
+		     -- If discharging battery and time is less than 30 minutes or 20% battery remaining, text is red
+		     if args[1] == "-" and (tonumber(h) == 0 and tonumber(m) < 30 or args[2] < 20) then
 		     	colour = "red"
 		     end
 		 end
 		 bat_t:set_text( (args[1] == "-" and "Time left: " or ("Charging done in: ")) .. l)
 		 return string.format("Bat: <span fgcolor='%s'>%2d%s</span>", colour, args[2], args[1] == "-" and "%" or "+")
 	end, 61, "BAT0")
-
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = awful.util.table.join(
