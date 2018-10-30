@@ -314,6 +314,7 @@ point reaches the beginning or end of the buffer, stop there."
                           (eshell/alias "magit"  "magit-status")
                           (eshell/alias "less"   "cat $1")
                           (eshell/alias "python" "python3 $*")
+                          (eshell/alias "pip"    "pip3 $*")
                           (local-set-key (kbd "C-c h")
                                          (lambda ()
                                            "Ivy interface to eshell history."
@@ -637,8 +638,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (setq org-refile-target-verify-function 'bh/verify-refile-target)
   ;; org babel evaluate
   (require 'ob)
-  (use-package ob-async
-    :ensure t)
   ;; Make org mode allow eval of some langs
   (org-babel-do-load-languages
    'org-babel-load-languages
@@ -885,6 +884,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                                     '("python")))
                           (elpy-mode t)))
          (inferior-python-mode . (lambda ()
+                                   (setq python-shell-completion-native-disabled-interpreters
+                                    '("python3"))
                                    (python-shell-switch-to-shell))))
   :init
   ;; Silence warning when guessing indent, default is 4 spaces
