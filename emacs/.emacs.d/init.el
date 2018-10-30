@@ -861,11 +861,26 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; Remove the startup message about turning on auto-revert
   (setq magit-no-message (list "Turning on magit-auto-revert-mode...")))
 
+;;;; Eww
+(use-package eww
+  :ensure t
+  :defer t
+  :bind (("C-c w" . eww)
+         :map eww-mode-map
+         ("f"     . eww-lnum-follow)
+         ("F"     . eww-lnum-universal))
+  :custom
+  (browse-url-browser-function '((".*youtube.*" . browse-url-default-browser)
+                                 (".*github.*"  . browse-url-default-browser)
+                                 ("."           . eww-browser-url)))
+  :init
+  (use-package eww-lnum
+    :ensure t))
 
 ;;;; --- Fish ---
 (use-package fish-mode
-  :defer t
-  :ensure t)
+  :ensure t
+  :defer t)
 
 ;;;; --- ESS - Emacs Speaks Statistics ---
 (use-package ess
@@ -1006,6 +1021,13 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (set-face-background 'cursor           "burlywood")
 
 ;;;; --- System specific ---
+(when (executable-find "fish")
+  (use-package fish-completion
+    :ensure t
+    :defer t
+    :config
+    (fish-completion-mode 1)))
+
 (cond
  ;; --- Windows specific ---
  ((eq system-type 'windows-nt)
@@ -1066,7 +1088,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
         (add-to-list 'exec-path
                      plink-file))))
 
-  ;;;;; --- Work specific ---
+;;;;; --- Work specific ---
   (when (and (eq system-type 'windows-nt)
              (equal (user-login-name) "sisto"))
     (use-package cobol-mode
@@ -1090,7 +1112,12 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     (use-package mu4e
       :defer t
       :load-path "/usr/local/share/emacs/site-lisp/mu/mu4e"
-      :bind (("C-c q" . mu4e))
+      :bind (("C-c q" . mu4e)
+             :map mu4e-view-mode-map
+             ("G" . (lambda ()
+                      (interactive)
+                      (let ((browse-url-default-function 'browse-url-default-browser))
+                        (mu4e-view-go-to-url)))))
       :custom
       (mu4e-maildir "~/.mail")
       ;; gpg-agent is set to use pinentry-qt for a dialog box
