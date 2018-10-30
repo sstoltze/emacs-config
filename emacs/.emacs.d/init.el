@@ -1045,7 +1045,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     (funcall (nth *window-status* *window-options*))
     (setq *window-status* (mod (1+ *window-status*)
                                (length *window-options*))))
-  (global-set-key (kbd "M-RET") 'toggle-window)
+  (global-set-key (kbd "M-RET")     'toggle-window)
+  (global-set-key (kbd "M-<left>")  '(lambda () (interactive) (toggle-window 1)))
+  (global-set-key (kbd "M-<right>") '(lambda () (interactive) (toggle-window 2)))
+  ;; Bound by paredit
+  ;;(global-set-key (kbd "M-<down>") '(lambda () (interactive) (toggle-window 3)))
 
   ;; --- Tramp - Windows ---
   ;; C-x C-f /plink:<user>@host: ENTER
