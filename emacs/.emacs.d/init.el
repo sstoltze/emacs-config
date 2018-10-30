@@ -819,9 +819,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     :ensure t
     :hook ((haskell-mode-hook . intero-mode)))
   ;; (use-package flycheck-haskell ;; Should be part of intero
-    ;;   :ensure t
-    ;;   :hook ((haskell-mode-hook . flycheck-haskell-setup)))
-    )
+  ;;   :ensure t
+  ;;   :hook ((haskell-mode-hook . flycheck-haskell-setup)))
+  )
 
 ;;;; --- C/C++ ---
 (defun common-c-hook ()
@@ -861,7 +861,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; Remove the startup message about turning on auto-revert
   (setq magit-no-message (list "Turning on magit-auto-revert-mode...")))
 
-;;;; Eww
+;;;; --- Eww ---
 (use-package eww
   :ensure t
   :defer t
@@ -910,7 +910,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                           (elpy-mode t)))
          (inferior-python-mode . (lambda ()
                                    (setq python-shell-completion-native-disabled-interpreters
-                                    '("python3"))
+                                         '("python3"))
                                    (python-shell-switch-to-shell))))
   :custom
   (python-indent-guess-indent-offset-verbose nil)
@@ -1131,52 +1131,53 @@ length of PATH (sans directory slashes) down to MAX-LEN."
       (message-kill-buffer-on-exit t)
       ;; Don't ask for a 'context' upon opening mu4e
       (mu4e-context-policy 'pick-first)
-      ;; Don't ask to quit... why is this the default?
+      ;; Don't ask to quit.
       (mu4e-confirm-quit nil)
       ;; Fix "Duplicate UID" when moving messages
       (mu4e-change-filenames-when-moving t)
       (mu4e-html2text-command 'mu4e-shr2text)
-      (mu4e-completing-read-function 'completing-read)
-      ;; Header view
+      ;; Complete using ivy
+      (mu4e-completing-read-function 'ivy-completing-read)
+      ;; Header view - format time and date
       (mu4e-headers-time-format "%R")
       (mu4e-headers-date-format "%F")
       ;; Common options for servers
       (message-send-mail-function 'smtpmail-send-it)
       (smtpmail-stream-type 'starttls)
-      ;; Set account-specific details here
-      (mu4e-contexts (list
-                      (make-mu4e-context
-                       :name "gmail"
-                       :match-func (lambda (msg) (when msg
-                                              (string-prefix-p "/gmail" (mu4e-message-field msg :maildir))))
-                       :vars '((user-mail-address . "sstoltze@gmail.com")
-                               (mu4e-trash-folder . "/gmail/[Gmail].Trash")
-                               (mu4e-refile-folder . "/gmail/[Gmail].Archive")
-                               ;; Gmail handles sent messages for us
-                               (mu4e-sent-messages-behavior . delete)
-                               (smtpmail-default-smtp-server . "smtp.gmail.com")
-                               (smtpmail-smtp-server . "smtp.gmail.com")
-                               (smtpmail-smtp-service . 587)))
-                      (make-mu4e-context
-                       :name "work"
-                       :match-func (lambda (msg) (when msg
-                                              (string-prefix-p "/work" (mu4e-message-field msg :maildir))))
-                       :vars '((user-mail-address . "sisto@sd.dk")
-                               (mu4e-trash-folder . "/work/Deleted Items")
-                               (mu4e-refile-folder . exchange-mu4e-refile-folder)
-                               ;; Exchange does not handle this for us
-                               (mu4e-sent-messages-behavior . sent)
-                               (smtpmail-default-smtp-server . "smtp.office365.com")
-                               (smtpmail-smtp-server . "smtp.office365.com")
-                               (smtpmail-smtp-service . 587)
-                               (mu4e-compose-signature . (concat "\n"
-                                                                 "Venlig hilsen\n"
-                                                                 "\n"
-                                                                 "Simon Stoltze\n"
-                                                                 "Developer\n"
-                                                                 "Silkeborg Data A/S"))))))
       :config
       (my/setup-epa)
+      ;; Set account-specific details here
+      (setq mu4e-contexts (list
+                           (make-mu4e-context
+                            :name "gmail"
+                            :match-func (lambda (msg) (when msg
+                                                   (string-prefix-p "/gmail" (mu4e-message-field msg :maildir))))
+                            :vars '((user-mail-address . "sstoltze@gmail.com")
+                                    (mu4e-trash-folder . "/gmail/[Gmail].Trash")
+                                    (mu4e-refile-folder . "/gmail/[Gmail].Archive")
+                                    ;; Gmail handles sent messages for us
+                                    (mu4e-sent-messages-behavior . delete)
+                                    (smtpmail-default-smtp-server . "smtp.gmail.com")
+                                    (smtpmail-smtp-server . "smtp.gmail.com")
+                                    (smtpmail-smtp-service . 587)))
+                           (make-mu4e-context
+                            :name "work"
+                            :match-func (lambda (msg) (when msg
+                                                   (string-prefix-p "/work" (mu4e-message-field msg :maildir))))
+                            :vars '((user-mail-address . "sisto@sd.dk")
+                                    (mu4e-trash-folder . "/work/Deleted Items")
+                                    (mu4e-refile-folder . "/work/Archive")
+                                    ;; Exchange does not handle this for us
+                                    (mu4e-sent-messages-behavior . sent)
+                                    (smtpmail-default-smtp-server . "smtp.office365.com")
+                                    (smtpmail-smtp-server . "smtp.office365.com")
+                                    (smtpmail-smtp-service . 587)
+                                    (mu4e-compose-signature . (concat "\n"
+                                                                      "Venlig hilsen\n"
+                                                                      "\n"
+                                                                      "Simon Stoltze\n"
+                                                                      "Developer\n"
+                                                                      "Silkeborg Data A/S"))))))
       ;; Authinfo - open in emacs and add lines for each context, e.g.
       ;; machine <smtp.foo.com> login <mail@address.com> password <secret> port <587>
       (add-to-list 'auth-sources
