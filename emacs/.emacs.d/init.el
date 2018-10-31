@@ -61,9 +61,23 @@
       custom-file                    "~/.emacs.d/custom.el")
 
 ;; Disable various modes
-(dolist (mode '(tool-bar-mode scroll-bar-mode tooltip-mode menu-bar-mode))
+(dolist (mode '(tool-bar-mode
+                scroll-bar-mode
+                tooltip-mode
+                menu-bar-mode))
   (when (fboundp mode)
     (funcall mode -1)))
+
+;; Enable various modes
+(dolist (mode '(show-paren-mode
+                ;; Prettify symbols
+                global-prettify-symbols-mode
+                ;; Font-lock
+                global-font-lock-mode
+                ;; Column in modeline
+                column-number-mode))
+  (when (fboundp mode)
+    (funcall mode 1)))
 
 ;; Make it easier to answer prompts
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -109,7 +123,15 @@
       ring-bell-function 'ignore
 
       ;; Add directory name to buffer if name is not unique
-      uniquify-buffer-name-style 'forward)
+      uniquify-buffer-name-style 'forward
+
+      ;; Prettify symbols
+      prettify-symbols-unprettify-at-point 'right-edge
+
+      ;; Font lock
+      jit-lock-stealth-time   1
+      jit-lock-chunk-size     1000
+      jit-lock-defer-time     0.05)
 
 ;; Weeks start monday
 (setq-default calendar-week-start-day 1
@@ -124,12 +146,7 @@
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-x C-z"))
 
-;; Show matching parens
-(show-paren-mode t)
-
 ;; Prettify symbols
-(global-prettify-symbols-mode 1)
-(setq prettify-symbols-unprettify-at-point 'right-edge)
 ;; C-x 8 RET to find and insert unicode char
 (add-hook 'prog-mode-hook (lambda ()
                             (mapc (lambda (pair)
@@ -150,12 +167,6 @@
 ;; Press 'C-x r j e' to go to init.el
 (set-register ?e '(file . "~/.emacs.d/init.el"))
 
-;; Font lock
-(global-font-lock-mode t)
-(setq jit-lock-stealth-time   1
-      jit-lock-chunk-size     1000
-      jit-lock-defer-time     0.05)
-
 ;; Save history
 (use-package savehist
   :custom
@@ -169,8 +180,6 @@
   (savehist-mode 1))
 
 ;;;; --- Modeline ---
-;; Column in modeline
-(column-number-mode 1)
 
 ;; Time in modeline
 (use-package time
@@ -240,11 +249,49 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "RET")
                 'newline-and-indent)
 
-;; Command for compiling .emacs.d
+;; Command for compiling .emacs.d/
 (defun byte-compile-init-dir ()
   "Byte-compile all your dotfiles."
   (interactive)
   (byte-recompile-directory user-emacs-directory 0))
+
+;;;; --- Frame-setup ---
+;; Set initial frame size and position
+(defun sstoltze/set-normal-frame ()
+  "Standard frame setup."
+  (let* ((width-factor  0.80)
+         (height-factor 0.80)
+         (position-factor 3)
+ 	 (a-width  (* (display-pixel-width)  width-factor))
+         (a-height (* (display-pixel-height) height-factor))
+         (a-left (truncate (/ (- (display-pixel-width)  a-width)  position-factor)))
+ 	 (a-top  (truncate (/ (- (display-pixel-height) a-height) position-factor))))
+    (set-frame-position (selected-frame) a-left a-top)
+    (set-frame-size     (selected-frame) (truncate a-width) (truncate a-height) t)))
+(defun sstoltze/set-left-small-frame ()
+  "Frame on the left."
+  (set-frame-position (selected-frame) 0 0)
+  (set-frame-size     (selected-frame) (truncate (/ (display-pixel-width) 2.2)) (truncate (* (display-pixel-height) 0.9)) t))
+(defun sstoltze/set-right-small-frame ()
+  "Frame on the right."
+  (set-frame-position (selected-frame) -1 0)
+  (set-frame-size     (selected-frame) (truncate (/ (display-pixel-width) 2.2)) (truncate (* (display-pixel-height) 0.9)) t))
+
+;; Frame resizing and theme
+(setq custom-theme-directory "~/.emacs.d/themes/"
+      custom-safe-themes (quote
+                          ("491417843dee886b649cf0dd70c8c86c8bccbbe373239058ba9900b348bad5cf"
+                           default)))
+(cond ((display-graphic-p) ;; Window system
+       (load-theme 'deeper-blue t)
+       (setq frame-resize-pixelwise t)
+       (sstoltze/set-normal-frame))
+      (t ;; Terminal
+       (use-package hc-zenburn-theme
+         :ensure t
+         :config
+         (load-theme 'hc-zenburn t))))
+(set-face-background 'cursor "burlywood")
 
 ;;; *** Packages ***
 
@@ -973,7 +1020,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
       (flycheck-ocaml-setup))))
 
 ;;;; --- EPA ---
-(defun my/setup-epa ()
+(defun sstoltze/setup-epa ()
   "Quick setup for EPA."
   ;; These allow entry of passphrase in emacs
   (setq epa-pinentry-mode 'loopback)
@@ -987,7 +1034,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (twittering-use-master-password t)
   (twittering-icon-mode           t)
   :config
-  (my/setup-epa))
+  (sstoltze/setup-epa))
 
 ;;;; --- Outline ---
 ;; For elisp:
@@ -1000,41 +1047,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :diminish outline-minor-mode
   :bind        (("<C-tab>" . outline-cycle))
   :bind-keymap (("C-z"     . outline-mode-prefix-map)))
-
-;;;; --- Frame-setup ---
-;; Set initial frame size and position
-(defun my/set-normal-frame ()
-  (let* ((width-factor  0.80)
-         (height-factor 0.80)
-         (position-factor 3)
- 	 (a-width  (* (display-pixel-width)  width-factor))
-         (a-height (* (display-pixel-height) height-factor))
-         (a-left (truncate (/ (- (display-pixel-width)  a-width)  position-factor)))
- 	 (a-top  (truncate (/ (- (display-pixel-height) a-height) position-factor))))
-    (set-frame-position (selected-frame) a-left a-top)
-    (set-frame-size     (selected-frame) (truncate a-width) (truncate a-height) t)))
-(defun my/set-left-small-frame ()
-  (set-frame-position (selected-frame) 0 0)
-  (set-frame-size     (selected-frame) (truncate (/ (display-pixel-width) 2.2)) (truncate (* (display-pixel-height) 0.9)) t))
-(defun my/set-right-small-frame ()
-  (set-frame-position (selected-frame) -1 0)
-  (set-frame-size     (selected-frame) (truncate (/ (display-pixel-width) 2.2)) (truncate (* (display-pixel-height) 0.9)) t))
-
-;; Frame resizing and theme
-(setq custom-theme-directory "~/.emacs.d/themes/"
-      custom-safe-themes (quote
-                          ("491417843dee886b649cf0dd70c8c86c8bccbbe373239058ba9900b348bad5cf"
-                           default)))
-(cond ((display-graphic-p) ;; Window system
-       (load-theme 'deeper-blue t)
-       (setq frame-resize-pixelwise t)
-       (my/set-normal-frame))
-      (t ;; Terminal
-       (use-package hc-zenburn-theme
-         :ensure t
-         :config
-         (load-theme 'hc-zenburn t))))
-(set-face-background 'cursor "burlywood")
 
 ;;;; --- System specific ---
 (when (executable-find "fish")
@@ -1069,11 +1081,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                                 (toggle-frame-fullscreen)
                                 (setq *fullscreen-set* t)))
                             (lambda ()
-                              (handle-fullscreen-mode my/set-left-small-frame))
+                              (handle-fullscreen-mode sstoltze/set-left-small-frame))
                             (lambda ()
-                              (handle-fullscreen-mode my/set-right-small-frame))
+                              (handle-fullscreen-mode sstoltze/set-right-small-frame))
                             (lambda ()
-                              (handle-fullscreen-mode my/set-normal-frame))))
+                              (handle-fullscreen-mode sstoltze/set-normal-frame))))
   (defun toggle-window (arg)
     (interactive "P")
     (when arg
@@ -1152,7 +1164,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
       (message-send-mail-function 'smtpmail-send-it)
       (smtpmail-stream-type 'starttls)
       :config
-      (my/setup-epa)
+      (sstoltze/setup-epa)
       ;; Set account-specific details here
       (setq mu4e-contexts (list
                            (make-mu4e-context
