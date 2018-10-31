@@ -56,7 +56,6 @@
 (setq backup-directory-alist         '(("." . "~/.emacs.d/backups/"))
       temporary-file-directory       "~/.emacs.d/temp/"
       auto-save-file-name-transforms '((".*" "~/.emacs.d/autosave/" t))
-      savehist-file                  "~/.emacs.d/savehist"
       ;; This is never loaded
       custom-file                    "~/.emacs.d/custom.el")
 
@@ -176,6 +175,7 @@
   (savehist-additional-variables    '(kill-ring
                                       search-ring
                                       regexp-search-ring))
+  (savehist-file                    "~/.emacs.d/savehist")
   :init
   (savehist-mode 1))
 
@@ -284,6 +284,8 @@ point reaches the beginning or end of the buffer, stop there."
                            default)))
 (cond ((display-graphic-p) ;; Window system
        (load-theme 'deeper-blue t)
+       ;; The default "Yellow" of deeper-blue is not great
+       (set-face-foreground 'warning "goldenrod1")
        (setq frame-resize-pixelwise t)
        (sstoltze/set-normal-frame))
       (t ;; Terminal
@@ -726,8 +728,12 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; This doesn't really work as expected
   ;;(global-set-key (kbd "C-r") 'swiper)
   :bind (("C-s"     . swiper)
+         ;; Find recent files
          ("C-x C-r" . counsel-recentf)
-         ("C-c C-r" . ivy-resume))
+         ;; Resume last ivy completion
+         ("C-c C-r" . ivy-resume)
+         ;; Find file in git repository
+         ("C-c g"   . counsel-git))
   :custom
   ;; Allow "M-x lis-pac" to match "M-x list-packages"
   (ivy-re-builders-alist        '((swiper . ivy--regex-plus)
@@ -759,9 +765,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     :custom
     (ivy-rich-path-style 'abbrev)
     :config
-    (ivy-rich-mode 1)
-    ;; The default "Yellow" of deeper-blue is not great
-    (set-face-foreground 'warning "goldenrod1")))
+    (ivy-rich-mode 1)))
 
 ;;;; --- Multiple cursors ---
 (use-package multiple-cursors
