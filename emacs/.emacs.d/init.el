@@ -9,27 +9,6 @@
 ;;    - https://github.com/jorgenschaefer/Config/blob/master/emacs.el
 
 ;;; Code:
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-enabled-themes (quote (deeper-blue)))
- '(custom-safe-themes
-   (quote
-    ("491417843dee886b649cf0dd70c8c86c8bccbbe373239058ba9900b348bad5cf" default)))
- '(custom-theme-directory "~/.emacs.d/themes/")
- '(doc-view-continuous t)
- '(package-selected-packages
-   (quote
-    (lua-mode ivy-rich avy flx counsel ob-async diminish hc-zenburn-theme outline-magic mu4e-alert haskell-mode auctex rainbow-mode org guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl ob-sql-mode magit io-mode-inf io-mode intero htmlize flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum elpy csv-mode benchmark-init))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-
 ;;; *** General setup ***
 
 ;;;; --- Use-package ---
@@ -52,6 +31,7 @@
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
+(require 'use-package)
 
 ;;;; --- Benchmark init ---
 (use-package benchmark-init
@@ -76,7 +56,9 @@
 (setq backup-directory-alist         '(("." . "~/.emacs.d/backups/"))
       temporary-file-directory       "~/.emacs.d/temp/"
       auto-save-file-name-transforms '((".*" "~/.emacs.d/autosave/" t))
-      savehist-file                  "~/.emacs.d/savehist")
+      savehist-file                  "~/.emacs.d/savehist"
+      ;; This is never loaded
+      custom-file                    "~/.emacs.d/custom.el")
 
 ;; Disable various modes
 (dolist (mode '(tool-bar-mode scroll-bar-mode tooltip-mode menu-bar-mode))
@@ -86,6 +68,10 @@
 ;; Make it easier to answer prompts
 (defalias 'yes-or-no-p 'y-or-n-p)
 
+;; At work?
+(defvar at-work (equal (user-login-name) "sisto"))
+
+;; General variables
 (setq inhibit-startup-screen                t
       initial-scratch-message               nil
       load-prefer-newer                     t
@@ -116,16 +102,14 @@
 
       ;; Personal info
       user-full-name    "Simon Stoltze"
-      user-mail-address (cond ((equal (user-login-name)
-                                      "sisto")          "sisto@sd.dk" )
-                              (t                        "sstoltze@gmail.com"))
+      user-mail-address (cond (at-work "sisto@sd.dk" )
+                              (t       "sstoltze@gmail.com"))
 
       ;; Disable the bell
       ring-bell-function 'ignore
 
       ;; Add directory name to buffer if name is not unique
       uniquify-buffer-name-style 'forward)
-
 
 ;; Weeks start monday
 (setq-default calendar-week-start-day 1
@@ -173,43 +157,51 @@
       jit-lock-defer-time     0.05)
 
 ;; Save history
-(savehist-mode 1)
-(setq history-length                   t
-      history-delete-duplicates        t
-      savehist-save-minibuffer-history 1
-      savehist-additional-variables    '(kill-ring
-                                         search-ring
-                                         regexp-search-ring))
+(use-package savehist
+  :custom
+  (history-length                   t)
+  (history-delete-duplicates        t)
+  (savehist-save-minibuffer-history t)
+  (savehist-additional-variables    '(kill-ring
+                                      search-ring
+                                      regexp-search-ring))
+  :init
+  (savehist-mode 1))
 
 ;;;; --- Modeline ---
 ;; Column in modeline
 (column-number-mode 1)
 
 ;; Time in modeline
-(setq display-time-24hr-format          t
-      display-time-day-and-date         nil
-      display-time-default-load-average nil
-      display-time-use-mail-icon        t)
-(display-time-mode t)
+(use-package time
+  :custom
+  (display-time-24hr-format          t)
+  (display-time-day-and-date         nil)
+  (display-time-default-load-average nil)
+  (display-time-use-mail-icon        t)
+  :init
+  (display-time-mode t))
 
 ;;;; --- Calendar ---
-;; Week number in calendar
-(copy-face font-lock-constant-face 'calendar-iso-week-face)
-(set-face-attribute 'calendar-iso-week-face nil
-                    :height 0.6
-                    :foreground "dim grey")
-(copy-face font-lock-constant-face 'calendar-iso-week-header-face)
-(set-face-attribute 'calendar-iso-week-header-face nil
-                    :height 0.6
-                    :foreground "dark slate grey")
-(setq calendar-intermonth-text '(propertize
-                                 (format "%2d"
-                                         (car
-                                          (calendar-iso-from-absolute
-                                           (calendar-absolute-from-gregorian (list month day year)))))
-                                 'font-lock-face 'calendar-iso-week-face)
-      calendar-intermonth-header (propertize "Wk"
-                                             'font-lock-face 'calendar-iso-week-header-face))
+(use-package calendar
+  :init
+  ;; Week number in calendar
+  (copy-face font-lock-constant-face 'calendar-iso-week-face)
+  (set-face-attribute 'calendar-iso-week-face nil
+                      :height 0.6
+                      :foreground "dim grey")
+  (copy-face font-lock-constant-face 'calendar-iso-week-header-face)
+  (set-face-attribute 'calendar-iso-week-header-face nil
+                      :height 0.6
+                      :foreground "dark slate grey")
+  (setq calendar-intermonth-text '(propertize
+                                   (format "%2d"
+                                           (car
+                                            (calendar-iso-from-absolute
+                                             (calendar-absolute-from-gregorian (list month day year)))))
+                                   'font-lock-face 'calendar-iso-week-face)
+        calendar-intermonth-header (propertize "Wk"
+                                               'font-lock-face 'calendar-iso-week-header-face)))
 
 ;; Make C-x C-x not activate region
 (defun exchange-point-and-mark-no-activate ()
@@ -247,6 +239,12 @@ point reaches the beginning or end of the buffer, stop there."
                 'my/smarter-move-beginning-of-line)
 (global-set-key (kbd "RET")
                 'newline-and-indent)
+
+;; Command for compiling .emacs.d
+(defun byte-compile-init-dir ()
+  "Byte-compile all your dotfiles."
+  (interactive)
+  (byte-recompile-directory user-emacs-directory 0))
 
 ;;; *** Packages ***
 
@@ -316,10 +314,14 @@ point reaches the beginning or end of the buffer, stop there."
                           (eshell/alias "emacs" "find-file $1")
                           (eshell/alias "magit" "magit-status")
                           (eshell/alias "less"  "cat $1")
-                          ;; These last two does not work on windows atm. Probably an issue with the path
-                          (when (eq system-type 'gnu/linux)
-                            (eshell/alias "python" "python3 $*")
-                            (eshell/alias "pip"    "pip3 $*"))
+                          (cond ((or (eq system-type 'gnu/linux)
+                                     (eq system-type 'cygwin))
+                                 (eshell/alias "python" "python3 $*")
+                                 (eshell/alias "pip"    "pip3 $*"))
+                                ((eq system-type 'windows-nt)
+                                 ;; Delete existing aliases
+                                 (eshell/alias "python")
+                                 (eshell/alias "pip")))
                           (local-set-key (kbd "C-c h")
                                          (lambda ()
                                            "Ivy interface to eshell history."
@@ -517,108 +519,117 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          (text-mode . flycheck-mode)))
 
 ;;;; --- Auto-insert ---
-;; Insert into file, but mark unmodified
-(setq auto-insert       'other
-      ;; Do not ask when inserting
-      auto-insert-query nil)
-;; Only do it for org-mode
-(add-hook 'org-mode-hook 'auto-insert)
-(with-eval-after-load 'autoinsert
+(use-package autoinsert
+  ;; Only do it for org-mode
+  :hook ((org-mode . auto-insert))
+  :custom
+  ;; Insert into file, but mark unmodified
+  (auto-insert       'other)
+;; Do not ask when inserting
+  (auto-insert-query nil)
+  :config
   (define-auto-insert '("\\.org\\'" . "Org header")
     '(nil
       "#+AUTHOR: " user-full-name \n
       "#+EMAIL: " user-mail-address \n
       "#+DATE: " (format-time-string "%Y-%m-%d" (current-time)) \n
       "#+OPTIONS: toc:nil title:nil author:nil email:nil date:nil creator:nil" \n
-      "* " )))
+      "* ")))
+;; (add-hook 'org-mode-hook 'auto-insert)
+;; (with-eval-after-load 'autoinsert
+;;   )
 
 ;;;; --- Org ---
-(require 'org-install)
-(define-key global-map "\C-cl" 'org-store-link)
-(define-key global-map "\C-cc" 'org-capture)
-(define-key global-map "\C-cb" 'org-iswitchb)
-(define-key global-map "\C-ca" 'org-agenda)
-(setq org-ellipsis                   "…"
-      org-startup-folded             nil
-      org-startup-indented           t
-      org-startup-with-inline-images t
-      org-export-backends (quote (ascii beamer html icalendar latex md odt)))
-;; Most GTD setup is taken from https://emacs.cafe/emacs/orgmode/gtd/2017/06/30/orgmode-gtd.html
-(let ((default-org-file "~/.emacs.d/org-files/gtd/default.org")   ;; Unsorted items
-      (project-org-file "~/.emacs.d/org-files/gtd/projects.org")  ;; Currently active projects
-      (archive-org-file "~/.emacs.d/org-files/gtd/archive.org")   ;; Projects that are currently waiting for something else
-      (schedule-org-file "~/.emacs.d/org-files/gtd/schedule.org") ;; C-c C-s to schedule. C-c C-d to deadline
-      (journal-org-file "~/.emacs.d/org-files/journal.org"))
-  (dolist (org-file (list default-org-file project-org-file archive-org-file schedule-org-file journal-org-file))
-    (if (not (file-exists-p org-file))
-        (write-region (concat "#+AUTHOR: "
-                              user-full-name
-                              "\n#+EMAIL: "
-                              user-mail-address
-                              "\n#+DATE: "
-                              (format-time-string "%Y-%m-%d" (current-time))
-                              "\n#+OPTIONS: toc:nil title:nil author:nil email:nil date:nil creator:nil\n") ; Start - What to write
-                      nil               ; End - Ignored when start is string
-                      org-file          ; Filename
-                      t                 ; Append
-                      nil               ; Visit
-                      nil               ; Lockname
-                      'excl)))          ; Mustbenew - error if already exists
-  (setq org-capture-templates
-        `(("j" "Note"      entry (file+olp+datetree ,journal-org-file)
-           "* %?"
-           :empty-lines 1)
-          ("t" "TODO"      entry (file+headline ,default-org-file "Unsorted")
-           "* TODO %?\n%U\n%a\n"
-           :clock-in t :clock-resume t
-           :empty-lines 1)
-          ("m" "Meeting"   entry (file ,default-org-file) ;; (lambda () (or (buffer-file-name) ,default-org-file))
-           "* %? - %u :MEETING:\n:ATTENDEES:\nSimon Stoltze\n:END:\n"
-           :clock-in t :clock-resume t
-           :empty-lines 1)
-          ("n" "Next"      entry (file+headline ,default-org-file "Unsorted")
-           "* NEXT %?\n%U\nDEADLINE: %t"
-           :clock-in t :clock-resume t
-           :empty-lines 1)
-          ("s" "Schedule"  entry (file+headline ,schedule-org-file "Schedule")
-           "* %i%?\n%U"
-           :empty-lines 1))
-        org-default-notes-file journal-org-file
-        org-agenda-files (list default-org-file
-                               project-org-file
-                               schedule-org-file
-                               journal-org-file)
-        ;; Possibly change levels here
-        org-refile-targets `((,project-org-file  :maxlevel . 3)
-                             (,schedule-org-file :level    . 1)
-                             (,archive-org-file  :level    . 1)
-                             (,journal-org-file  :maxlevel . 3)))
-  (set-register ?d (cons 'file default-org-file))
-  (set-register ?a (cons 'file archive-org-file))
-  (set-register ?p (cons 'file project-org-file))
-  (set-register ?s (cons 'file schedule-org-file))
-  (set-register ?j (cons 'file journal-org-file)))
-(defun my-org-hook ()
-  "Org mode hook."
-  (setq
-   org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
-                       (sequence "WAITING(w)"))
-   org-time-stamp-custom-formats (quote ("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>"))
-   org-use-fast-todo-selection t
-   ;; Allow editing invisible region if it does that you would expect
-   org-catch-invisible-edits 'smart
-   org-log-done t
-   org-refile-use-outline-path t
-   ;; Targets complete directly with IDO
-   org-outline-path-complete-in-steps nil
-   ;; Allow refile to create parent tasks with confirmation
-   org-refile-allow-creating-parent-nodes (quote confirm)
-   ;; Use the current window for indirect buffer display
-   org-indirect-buffer-display 'current-window
-   ;; Author, email, date of creation, validation link at bottom of exported html
-   org-html-postamble nil
-   org-html-html5-fancy t
-   org-html-doctype "html5")
+(use-package org
+  :hook ((org-mode . (lambda ()
+                        (visual-line-mode 1)
+                        (org-indent-mode  1)))
+         (org-babel-after-execute . org-display-inline-images))
+  :bind (("C-c l" . org-store-link)
+         ("C-c c" . org-capture)
+         ("C-c b" . org-iswitchb)
+         ("C-c a" . org-agenda))
+  :custom
+  (org-ellipsis                   "…")
+  (org-startup-folded             nil)
+  (org-startup-indented           t)
+  (org-startup-with-inline-images t)
+  (org-export-backends            (quote (ascii beamer html icalendar latex md odt)))
+  (org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+                       (sequence "WAITING(w)")))
+  (org-time-stamp-custom-formats (quote ("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>")))
+  (org-use-fast-todo-selection t)
+  ;; Allow editing invisible region if it does that you would expect
+  (org-catch-invisible-edits 'smart)
+  (org-log-done t)
+  (org-refile-use-outline-path t)
+  ;; Targets complete directly with IDO
+  (org-outline-path-complete-in-steps nil)
+  ;; Allow refile to create parent tasks with confirmation
+  (org-refile-allow-creating-parent-nodes (quote confirm))
+  ;; Use the current window for indirect buffer display
+  (org-indirect-buffer-display 'current-window)
+  ;; Author, email, date of creation, validation link at bottom of exported html
+  (org-html-postamble nil)
+  (org-html-html5-fancy t)
+  (org-html-doctype "html5")
+  :init
+  ;; Most GTD setup is taken from https://emacs.cafe/emacs/orgmode/gtd/2017/06/30/orgmode-gtd.html
+  (let ((default-org-file "~/.emacs.d/org-files/gtd/unsorted.org")  ;; Unsorted items
+        (project-org-file "~/.emacs.d/org-files/gtd/projects.org")  ;; Currently active projects
+        (archive-org-file "~/.emacs.d/org-files/gtd/archive.org")   ;; Projects that are currently waiting for something else
+        (schedule-org-file "~/.emacs.d/org-files/gtd/schedule.org") ;; C-c C-s to schedule. C-c C-d to deadline
+        (journal-org-file "~/.emacs.d/org-files/journal.org"))
+    (dolist (org-file (list default-org-file project-org-file archive-org-file schedule-org-file journal-org-file))
+      (if (not (file-exists-p org-file))
+          (write-region (concat "#+AUTHOR: "
+                                user-full-name
+                                "\n#+EMAIL: "
+                                user-mail-address
+                                "\n#+DATE: "
+                                (format-time-string "%Y-%m-%d" (current-time))
+                                "\n#+OPTIONS: toc:nil title:nil author:nil email:nil date:nil creator:nil\n") ; Start - What to write
+                        nil               ; End - Ignored when start is string
+                        org-file          ; Filename
+                        t                 ; Append
+                        nil               ; Visit
+                        nil               ; Lockname
+                        'excl)))          ; Mustbenew - error if already exists
+    (setq org-capture-templates
+          `(("j" "Journal"      entry (file+olp+datetree ,journal-org-file)
+             "* %?"
+             :empty-lines 1)
+            ("t" "TODO"      entry (file+headline ,default-org-file "Unsorted")
+             "* TODO %?\n%U\n%a\n"
+             :clock-in t :clock-resume t
+             :empty-lines 1)
+            ("m" "Meeting"   entry (file ,default-org-file) ;; (lambda () (or (buffer-file-name) ,default-org-file))
+             "* %? - %u :MEETING:\n:ATTENDEES:\nSimon Stoltze\n:END:\n"
+             :clock-in t :clock-resume t
+             :empty-lines 1)
+            ("n" "Next"      entry (file+headline ,default-org-file "Unsorted")
+             "* NEXT %?\n%U\nDEADLINE: %t"
+             :clock-in t :clock-resume t
+             :empty-lines 1)
+            ("s" "Schedule"  entry (file+headline ,schedule-org-file "Schedule")
+             "* %i%?\n%U"
+             :empty-lines 1))
+          org-default-notes-file journal-org-file
+          org-agenda-files (list default-org-file
+                                 project-org-file
+                                 schedule-org-file
+                                 journal-org-file)
+          ;; Possibly change levels here
+          org-refile-targets `((,project-org-file  :maxlevel . 3)
+                               (,schedule-org-file :level    . 1)
+                               (,archive-org-file  :level    . 1)
+                               (,journal-org-file  :maxlevel . 3)))
+    (set-register ?u (cons 'file default-org-file))
+    (set-register ?a (cons 'file archive-org-file))
+    (set-register ?p (cons 'file project-org-file))
+    (set-register ?s (cons 'file schedule-org-file))
+    (set-register ?j (cons 'file journal-org-file)))
+  :config
   ;; Two options for literate programming.
   ;; Usage is as for SRC and EXAMPLE blocks, <pr<TAB> to expand
   (add-to-list 'org-structure-template-alist ;; A property drawer with correct settings for org-babel
@@ -628,9 +639,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (add-to-list 'org-structure-template-alist ;; A source block with silent enabled
                '("ss" "#+BEGIN_SRC ? :results silent\n\n#+END_SRC"))
   ;; At work
-  (when (and (eq system-type 'windows-nt)
-             (file-exists-p "C:/Progra~2/LibreOffice/program/soffice.exe")
-             (equal (user-login-name) "sisto")) ;; Just for work
+  (when (and at-work
+             (eq system-type 'windows-nt)
+             (file-exists-p "C:/Progra~2/LibreOffice/program/soffice.exe"))
     ;; Export to .docx
     (setq org-odt-preferred-output-format "docx"
           org-odt-convert-processes '(("LibreOffice" "C:/Progra~2/LibreOffice/program/soffice.exe --headless --convert-to %f%x --outdir %d %i"))))
@@ -640,8 +651,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     "Exclude todo keywords with a done state from refile targets."
     (not (member (nth 2 (org-heading-components)) org-done-keywords)))
   (setq org-refile-target-verify-function 'bh/verify-refile-target)
-  ;; org babel evaluate
-  (require 'ob)
+  ;; Org babel evaluate
   ;; Make org mode allow eval of some langs
   (org-babel-do-load-languages
    'org-babel-load-languages
@@ -656,13 +666,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (setq org-confirm-babel-evaluate nil
         org-src-fontify-natively   t)
   (when (eq system-type 'gnu/linux)
-    (setq org-babel-python-command "python3"))
-  (add-hook 'org-babel-after-execute-hook
-            'org-display-inline-images))
-(add-hook 'org-mode-hook #'(lambda ()
-                             (visual-line-mode 1)
-                             (org-indent-mode  1)
-                             (my-org-hook)))
+    (setq org-babel-python-command "python3")))
 
 ;;;; --- Counsel / Swiper / Ivy ---
 ;;;;; Counsel pulls in ivy and swiper
@@ -777,6 +781,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
      (output-html "xdg-open")))
   (TeX-PDF-mode nil)
   (TeX-DVI-via-PDFTeX nil)
+  ;; Not sure if this belongs here
+  (doc-view-continuous t)
   :init
   (add-hook 'LaTeX-mode-hook
             'turn-on-auto-fill))
@@ -907,10 +913,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :pin elpy
   :defer t
   :hook ((python-mode . (lambda ()
-                          (if (or (eq system-type 'windows-nt)
-                                  (eq system-type 'ms-dos))
-                              (setq python-shell-completion-native-disabled-interpreters
-                                    '("python")))
+                          (when (eq system-type 'windows-nt)
+                            (setq python-shell-completion-native-disabled-interpreters
+                                  '("python")))
                           (elpy-mode t)))
          (inferior-python-mode . (lambda ()
                                    (setq python-shell-completion-native-disabled-interpreters
@@ -1016,7 +1021,12 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (set-frame-size     (selected-frame) (truncate (/ (display-pixel-width) 2.2)) (truncate (* (display-pixel-height) 0.9)) t))
 
 ;; Frame resizing and theme
+(setq custom-theme-directory "~/.emacs.d/themes/"
+      custom-safe-themes (quote
+                          ("491417843dee886b649cf0dd70c8c86c8bccbbe373239058ba9900b348bad5cf"
+                           default)))
 (cond ((display-graphic-p) ;; Window system
+       (load-theme 'deeper-blue t)
        (setq frame-resize-pixelwise t)
        (my/set-normal-frame))
       (t ;; Terminal
@@ -1024,7 +1034,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          :ensure t
          :config
          (load-theme 'hc-zenburn t))))
-(set-face-background 'cursor           "burlywood")
+(set-face-background 'cursor "burlywood")
 
 ;;;; --- System specific ---
 (when (executable-find "fish")
@@ -1094,18 +1104,12 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                      plink-file))))
 
 ;;;;; --- Work specific ---
-  (when (and (eq system-type 'windows-nt)
-             (equal (user-login-name) "sisto"))
+  (when at-work
     (use-package cobol-mode
       :ensure t
       :defer t
-      :custom
-      (auto-mode-alist
-       (append
-        '(("\\.cob\\'" . cobol-mode)
-          ("\\.cbl\\'" . cobol-mode)
-          ("\\.cpy\\'" . cobol-mode))
-        auto-mode-alist)))))
+      :mode "\\.cbl\\'"
+      :mode "\\.cob\\'")))
 
  ;; --- Linux specific ---
  ((eq system-type 'gnu/linux)
