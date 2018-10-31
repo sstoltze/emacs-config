@@ -929,7 +929,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :custom
   (browse-url-browser-function '((".*youtube.*" . browse-url-default-browser)
                                  (".*github.*"  . browse-url-default-browser)
-                                 ("."           . eww-browser-url)))
+                                 ("."           . eww-browse-url)))
   :init
   (use-package eww-lnum
     :ensure t))
