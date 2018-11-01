@@ -351,7 +351,6 @@ point reaches the beginning or end of the buffer, stop there."
   (use-package dired-x
     :config
     (add-to-list 'dired-omit-extensions ".DS_Store"))
-  (customize-set-variable 'diredp-hide-details-initially-flag nil)
   (use-package dired-aux
     :init
     (use-package dired-async))
