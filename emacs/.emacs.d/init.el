@@ -976,12 +976,13 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :defer t
   :hook ((python-mode . (lambda ()
                           (when (eq system-type 'windows-nt)
-                            (setq python-shell-completion-native-disabled-interpreters
-                                  '("python")))
+                            (add-to-list 'python-shell-completion-native-disabled-interpreters
+                                         "python"))
+                          (when (eq system-type 'gnu/linux)
+                            (add-to-list 'python-shell-completion-native-disabled-interpreters
+                                         "python3"))
                           (elpy-mode t)))
          (inferior-python-mode . (lambda ()
-                                   (setq python-shell-completion-native-disabled-interpreters
-                                         '("python3"))
                                    (python-shell-switch-to-shell))))
   :custom
   (python-indent-guess-indent-offset-verbose nil)
