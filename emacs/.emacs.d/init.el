@@ -48,7 +48,12 @@
 
 ;;;; --- Setup ---
 ;; Setup directories in ~/.emacs.d/
-(dolist (folder '("lisp" "backups" "temp" "autosave" "org-files" "org-files/gtd"))
+(dolist (folder '("lisp"
+                  "backups"
+                  "temp"
+                  "autosave"
+                  "org-files"
+                  "org-files/gtd"))
   (let ((dir (concat "~/.emacs.d/" folder)))
     (if (not (file-directory-p dir))
         (make-directory dir))))
@@ -626,7 +631,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
         (archive-org-file  "~/.emacs.d/org-files/gtd/archive.org")  ;; Projects that are currently waiting for something else
         (schedule-org-file "~/.emacs.d/org-files/gtd/schedule.org") ;; C-c C-s to schedule. C-c C-d to deadline
         (journal-org-file  "~/.emacs.d/org-files/journal.org"))
-    (dolist (org-file (list default-org-file project-org-file archive-org-file schedule-org-file journal-org-file))
+    (dolist (org-file (list default-org-file
+                            project-org-file
+                            archive-org-file
+                            schedule-org-file
+                            journal-org-file))
       (if (not (file-exists-p org-file))
           (write-region (concat "#+AUTHOR: "
                                 user-full-name
