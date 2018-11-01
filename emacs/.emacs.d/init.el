@@ -196,6 +196,7 @@
 
 ;;;; --- Calendar ---
 (use-package calendar
+  :defer t
   :init
   ;; Week number in calendar
   (copy-face font-lock-constant-face 'calendar-iso-week-face)
@@ -550,14 +551,13 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;; http://pub.gajendra.net/src/paredit-refcard.pdf
 (use-package paredit
   :ensure t
-  :config
-  (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
-  (add-hook 'emacs-lisp-mode-hook                  #'enable-paredit-mode)
-  (add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
-  (add-hook 'ielm-mode-hook                        #'enable-paredit-mode)
-  (add-hook 'lisp-mode-hook                        #'enable-paredit-mode)
-  (add-hook 'lisp-interaction-mode-hook            #'enable-paredit-mode)
-  (add-hook 'scheme-mode-hook                      #'enable-paredit-mode))
+  :defer t
+  :hook ((emacs-lisp-mode                  . enable-paredit-mode)
+         (eval-expression-minibuffer-setup . enable-paredit-mode)
+         (ielm-mode                        . enable-paredit-mode)
+         (lisp-mode                        . enable-paredit-mode)
+         (lisp-interaction-mode            . enable-paredit-mode)
+         (scheme-mode                      . enable-paredit-mode)))
 
 ;;;; --- Flycheck ---
 (use-package flycheck
@@ -570,6 +570,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 
 ;;;; --- Auto-insert ---
 (use-package autoinsert
+  :defer t
   ;; Only do it for org-mode
   :hook ((org-mode . auto-insert))
   :custom
@@ -779,6 +780,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;;;; --- Multiple cursors ---
 (use-package multiple-cursors
   :ensure t
+  :defer t
   :bind
   (("C-c m t" . mc/mark-all-like-this)
    ("C-c m m" . mc/mark-all-like-this-dwim)
