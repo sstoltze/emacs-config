@@ -76,8 +76,6 @@
 (dolist (mode '(show-paren-mode
                 ;; Prettify symbols
                 global-prettify-symbols-mode
-                ;; Font-lock
-                global-font-lock-mode
                 ;; Column in modeline
                 column-number-mode))
   (when (fboundp mode)
