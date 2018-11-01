@@ -931,17 +931,18 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package eww
   :ensure t
   :defer t
-  :bind (("C-c w" . eww)
-         :map eww-mode-map
-         ("f"     . eww-lnum-follow)
-         ("F"     . eww-lnum-universal))
+  :bind (("C-c w" . eww))
   :custom
   (browse-url-browser-function '((".*youtube.*" . browse-url-default-browser)
                                  (".*github.*"  . browse-url-default-browser)
                                  ("."           . eww-browse-url)))
-  :init
+  :config
   (use-package eww-lnum
-    :ensure t))
+    :ensure t
+    :defer t
+    :bind (:map eww-mode-map
+                ("f"     . eww-lnum-follow)
+                ("F"     . eww-lnum-universal))))
 
 ;;;; --- Fish ---
 (use-package fish-mode
