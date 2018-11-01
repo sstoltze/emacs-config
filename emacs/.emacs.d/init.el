@@ -381,7 +381,9 @@ point reaches the beginning or end of the buffer, stop there."
                                             (ivy-completing-read "History: "
                                                                  (delete-dups
                                                                   (ring-elements eshell-history-ring))))))
-                          (local-set-key (kbd "C-c C-h") 'eshell-list-history)))
+                          (local-set-key (kbd "C-c C-h") 'eshell-list-history)
+                          ;; Use ivy for completion instead of pcomplete
+                          (local-set-key (kbd "<tab>")   'completion-at-point)))
          ;; Send message when command finishes and buffer is not active
          ;; Alternatively, look at package 'alert'
          (eshell-kill . (lambda (process status)
@@ -733,7 +735,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          ;; Store a view for the current session
          ("C-c v"   . ivy-push-view)
          ;; Remove a stored view
-         ("C-c V"   . ivy-pop-view))
+         ("C-c V"   . ivy-pop-view)
+         ;; Use ivy to complete symbol at point
+         ("C-M-i"   . complete-symbol))
   :custom
   ;; Allow "M-x lis-pac" to match "M-x list-packages"
   (ivy-re-builders-alist        '((swiper . ivy--regex-plus)
