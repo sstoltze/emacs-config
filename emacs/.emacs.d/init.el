@@ -349,7 +349,6 @@ point reaches the beginning or end of the buffer, stop there."
   (dired-ls-F-marks-symlinks           t)
   ;; Auto refresh dired
   (global-auto-revert-non-file-buffers t)
-  ;; (wdired-allow-to-change-permissions  t)
   :config
   (use-package dired-x
     :config
@@ -582,12 +581,13 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; Do not ask when inserting
   (auto-insert-query nil)
   :config
-  (define-auto-insert '("\\.org\\'" . "Org header")
-    '(nil
-      "#+AUTHOR: " user-full-name \n
-      "#+EMAIL: " user-mail-address \n
-      "#+DATE: " (format-time-string "%Y-%m-%d" (current-time)) \n
-      "#+OPTIONS: toc:nil title:nil author:nil email:nil date:nil creator:nil" \n)))
+  (add-to-list 'auto-insert-alist
+               '(("\\.org\\'" . "Org header")
+                nil
+                "#+AUTHOR: " user-full-name n
+                "#+EMAIL: "  user-mail-address n
+                "#+DATE: "   (format-time-string "%Y-%m-%d" (current-time)) n
+                "#+OPTIONS: toc:nil title:nil author:nil email:nil date:nil creator:nil" n)))
 
 ;;;; --- Org ---
 (use-package org
@@ -890,11 +890,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :init
   (use-package intero
     :ensure t
-    :hook ((haskell-mode-hook . intero-mode)))
-  ;; (use-package flycheck-haskell ;; Should be part of intero
-  ;;   :ensure t
-  ;;   :hook ((haskell-mode-hook . flycheck-haskell-setup)))
-  )
+    :hook ((haskell-mode-hook . intero-mode))))
 
 ;;;; --- C/C++ ---
 (defun common-c-hook ()
@@ -902,7 +898,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (c-set-style "bsd")
   (setq c-basic-offset 2
         tab-width 2)
-  ;;(require 'semantic/bovine/gcc)
+  (require 'semantic/bovine/gcc)
   (my-semantic-hook))
 (defun my-cpp-hook ()
   "C++ specific packages."
@@ -930,9 +926,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          ("C-x M-g" . magit-dispatch-popup)) ; Display keybinds for magit
   :custom
   (magit-completing-read-function 'ivy-completing-read)
-  :init
   ;; Remove the startup message about turning on auto-revert
-  (setq magit-no-message (list "Turning on magit-auto-revert-mode...")))
+  (magit-no-message (list "Turning on magit-auto-revert-mode...")))
 
 ;;;; --- Eww ---
 (use-package eww
@@ -1114,8 +1109,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (global-set-key (kbd "M-RET")     'toggle-window)
   (global-set-key (kbd "M-<left>")  '(lambda () (interactive) (toggle-window 1)))
   (global-set-key (kbd "M-<right>") '(lambda () (interactive) (toggle-window 2)))
-  ;; Bound by paredit
-  ;;(global-set-key (kbd "M-<down>") '(lambda () (interactive) (toggle-window 3)))
 
   ;; --- Tramp - Windows ---
   ;; C-x C-f /plink:<user>@host: ENTER
