@@ -584,9 +584,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
       "#+DATE: " (format-time-string "%Y-%m-%d" (current-time)) \n
       "#+OPTIONS: toc:nil title:nil author:nil email:nil date:nil creator:nil" \n
       "* ")))
-;; (add-hook 'org-mode-hook 'auto-insert)
-;; (with-eval-after-load 'autoinsert
-;;   )
 
 ;;;; --- Org ---
 (use-package org
@@ -624,11 +621,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (org-html-doctype "html5")
   :init
   ;; Most GTD setup is taken from https://emacs.cafe/emacs/orgmode/gtd/2017/06/30/orgmode-gtd.html
-  (let ((default-org-file "~/.emacs.d/org-files/gtd/unsorted.org")  ;; Unsorted items
-        (project-org-file "~/.emacs.d/org-files/gtd/projects.org")  ;; Currently active projects
-        (archive-org-file "~/.emacs.d/org-files/gtd/archive.org")   ;; Projects that are currently waiting for something else
+  (let ((default-org-file  "~/.emacs.d/org-files/gtd/unsorted.org") ;; Unsorted items
+        (project-org-file  "~/.emacs.d/org-files/gtd/projects.org") ;; Currently active projects
+        (archive-org-file  "~/.emacs.d/org-files/gtd/archive.org")  ;; Projects that are currently waiting for something else
         (schedule-org-file "~/.emacs.d/org-files/gtd/schedule.org") ;; C-c C-s to schedule. C-c C-d to deadline
-        (journal-org-file "~/.emacs.d/org-files/journal.org"))
+        (journal-org-file  "~/.emacs.d/org-files/journal.org"))
     (dolist (org-file (list default-org-file project-org-file archive-org-file schedule-org-file journal-org-file))
       (if (not (file-exists-p org-file))
           (write-region (concat "#+AUTHOR: "
@@ -725,15 +722,18 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; Always enabled, do not show in mode-line
   :diminish counsel-mode
   :diminish ivy-mode
-  ;; This doesn't really work as expected
-  ;;(global-set-key (kbd "C-r") 'swiper)
-  :bind (("C-s"     . swiper)
+  ;; counsel-grep-or-swiper should be faster on large buffers
+  :bind (("C-s"     . counsel-grep-or-swiper)
          ;; Find recent files
          ("C-x C-r" . counsel-recentf)
          ;; Resume last ivy completion
          ("C-c C-r" . ivy-resume)
          ;; Find file in git repository
-         ("C-c g"   . counsel-git))
+         ("C-c g"   . counsel-git)
+         ;; Store a view for the current session
+         ("C-c v"   . ivy-push-view)
+         ;; Remove a stored view
+         ("C-c V"   . ivy-pop-view))
   :custom
   ;; Allow "M-x lis-pac" to match "M-x list-packages"
   (ivy-re-builders-alist        '((swiper . ivy--regex-plus)
@@ -745,6 +745,16 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; Use ivy while in minibuffer to e.g. insert variable names
   ;; when doing counsel-set-variable
   (enable-recursive-minibuffers t)
+  ;; Recentfs, views and bookmarks in ivy-switch-buffer
+  (ivy-use-virtual-buffers      t)
+  ;; Special views in ivy-switch-buffer
+  ;; Use {} to easily find views in C-x b
+  (ivy-views `(("init.el {}"
+                (file "~/.emacs.d/init.el"))
+               ("gtd {}"
+                (horz
+                 (file "~/.emacs.d/org-files/gtd/unsorted.org")
+                 (file "~/.emacs.d/org-files/gtd/projects.org")))))
   ;; Control whether ./ and ../ shows up in find-file et al
   ;;(ivy-extra-directories nil)
   :init
@@ -1147,9 +1157,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
       (mu4e-maildir "~/.mail")
       ;; gpg-agent is set to use pinentry-qt for a dialog box
       (mu4e-get-mail-command "mbsync -a")
+      ;; Show images in mails
       (mu4e-view-show-images t)
-      ;; Why would I want to leave my message open after I've sent it?
-      (message-kill-buffer-on-exit t)
       ;; Don't keep message buffers around
       (message-kill-buffer-on-exit t)
       ;; Don't ask for a 'context' upon opening mu4e
@@ -1237,6 +1246,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
       ;; Add the new header to headers
       (add-to-list 'mu4e-headers-fields
                    '(:account . 8))
+      ;; Use imagemagick for images, if available
+      (when (fboundp 'imagemagick-register-types)
+        (imagemagick-register-types))
       (use-package mu4e-alert
         :ensure t
         :custom
