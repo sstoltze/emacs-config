@@ -579,7 +579,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :custom
   ;; Insert into file, but mark unmodified
   (auto-insert       'other)
-;; Do not ask when inserting
+  ;; Do not ask when inserting
   (auto-insert-query nil)
   :config
   (define-auto-insert '("\\.org\\'" . "Org header")
@@ -587,8 +587,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
       "#+AUTHOR: " user-full-name \n
       "#+EMAIL: " user-mail-address \n
       "#+DATE: " (format-time-string "%Y-%m-%d" (current-time)) \n
-      "#+OPTIONS: toc:nil title:nil author:nil email:nil date:nil creator:nil" \n
-      "* ")))
+      "#+OPTIONS: toc:nil title:nil author:nil email:nil date:nil creator:nil" \n)))
 
 ;;;; --- Org ---
 (use-package org
@@ -637,19 +636,13 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                             schedule-org-file
                             journal-org-file))
       (if (not (file-exists-p org-file))
-          (write-region (concat "#+AUTHOR: "
-                                user-full-name
-                                "\n#+EMAIL: "
-                                user-mail-address
-                                "\n#+DATE: "
-                                (format-time-string "%Y-%m-%d" (current-time))
-                                "\n#+OPTIONS: toc:nil title:nil author:nil email:nil date:nil creator:nil\n") ; Start - What to write
-                        nil               ; End - Ignored when start is string
-                        org-file          ; Filename
-                        t                 ; Append
-                        nil               ; Visit
-                        nil               ; Lockname
-                        'excl)))          ; Mustbenew - error if already exists
+          (write-region ""       ; Start - What to write - handled with autoinsert
+                        nil      ; End - Ignored when start is string
+                        org-file ; Filename
+                        t        ; Append
+                        nil      ; Visit
+                        nil      ; Lockname
+                        'excl))) ; Mustbenew - error if already exists
     (setq org-capture-templates
           `(("j" "Journal"      entry (file+olp+datetree ,journal-org-file)
              "* %?"
@@ -658,7 +651,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
              "* TODO %?\n%U\n%a\n"
              :clock-in t :clock-resume t
              :empty-lines 1)
-            ("m" "Meeting"   entry (file ,default-org-file) ;; (lambda () (or (buffer-file-name) ,default-org-file))
+            ("m" "Meeting"   entry (file ,default-org-file)
              "* %? - %u :MEETING:\n:ATTENDEES:\nSimon Stoltze\n:END:\n"
              :clock-in t :clock-resume t
              :empty-lines 1)
