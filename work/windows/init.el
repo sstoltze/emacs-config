@@ -272,7 +272,7 @@ point reaches the beginning or end of the buffer, stop there."
 (defun sstoltze/set-normal-frame ()
   "Standard frame setup."
   (let* ((width-factor       0.80)
-         (height-factor      0.80)
+         (height-factor      0.90)
          (position-factor    3)
          (pixels             (sstoltze/get-main-size))
          (main-pixel-width   (nth 0 pixels))
