@@ -261,7 +261,11 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;;;; --- Frame-setup ---
 ;; Set initial frame size and position
-(defun sstoltze/get-main-size ()
+(defvar *sstoltze/position-factor*   0.40)
+(defvar *sstoltze/width-factor*      0.85)
+(defvar *sstoltze/height-factor*     0.90)
+(defvar *sstoltze/half-width-factor* 0.45)
+(defun sstoltze/get-main-monitor-size ()
   "Get pixels for multiple-monitor setup."
   (let* ((monitors          (display-monitor-attributes-list))
          (main-monitor      (car monitors))
@@ -271,40 +275,35 @@ point reaches the beginning or end of the buffer, stop there."
     (list main-pixel-width main-pixel-height)))
 (defun sstoltze/set-normal-frame ()
   "Standard frame setup."
-  (let* ((width-factor       0.80)
-         (height-factor      0.90)
-         (position-factor    3)
-         (pixels             (sstoltze/get-main-size))
+  (let* ((pixels             (sstoltze/get-main-monitor-size))
          (main-pixel-width   (nth 0 pixels))
          (main-pixel-height  (nth 1 pixels))
- 	 (frame-pixel-width  (truncate (* main-pixel-width  width-factor)))
-         (frame-pixel-height (truncate (* main-pixel-height height-factor)))
-         (frame-pixel-left   (truncate (/ (- main-pixel-width  frame-pixel-width)  position-factor)))
- 	 (frame-pixel-top    (truncate (/ (- main-pixel-height frame-pixel-height) position-factor))))
+ 	 (frame-pixel-width  (truncate (* main-pixel-width  *sstoltze/width-factor*)))
+         (frame-pixel-height (truncate (* main-pixel-height *sstoltze/height-factor*)))
+         (frame-pixel-left   (truncate (* (- main-pixel-width  frame-pixel-width)  *sstoltze/position-factor*)))
+ 	 (frame-pixel-top    (truncate (* (- main-pixel-height frame-pixel-height) *sstoltze/position-factor*))))
     (set-frame-position (selected-frame) frame-pixel-left  frame-pixel-top)
     (set-frame-size     (selected-frame) frame-pixel-width frame-pixel-height t)))
 (defun sstoltze/set-left-small-frame ()
   "Frame on the left."
-  (let* ((position-factor    3)
-         (pixels             (sstoltze/get-main-size))
+  (let* ((pixels             (sstoltze/get-main-monitor-size))
          (main-pixel-width   (nth 0 pixels))
          (main-pixel-height  (nth 1 pixels))
-         (frame-pixel-width  (truncate (/ main-pixel-width 2.2)))
-         (frame-pixel-height (truncate (* main-pixel-height 0.9)))
+         (frame-pixel-width  (truncate (* main-pixel-width  *sstoltze/half-width-factor*)))
+         (frame-pixel-height (truncate (* main-pixel-height *sstoltze/height-factor*)))
          (frame-pixel-left   0)
- 	 (frame-pixel-top    (truncate (/ (- main-pixel-height frame-pixel-height) position-factor))))
+ 	 (frame-pixel-top    (truncate (* (- main-pixel-height frame-pixel-height) *sstoltze/position-factor*))))
     (set-frame-position (selected-frame) frame-pixel-left  frame-pixel-top)
     (set-frame-size     (selected-frame) frame-pixel-width frame-pixel-height t)))
 (defun sstoltze/set-right-small-frame ()
   "Frame on the right."
-  (let* ((position-factor    3)
-         (pixels             (sstoltze/get-main-size))
+  (let* ((pixels             (sstoltze/get-main-monitor-size))
          (main-pixel-width   (nth 0 pixels))
          (main-pixel-height  (nth 1 pixels))
-         (frame-pixel-width  (truncate (/ main-pixel-width 2.2)))
-         (frame-pixel-height (truncate (* main-pixel-height 0.9)))
+         (frame-pixel-width  (truncate (* main-pixel-width  *sstoltze/half-width-factor*)))
+         (frame-pixel-height (truncate (* main-pixel-height *sstoltze/height-factor*)))
          (frame-pixel-left   (truncate (- (* main-pixel-width 0.98) frame-pixel-width)))
- 	 (frame-pixel-top    (truncate (/ (- main-pixel-height frame-pixel-height) position-factor))))
+ 	 (frame-pixel-top    (truncate (* (- main-pixel-height frame-pixel-height) *sstoltze/position-factor*))))
     (set-frame-position (selected-frame) frame-pixel-left  frame-pixel-top)
     (set-frame-size     (selected-frame) frame-pixel-width frame-pixel-height t)))
 ;; Frame resizing and theme
@@ -609,17 +608,17 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :config
   (add-to-list 'auto-insert-alist
                '(("\\.org\\'" . "Org header")
-                nil
-                "#+AUTHOR: " user-full-name n
-                "#+EMAIL: "  user-mail-address n
-                "#+DATE: "   (format-time-string "%Y-%m-%d" (current-time)) n
-                "#+OPTIONS: toc:nil title:nil author:nil email:nil date:nil creator:nil" n)))
+                 nil
+                 "#+AUTHOR: " user-full-name n
+                 "#+EMAIL: "  user-mail-address n
+                 "#+DATE: "   (format-time-string "%Y-%m-%d" (current-time)) n
+                 "#+OPTIONS: toc:nil title:nil author:nil email:nil date:nil creator:nil" n)))
 
 ;;;; --- Org ---
 (use-package org
   :hook ((org-mode . (lambda ()
-                        (visual-line-mode 1)
-                        (org-indent-mode  1)))
+                       (visual-line-mode 1)
+                       (org-indent-mode  1)))
          (org-babel-after-execute . org-display-inline-images))
   :bind (("C-c l" . org-store-link)
          ("C-c c" . org-capture)
