@@ -9,27 +9,6 @@
 ;;    - https://github.com/jorgenschaefer/Config/blob/master/emacs.el
 
 ;;; Code:
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-enabled-themes (quote (deeper-blue)))
- '(custom-safe-themes
-   (quote
-    ("491417843dee886b649cf0dd70c8c86c8bccbbe373239058ba9900b348bad5cf" default)))
- '(custom-theme-directory "~/.emacs.d/themes/")
- '(doc-view-continuous t)
- '(package-selected-packages
-   (quote
-    (ivy-rich avy flx counsel ob-async diminish hc-zenburn-theme outline-magic mu4e-alert haskell-mode auctex rainbow-mode org guru-mode multiple-cursors cobol-mode paredit modern-cpp-font-lock visible-mark merlin stan-mode ess flycheck use-package twittering-mode tuareg stan-snippets slime pdf-tools org-babel-eval-in-repl ob-sql-mode magit io-mode-inf io-mode intero htmlize gnugo flycheck-ocaml flycheck-haskell fish-mode fish-completion eww-lnum elpy csv-mode csv benchmark-init))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-
 ;;; *** General setup ***
 
 ;;;; --- Use-package ---
@@ -52,6 +31,7 @@
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
+(require 'use-package)
 
 ;;;; --- Benchmark init ---
 (use-package benchmark-init
@@ -68,7 +48,12 @@
 
 ;;;; --- Setup ---
 ;; Setup directories in ~/.emacs.d/
-(dolist (folder '("lisp" "backups" "temp" "autosave" "org-files" "org-files/gtd"))
+(dolist (folder '("lisp"
+                  "backups"
+                  "temp"
+                  "autosave"
+                  "org-files"
+                  "org-files/gtd"))
   (let ((dir (concat "~/.emacs.d/" folder)))
     (if (not (file-directory-p dir))
         (make-directory dir))))
@@ -76,16 +61,33 @@
 (setq backup-directory-alist         '(("." . "~/.emacs.d/backups/"))
       temporary-file-directory       "~/.emacs.d/temp/"
       auto-save-file-name-transforms '((".*" "~/.emacs.d/autosave/" t))
-      savehist-file                  "~/.emacs.d/savehist")
+      ;; This is never loaded
+      custom-file                    "~/.emacs.d/custom.el")
 
 ;; Disable various modes
-(dolist (mode '(tool-bar-mode scroll-bar-mode tooltip-mode menu-bar-mode))
+(dolist (mode '(tool-bar-mode
+                scroll-bar-mode
+                tooltip-mode
+                menu-bar-mode))
   (when (fboundp mode)
     (funcall mode -1)))
+
+;; Enable various modes
+(dolist (mode '(show-paren-mode
+                ;; Prettify symbols
+                global-prettify-symbols-mode
+                ;; Column in modeline
+                column-number-mode))
+  (when (fboundp mode)
+    (funcall mode 1)))
 
 ;; Make it easier to answer prompts
 (defalias 'yes-or-no-p 'y-or-n-p)
 
+;; At work?
+(defvar at-work (equal (user-login-name) "sisto"))
+
+;; General variables
 (setq inhibit-startup-screen                t
       initial-scratch-message               nil
       load-prefer-newer                     t
@@ -116,16 +118,22 @@
 
       ;; Personal info
       user-full-name    "Simon Stoltze"
-      user-mail-address (cond ((equal (user-login-name)
-                                      "sisto")          "sisto@sd.dk" )
-                              (t                        "sstoltze@gmail.com"))
+      user-mail-address (cond (at-work "sisto@sd.dk" )
+                              (t       "sstoltze@gmail.com"))
 
       ;; Disable the bell
       ring-bell-function 'ignore
 
       ;; Add directory name to buffer if name is not unique
-      uniquify-buffer-name-style 'forward)
+      uniquify-buffer-name-style 'forward
 
+      ;; Prettify symbols
+      prettify-symbols-unprettify-at-point 'right-edge
+
+      ;; Font lock
+      jit-lock-stealth-time   1
+      jit-lock-chunk-size     1000
+      jit-lock-defer-time     0.05)
 
 ;; Weeks start monday
 (setq-default calendar-week-start-day 1
@@ -140,12 +148,7 @@
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-x C-z"))
 
-;; Show matching parens
-(show-paren-mode t)
-
 ;; Prettify symbols
-(global-prettify-symbols-mode 1)
-(setq prettify-symbols-unprettify-at-point 'right-edge)
 ;; C-x 8 RET to find and insert unicode char
 (add-hook 'prog-mode-hook (lambda ()
                             (mapc (lambda (pair)
@@ -166,50 +169,52 @@
 ;; Press 'C-x r j e' to go to init.el
 (set-register ?e '(file . "~/.emacs.d/init.el"))
 
-;; Font lock
-(global-font-lock-mode t)
-(setq jit-lock-stealth-time   1
-      jit-lock-chunk-size     1000
-      jit-lock-defer-time     0.05)
-
 ;; Save history
-(savehist-mode 1)
-(setq history-length                   t
-      history-delete-duplicates        t
-      savehist-save-minibuffer-history 1
-      savehist-additional-variables    '(kill-ring
-                                         search-ring
-                                         regexp-search-ring))
+(use-package savehist
+  :custom
+  (history-length                   t)
+  (history-delete-duplicates        t)
+  (savehist-save-minibuffer-history t)
+  (savehist-additional-variables    '(kill-ring
+                                      search-ring
+                                      regexp-search-ring))
+  (savehist-file                    "~/.emacs.d/savehist")
+  :init
+  (savehist-mode 1))
 
 ;;;; --- Modeline ---
-;; Column in modeline
-(column-number-mode 1)
 
 ;; Time in modeline
-(setq display-time-24hr-format          t
-      display-time-day-and-date         nil
-      display-time-default-load-average nil
-      display-time-use-mail-icon        t)
-(display-time-mode t)
+(use-package time
+  :custom
+  (display-time-24hr-format          t)
+  (display-time-day-and-date         nil)
+  (display-time-default-load-average nil)
+  (display-time-use-mail-icon        t)
+  :init
+  (display-time-mode t))
 
 ;;;; --- Calendar ---
-;; Week number in calendar
-(copy-face font-lock-constant-face 'calendar-iso-week-face)
-(set-face-attribute 'calendar-iso-week-face nil
-                    :height 0.6
-                    :foreground "dim grey")
-(copy-face font-lock-constant-face 'calendar-iso-week-header-face)
-(set-face-attribute 'calendar-iso-week-header-face nil
-                    :height 0.6
-                    :foreground "dark slate grey")
-(setq calendar-intermonth-text '(propertize
-                                 (format "%2d"
-                                         (car
-                                          (calendar-iso-from-absolute
-                                           (calendar-absolute-from-gregorian (list month day year)))))
-                                 'font-lock-face 'calendar-iso-week-face)
-      calendar-intermonth-header (propertize "Wk"
-                                             'font-lock-face 'calendar-iso-week-header-face))
+(use-package calendar
+  :defer t
+  :init
+  ;; Week number in calendar
+  (copy-face font-lock-constant-face 'calendar-iso-week-face)
+  (set-face-attribute 'calendar-iso-week-face nil
+                      :height 0.6
+                      :foreground "dim grey")
+  (copy-face font-lock-constant-face 'calendar-iso-week-header-face)
+  (set-face-attribute 'calendar-iso-week-header-face nil
+                      :height 0.6
+                      :foreground "dark slate grey")
+  (setq calendar-intermonth-text '(propertize
+                                   (format "%2d"
+                                           (car
+                                            (calendar-iso-from-absolute
+                                             (calendar-absolute-from-gregorian (list month day year)))))
+                                   'font-lock-face 'calendar-iso-week-face)
+        calendar-intermonth-header (propertize "Wk"
+                                               'font-lock-face 'calendar-iso-week-header-face)))
 
 ;; Make C-x C-x not activate region
 (defun exchange-point-and-mark-no-activate ()
@@ -248,6 +253,78 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key (kbd "RET")
                 'newline-and-indent)
 
+;; Command for compiling .emacs.d/
+(defun byte-compile-init-dir ()
+  "Byte-compile all your dotfiles."
+  (interactive)
+  (byte-recompile-directory user-emacs-directory 0))
+
+;;;; --- Frame-setup ---
+;; Set initial frame size and position
+(defun sstoltze/get-main-size ()
+  "Get pixels for multiple-monitor setup."
+  (let* ((monitors          (display-monitor-attributes-list))
+         (main-monitor      (car monitors))
+         (main-workarea     (cadr main-monitor))
+         (main-pixel-width  (nth 3 main-workarea))
+         (main-pixel-height (nth 4 main-workarea)))
+    (list main-pixel-width main-pixel-height)))
+(defun sstoltze/set-normal-frame ()
+  "Standard frame setup."
+  (let* ((width-factor       0.80)
+         (height-factor      0.80)
+         (position-factor    3)
+         (pixels             (sstoltze/get-main-size))
+         (main-pixel-width   (nth 0 pixels))
+         (main-pixel-height  (nth 1 pixels))
+ 	 (frame-pixel-width  (truncate (* main-pixel-width  width-factor)))
+         (frame-pixel-height (truncate (* main-pixel-height height-factor)))
+         (frame-pixel-left   (truncate (/ (- main-pixel-width  frame-pixel-width)  position-factor)))
+ 	 (frame-pixel-top    (truncate (/ (- main-pixel-height frame-pixel-height) position-factor))))
+    (set-frame-position (selected-frame) frame-pixel-left  frame-pixel-top)
+    (set-frame-size     (selected-frame) frame-pixel-width frame-pixel-height t)))
+(defun sstoltze/set-left-small-frame ()
+  "Frame on the left."
+  (let* ((position-factor    3)
+         (pixels             (sstoltze/get-main-size))
+         (main-pixel-width   (nth 0 pixels))
+         (main-pixel-height  (nth 1 pixels))
+         (frame-pixel-width  (truncate (/ main-pixel-width 2.2)))
+         (frame-pixel-height (truncate (* main-pixel-height 0.9)))
+         (frame-pixel-left   0)
+ 	 (frame-pixel-top    (truncate (/ (- main-pixel-height frame-pixel-height) position-factor))))
+    (set-frame-position (selected-frame) frame-pixel-left  frame-pixel-top)
+    (set-frame-size     (selected-frame) frame-pixel-width frame-pixel-height t)))
+(defun sstoltze/set-right-small-frame ()
+  "Frame on the right."
+  (let* ((position-factor    3)
+         (pixels             (sstoltze/get-main-size))
+         (main-pixel-width   (nth 0 pixels))
+         (main-pixel-height  (nth 1 pixels))
+         (frame-pixel-width  (truncate (/ main-pixel-width 2.2)))
+         (frame-pixel-height (truncate (* main-pixel-height 0.9)))
+         (frame-pixel-left   (truncate (- (* main-pixel-width 0.98) frame-pixel-width)))
+ 	 (frame-pixel-top    (truncate (/ (- main-pixel-height frame-pixel-height) position-factor))))
+    (set-frame-position (selected-frame) frame-pixel-left  frame-pixel-top)
+    (set-frame-size     (selected-frame) frame-pixel-width frame-pixel-height t)))
+;; Frame resizing and theme
+(setq custom-theme-directory "~/.emacs.d/themes/"
+      custom-safe-themes (quote
+                          ("491417843dee886b649cf0dd70c8c86c8bccbbe373239058ba9900b348bad5cf"
+                           default)))
+(cond ((display-graphic-p) ;; Window system
+       (load-theme 'deeper-blue t)
+       ;; The default "Yellow" of deeper-blue is not great
+       (set-face-foreground 'warning "goldenrod1")
+       (setq frame-resize-pixelwise t)
+       (sstoltze/set-normal-frame))
+      (t ;; Terminal
+       (use-package hc-zenburn-theme
+         :ensure t
+         :config
+         (load-theme 'hc-zenburn t))))
+(set-face-background 'cursor "burlywood")
+
 ;;; *** Packages ***
 
 ;;;; --- Diminish ---
@@ -258,7 +335,10 @@ point reaches the beginning or end of the buffer, stop there."
 ;;;; --- Visible mark ---
 (use-package visible-mark
   :ensure t
+  :custom
+  (visible-mark-max 1)
   :init
+  ;; Set face for mark
   ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Face-Attributes.html
   (defface visible-mark-active
     '((((type graphic))        ;; Graphics support
@@ -267,7 +347,6 @@ point reaches the beginning or end of the buffer, stop there."
        (:inverse-video t)))    ;;
     "Style for visible mark"
     :group 'visible-mark-group)
-  (setq visible-mark-max    1)
   (setq visible-mark-faces  '(visible-mark-active
                               visible-mark-active))
   (global-visible-mark-mode 1))
@@ -277,46 +356,49 @@ point reaches the beginning or end of the buffer, stop there."
   :ensure t
   ;; Always enabled, do not show in mode-line
   :diminish guru-mode
+  :custom
+  (guru-warn-only t)
   :init
-  (setq guru-warn-only t)
   (guru-global-mode 1))
 
 ;;;; --- Dired ---
 (use-package dired
   :bind (("C-x C-j"  . dired-jump))
   :hook ((dired-mode . hl-line-mode))
+  :custom
+  (ls-lisp-dirs-first                  t)
+  (dired-recursive-copies              'always)
+  (dired-recursive-deletes             'always)
+  (dired-dwim-target                   t)
+  ;; -F marks links with @
+  (dired-ls-F-marks-symlinks           t)
+  ;; Auto refresh dired
+  (global-auto-revert-non-file-buffers t)
   :config
   (use-package dired-x
     :config
     (add-to-list 'dired-omit-extensions ".DS_Store"))
-  (customize-set-variable 'diredp-hide-details-initially-flag nil)
   (use-package dired-aux
     :init
     (use-package dired-async))
-  (put 'dired-find-alternate-file 'disabled nil)
-  (setq ls-lisp-dirs-first                  t
-        dired-recursive-copies              'always
-        dired-recursive-deletes             'always
-        dired-dwim-target                   t
-        ;; -F marks links with @
-        dired-ls-F-marks-symlinks           t
-        delete-by-moving-to-trash           t
-        ;; Auto refresh dired
-        global-auto-revert-non-file-buffers t
-        wdired-allow-to-change-permissions  t))
+  (put 'dired-find-alternate-file 'disabled nil))
 
 ;;;; --- Eshell ---
 (use-package eshell
   :bind (("C-c e" . eshell))
   :hook ((eshell-mode . (lambda ()
                           (eshell-smart-initialize)
-                          (eshell/alias "emacs"  "find-file $1")
-                          (eshell/alias "magit"  "magit-status")
-                          (eshell/alias "less"   "cat $1")
-                          ;; These last two does not work on windows atm. Probably an issue with the path
-                          (when (eq system-type 'gnu/linux)
-                            (eshell/alias "python" "python3 $*")
-                            (eshell/alias "pip"    "pip3 $*"))
+                          (eshell/alias "emacs" "find-file $1")
+                          (eshell/alias "magit" "magit-status")
+                          (eshell/alias "less"  "cat $1")
+                          (cond ((or (eq system-type 'gnu/linux)
+                                     (eq system-type 'cygwin))
+                                 (eshell/alias "python" "python3 $*")
+                                 (eshell/alias "pip"    "pip3 $*"))
+                                ((eq system-type 'windows-nt)
+                                 ;; Delete existing aliases
+                                 (eshell/alias "python")
+                                 (eshell/alias "pip")))
                           (local-set-key (kbd "C-c h")
                                          (lambda ()
                                            "Ivy interface to eshell history."
@@ -325,7 +407,9 @@ point reaches the beginning or end of the buffer, stop there."
                                             (ivy-completing-read "History: "
                                                                  (delete-dups
                                                                   (ring-elements eshell-history-ring))))))
-                          (local-set-key (kbd "C-c C-h") 'eshell-list-history)))
+                          (local-set-key (kbd "C-c C-h") 'eshell-list-history)
+                          ;; Use ivy for completion instead of pcomplete
+                          (local-set-key (kbd "<tab>")   'completion-at-point)))
          ;; Send message when command finishes and buffer is not active
          ;; Alternatively, look at package 'alert'
          (eshell-kill . (lambda (process status)
@@ -340,6 +424,49 @@ point reaches the beginning or end of the buffer, stop there."
                                          ;; Replace final newline with nothing
                                          (replace-regexp-in-string "\n\\'" ""
                                                                    status)))))))
+  :custom
+  (eshell-ls-use-colors                    t)
+  ;; History
+  (eshell-save-history-on-exit             t)
+  (eshell-history-size                     256000)
+  (eshell-hist-ignoredups                  t)
+  ;; Globbing
+  (eshell-glob-case-insensitive            t)
+  (eshell-error-if-no-glob                 t)
+  ;; Completion
+  (eshell-cmpl-cycle-completions           nil)
+  (eshell-cmpl-ignore-case                 t)
+  ;; Remain at start of command after enter
+  (eshell-where-to-jump                    'begin)
+  (eshell-review-quick-commands            nil)
+  ;; Close buffer on exit
+  (eshell-destroy-buffer-when-process-dies t)
+  ;; Scrolling
+  (eshell-scroll-to-bottom-on-input        nil)
+  (ehsell-scroll-to-bottom-on-output       nil)
+  (eshell-scroll-show-maximum-output       t)
+  (eshell-smart-space-goes-to-end          t)
+  (eshell-banner-message "")
+  (eshell-prompt-function
+   (lambda ()
+     (let ((standard-colour "light goldenrod")
+           (time-colour     "gray")
+           (user-colour     "light sky blue"))
+       (concat (propertize (format-time-string "%H:%M"
+                                               (current-time))
+                           'face (list :foreground time-colour))
+               " "
+               (propertize (user-login-name)
+                           'face (list :foreground user-colour))
+               " "
+               (propertize (fish-path (eshell/pwd) 20)
+                           'face (list :foreground standard-colour))
+               (sstoltze/make-vc-prompt)
+               (propertize " >"
+                           'face (list :foreground standard-colour))
+               ;; This resets text properties
+               " "))))
+  (eshell-prompt-regexp "^[0-9]\\{1,2\\}:[0-9]\\{2\\} .+ .+ > ")
   :config
   (require 'em-smart)
   (require 'esh-module)
@@ -352,53 +479,10 @@ point reaches the beginning or end of the buffer, stop there."
                    (setq password-cache t
                          ;; time in seconds
                          password-cache-expiry 600))))
-  (setq eshell-ls-use-colors                    t
-        ;; History
-        eshell-save-history-on-exit             t
-        eshell-history-size                     256000
-        eshell-hist-ignoredups                  t
-        ;; Globbing
-        eshell-glob-case-insensitive            t
-        eshell-error-if-no-glob                 t
-        ;; Completion
-        eshell-cmpl-cycle-completions           nil
-        eshell-cmpl-ignore-case                 t
-        ;; Remain at start of command after enter
-        eshell-where-to-jump                    'begin
-        eshell-review-quick-commands            nil
-        ;; Close buffer on exit
-        eshell-destroy-buffer-when-process-dies t
-        ;; Scrolling
-        eshell-scroll-to-bottom-on-input        nil
-        ehsell-scroll-to-bottom-on-output       nil
-        eshell-scroll-show-maximum-output       t
-        eshell-smart-space-goes-to-end          t
-        eshell-banner-message ""
-        eshell-prompt-function
-        (lambda ()
-          (let ((standard-colour "light goldenrod")
-                (time-colour     "gray")
-                (user-colour     "light sky blue"))
-            (concat (propertize (format-time-string "%H:%M"
-                                                    (current-time))
-                                'face (list :foreground time-colour))
-                    " "
-                    (propertize (user-login-name)
-                                'face (list :foreground user-colour))
-                    " "
-                    (propertize (fish-path (eshell/pwd) 20)
-                                'face (list :foreground standard-colour))
-                    (sstoltze/make-vc-prompt)
-                    (propertize " >"
-                                'face (list :foreground standard-colour))
-                    ;; This resets text properties
-                    " ")))
-        eshell-prompt-regexp "^[0-9]\\{1,2\\}:[0-9]\\{2\\} .+ .+ > "))
-
-;; Could consider making the colours parameters to be
-;; able to change them when calling in eshell-prompt-function
-(defun sstoltze/make-vc-prompt ()
-  "Small helper for eshell-prompt-function.
+  ;; Could consider making the colours parameters to be
+  ;; able to change them when calling in eshell-prompt-function
+  (defun sstoltze/make-vc-prompt ()
+    "Small helper for eshell-prompt-function.
 If includes git branch-name if magit is loaded
 and tries to emulate the fish git prompt.
 
@@ -407,103 +491,101 @@ Can be replaced with:
                            (vc-responsible-backend
                             default-directory)))
     \"\")"
-  (let ((standard-colour  "pale goldenrod")
-        (untracked-colour "red")
-        (unstaged-colour  "yellow green")
-        (staged-colour    "royal blue")
-        (vc-response (or (ignore-errors (format "%s"
-                                                (vc-responsible-backend
-                                                 default-directory)))
-                         "")))
-    (cond ((equal vc-response "Git")
-           (let ((branch    (or (ignore-errors
-                                  (magit-get-current-branch))
-                                "Git"))
-                 (untracked (or (ignore-errors
-                                  (length (magit-untracked-files)))
-                                0))
-                 (unstaged  (or (ignore-errors
-                                  (length (magit-unstaged-files)))
-                                0))
-                 (staged    (or (ignore-errors
-                                  (length (magit-staged-files)))
-                                0)))
-             (concat (propertize " ("
-                                 'face (list :foreground
-                                             standard-colour))
-                     (propertize branch
-                                 'face (list :foreground
-                                             standard-colour))
-                     (propertize (if (> (+ untracked unstaged staged) 0)
-                                     "|"
-                                   (if (equal branch "Git")
-                                       ""
-                                     "|✔"))
-                                 'face (list :foreground
-                                             standard-colour))
-                     (propertize (if (> untracked 0)
-                                     (format "…%s" untracked)
-                                   "")
-                                 'face (list :foreground
-                                             untracked-colour))
-                     (propertize (if (> unstaged 0)
-                                     (format "+%s" unstaged)
-                                   "")
-                                 'face (list :foreground
-                                             unstaged-colour))
-                     (propertize (if (> staged 0)
-                                     (format "→%s" staged)
-                                   "")
-                                 'face (list :foreground
-                                             staged-colour))
-                     (propertize ")"
-                                 'face (list :foreground
-                                             standard-colour)))))
-          ((equal vc-response "")
-           (propertize  ""
-                        'face (list :foreground
-                                    standard-colour)))
-          (t
-           (propertize (format " (%s)" vc-response)
-                       'face (list :foreground
-                                   standard-colour))))))
-
-(defun fish-path (path max-len)
-  "Return a potentially trimmed-down version of the directory PATH, replacing
+    (let ((standard-colour  "pale goldenrod")
+          (untracked-colour "red")
+          (unstaged-colour  "yellow green")
+          (staged-colour    "royal blue")
+          (vc-response (or (ignore-errors (format "%s"
+                                                  (vc-responsible-backend
+                                                   default-directory)))
+                           "")))
+      (cond ((equal vc-response "Git")
+             (let ((branch    (or (ignore-errors
+                                    (magit-get-current-branch))
+                                  "Git"))
+                   (untracked (or (ignore-errors
+                                    (length (magit-untracked-files)))
+                                  0))
+                   (unstaged  (or (ignore-errors
+                                    (length (magit-unstaged-files)))
+                                  0))
+                   (staged    (or (ignore-errors
+                                    (length (magit-staged-files)))
+                                  0)))
+               (concat (propertize " ("
+                                   'face (list :foreground
+                                               standard-colour))
+                       (propertize branch
+                                   'face (list :foreground
+                                               standard-colour))
+                       (propertize (if (> (+ untracked unstaged staged) 0)
+                                       "|"
+                                     (if (equal branch "Git")
+                                         ""
+                                       "|✔"))
+                                   'face (list :foreground
+                                               standard-colour))
+                       (propertize (if (> untracked 0)
+                                       (format "…%s" untracked)
+                                     "")
+                                   'face (list :foreground
+                                               untracked-colour))
+                       (propertize (if (> unstaged 0)
+                                       (format "+%s" unstaged)
+                                     "")
+                                   'face (list :foreground
+                                               unstaged-colour))
+                       (propertize (if (> staged 0)
+                                       (format "→%s" staged)
+                                     "")
+                                   'face (list :foreground
+                                               staged-colour))
+                       (propertize ")"
+                                   'face (list :foreground
+                                               standard-colour)))))
+            ((equal vc-response "")
+             (propertize  ""
+                          'face (list :foreground
+                                      standard-colour)))
+            (t
+             (propertize (format " (%s)" vc-response)
+                         'face (list :foreground
+                                     standard-colour))))))
+  (defun fish-path (path max-len)
+    "Return a potentially trimmed-down version of the directory PATH, replacing
 parent directories with their initial characters to try to get the character
 length of PATH (sans directory slashes) down to MAX-LEN."
-  (let* ((components (split-string (abbreviate-file-name path) "/"))
-         (len (+ (1- (length components))
-                 (seq-reduce '+ (mapcar 'length components) 0)))
-         (str ""))
-    (while (and (> len max-len)
-                (cdr components))
-      (setq str (concat str
-                        (cond ((= 0 (length (car components))) "/")
-                              ((= 1 (length (car components)))
-                               (concat (car components) "/"))
-                              (t
-                               (if (string= "."
-                                            (string (elt (car components) 0)))
-                                   (concat (substring (car components) 0 2)
-                                           "/")
-                                 (string (elt (car components) 0) ?/)))))
-            len (- len (1- (length (car components))))
-            components (cdr components)))
-    (concat str (seq-reduce (lambda (a b) (concat a "/" b)) (cdr components) (car components)))))
+    (let* ((components (split-string (abbreviate-file-name path) "/"))
+           (len (+ (1- (length components))
+                   (seq-reduce '+ (mapcar 'length components) 0)))
+           (str ""))
+      (while (and (> len max-len)
+                  (cdr components))
+        (setq str (concat str
+                          (cond ((= 0 (length (car components))) "/")
+                                ((= 1 (length (car components)))
+                                 (concat (car components) "/"))
+                                (t
+                                 (if (string= "."
+                                              (string (elt (car components) 0)))
+                                     (concat (substring (car components) 0 2)
+                                             "/")
+                                   (string (elt (car components) 0) ?/)))))
+              len (- len (1- (length (car components))))
+              components (cdr components)))
+      (concat str (seq-reduce (lambda (a b) (concat a "/" b)) (cdr components) (car components))))))
 
 ;;;; --- Paredit ---
 ;; http://pub.gajendra.net/src/paredit-refcard.pdf
 (use-package paredit
   :ensure t
-  :config
-  (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
-  (add-hook 'emacs-lisp-mode-hook                  #'enable-paredit-mode)
-  (add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
-  (add-hook 'ielm-mode-hook                        #'enable-paredit-mode)
-  (add-hook 'lisp-mode-hook                        #'enable-paredit-mode)
-  (add-hook 'lisp-interaction-mode-hook            #'enable-paredit-mode)
-  (add-hook 'scheme-mode-hook                      #'enable-paredit-mode))
+  :defer t
+  :hook ((emacs-lisp-mode                  . enable-paredit-mode)
+         (eval-expression-minibuffer-setup . enable-paredit-mode)
+         (ielm-mode                        . enable-paredit-mode)
+         (lisp-mode                        . enable-paredit-mode)
+         (lisp-interaction-mode            . enable-paredit-mode)
+         (scheme-mode                      . enable-paredit-mode)))
 
 ;;;; --- Flycheck ---
 (use-package flycheck
@@ -515,108 +597,113 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          (text-mode . flycheck-mode)))
 
 ;;;; --- Auto-insert ---
-;; Insert into file, but mark unmodified
-(setq auto-insert       'other
-      ;; Do not ask when inserting
-      auto-insert-query nil)
-;; Only do it for org-mode
-(add-hook 'org-mode-hook 'auto-insert)
-(with-eval-after-load 'autoinsert
-  (define-auto-insert '("\\.org\\'" . "Org header")
-    '(nil
-      "#+AUTHOR: " user-full-name \n
-      "#+EMAIL: " user-mail-address \n
-      "#+DATE: " (format-time-string "%Y-%m-%d" (current-time)) \n
-      "#+OPTIONS: toc:nil title:nil author:nil email:nil date:nil creator:nil" \n
-      "* " )))
+(use-package autoinsert
+  :defer t
+  ;; Only do it for org-mode
+  :hook ((org-mode . auto-insert))
+  :custom
+  ;; Insert into file, but mark unmodified
+  (auto-insert       'other)
+  ;; Do not ask when inserting
+  (auto-insert-query nil)
+  :config
+  (add-to-list 'auto-insert-alist
+               '(("\\.org\\'" . "Org header")
+                nil
+                "#+AUTHOR: " user-full-name n
+                "#+EMAIL: "  user-mail-address n
+                "#+DATE: "   (format-time-string "%Y-%m-%d" (current-time)) n
+                "#+OPTIONS: toc:nil title:nil author:nil email:nil date:nil creator:nil" n)))
 
 ;;;; --- Org ---
-(require 'org-install)
-(define-key global-map "\C-cl" 'org-store-link)
-(define-key global-map "\C-cc" 'org-capture)
-(define-key global-map "\C-cb" 'org-iswitchb)
-(define-key global-map "\C-ca" 'org-agenda)
-(setq org-ellipsis                   "…"
-      org-startup-folded             nil
-      org-startup-indented           t
-      org-startup-with-inline-images t
-      org-export-backends (quote (ascii beamer html icalendar latex md odt)))
-;; Most GTD setup is taken from https://emacs.cafe/emacs/orgmode/gtd/2017/06/30/orgmode-gtd.html
-(let ((default-org-file "~/.emacs.d/org-files/gtd/default.org")   ;; Unsorted items
-      (project-org-file "~/.emacs.d/org-files/gtd/projects.org")  ;; Currently active projects
-      (archive-org-file "~/.emacs.d/org-files/gtd/archive.org")   ;; Projects that are currently waiting for something else
-      (schedule-org-file "~/.emacs.d/org-files/gtd/schedule.org") ;; C-c C-s to schedule. C-c C-d to deadline
-      (journal-org-file "~/.emacs.d/org-files/journal.org"))
-  (dolist (org-file (list default-org-file project-org-file archive-org-file schedule-org-file journal-org-file))
-    (if (not (file-exists-p org-file))
-        (write-region (concat "#+AUTHOR: "
-                              user-full-name
-                              "\n#+EMAIL: "
-                              user-mail-address
-                              "\n#+DATE: "
-                              (format-time-string "%Y-%m-%d" (current-time))
-                              "\n#+OPTIONS: toc:nil title:nil author:nil email:nil date:nil creator:nil\n") ; Start - What to write
-                      nil               ; End - Ignored when start is string
-                      org-file          ; Filename
-                      t                 ; Append
-                      nil               ; Visit
-                      nil               ; Lockname
-                      'excl)))          ; Mustbenew - error if already exists
-  (setq org-capture-templates
-        `(("j" "Note"      entry (file+olp+datetree ,journal-org-file)
-           "* %?"
-           :empty-lines 1)
-          ("t" "TODO"      entry (file+headline ,default-org-file "Unsorted")
-           "* TODO %?\n%U\n%a\n"
-           :clock-in t :clock-resume t
-           :empty-lines 1)
-          ("m" "Meeting"   entry (file ,default-org-file) ;; (lambda () (or (buffer-file-name) ,default-org-file))
-           "* %? - %u :MEETING:\n:ATTENDEES:\nSimon Stoltze\n:END:\n"
-           :clock-in t :clock-resume t
-           :empty-lines 1)
-          ("n" "Next"      entry (file+headline ,default-org-file "Unsorted")
-           "* NEXT %?\n%U\nDEADLINE: %t"
-           :clock-in t :clock-resume t
-           :empty-lines 1)
-          ("s" "Schedule"  entry (file+headline ,schedule-org-file "Schedule")
-           "* %i%?\n%U"
-           :empty-lines 1))
-        org-default-notes-file journal-org-file
-        org-agenda-files (list default-org-file
-                               project-org-file
-                               schedule-org-file
-                               journal-org-file)
-        ;; Possibly change levels here
-        org-refile-targets `((,project-org-file  :maxlevel . 3)
-                             (,schedule-org-file :level    . 1)
-                             (,archive-org-file  :level    . 1)
-                             (,journal-org-file  :maxlevel . 3)))
-  (set-register ?d (cons 'file default-org-file))
-  (set-register ?a (cons 'file archive-org-file))
-  (set-register ?p (cons 'file project-org-file))
-  (set-register ?s (cons 'file schedule-org-file))
-  (set-register ?j (cons 'file journal-org-file)))
-(defun my-org-hook ()
-  "Org mode hook."
-  (setq
-   org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
-                       (sequence "WAITING(w)"))
-   org-time-stamp-custom-formats (quote ("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>"))
-   org-use-fast-todo-selection t
-   ;; Allow editing invisible region if it does that you would expect
-   org-catch-invisible-edits 'smart
-   org-log-done t
-   org-refile-use-outline-path t
-   ;; Targets complete directly with IDO
-   org-outline-path-complete-in-steps nil
-   ;; Allow refile to create parent tasks with confirmation
-   org-refile-allow-creating-parent-nodes (quote confirm)
-   ;; Use the current window for indirect buffer display
-   org-indirect-buffer-display 'current-window
-   ;; Author, email, date of creation, validation link at bottom of exported html
-   org-html-postamble nil
-   org-html-html5-fancy t
-   org-html-doctype "html5")
+(use-package org
+  :hook ((org-mode . (lambda ()
+                        (visual-line-mode 1)
+                        (org-indent-mode  1)))
+         (org-babel-after-execute . org-display-inline-images))
+  :bind (("C-c l" . org-store-link)
+         ("C-c c" . org-capture)
+         ("C-c b" . org-iswitchb)
+         ("C-c a" . org-agenda))
+  :custom
+  (org-ellipsis                   "…")
+  (org-startup-folded             nil)
+  (org-startup-indented           t)
+  (org-startup-with-inline-images t)
+  (org-export-backends            (quote (ascii beamer html icalendar latex md odt)))
+  (org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+                       (sequence "WAITING(w)")))
+  (org-time-stamp-custom-formats (quote ("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>")))
+  (org-use-fast-todo-selection t)
+  ;; Allow editing invisible region if it does that you would expect
+  (org-catch-invisible-edits 'smart)
+  (org-log-done t)
+  (org-refile-use-outline-path t)
+  ;; Targets complete directly with IDO
+  (org-outline-path-complete-in-steps nil)
+  ;; Allow refile to create parent tasks with confirmation
+  (org-refile-allow-creating-parent-nodes (quote confirm))
+  ;; Use the current window for indirect buffer display
+  (org-indirect-buffer-display 'current-window)
+  ;; Author, email, date of creation, validation link at bottom of exported html
+  (org-html-postamble nil)
+  (org-html-html5-fancy t)
+  (org-html-doctype "html5")
+  :init
+  ;; Most GTD setup is taken from https://emacs.cafe/emacs/orgmode/gtd/2017/06/30/orgmode-gtd.html
+  (let ((default-org-file  "~/.emacs.d/org-files/gtd/unsorted.org") ;; Unsorted items
+        (project-org-file  "~/.emacs.d/org-files/gtd/projects.org") ;; Currently active projects
+        (archive-org-file  "~/.emacs.d/org-files/gtd/archive.org")  ;; Projects that are currently waiting for something else
+        (schedule-org-file "~/.emacs.d/org-files/gtd/schedule.org") ;; C-c C-s to schedule. C-c C-d to deadline
+        (journal-org-file  "~/.emacs.d/org-files/journal.org"))
+    (dolist (org-file (list default-org-file
+                            project-org-file
+                            archive-org-file
+                            schedule-org-file
+                            journal-org-file))
+      (if (not (file-exists-p org-file))
+          (write-region ""       ; Start - What to write - handled with autoinsert
+                        nil      ; End - Ignored when start is string
+                        org-file ; Filename
+                        t        ; Append
+                        nil      ; Visit
+                        nil      ; Lockname
+                        'excl))) ; Mustbenew - error if already exists
+    (setq org-capture-templates
+          `(("j" "Journal"      entry (file+olp+datetree ,journal-org-file)
+             "* %?"
+             :empty-lines 1)
+            ("t" "TODO"      entry (file+headline ,default-org-file "Unsorted")
+             "* TODO %?\n%U\n%a\n"
+             :clock-in t :clock-resume t
+             :empty-lines 1)
+            ("m" "Meeting"   entry (file ,default-org-file)
+             "* %? - %u :MEETING:\n:ATTENDEES:\nSimon Stoltze\n:END:\n"
+             :clock-in t :clock-resume t
+             :empty-lines 1)
+            ("n" "Next"      entry (file+headline ,default-org-file "Unsorted")
+             "* NEXT %?\n%U\nDEADLINE: %t"
+             :clock-in t :clock-resume t
+             :empty-lines 1)
+            ("s" "Schedule"  entry (file+headline ,schedule-org-file "Schedule")
+             "* %i%?\n%U"
+             :empty-lines 1))
+          org-default-notes-file journal-org-file
+          org-agenda-files (list default-org-file
+                                 project-org-file
+                                 schedule-org-file
+                                 journal-org-file)
+          ;; Possibly change levels here
+          org-refile-targets `((,project-org-file  :maxlevel . 3)
+                               (,schedule-org-file :level    . 1)
+                               (,archive-org-file  :level    . 1)
+                               (,journal-org-file  :maxlevel . 3)))
+    (set-register ?u (cons 'file default-org-file))
+    (set-register ?a (cons 'file archive-org-file))
+    (set-register ?p (cons 'file project-org-file))
+    (set-register ?s (cons 'file schedule-org-file))
+    (set-register ?j (cons 'file journal-org-file)))
+  :config
   ;; Two options for literate programming.
   ;; Usage is as for SRC and EXAMPLE blocks, <pr<TAB> to expand
   (add-to-list 'org-structure-template-alist ;; A property drawer with correct settings for org-babel
@@ -626,9 +713,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (add-to-list 'org-structure-template-alist ;; A source block with silent enabled
                '("ss" "#+BEGIN_SRC ? :results silent\n\n#+END_SRC"))
   ;; At work
-  (when (and (eq system-type 'windows-nt)
-             (file-exists-p "C:/Progra~2/LibreOffice/program/soffice.exe")
-             (equal (user-login-name) "sisto")) ;; Just for work
+  (when (and at-work
+             (eq system-type 'windows-nt)
+             (file-exists-p "C:/Progra~2/LibreOffice/program/soffice.exe"))
     ;; Export to .docx
     (setq org-odt-preferred-output-format "docx"
           org-odt-convert-processes '(("LibreOffice" "C:/Progra~2/LibreOffice/program/soffice.exe --headless --convert-to %f%x --outdir %d %i"))))
@@ -638,10 +725,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     "Exclude todo keywords with a done state from refile targets."
     (not (member (nth 2 (org-heading-components)) org-done-keywords)))
   (setq org-refile-target-verify-function 'bh/verify-refile-target)
-  ;; org babel evaluate
-  (require 'ob)
-  (use-package ob-async
-    :ensure t)
+  ;; Org babel evaluate
   ;; Make org mode allow eval of some langs
   (org-babel-do-load-languages
    'org-babel-load-languages
@@ -654,14 +738,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
      (sql        . t)
      (stan       . t)))
   (setq org-confirm-babel-evaluate nil
-        org-src-fontify-natively   t
-        org-babel-python-command   "python3")
-  (add-hook 'org-babel-after-execute-hook
-            'org-display-inline-images))
-(add-hook 'org-mode-hook #'(lambda ()
-                             (visual-line-mode 1)
-                             (org-indent-mode  1)
-                             (my-org-hook)))
+        org-src-fontify-natively   t)
+  (when (eq system-type 'gnu/linux)
+    (setq org-babel-python-command "python3")))
 
 ;;;; --- Counsel / Swiper / Ivy ---
 ;;;;; Counsel pulls in ivy and swiper
@@ -671,27 +750,49 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; Always enabled, do not show in mode-line
   :diminish counsel-mode
   :diminish ivy-mode
-  ;; This doesn't really work as expected
-  ;;(global-set-key (kbd "C-r") 'swiper)
-  :bind (("C-s"     . swiper)
+  ;; counsel-grep-or-swiper should be faster on large buffers
+  :bind (("C-s"     . counsel-grep-or-swiper)
+         ;; Find recent files
          ("C-x C-r" . counsel-recentf)
-         ("C-c C-r" . ivy-resume))
+         ;; Resume last ivy completion
+         ("C-c C-r" . ivy-resume)
+         ;; Find file in git repository
+         ("C-c g"   . counsel-git)
+         ;; Store a view for the current session
+         ("C-c v"   . ivy-push-view)
+         ;; Remove a stored view
+         ("C-c V"   . ivy-pop-view)
+         ;; Use ivy to complete symbol at point
+         ("C-M-i"   . complete-symbol))
+  :custom
+  ;; Allow "M-x lis-pac" to match "M-x list-packages"
+  (ivy-re-builders-alist        '((swiper . ivy--regex-plus)
+                                  (t      . ivy--regex-fuzzy)))
+  ;; With the above, we do not need the initial ^ in the prompts
+  (ivy-initial-inputs-alist     '())
+  ;; Allows selecting the prompt with C-p (same as C-M-j)
+  (ivy-use-selectable-prompt    t)
+  ;; Use ivy while in minibuffer to e.g. insert variable names
+  ;; when doing counsel-set-variable
+  (enable-recursive-minibuffers t)
+  ;; Recentfs, views and bookmarks in ivy-switch-buffer
+  (ivy-use-virtual-buffers      t)
+  ;; Special views in ivy-switch-buffer
+  ;; Use {} to easily find views in C-x b
+  (ivy-views `(("init.el {}"
+                (file "~/.emacs.d/init.el"))
+               ("gtd {}"
+                (horz
+                 (file "~/.emacs.d/org-files/gtd/unsorted.org")
+                 (file "~/.emacs.d/org-files/gtd/projects.org")))))
+  ;; Control whether ./ and ../ shows up in find-file et al
+  ;;(ivy-extra-directories nil)
   :init
   ;; Better fuzzy-matching
   (use-package flx
     :ensure t)
   (ivy-mode 1)
   (counsel-mode 1)
-  ;; Allow "M-x lis-pac" to match "M-x list-packages"
-  (setq ivy-re-builders-alist        '((swiper . ivy--regex-plus)
-                                       (t      . ivy--regex-fuzzy))
-        ;; With the above, we do not need the initial ^ in the prompts
-        ivy-initial-inputs-alist     '()
-        ;; Allows selecting the prompt with C-p (same as C-M-j)
-        ivy-use-selectable-prompt    t
-        ;; Use ivy while in minibuffer to e.g. insert variable names
-        ;; when doing counsel-set-variable
-        enable-recursive-minibuffers t)
   ;; Show how deep the minibuffer goes
   (minibuffer-depth-indicate-mode 1)
   ;; Sort recentf by timestamp
@@ -701,15 +802,15 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (use-package ivy-rich
     :ensure t
     :defer 1
+    :custom
+    (ivy-rich-path-style 'abbrev)
     :config
-    (ivy-rich-mode 1)
-    (setq ivy-rich-path-style 'abbrev)
-    ;; The default "Yellow" of deeper-blue is not great
-    (set-face-foreground 'warning "goldenrod1")))
+    (ivy-rich-mode 1)))
 
 ;;;; --- Multiple cursors ---
 (use-package multiple-cursors
   :ensure t
+  :defer t
   :bind
   (("C-c m t" . mc/mark-all-like-this)
    ("C-c m m" . mc/mark-all-like-this-dwim)
@@ -744,6 +845,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package slime
   :ensure t
   :defer t
+  :custom
+  (inferior-lisp-program "sbcl --dynamic-space-size 2560")
+  (slime-default-lisp "sbcl")
+  (slime-contribs '(slime-fancy))
   :config
   (when (eq system-type 'cygwin)
     (defun cyg-slime-to-lisp-translation (filename)
@@ -754,26 +859,25 @@ length of PATH (sans directory slashes) down to MAX-LEN."
       (replace-regexp-in-string "\n" "" (shell-command-to-string
                                          (format "cygpath.exe --unix %s" filename))))
     (setq slime-to-lisp-filename-function #'cyg-slime-to-lisp-translation
-          lisp-to-slime-filename-function #'cyg-lisp-to-slime-translation))
-  (setq inferior-lisp-program "sbcl --dynamic-space-size 2560"
-        slime-default-lisp "sbcl"
-        slime-contribs '(slime-fancy)))
+          lisp-to-slime-filename-function #'cyg-lisp-to-slime-translation)))
 
 ;;;; --- LaTeX ---
 (use-package tex
   :ensure auctex
   :defer t
+  :custom
+  (TeX-view-program-selection
+   '(((output-dvi style-pstricks) "dvips and gv")
+     (output-dvi "xdvi")
+     (output-pdf "Evince")
+     (output-html "xdg-open")))
+  (TeX-PDF-mode nil)
+  (TeX-DVI-via-PDFTeX nil)
+  ;; Not sure if this belongs here
+  (doc-view-continuous t)
   :init
   (add-hook 'LaTeX-mode-hook
-            'turn-on-auto-fill)
-  :config
-  (setq TeX-view-program-selection
-        '(((output-dvi style-pstricks) "dvips and gv")
-          (output-dvi "xdvi")
-          (output-pdf "Evince")
-          (output-html "xdg-open"))
-        TeX-PDF-mode nil
-        TeX-DVI-via-PDFTeX nil))
+            'turn-on-auto-fill))
 
 ;;;; --- Text-mode ---
 ;; visual-line-mode only pretends to insert linebreaks
@@ -799,23 +903,23 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :hook ((css-mode . rainbow-mode)))
 
 ;;;; --- CSV ---
-(setq csv-separators (quote (";")))
+(use-package csv-mode
+  :ensure t
+  :defer t
+  :custom
+  (csv-separators (list ";" "	")))
 
 ;;;; --- Haskell ---
 (use-package haskell-mode
   :ensure t
   :defer t
   :hook ((haskell-mode-hook . turn-on-haskell-indent))
+  :custom
+  (haskell-indent-spaces 4)
   :init
   (use-package intero
     :ensure t
-    :hook ((haskell-mode-hook . intero-mode)))
-  :config
-  (setq haskell-indent-spaces 4)
-    ;; (use-package flycheck-haskell ;; Should be part of intero
-    ;;   :ensure t
-    ;;   :hook ((haskell-mode-hook . flycheck-haskell-setup)))
-    )
+    :hook ((haskell-mode-hook . intero-mode))))
 
 ;;;; --- C/C++ ---
 (defun common-c-hook ()
@@ -823,7 +927,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (c-set-style "bsd")
   (setq c-basic-offset 2
         tab-width 2)
-  ;;(require 'semantic/bovine/gcc)
+  (require 'semantic/bovine/gcc)
   (my-semantic-hook))
 (defun my-cpp-hook ()
   "C++ specific packages."
@@ -849,17 +953,32 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :diminish auto-revert-mode
   :bind (("C-x g"   . magit-status)          ; Display the main magit popup
          ("C-x M-g" . magit-dispatch-popup)) ; Display keybinds for magit
-  :init
+  :custom
+  (magit-completing-read-function 'ivy-completing-read)
   ;; Remove the startup message about turning on auto-revert
-  (setq magit-no-message (list "Turning on magit-auto-revert-mode..."))
-  :config
-  (setq magit-completing-read-function 'ivy-completing-read))
+  (magit-no-message (list "Turning on magit-auto-revert-mode...")))
 
+;;;; --- Eww ---
+(use-package eww
+  :ensure t
+  :defer t
+  :bind (("C-c w" . eww))
+  :custom
+  (browse-url-browser-function '((".*youtube.*" . browse-url-default-browser)
+                                 (".*github.*"  . browse-url-default-browser)
+                                 ("."           . eww-browse-url)))
+  :config
+  (use-package eww-lnum
+    :ensure t
+    :defer t
+    :bind (:map eww-mode-map
+                ("f"     . eww-lnum-follow)
+                ("F"     . eww-lnum-universal))))
 
 ;;;; --- Fish ---
 (use-package fish-mode
-  :defer t
-  :ensure t)
+  :ensure t
+  :defer t)
 
 ;;;; --- ESS - Emacs Speaks Statistics ---
 (use-package ess
@@ -882,16 +1001,24 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :pin elpy
   :defer t
   :hook ((python-mode . (lambda ()
-                          (if (or (eq system-type 'windows-nt)
-                                  (eq system-type 'ms-dos))
-                              (setq python-shell-completion-native-disabled-interpreters
-                                    '("python")))
+                          (when (eq system-type 'windows-nt)
+                            (add-to-list 'python-shell-completion-native-disabled-interpreters
+                                         "python"))
+                          (when (eq system-type 'gnu/linux)
+                            (add-to-list 'python-shell-completion-native-disabled-interpreters
+                                         "python3"))
                           (elpy-mode t)))
          (inferior-python-mode . (lambda ()
                                    (python-shell-switch-to-shell))))
+  :custom
+  (python-indent-guess-indent-offset-verbose nil)
+  (elpy-shell-use-project-root nil)
+  (elpy-rpc-backend "jedi")
+  ;; Tell Python debugger (pdb) to use the current virtual environment
+  ;; https://emacs.stackexchange.com/questions/17808/enable-python-pdb-on-emacs-with-virtualenv
+  ;;(gud-pdb-command-name "python -m pdb ")
   :init
   ;; Silence warning when guessing indent, default is 4 spaces
-  (setq python-indent-guess-indent-offset-verbose nil)
   (with-eval-after-load 'python
     (defun python-shell-completion-native-try ()
       "Return non-nil if can trigger native completion."
@@ -902,15 +1029,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          (get-buffer-process (current-buffer))
          nil "_"))))
   :config
-  (setq elpy-shell-use-project-root nil
-        elpy-rpc-backend "jedi"
-        python-shell-interpreter "python3")
+  (when (eq system-type 'gnu/linux)
+    (setq python-shell-interpreter "python3"))
   (elpy-enable)
   ;; Enable pyvenv, which manages Python virtual environments
   (pyvenv-mode 1)
-  ;; Tell Python debugger (pdb) to use the current virtual environment
-  ;; https://emacs.stackexchange.com/questions/17808/enable-python-pdb-on-emacs-with-virtualenv
-  (setq gud-pdb-command-name "python -m pdb ")
   (defun my-restart-python-console ()
     "Restart python console before evaluate buffer or region to avoid various uncanny conflicts, like not reloding modules even when they are changed"
     (interactive)
@@ -939,7 +1062,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
       (flycheck-ocaml-setup))))
 
 ;;;; --- EPA ---
-(defun my/setup-epa ()
+(defun sstoltze/setup-epa ()
   "Quick setup for EPA."
   ;; These allow entry of passphrase in emacs
   (setq epa-pinentry-mode 'loopback)
@@ -949,10 +1072,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package twittering-mode
   :ensure t
   :defer t
+  :custom
+  (twittering-use-master-password t)
+  (twittering-icon-mode           t)
   :config
-  (my/setup-epa)
-  (setq twittering-use-master-password t
-        twittering-icon-mode           t))
+  (sstoltze/setup-epa))
 
 ;;;; --- Outline ---
 ;; For elisp:
@@ -966,37 +1090,14 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :bind        (("<C-tab>" . outline-cycle))
   :bind-keymap (("C-z"     . outline-mode-prefix-map)))
 
-;;;; --- Frame-setup ---
-;; Set initial frame size and position
-(defun my/set-normal-frame ()
-  (let* ((width-factor  0.80)
-         (height-factor 0.80)
-         (position-factor 3)
- 	 (a-width  (* (display-pixel-width)  width-factor))
-         (a-height (* (display-pixel-height) height-factor))
-         (a-left (truncate (/ (- (display-pixel-width)  a-width)  position-factor)))
- 	 (a-top  (truncate (/ (- (display-pixel-height) a-height) position-factor))))
-    (set-frame-position (selected-frame) a-left a-top)
-    (set-frame-size     (selected-frame) (truncate a-width) (truncate a-height) t)))
-(defun my/set-left-small-frame ()
-  (set-frame-position (selected-frame) 0 0)
-  (set-frame-size     (selected-frame) (truncate (/ (display-pixel-width) 2.2)) (truncate (* (display-pixel-height) 0.9)) t))
-(defun my/set-right-small-frame ()
-  (set-frame-position (selected-frame) -1 0)
-  (set-frame-size     (selected-frame) (truncate (/ (display-pixel-width) 2.2)) (truncate (* (display-pixel-height) 0.9)) t))
-
-;; Frame resizing and theme
-(cond ((display-graphic-p) ;; Window system
-       (setq frame-resize-pixelwise t)
-       (my/set-normal-frame))
-      (t ;; Terminal
-       (use-package hc-zenburn-theme
-         :ensure t
-         :config
-         (load-theme 'hc-zenburn t))))
-(set-face-background 'cursor           "burlywood")
-
 ;;;; --- System specific ---
+(when (executable-find "fish")
+  (use-package fish-completion
+    :ensure t
+    :defer t
+    :config
+    (fish-completion-mode 1)))
+
 (cond
  ;; --- Windows specific ---
  ((eq system-type 'windows-nt)
@@ -1022,11 +1123,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                                 (toggle-frame-fullscreen)
                                 (setq *fullscreen-set* t)))
                             (lambda ()
-                              (handle-fullscreen-mode my/set-left-small-frame))
+                              (handle-fullscreen-mode sstoltze/set-left-small-frame))
                             (lambda ()
-                              (handle-fullscreen-mode my/set-right-small-frame))
+                              (handle-fullscreen-mode sstoltze/set-right-small-frame))
                             (lambda ()
-                              (handle-fullscreen-mode my/set-normal-frame))))
+                              (handle-fullscreen-mode sstoltze/set-normal-frame))))
   (defun toggle-window (arg)
     (interactive "P")
     (when arg
@@ -1036,7 +1137,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     (funcall (nth *window-status* *window-options*))
     (setq *window-status* (mod (1+ *window-status*)
                                (length *window-options*))))
-  (global-set-key (kbd "M-RET") 'toggle-window)
+  (global-set-key (kbd "M-RET")     'toggle-window)
+  (global-set-key (kbd "M-<left>")  '(lambda () (interactive) (toggle-window 1)))
+  (global-set-key (kbd "M-<right>") '(lambda () (interactive) (toggle-window 2)))
 
   ;; --- Tramp - Windows ---
   ;; C-x C-f /plink:<user>@host: ENTER
@@ -1045,27 +1148,20 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                                "\\plink.exe")))
     (when (file-exists-p plink-file)
       (setq tramp-default-method "plink")
-      (when (not (string-match plink-folder
-                               (getenv "PATH")))
+      (when (not (executable-find "plink.exe"))
         (setenv "PATH" (concat plink-folder
                                ";"
                                (getenv "PATH")))
         (add-to-list 'exec-path
                      plink-file))))
 
-  ;;;;; --- Work specific ---
-  (when (and (eq system-type 'windows-nt)
-             (equal (user-login-name) "sisto"))
+;;;;; --- Work specific ---
+  (when at-work
     (use-package cobol-mode
       :ensure t
       :defer t
-      :init
-      (setq auto-mode-alist
-            (append
-             '(("\\.cob\\'" . cobol-mode)
-               ("\\.cbl\\'" . cobol-mode)
-               ("\\.cpy\\'" . cobol-mode))
-             auto-mode-alist)))))
+      :mode "\\.cbl\\'"
+      :mode "\\.cob\\'")))
 
  ;; --- Linux specific ---
  ((eq system-type 'gnu/linux)
@@ -1077,37 +1173,39 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     (use-package mu4e
       :defer t
       :load-path "/usr/local/share/emacs/site-lisp/mu/mu4e"
-      :bind (("C-c q" . mu4e))
+      :bind (("C-c q" . mu4e)
+             :map mu4e-view-mode-map
+             ("G" . (lambda ()
+                      (interactive)
+                      (let ((browse-url-default-function 'browse-url-default-browser))
+                        (mu4e-view-go-to-url)))))
+      :custom
+      (mu4e-maildir "~/.mail")
+      ;; gpg-agent is set to use pinentry-qt for a dialog box
+      (mu4e-get-mail-command "mbsync -a")
+      ;; Show images in mails
+      (mu4e-view-show-images t)
+      ;; Don't keep message buffers around
+      (message-kill-buffer-on-exit t)
+      ;; Don't ask for a 'context' upon opening mu4e
+      (mu4e-context-policy 'pick-first)
+      ;; Don't ask to quit.
+      (mu4e-confirm-quit nil)
+      ;; Fix "Duplicate UID" when moving messages
+      (mu4e-change-filenames-when-moving t)
+      (mu4e-html2text-command 'mu4e-shr2text)
+      ;; Complete using ivy
+      (mu4e-completing-read-function 'ivy-completing-read)
+      ;; Header view - format time and date
+      (mu4e-headers-time-format "%R")
+      (mu4e-headers-date-format "%F")
+      ;; Common options for servers
+      (message-send-mail-function 'smtpmail-send-it)
+      (smtpmail-stream-type 'starttls)
       :config
-      (my/setup-epa)
-      ;; Authinfo - open in emacs and add lines for each context, e.g.
-      ;; machine <smtp.foo.com> login <mail@address.com> password <secret> port <587>
-      (add-to-list 'auth-sources
-                   "~/.mail/.smtp-auth.gpg")
-      (setq mu4e-maildir "~/.mail"
-            ;; gpg-agent is set to use pinentry-qt for a dialog box
-            mu4e-get-mail-command "mbsync -a"
-            mu4e-view-show-images t
-            ;; Why would I want to leave my message open after I've sent it?
-            message-kill-buffer-on-exit t
-            ;; Don't keep message buffers around
-            message-kill-buffer-on-exit t
-            ;; Don't ask for a 'context' upon opening mu4e
-            mu4e-context-policy 'pick-first
-            ;; Don't ask to quit... why is this the default?
-            mu4e-confirm-quit nil
-            ;; Fix "Duplicate UID" when moving messages
-            mu4e-change-filenames-when-moving t
-            mu4e-html2text-command 'mu4e-shr2text
-            mu4e-completing-read-function 'completing-read
-            ;; Header view
-            mu4e-headers-time-format "%R"
-            mu4e-headers-date-format "%F"
-            ;; Common options for servers
-            message-send-mail-function 'smtpmail-send-it
-            smtpmail-stream-type 'starttls
-            ;; Set account-specific details here
-            mu4e-contexts (list
+      (sstoltze/setup-epa)
+      ;; Set account-specific details here
+      (setq mu4e-contexts (list
                            (make-mu4e-context
                             :name "gmail"
                             :match-func (lambda (msg) (when msg
@@ -1126,7 +1224,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                                                    (string-prefix-p "/work" (mu4e-message-field msg :maildir))))
                             :vars '((user-mail-address . "sisto@sd.dk")
                                     (mu4e-trash-folder . "/work/Deleted Items")
-                                    (mu4e-refile-folder . exchange-mu4e-refile-folder)
+                                    (mu4e-refile-folder . "/work/Archive")
                                     ;; Exchange does not handle this for us
                                     (mu4e-sent-messages-behavior . sent)
                                     (smtpmail-default-smtp-server . "smtp.office365.com")
@@ -1138,6 +1236,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                                                                       "Simon Stoltze\n"
                                                                       "Developer\n"
                                                                       "Silkeborg Data A/S"))))))
+      ;; Authinfo - open in emacs and add lines for each context, e.g.
+      ;; machine <smtp.foo.com> login <mail@address.com> password <secret> port <587>
+      (add-to-list 'auth-sources
+                   "~/.mail/.smtp-auth.gpg")
       ;; Include a bookmark to open all of my inboxes
       (add-to-list 'mu4e-bookmarks
                    (make-mu4e-bookmark
@@ -1170,15 +1272,19 @@ length of PATH (sans directory slashes) down to MAX-LEN."
       ;; Add the new header to headers
       (add-to-list 'mu4e-headers-fields
                    '(:account . 8))
+      ;; Use imagemagick for images, if available
+      (when (fboundp 'imagemagick-register-types)
+        (imagemagick-register-types))
       (use-package mu4e-alert
         :ensure t
+        :custom
+        (mu4e-alert-interesting-mail-query
+         (concat
+          "flag:unread maildir:/work/Inbox"
+          " OR "
+          "flag:unread maildir:/Gmail/Inbox"))
+        (mu4e-alert-email-notification-types '(count))
         :init
-        (setq mu4e-alert-interesting-mail-query
-              (concat
-               "flag:unread maildir:/work/Inbox"
-               " OR "
-               "flag:unread maildir:/Gmail/Inbox")
-              mu4e-alert-email-notification-types '(count))
         (mu4e-alert-enable-mode-line-display)
         (defun gjstein-refresh-mu4e-alert-mode-line ()
           (interactive)
@@ -1187,13 +1293,19 @@ length of PATH (sans directory slashes) down to MAX-LEN."
         ;; Refresh every 10 minutes
         (run-with-timer 600 600 'gjstein-refresh-mu4e-alert-mode-line))))
 
+  ;; --- Lua ---
+  ;; For editing awesome/rc.lua
+  (use-package lua-mode
+    :ensure t
+    :defer t)
+
   ;; --- SAGE ---
   (when (file-directory-p "/usr/lib/sagemath")
     (use-package sage
       :defer t
       :load-path "/usr/lib/sagemath/local/share/emacs"
-      :config
-      (setq sage-command "/usr/lib/sagemath/sage")))))
+      :custom
+      (sage-command "/usr/lib/sagemath/sage")))))
 
 (provide 'init)
 ;;; init.el ends here
