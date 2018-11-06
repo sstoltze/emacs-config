@@ -197,6 +197,15 @@
 ;;;; --- Calendar ---
 (use-package calendar
   :defer t
+  :custom
+  (calendar-week-start-day 1)
+  (calendar-date-style 'european)
+  (calendar-time-display-form
+   '(24-hours ":" minutes))
+  (calendar-date-display-form
+   '((if dayname
+         (concat dayname ", "))
+     day " " monthname " " year))
   :init
   ;; Week number in calendar
   (copy-face font-lock-constant-face 'calendar-iso-week-face)
@@ -214,7 +223,62 @@
                                              (calendar-absolute-from-gregorian (list month day year)))))
                                    'font-lock-face 'calendar-iso-week-face)
         calendar-intermonth-header (propertize "Wk"
-                                               'font-lock-face 'calendar-iso-week-header-face)))
+                                               'font-lock-face 'calendar-iso-week-header-face))
+  ;; From https://raw.githubusercontent.com/soren/elisp/master/da-kalender.el
+  ;; Calculation of easter, the fix point for many holidays (taken from
+  ;; sv-kalender.el, originally from holiday-easter-etc)
+  (defun da-easter (year)
+    "Calculate the date for Easter in YEAR."
+    (let* ((century (1+ (/ year 100)))
+           (shifted-epact (% (+ 14 (* 11 (% year 19))
+                                (- (/ (* 3 century) 4))
+                                (/ (+ 5 (* 8 century)) 25)
+                                (* 30 century))
+                             30))
+           (adjusted-epact (if (or (= shifted-epact 0)
+                                   (and (= shifted-epact 1)
+                                        (< 10 (% year 19))))
+                               (1+ shifted-epact)
+                             shifted-epact))
+           (paschal-moon (- (calendar-absolute-from-gregorian
+                             (list 4 19 year))
+                            adjusted-epact)))
+      (calendar-dayname-on-or-before 0 (+ paschal-moon 7))))
+  (setq general-holidays
+        '((holiday-fixed 1 1 "Nytårsdag")
+	  (holiday-fixed 1 6 "Hellige 3 konger")
+	  ;; Easter and Pentecost
+	  (holiday-filter-visible-calendar
+	   (mapcar
+	    (lambda (dag)
+	      (list (calendar-gregorian-from-absolute
+		     (+ (da-easter displayed-year) (car dag)))
+		    (cadr dag)))
+	    '(( -49 "Fastelavn")
+	      (  -7 "Palmesøndag")
+	      (  -3 "Skærtorsdag")
+	      (  -2 "Langfredag")
+	      (   0 "Påskedag")
+	      (  +1 "Anden påskedag")
+	      ( +26 "Store bededag")
+	      ( +39 "Kristi himmelfartsdag")
+	      ( +49 "Pinsedag")
+	      ( +50 "Anden pinsedag"))))
+	  (holiday-fixed 12 24 "Juleaften")
+	  (holiday-fixed 12 25 "Juledag")
+	  (holiday-fixed 12 26 "Anden juledag")
+	  (holiday-fixed 12 31 "Nytårsaften"))
+        other-holidays
+        '((holiday-fixed 3 8 "Kvindernes internationale kampdag")
+          (holiday-fixed 5 1 "Arbejdernes internationale kampdag")
+          (holiday-fixed 5 4 "Danmarks befrielse")
+          (holiday-float 5 0 2 "Mors dag")
+          (holiday-fixed 6 5 "Grundlovsdag")
+          (holiday-fixed 6 5 "Fars dag")
+          (holiday-fixed 6 15 "Valdemarsdag (Dannebrog)")
+          (holiday-fixed 6 24 "Skt. Hans dag")))
+  (setq calendar-holidays
+        (append general-holidays other-holidays)))
 
 ;; Make C-x C-x not activate region
 (defun exchange-point-and-mark-no-activate ()
@@ -677,7 +741,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
              :clock-in t :clock-resume t
              :empty-lines 1)
             ("m" "Meeting"   entry (file ,default-org-file)
-             "* %? - %u :MEETING:\n:ATTENDEES:\nSimon Stoltze\n:END:\n"
+             "* %? - %u:MEETING\n:ATTENDEES:\nSimon Stoltze\n:END:\n"
              :clock-in t :clock-resume t
              :empty-lines 1)
             ("n" "Next"      entry (file+headline ,default-org-file "Unsorted")
