@@ -206,6 +206,7 @@
    '((if dayname
          (concat dayname ", "))
      day " " monthname " " year))
+  (calendar-mark-holidays-flag t)
   :init
   ;; Week number in calendar
   (copy-face font-lock-constant-face 'calendar-iso-week-face)
@@ -224,6 +225,10 @@
                                    'font-lock-face 'calendar-iso-week-face)
         calendar-intermonth-header (propertize "Wk"
                                                'font-lock-face 'calendar-iso-week-header-face))
+    :config
+  (set-face-attribute 'holiday nil
+                      :foreground "goldenrod"
+                      :background nil)
   ;; From https://raw.githubusercontent.com/soren/elisp/master/da-kalender.el
   ;; Calculation of easter, the fix point for many holidays (taken from
   ;; sv-kalender.el, originally from holiday-easter-etc)
