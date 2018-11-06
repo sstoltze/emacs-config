@@ -197,6 +197,15 @@
 ;;;; --- Calendar ---
 (use-package calendar
   :defer t
+  :custom
+  (calendar-week-start-day 1)
+  (calendar-date-style 'european)
+  (calendar-time-display-form
+   '(24-hours ":" minutes))
+  (calendar-date-display-form
+   '((if dayname
+         (concat dayname ", "))
+     day " " monthname " " year))
   :init
   ;; Week number in calendar
   (copy-face font-lock-constant-face 'calendar-iso-week-face)
@@ -214,7 +223,62 @@
                                              (calendar-absolute-from-gregorian (list month day year)))))
                                    'font-lock-face 'calendar-iso-week-face)
         calendar-intermonth-header (propertize "Wk"
-                                               'font-lock-face 'calendar-iso-week-header-face)))
+                                               'font-lock-face 'calendar-iso-week-header-face))
+  ;; From https://raw.githubusercontent.com/soren/elisp/master/da-kalender.el
+  ;; Calculation of easter, the fix point for many holidays (taken from
+  ;; sv-kalender.el, originally from holiday-easter-etc)
+  (defun da-easter (year)
+    "Calculate the date for Easter in YEAR."
+    (let* ((century (1+ (/ year 100)))
+           (shifted-epact (% (+ 14 (* 11 (% year 19))
+                                (- (/ (* 3 century) 4))
+                                (/ (+ 5 (* 8 century)) 25)
+                                (* 30 century))
+                             30))
+           (adjusted-epact (if (or (= shifted-epact 0)
+                                   (and (= shifted-epact 1)
+                                        (< 10 (% year 19))))
+                               (1+ shifted-epact)
+                             shifted-epact))
+           (paschal-moon (- (calendar-absolute-from-gregorian
+                             (list 4 19 year))
+                            adjusted-epact)))
+      (calendar-dayname-on-or-before 0 (+ paschal-moon 7))))
+  (setq general-holidays
+        '((holiday-fixed 1 1 "Nytårsdag")
+	  (holiday-fixed 1 6 "Hellige 3 konger")
+	  ;; Easter and Pentecost
+	  (holiday-filter-visible-calendar
+	   (mapcar
+	    (lambda (dag)
+	      (list (calendar-gregorian-from-absolute
+		     (+ (da-easter displayed-year) (car dag)))
+		    (cadr dag)))
+	    '(( -49 "Fastelavn")
+	      (  -7 "Palmesøndag")
+	      (  -3 "Skærtorsdag")
+	      (  -2 "Langfredag")
+	      (   0 "Påskedag")
+	      (  +1 "Anden påskedag")
+	      ( +26 "Store bededag")
+	      ( +39 "Kristi himmelfartsdag")
+	      ( +49 "Pinsedag")
+	      ( +50 "Anden pinsedag"))))
+	  (holiday-fixed 12 24 "Juleaften")
+	  (holiday-fixed 12 25 "Juledag")
+	  (holiday-fixed 12 26 "Anden juledag")
+	  (holiday-fixed 12 31 "Nytårsaften"))
+        other-holidays
+        '((holiday-fixed 3 8 "Kvindernes internationale kampdag")
+          (holiday-fixed 5 1 "Arbejdernes internationale kampdag")
+          (holiday-fixed 5 4 "Danmarks befrielse")
+          (holiday-float 5 0 2 "Mors dag")
+          (holiday-fixed 6 5 "Grundlovsdag")
+          (holiday-fixed 6 5 "Fars dag")
+          (holiday-fixed 6 15 "Valdemarsdag (Dannebrog)")
+          (holiday-fixed 6 24 "Skt. Hans dag")))
+  (setq calendar-holidays
+        (append general-holidays other-holidays)))
 
 ;; Make C-x C-x not activate region
 (defun exchange-point-and-mark-no-activate ()
@@ -261,7 +325,11 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;;;; --- Frame-setup ---
 ;; Set initial frame size and position
-(defun sstoltze/get-main-size ()
+(defvar *sstoltze/position-factor*   0.40)
+(defvar *sstoltze/width-factor*      0.85)
+(defvar *sstoltze/height-factor*     0.90)
+(defvar *sstoltze/half-width-factor* 0.45)
+(defun sstoltze/get-main-monitor-size ()
   "Get pixels for multiple-monitor setup."
   (let* ((monitors          (display-monitor-attributes-list))
          (main-monitor      (car monitors))
@@ -271,40 +339,35 @@ point reaches the beginning or end of the buffer, stop there."
     (list main-pixel-width main-pixel-height)))
 (defun sstoltze/set-normal-frame ()
   "Standard frame setup."
-  (let* ((width-factor       0.80)
-         (height-factor      0.90)
-         (position-factor    3)
-         (pixels             (sstoltze/get-main-size))
+  (let* ((pixels             (sstoltze/get-main-monitor-size))
          (main-pixel-width   (nth 0 pixels))
          (main-pixel-height  (nth 1 pixels))
- 	 (frame-pixel-width  (truncate (* main-pixel-width  width-factor)))
-         (frame-pixel-height (truncate (* main-pixel-height height-factor)))
-         (frame-pixel-left   (truncate (/ (- main-pixel-width  frame-pixel-width)  position-factor)))
- 	 (frame-pixel-top    (truncate (/ (- main-pixel-height frame-pixel-height) position-factor))))
+ 	 (frame-pixel-width  (truncate (* main-pixel-width  *sstoltze/width-factor*)))
+         (frame-pixel-height (truncate (* main-pixel-height *sstoltze/height-factor*)))
+         (frame-pixel-left   (truncate (* (- main-pixel-width  frame-pixel-width)  *sstoltze/position-factor*)))
+ 	 (frame-pixel-top    (truncate (* (- main-pixel-height frame-pixel-height) *sstoltze/position-factor*))))
     (set-frame-position (selected-frame) frame-pixel-left  frame-pixel-top)
     (set-frame-size     (selected-frame) frame-pixel-width frame-pixel-height t)))
 (defun sstoltze/set-left-small-frame ()
   "Frame on the left."
-  (let* ((position-factor    3)
-         (pixels             (sstoltze/get-main-size))
+  (let* ((pixels             (sstoltze/get-main-monitor-size))
          (main-pixel-width   (nth 0 pixels))
          (main-pixel-height  (nth 1 pixels))
-         (frame-pixel-width  (truncate (/ main-pixel-width 2.2)))
-         (frame-pixel-height (truncate (* main-pixel-height 0.9)))
+         (frame-pixel-width  (truncate (* main-pixel-width  *sstoltze/half-width-factor*)))
+         (frame-pixel-height (truncate (* main-pixel-height *sstoltze/height-factor*)))
          (frame-pixel-left   0)
- 	 (frame-pixel-top    (truncate (/ (- main-pixel-height frame-pixel-height) position-factor))))
+ 	 (frame-pixel-top    (truncate (* (- main-pixel-height frame-pixel-height) *sstoltze/position-factor*))))
     (set-frame-position (selected-frame) frame-pixel-left  frame-pixel-top)
     (set-frame-size     (selected-frame) frame-pixel-width frame-pixel-height t)))
 (defun sstoltze/set-right-small-frame ()
   "Frame on the right."
-  (let* ((position-factor    3)
-         (pixels             (sstoltze/get-main-size))
+  (let* ((pixels             (sstoltze/get-main-monitor-size))
          (main-pixel-width   (nth 0 pixels))
          (main-pixel-height  (nth 1 pixels))
-         (frame-pixel-width  (truncate (/ main-pixel-width 2.2)))
-         (frame-pixel-height (truncate (* main-pixel-height 0.9)))
+         (frame-pixel-width  (truncate (* main-pixel-width  *sstoltze/half-width-factor*)))
+         (frame-pixel-height (truncate (* main-pixel-height *sstoltze/height-factor*)))
          (frame-pixel-left   (truncate (- (* main-pixel-width 0.98) frame-pixel-width)))
- 	 (frame-pixel-top    (truncate (/ (- main-pixel-height frame-pixel-height) position-factor))))
+ 	 (frame-pixel-top    (truncate (* (- main-pixel-height frame-pixel-height) *sstoltze/position-factor*))))
     (set-frame-position (selected-frame) frame-pixel-left  frame-pixel-top)
     (set-frame-size     (selected-frame) frame-pixel-width frame-pixel-height t)))
 ;; Frame resizing and theme
@@ -609,17 +672,17 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :config
   (add-to-list 'auto-insert-alist
                '(("\\.org\\'" . "Org header")
-                nil
-                "#+AUTHOR: " user-full-name n
-                "#+EMAIL: "  user-mail-address n
-                "#+DATE: "   (format-time-string "%Y-%m-%d" (current-time)) n
-                "#+OPTIONS: toc:nil title:nil author:nil email:nil date:nil creator:nil" n)))
+                 nil
+                 "#+AUTHOR: " user-full-name n
+                 "#+EMAIL: "  user-mail-address n
+                 "#+DATE: "   (format-time-string "%Y-%m-%d" (current-time)) n
+                 "#+OPTIONS: toc:nil title:nil author:nil email:nil date:nil creator:nil" n)))
 
 ;;;; --- Org ---
 (use-package org
   :hook ((org-mode . (lambda ()
-                        (visual-line-mode 1)
-                        (org-indent-mode  1)))
+                       (visual-line-mode 1)
+                       (org-indent-mode  1)))
          (org-babel-after-execute . org-display-inline-images))
   :bind (("C-c l" . org-store-link)
          ("C-c c" . org-capture)
@@ -678,7 +741,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
              :clock-in t :clock-resume t
              :empty-lines 1)
             ("m" "Meeting"   entry (file ,default-org-file)
-             "* %? - %u :MEETING:\n:ATTENDEES:\nSimon Stoltze\n:END:\n"
+             "* %? - %u:MEETING\n:ATTENDEES:\nSimon Stoltze\n:END:\n"
              :clock-in t :clock-resume t
              :empty-lines 1)
             ("n" "Next"      entry (file+headline ,default-org-file "Unsorted")
