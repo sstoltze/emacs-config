@@ -118,29 +118,29 @@
       make-pointer-invisible                t
 
       ;; Garbage collector
-      gc-cons-threshold (* 100 1024 1024) ;; 100 mb
+      gc-cons-threshold                     (* 100 1024 1024) ;; 100 mb
 
       ;; Personal info
-      user-full-name    "Simon Stoltze"
-      user-mail-address (cond (at-work "sisto@sd.dk" )
-                              (t       "sstoltze@gmail.com"))
+      user-full-name                        "Simon Stoltze"
+      user-mail-address                     (cond (at-work "sisto@sd.dk" )
+                                                  (t       "sstoltze@gmail.com"))
 
       ;; Disable the bell
-      ring-bell-function 'ignore
+      ring-bell-function                    'ignore
 
       ;; Add directory name to buffer if name is not unique
-      uniquify-buffer-name-style 'forward
+      uniquify-buffer-name-style            'forward
 
       ;; Prettify symbols
-      prettify-symbols-unprettify-at-point 'right-edge
+      prettify-symbols-unprettify-at-point  'right-edge
 
       ;; Font lock
-      jit-lock-stealth-time   1
-      jit-lock-chunk-size     1000
-      jit-lock-defer-time     0.05)
+      jit-lock-stealth-time                 1
+      jit-lock-chunk-size                   1000
+      jit-lock-defer-time                   0.05)
 
 ;; Do not use tabs
-(setq-default indent-tabs-mode nil)
+(setq-default indent-tabs-mode              nil)
 
 ;; Delete extra lines and spaces when saving
 (add-hook 'before-save-hook
