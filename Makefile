@@ -5,7 +5,7 @@ linux_no_folding  = $(common_no_folding)
 cygwin_packages   = $(common_packages)
 cygwin_no_folding = $(common_no_folding)
 
-.PHONY: install uninstall update linux linux-remove cygwin cygwin-remove windows windows-remove work work-remove new-comp mbsync-setup remove-work remove update-work work-update
+.PHONY: install uninstall update linux linux-remove cygwin cygwin-remove windows windows-remove work work-remove work-update new-comp mbsync-setup remove-work remove update-work
 
 .DEFAULT_GOAL:=update
 
@@ -41,29 +41,31 @@ linux-remove:
 	stow -D -t ~ $(linux_packages)
 	stow -D -t ~ $(linux_no_folding)
 
-cygwin: windows-cyg
+cygwin: windows
 	stow              -S -t ~ $(cygwin_packages)
 	stow --no-folding -S -t ~ $(cygwin_no_folding)
 
-cygwin-remove: windows-cyg-remove
+cygwin-remove: windows-remove
 	stow -D -t ~ $(cygwin_packages)
 	stow -D -t ~ $(cygwin_no_folding)
 
-windows-cyg:
+windows:
+ifeq ($(findstring CYGWIN,$(shell uname)),CYGWIN)
 	cp emacs/.emacs.d/init.el /cygdrive/C/Users/$$USER/AppData/Roaming/.emacs.d/
 	cp git/.gitconfig /cygdrive/C/Users/$$USER/AppData/Roaming/
-
-windows-cyg-remove:
-	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.emacs.d/init.el
-	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig
-
-windows:
+else
 	copy /Y "emacs\.emacs.d\init.el" "%USERPROFILE%\AppData\Roaming\.emacs.d"
-	copy /Y "git\.gitconfig" "%USERPROFILE%\AppData\Roaming"
+	copy /Y "git\.gitconfig"         "%USERPROFILE%\AppData\Roaming"
+endif
 
 windows-remove:
+ifeq ($(findstring CYGWIN,$(shell uname)),CYGWIN)
+	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.emacs.d/init.el
+	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig
+else
 	del "%USERPROFILE%\AppData\Roaming\.emacs.d\init.el"
 	del "%USERPROFILE%\AppData\Roaming\.gitconfig"
+endif
 
 work:
 	stow -D -t ~ git
@@ -79,11 +81,11 @@ ifeq ($(findstring CYGWIN,$(shell uname)),CYGWIN)
 	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig
 endif
 
+work-update: work-remove update work
+
 remove-work: work-remove
 
-update-work: work-remove update work
-
-work-update: update-work
+update-work: update-work
 
 new-comp: install
 	chsh -s /usr/bin/fish
