@@ -717,6 +717,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (org-html-postamble nil)
   (org-html-html5-fancy t)
   (org-html-doctype "html5")
+  ;; Round clock to 5 minute intervals, delete anything shorter
+  (org-clock-rounding-minutes 5)
   :init
   ;; Most GTD setup is taken from https://emacs.cafe/emacs/orgmode/gtd/2017/06/30/orgmode-gtd.html
   (let ((default-org-file  "~/.emacs.d/org-files/gtd/unsorted.org") ;; Unsorted items
