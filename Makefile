@@ -14,6 +14,8 @@ ifeq ($(shell uname),Linux)
 	make linux
 else ifeq ($(findstring CYGWIN,$(shell uname)),CYGWIN)
 	make cygwin
+else
+	make windows
 endif
 
 uninstall:
@@ -21,6 +23,8 @@ ifeq ($(shell uname),Linux)
 	make linux-remove
 else ifeq ($(findstring CYGWIN,$(shell uname)),CYGWIN)
 	make cygwin-remove
+else
+	make windows-remove
 endif
 
 remove: uninstall
@@ -37,21 +41,29 @@ linux-remove:
 	stow -D -t ~ $(linux_packages)
 	stow -D -t ~ $(linux_no_folding)
 
-cygwin: windows
+cygwin: windows-cyg
 	stow              -S -t ~ $(cygwin_packages)
 	stow --no-folding -S -t ~ $(cygwin_no_folding)
 
-cygwin-remove: windows-remove
+cygwin-remove: windows-cyg-remove
 	stow -D -t ~ $(cygwin_packages)
 	stow -D -t ~ $(cygwin_no_folding)
 
-windows:
+windows-cyg:
 	cp emacs/.emacs.d/init.el /cygdrive/C/Users/$$USER/AppData/Roaming/.emacs.d/
 	cp git/.gitconfig /cygdrive/C/Users/$$USER/AppData/Roaming/
 
-windows-remove:
+windows-cyg-remove:
 	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.emacs.d/init.el
 	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig
+
+windows:
+	copy /Y "emacs\.emacs.d\init.el" "%USERPROFILE%\AppData\Roaming\.emacs.d"
+	copy /Y "git\.gitconfig" "%USERPROFILE%\AppData\Roaming"
+
+windows-remove:
+	del "%USERPROFILE%\AppData\Roaming\.emacs.d\init.el"
+	del "%USERPROFILE%\AppData\Roaming\.gitconfig"
 
 work:
 	stow -D -t ~ git
