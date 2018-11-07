@@ -535,7 +535,7 @@ point reaches the beginning or end of the buffer, stop there."
                (propertize (user-login-name)
                            'face (list :foreground user-colour))
                " "
-               (propertize (fish-path (eshell/pwd) 20)
+               (propertize (fish-path (eshell/pwd) 30)
                            'face (list :foreground standard-colour))
                (sstoltze/make-vc-prompt)
                (propertize " >"
