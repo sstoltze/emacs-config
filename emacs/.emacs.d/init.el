@@ -456,17 +456,23 @@ point reaches the beginning or end of the buffer, stop there."
   :bind (("C-c e" . eshell))
   :hook ((eshell-mode . (lambda ()
                           (eshell-smart-initialize)
-                          (eshell/alias "emacs" "find-file $1")
-                          (eshell/alias "magit" "magit-status")
-                          (eshell/alias "less"  "cat $1")
-                          (cond ((or (eq system-type 'gnu/linux)
-                                     (eq system-type 'cygwin))
-                                 (eshell/alias "python" "python3 $*")
-                                 (eshell/alias "pip"    "pip3 $*"))
-                                ((eq system-type 'windows-nt)
-                                 ;; Delete existing aliases
-                                 (eshell/alias "python")
-                                 (eshell/alias "pip")))
+                          ;; We only need to create aliases once
+                          (when (not (file-exists-p "~/.emacs.d/eshell/alias"))
+                            (eshell/alias "emacs" "find-file $1")
+                            (eshell/alias "magit" "magit-status")
+                            (eshell/alias "less"  "cat $1")
+                            (cond ((or (eq system-type 'gnu/linux)
+                                       (eq system-type 'cygwin))
+                                   (eshell/alias "python" "python3 $*")
+                                   (eshell/alias "pip"    "pip3 $*"))
+                                  ((eq system-type 'windows-nt)
+                                   ;; Delete existing aliases, if any
+                                   (eshell/alias "python")
+                                   (eshell/alias "pip")
+                                   (eshell/alias "desktop"
+                                                 (concat "C:/Users/"
+                                                         (user-login-name)
+                                                         "/Desktop/")))))
                           (local-set-key (kbd "C-c h")
                                          (lambda ()
                                            "Ivy interface to eshell history."
