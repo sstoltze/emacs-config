@@ -16,6 +16,7 @@ function handle_git
 end
 
 echo "Noter:"
+cp -r /cygdrive/c/users/$USER/appdata/roaming/.emacs.d/org-files/ ~/noter/gtd/
 cd ~/noter
 handle_git
 cd ~
