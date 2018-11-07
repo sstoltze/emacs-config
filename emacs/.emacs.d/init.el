@@ -225,10 +225,10 @@
                                    'font-lock-face 'calendar-iso-week-face)
         calendar-intermonth-header (propertize "Wk"
                                                'font-lock-face 'calendar-iso-week-header-face))
-    :config
+  :config
   (set-face-attribute 'holiday nil
-                      :foreground "goldenrod"
-                      :background nil)
+                      :foreground (face-foreground 'font-lock-comment-face)
+                      :background (face-background 'default))
   ;; From https://raw.githubusercontent.com/soren/elisp/master/da-kalender.el
   ;; Calculation of easter, the fix point for many holidays (taken from
   ;; sv-kalender.el, originally from holiday-easter-etc)
@@ -717,6 +717,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (org-html-postamble nil)
   (org-html-html5-fancy t)
   (org-html-doctype "html5")
+  ;; Round clock to 5 minute intervals, delete anything shorter
+  (org-clock-rounding-minutes 5)
   :init
   ;; Most GTD setup is taken from https://emacs.cafe/emacs/orgmode/gtd/2017/06/30/orgmode-gtd.html
   (let ((default-org-file  "~/.emacs.d/org-files/gtd/unsorted.org") ;; Unsorted items
@@ -742,16 +744,14 @@ length of PATH (sans directory slashes) down to MAX-LEN."
              "* %?"
              :empty-lines 1)
             ("t" "TODO"      entry (file+headline ,default-org-file "Unsorted")
-             "* TODO %?\n%U\n%a\n"
-             :clock-in t :clock-resume t
+             "* TODO %?\n%a\n"
              :empty-lines 1)
             ("m" "Meeting"   entry (file ,default-org-file)
-             "* %? - %u:MEETING\n:ATTENDEES:\nSimon Stoltze\n:END:\n"
+             "* %? - %u:MEETING:\n:ATTENDEES:\nSimon Stoltze\n:END:\n"
              :clock-in t :clock-resume t
              :empty-lines 1)
             ("n" "Next"      entry (file+headline ,default-org-file "Unsorted")
-             "* NEXT %?\n%U\nDEADLINE: %t"
-             :clock-in t :clock-resume t
+             "* NEXT %?\n%a\n"
              :empty-lines 1)
             ("s" "Schedule"  entry (file+headline ,schedule-org-file "Schedule")
              "* %i%?\n%U"
