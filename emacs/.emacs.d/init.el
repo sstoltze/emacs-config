@@ -460,6 +460,7 @@ point reaches the beginning or end of the buffer, stop there."
                           (when (not (file-exists-p "~/.emacs.d/eshell/alias"))
                             (eshell/alias "emacs" "find-file $1")
                             (eshell/alias "magit" "magit-status")
+                            (eshell/alias "git"   "magit-status")
                             (eshell/alias "less"  "cat $1")
                             (cond ((or (eq system-type 'gnu/linux)
                                        (eq system-type 'cygwin))
