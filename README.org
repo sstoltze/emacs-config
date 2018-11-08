@@ -1,0 +1,9 @@
+* emacs-config
+
+This repository was set up to allow me to synchronise my setup across multiple computers using various platforms. It contains a makefile with rules for what to install on the different platforms, so everything can be set up by running
+#+BEGIN_SRC sh
+git clone https://github.com/sstoltze/emacs-config
+cd emacs-config
+make install
+#+END_SRC
+on any system with git, make and stow (for Linux and Cygwin) installed.
