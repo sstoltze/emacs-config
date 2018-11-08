@@ -1147,8 +1147,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (defun sstoltze/setup-epa ()
   "Quick setup for EPA."
   ;; These allow entry of passphrase in emacs
-  (setq epa-pinentry-mode 'loopback)
-  (pinentry-start))
+  (use-package epa
+    :custom
+    (epa-pinentry-mode 'loopback)
+    :config
+    (pinentry-start)))
 
 ;;;; --- Twitter ---
 (use-package twittering-mode
@@ -1262,62 +1265,64 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                       (let ((browse-url-default-function 'browse-url-default-browser))
                         (mu4e-view-go-to-url)))))
       :custom
-      (mu4e-maildir "~/.mail")
+      (mu4e-maildir                      "~/.mail")
       ;; gpg-agent is set to use pinentry-qt for a dialog box
-      (mu4e-get-mail-command "mbsync -a")
+      (mu4e-get-mail-command             "mbsync -a")
       ;; Show images in mails
-      (mu4e-view-show-images t)
+      (mu4e-view-show-images             t)
       ;; Don't keep message buffers around
-      (message-kill-buffer-on-exit t)
+      (message-kill-buffer-on-exit       t)
       ;; Don't ask for a 'context' upon opening mu4e
-      (mu4e-context-policy 'pick-first)
+      (mu4e-context-policy               'pick-first)
       ;; Don't ask to quit.
-      (mu4e-confirm-quit nil)
+      (mu4e-confirm-quit                 nil)
       ;; Fix "Duplicate UID" when moving messages
       (mu4e-change-filenames-when-moving t)
-      (mu4e-html2text-command 'mu4e-shr2text)
+      (mu4e-html2text-command            'mu4e-shr2text)
       ;; Complete using ivy
-      (mu4e-completing-read-function 'ivy-completing-read)
+      (mu4e-completing-read-function     'ivy-completing-read)
       ;; Header view - format time and date
-      (mu4e-headers-time-format "%R")
-      (mu4e-headers-date-format "%F")
+      (mu4e-headers-time-format          "%R")
+      (mu4e-headers-date-format          "%F")
       ;; Common options for servers
-      (message-send-mail-function 'smtpmail-send-it)
-      (smtpmail-stream-type 'starttls)
-      :config
+      (message-send-mail-function        'smtpmail-send-it)
+      (smtpmail-stream-type              'starttls)
+      (mu4e-use-fancy-chars              t)
+      :init
       (sstoltze/setup-epa)
+      :config
       ;; Set account-specific details here
       (setq mu4e-contexts (list
                            (make-mu4e-context
                             :name "gmail"
                             :match-func (lambda (msg) (when msg
                                                    (string-prefix-p "/gmail" (mu4e-message-field msg :maildir))))
-                            :vars '((user-mail-address . "sstoltze@gmail.com")
-                                    (mu4e-trash-folder . "/gmail/[Gmail].Trash")
-                                    (mu4e-refile-folder . "/gmail/[Gmail].Archive")
+                            :vars '((user-mail-address            . "sstoltze@gmail.com")
+                                    (mu4e-trash-folder            . "/gmail/[Gmail].Trash")
+                                    (mu4e-refile-folder           . "/gmail/[Gmail].Archive")
                                     ;; Gmail handles sent messages for us
-                                    (mu4e-sent-messages-behavior . delete)
+                                    (mu4e-sent-messages-behavior  . delete)
                                     (smtpmail-default-smtp-server . "smtp.gmail.com")
-                                    (smtpmail-smtp-server . "smtp.gmail.com")
-                                    (smtpmail-smtp-service . 587)))
+                                    (smtpmail-smtp-server         . "smtp.gmail.com")
+                                    (smtpmail-smtp-service        . 587)))
                            (make-mu4e-context
                             :name "work"
                             :match-func (lambda (msg) (when msg
                                                    (string-prefix-p "/work" (mu4e-message-field msg :maildir))))
-                            :vars '((user-mail-address . "sisto@sd.dk")
-                                    (mu4e-trash-folder . "/work/Deleted Items")
-                                    (mu4e-refile-folder . "/work/Archive")
-                                    ;; Exchange does not handle this for us
-                                    (mu4e-sent-messages-behavior . sent)
+                            :vars '((user-mail-address            . "sisto@sd.dk")
+                                    (mu4e-trash-folder            . "/work/Deleted Items")
+                                    (mu4e-refile-folder           . "/work/Archive")
+                                    ;; Exchange does not handle sent messages for us
+                                    (mu4e-sent-messages-behavior  . sent)
                                     (smtpmail-default-smtp-server . "smtp.office365.com")
-                                    (smtpmail-smtp-server . "smtp.office365.com")
-                                    (smtpmail-smtp-service . 587)
-                                    (mu4e-compose-signature . (concat "\n"
-                                                                      "Venlig hilsen\n"
-                                                                      "\n"
-                                                                      "Simon Stoltze\n"
-                                                                      "Developer\n"
-                                                                      "Silkeborg Data A/S"))))))
+                                    (smtpmail-smtp-server         . "smtp.office365.com")
+                                    (smtpmail-smtp-service        . 587)
+                                    (mu4e-compose-signature       . (concat "\n"
+                                                                            "Venlig hilsen\n"
+                                                                            "\n"
+                                                                            "Simon Stoltze\n"
+                                                                            "Developer\n"
+                                                                            "Silkeborg Data A/S"))))))
       ;; Authinfo - open in emacs and add lines for each context, e.g.
       ;; machine <smtp.foo.com> login <mail@address.com> password <secret> port <587>
       (add-to-list 'auth-sources
@@ -1351,9 +1356,13 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                                                      (if (string= path "")
                                                          "Mail file is not accessible"
                                                        (nth 1 (split-string path "/"))))))))
-      ;; Add the new header to headers
-      (add-to-list 'mu4e-headers-fields
-                   '(:account . 8))
+      ;; Setup headers
+      (setq mu4e-headers-fields
+            '((:account . 8)
+              (:human-date . 12)
+              (:flags . 6)
+              (:from . 22)
+              (:thread-subject)))
       ;; Use imagemagick for images, if available
       (when (fboundp 'imagemagick-register-types)
         (imagemagick-register-types))
