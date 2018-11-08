@@ -11,6 +11,12 @@
 ;;; Code:
 ;;; *** General setup ***
 
+;;;; --- Encoding ---
+(prefer-coding-system        'utf-8)
+(set-default-coding-systems  'utf-8)
+(set-language-environment    'utf-8)
+(set-selection-coding-system 'utf-8)
+
 ;;;; --- Use-package ---
 (require 'package)
 (setq package-enable-at-startup nil)
@@ -39,12 +45,6 @@
   :config
   ;; To disable collection of benchmark data after init is done.
   (add-hook 'after-init-hook 'benchmark-init/deactivate))
-
-;;;; --- Encoding ---
-(prefer-coding-system        'utf-8)
-(set-default-coding-systems  'utf-8)
-(set-language-environment    'utf-8)
-(set-selection-coding-system 'utf-8)
 
 ;;;; --- Setup ---
 ;; Setup directories in ~/.emacs.d/
