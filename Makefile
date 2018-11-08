@@ -103,10 +103,12 @@ work-update: work-remove update work
 
 remove-work: work-remove
 
-update-work: update-work
+update-work: work-update
 
 new-comp: install
+ifneq (,$(filter Linux CYGWIN,$(platform)))
 	chsh -s /usr/bin/fish
+endif
 
 mbsync-setup:
 	$(shell test -s /home/$$USER/.gnupg/pubring.gpg || gpg2 --generate-key)
