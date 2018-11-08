@@ -11,6 +11,12 @@
 ;;; Code:
 ;;; *** General setup ***
 
+;;;; --- Encoding ---
+(prefer-coding-system        'utf-8)
+(set-default-coding-systems  'utf-8)
+(set-language-environment    'utf-8)
+(set-selection-coding-system 'utf-8)
+
 ;;;; --- Use-package ---
 (require 'package)
 (setq package-enable-at-startup nil)
@@ -39,12 +45,6 @@
   :config
   ;; To disable collection of benchmark data after init is done.
   (add-hook 'after-init-hook 'benchmark-init/deactivate))
-
-;;;; --- Encoding ---
-(prefer-coding-system        'utf-8)
-(set-default-coding-systems  'utf-8)
-(set-language-environment    'utf-8)
-(set-selection-coding-system 'utf-8)
 
 ;;;; --- Setup ---
 ;; Setup directories in ~/.emacs.d/
@@ -107,6 +107,10 @@
       vc-follow-symlinks                    t
       kept-new-versions                     64
 
+      ;; History
+      history-length                        t
+      history-delete-duplicates             t
+
       ;; Add newlines when scrolling a file
       next-line-add-newlines                t
 
@@ -114,31 +118,29 @@
       make-pointer-invisible                t
 
       ;; Garbage collector
-      gc-cons-threshold (* 100 1024 1024) ;; 100 mb
+      gc-cons-threshold                     (* 100 1024 1024) ;; 100 mb
 
       ;; Personal info
-      user-full-name    "Simon Stoltze"
-      user-mail-address (cond (at-work "sisto@sd.dk" )
-                              (t       "sstoltze@gmail.com"))
+      user-full-name                        "Simon Stoltze"
+      user-mail-address                     (cond (at-work "sisto@sd.dk" )
+                                                  (t       "sstoltze@gmail.com"))
 
       ;; Disable the bell
-      ring-bell-function 'ignore
+      ring-bell-function                    'ignore
 
       ;; Add directory name to buffer if name is not unique
-      uniquify-buffer-name-style 'forward
+      uniquify-buffer-name-style            'forward
 
       ;; Prettify symbols
-      prettify-symbols-unprettify-at-point 'right-edge
+      prettify-symbols-unprettify-at-point  'right-edge
 
       ;; Font lock
-      jit-lock-stealth-time   1
-      jit-lock-chunk-size     1000
-      jit-lock-defer-time     0.05)
+      jit-lock-stealth-time                 1
+      jit-lock-chunk-size                   1000
+      jit-lock-defer-time                   0.05)
 
-;; Weeks start monday
-(setq-default calendar-week-start-day 1
-              ;; Do not use tabs
-              indent-tabs-mode        nil)
+;; Do not use tabs
+(setq-default indent-tabs-mode              nil)
 
 ;; Delete extra lines and spaces when saving
 (add-hook 'before-save-hook
@@ -147,6 +149,9 @@
 ;; Unset suspend keys. Never used anyway
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-x C-z"))
+;; Automatic indent on pressing RET
+(global-set-key (kbd "RET")
+                'newline-and-indent)
 
 ;; Prettify symbols
 ;; C-x 8 RET to find and insert unicode char
@@ -172,8 +177,6 @@
 ;; Save history
 (use-package savehist
   :custom
-  (history-length                   t)
-  (history-delete-duplicates        t)
   (savehist-save-minibuffer-history t)
   (savehist-additional-variables    '(kill-ring
                                       search-ring
@@ -198,14 +201,13 @@
 (use-package calendar
   :defer t
   :custom
-  (calendar-week-start-day 1)
-  (calendar-date-style 'european)
-  (calendar-time-display-form
-   '(24-hours ":" minutes))
-  (calendar-date-display-form
-   '((if dayname
-         (concat dayname ", "))
-     day " " monthname " " year))
+  ;; Weeks start monday
+  (calendar-week-start-day     1)
+  (calendar-date-style         'european)
+  (calendar-time-display-form  '(24-hours ":" minutes))
+  (calendar-date-display-form  '((if dayname
+                                     (concat dayname ", "))
+                                 day " " monthname " " year))
   (calendar-mark-holidays-flag t)
   :init
   ;; Week number in calendar
@@ -319,8 +321,6 @@ point reaches the beginning or end of the buffer, stop there."
 ;; remap C-a to `smarter-move-beginning-of-line'
 (global-set-key [remap move-beginning-of-line]
                 'my/smarter-move-beginning-of-line)
-(global-set-key (kbd "RET")
-                'newline-and-indent)
 
 ;; Command for compiling .emacs.d/
 (defun byte-compile-init-dir ()
@@ -456,17 +456,24 @@ point reaches the beginning or end of the buffer, stop there."
   :bind (("C-c e" . eshell))
   :hook ((eshell-mode . (lambda ()
                           (eshell-smart-initialize)
-                          (eshell/alias "emacs" "find-file $1")
-                          (eshell/alias "magit" "magit-status")
-                          (eshell/alias "less"  "cat $1")
-                          (cond ((or (eq system-type 'gnu/linux)
-                                     (eq system-type 'cygwin))
-                                 (eshell/alias "python" "python3 $*")
-                                 (eshell/alias "pip"    "pip3 $*"))
-                                ((eq system-type 'windows-nt)
-                                 ;; Delete existing aliases
-                                 (eshell/alias "python")
-                                 (eshell/alias "pip")))
+                          ;; We only need to create aliases once
+                          (when (not (file-exists-p "~/.emacs.d/eshell/alias"))
+                            (eshell/alias "emacs" "find-file $1")
+                            (eshell/alias "magit" "magit-status")
+                            (eshell/alias "git"   "magit-status")
+                            (eshell/alias "less"  "cat $1")
+                            (cond ((or (eq system-type 'gnu/linux)
+                                       (eq system-type 'cygwin))
+                                   (eshell/alias "python" "python3 $*")
+                                   (eshell/alias "pip"    "pip3 $*"))
+                                  ((eq system-type 'windows-nt)
+                                   ;; Delete existing aliases, if any
+                                   (eshell/alias "python")
+                                   (eshell/alias "pip")
+                                   (eshell/alias "desktop"
+                                                 (concat "C:/Users/"
+                                                         (user-login-name)
+                                                         "/Desktop/")))))
                           (local-set-key (kbd "C-c h")
                                          (lambda ()
                                            "Ivy interface to eshell history."
@@ -514,7 +521,9 @@ point reaches the beginning or end of the buffer, stop there."
   (ehsell-scroll-to-bottom-on-output       nil)
   (eshell-scroll-show-maximum-output       t)
   (eshell-smart-space-goes-to-end          t)
+  ;; Banner
   (eshell-banner-message "")
+  ;; Prompt
   (eshell-prompt-function
    (lambda ()
      (let ((standard-colour "light goldenrod")
@@ -527,7 +536,7 @@ point reaches the beginning or end of the buffer, stop there."
                (propertize (user-login-name)
                            'face (list :foreground user-colour))
                " "
-               (propertize (fish-path (eshell/pwd) 20)
+               (propertize (fish-path (eshell/pwd) 30)
                            'face (list :foreground standard-colour))
                (sstoltze/make-vc-prompt)
                (propertize " >"
@@ -563,10 +572,11 @@ Can be replaced with:
           (untracked-colour "red")
           (unstaged-colour  "yellow green")
           (staged-colour    "royal blue")
-          (vc-response (or (ignore-errors (format "%s"
-                                                  (vc-responsible-backend
-                                                   default-directory)))
-                           "")))
+          (vc-response     (or (ignore-errors
+                                 (format "%s"
+                                         (vc-responsible-backend
+                                          default-directory)))
+                               "")))
       (cond ((equal vc-response "Git")
              (let ((branch    (or (ignore-errors
                                     (magit-get-current-branch))
@@ -694,31 +704,35 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          ("C-c b" . org-iswitchb)
          ("C-c a" . org-agenda))
   :custom
+  ;; Startup
   (org-ellipsis                   "…")
   (org-startup-folded             nil)
   (org-startup-indented           t)
   (org-startup-with-inline-images t)
+  ;;; Use the current window for indirect buffer display
+  (org-indirect-buffer-display    'current-window)
+  ;; Export
   (org-export-backends            (quote (ascii beamer html icalendar latex md odt)))
+  ;;; Author, email, date of creation, validation link at bottom of exported html
+  (org-html-postamble             nil)
+  (org-html-html5-fancy           t)
+  (org-html-doctype               "html5")
+  ;; Todo
   (org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
                        (sequence "WAITING(w)")))
-  (org-time-stamp-custom-formats (quote ("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>")))
-  (org-use-fast-todo-selection t)
-  ;; Allow editing invisible region if it does that you would expect
-  (org-catch-invisible-edits 'smart)
-  (org-log-done t)
-  (org-refile-use-outline-path t)
-  ;; Targets complete directly with IDO
+  (org-time-stamp-custom-formats  (quote ("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>")))
+  (org-use-fast-todo-selection    t)
+  (org-log-done                   t)
+  ;;; Round clock to 5 minute intervals, delete anything shorter
+  (org-clock-rounding-minutes     5)
+  ;;; Allow editing invisible region if it does that you would expect
+  (org-catch-invisible-edits      'smart)
+  ;; Refile
+  (org-refile-use-outline-path    t)
+  ;;; Targets complete directly with Ivy
   (org-outline-path-complete-in-steps nil)
-  ;; Allow refile to create parent tasks with confirmation
+  ;;; Allow refile to create parent tasks with confirmation
   (org-refile-allow-creating-parent-nodes (quote confirm))
-  ;; Use the current window for indirect buffer display
-  (org-indirect-buffer-display 'current-window)
-  ;; Author, email, date of creation, validation link at bottom of exported html
-  (org-html-postamble nil)
-  (org-html-html5-fancy t)
-  (org-html-doctype "html5")
-  ;; Round clock to 5 minute intervals, delete anything shorter
-  (org-clock-rounding-minutes 5)
   :init
   ;; Most GTD setup is taken from https://emacs.cafe/emacs/orgmode/gtd/2017/06/30/orgmode-gtd.html
   (let ((default-org-file  "~/.emacs.d/org-files/gtd/unsorted.org") ;; Unsorted items
