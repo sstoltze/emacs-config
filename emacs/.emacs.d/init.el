@@ -517,7 +517,7 @@ point reaches the beginning or end of the buffer, stop there."
   ;; Close buffer on exit
   (eshell-destroy-buffer-when-process-dies t)
   ;; Scrolling
-  (eshell-scroll-to-bottom-on-input        nil)
+  (eshell-scroll-to-bottom-on-input        t)
   (ehsell-scroll-to-bottom-on-output       nil)
   (eshell-scroll-show-maximum-output       t)
   (eshell-smart-space-goes-to-end          t)
@@ -556,6 +556,7 @@ point reaches the beginning or end of the buffer, stop there."
                    (setq password-cache t
                          ;; time in seconds
                          password-cache-expiry 600))))
+  (setenv "PAGER" "cat")
   ;; Could consider making the colours parameters to be
   ;; able to change them when calling in eshell-prompt-function
   (defun sstoltze/make-vc-prompt ()
