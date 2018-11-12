@@ -460,16 +460,12 @@ point reaches the beginning or end of the buffer, stop there."
                           (when (not (file-exists-p "~/.emacs.d/eshell/alias"))
                             (eshell/alias "emacs" "find-file $1")
                             (eshell/alias "magit" "magit-status")
-                            (eshell/alias "git"   "magit-status")
                             (eshell/alias "less"  "cat $1")
                             (cond ((or (eq system-type 'gnu/linux)
                                        (eq system-type 'cygwin))
                                    (eshell/alias "python" "python3 $*")
                                    (eshell/alias "pip"    "pip3 $*"))
                                   ((eq system-type 'windows-nt)
-                                   ;; Delete existing aliases, if any
-                                   (eshell/alias "python")
-                                   (eshell/alias "pip")
                                    (eshell/alias "desktop"
                                                  (concat "C:/Users/"
                                                          (user-login-name)
@@ -517,12 +513,12 @@ point reaches the beginning or end of the buffer, stop there."
   ;; Close buffer on exit
   (eshell-destroy-buffer-when-process-dies t)
   ;; Scrolling
-  (eshell-scroll-to-bottom-on-input        nil)
+  (eshell-scroll-to-bottom-on-input        t)
   (ehsell-scroll-to-bottom-on-output       nil)
   (eshell-scroll-show-maximum-output       t)
   (eshell-smart-space-goes-to-end          t)
   ;; Banner
-  (eshell-banner-message "")
+  (eshell-banner-message                   "")
   ;; Prompt
   (eshell-prompt-function
    (lambda ()
@@ -539,11 +535,11 @@ point reaches the beginning or end of the buffer, stop there."
                (propertize (fish-path (eshell/pwd) 30)
                            'face (list :foreground standard-colour))
                (sstoltze/make-vc-prompt)
-               (propertize " >"
+               (propertize ">"
                            'face (list :foreground standard-colour))
                ;; This resets text properties
                " "))))
-  (eshell-prompt-regexp "^[0-9]\\{1,2\\}:[0-9]\\{2\\} .+ .+ > ")
+  (eshell-prompt-regexp "^[0-9]\\{1,2\\}:[0-9]\\{2\\} .+ .+> ")
   :config
   (require 'em-smart)
   (require 'esh-module)
@@ -556,6 +552,7 @@ point reaches the beginning or end of the buffer, stop there."
                    (setq password-cache t
                          ;; time in seconds
                          password-cache-expiry 600))))
+  (setenv "PAGER" "cat")
   ;; Could consider making the colours parameters to be
   ;; able to change them when calling in eshell-prompt-function
   (defun sstoltze/make-vc-prompt ()
@@ -672,7 +669,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; Always enabled, do not show in mode-line
   :diminish flycheck-mode
   :hook ((prog-mode . flycheck-mode)
-         (text-mode . flycheck-mode)))
+         (text-mode . flycheck-mode))
+  :custom
+  (flycheck-highlighting-mode 'lines))
 
 ;;;; --- Auto-insert ---
 (use-package autoinsert
@@ -1123,11 +1122,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     (sleep-for 0.15)
     (kill-buffer "*Python*")
     (elpy-shell-send-region-or-buffer))
-  (global-set-key (kbd "C-c C-x C-c") 'my-restart-python-console)
-  (add-hook 'after-change-major-mode-hook
-            (lambda ()
-              (delete 'elpy-module-company
-                      'elpy-modules))))
+  (global-set-key (kbd "C-c C-x C-c") 'my-restart-python-console))
 
 ;;;; --- Ocaml ---
 (use-package tuareg
@@ -1169,9 +1164,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;; - ;;;; is on the same level as a top-level sexp
 (use-package outline-magic
   :ensure t
-  :hook ((prog-mode . outline-minor-mode))
   ;; Always enabled, do not show in mode-line
   :diminish outline-minor-mode
+  :hook ((prog-mode . outline-minor-mode))
   :bind        (("<C-tab>" . outline-cycle))
   :bind-keymap (("C-z"     . outline-mode-prefix-map)))
 
