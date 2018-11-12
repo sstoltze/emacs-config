@@ -1286,6 +1286,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
       (message-send-mail-function        'smtpmail-send-it)
       (smtpmail-stream-type              'starttls)
       (mu4e-use-fancy-chars              t)
+      ;; The standard face is a bit bright in the modeline, look for other options
+      ;; :custom-face
+      ;; (mu4e-title-face ((t (:foreground "CadetBlue2"))))
       :init
       (sstoltze/setup-epa)
       :config
