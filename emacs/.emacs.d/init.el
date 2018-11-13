@@ -705,7 +705,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :bind (("C-c l" . org-store-link)
          ("C-c c" . org-capture)
          ("C-c b" . org-iswitchb)
-         ("C-c a" . org-agenda))
+         ("C-c a" . org-agenda)
+         ;; Use counsel for org tag selection (C-c C-q)
+         ([remap org-set-tags-command] . counsel-org-tag))
   :custom
   ;; Startup
   (org-ellipsis                   "…")
@@ -801,9 +803,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (when (and at-work
              (eq system-type 'windows-nt)
              (file-exists-p "C:/Progra~2/LibreOffice/program/soffice.exe"))
-    ;; Export to .docx
-    (setq org-odt-preferred-output-format "docx"
-          org-odt-convert-processes '(("LibreOffice" "C:/Progra~2/LibreOffice/program/soffice.exe --headless --convert-to %f%x --outdir %d %i"))))
+    (with-eval-after-load 'ox-odt
+      ;; Export to .docx
+      (setq org-odt-preferred-output-format "docx"
+            org-odt-convert-processes '(("LibreOffice" "C:/Progra~2/LibreOffice/program/soffice.exe --headless --convert-to %f%x --outdir %d %i")))))
   ;; Refile settings
   ;; Exclude DONE state tasks from refile targets
   (defun bh/verify-refile-target ()
@@ -1298,7 +1301,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                            (make-mu4e-context
                             :name "gmail"
                             :match-func (lambda (msg) (when msg
-                                                   (string-prefix-p "/gmail" (mu4e-message-field msg :maildir))))
+                                                        (string-prefix-p "/gmail" (mu4e-message-field msg :maildir))))
                             :vars '((user-mail-address            . "sstoltze@gmail.com")
                                     (mu4e-trash-folder            . "/gmail/[Gmail].Trash")
                                     (mu4e-refile-folder           . "/gmail/[Gmail].Archive")
@@ -1310,7 +1313,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                            (make-mu4e-context
                             :name "work"
                             :match-func (lambda (msg) (when msg
-                                                   (string-prefix-p "/work" (mu4e-message-field msg :maildir))))
+                                                        (string-prefix-p "/work" (mu4e-message-field msg :maildir))))
                             :vars '((user-mail-address            . "sisto@sd.dk")
                                     (mu4e-trash-folder            . "/work/Deleted Items")
                                     (mu4e-refile-folder           . "/work/Archive")
