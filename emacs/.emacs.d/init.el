@@ -137,7 +137,13 @@
       ;; Font lock
       jit-lock-stealth-time                 1
       jit-lock-chunk-size                   1000
-      jit-lock-defer-time                   0.05)
+      jit-lock-defer-time                   0.05
+
+      ;; Themes
+      custom-theme-directory                "~/.emacs.d/themes/"
+      custom-safe-themes                    (quote
+                                             ("491417843dee886b649cf0dd70c8c86c8bccbbe373239058ba9900b348bad5cf"
+                                              default)))
 
 ;; Do not use tabs
 (setq-default indent-tabs-mode              nil)
@@ -375,11 +381,6 @@ point reaches the beginning or end of the buffer, stop there."
  	 (frame-pixel-top    (truncate (* (- main-pixel-height frame-pixel-height) *sstoltze/position-factor*))))
     (set-frame-position (selected-frame) frame-pixel-left  frame-pixel-top)
     (set-frame-size     (selected-frame) frame-pixel-width frame-pixel-height t)))
-;; Frame resizing and theme
-(setq custom-theme-directory "~/.emacs.d/themes/"
-      custom-safe-themes (quote
-                          ("491417843dee886b649cf0dd70c8c86c8bccbbe373239058ba9900b348bad5cf"
-                           default)))
 (cond ((display-graphic-p) ;; Window system
        (load-theme 'deeper-blue t)
        ;; Fringe (default): black, background: #181a26
@@ -387,8 +388,7 @@ point reaches the beginning or end of the buffer, stop there."
          (set-face-background 'highlight-indentation-face "#081218"))
        ;; The default "Yellow" of deeper-blue is not great
        (set-face-foreground 'warning "goldenrod1")
-       (setq frame-resize-pixelwise t)
-       (sstoltze/set-normal-frame))
+       (setq frame-resize-pixelwise t))
       (t ;; Terminal
        (use-package hc-zenburn-theme
          :ensure t
@@ -1195,6 +1195,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     (setq default-directory desktop-dir)
     (set-register ?d (cons 'file desktop-dir)))
 
+  ;; Set starting frame
+  (sstoltze/set-normal-frame)
   ;; Alt-enter toggles screensize
   (defmacro handle-fullscreen-mode (func)
     `(progn
