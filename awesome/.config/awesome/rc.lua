@@ -291,7 +291,7 @@ awful.screen.connect_for_each_screen(function(s)
 
     -- Each screen has its own tag table.
 --    awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
-    awful.tag({ "Main", "Net", "Music", "Math", "Video", "Skype", 7, 8, "VPN"  }, s, awful.layout.layouts[3])
+    awful.tag({ "Main", "Net", "Music", "Math", "Video", "Skype", "Steam", 8, "VPN"  }, s, awful.layout.layouts[3])
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
@@ -638,6 +638,11 @@ awful.rules.rules = {
     { rule = { class = "Emacs" },
       properties = { floating = true,
                      maximized = true } },
+    { rule = { class = "Steam" },
+      properties = { floating = true,
+                     maximized = true,
+                     screen = 1,
+                     tag = "Steam" } },
     { rule = { class = "Evince" },
       properties = { floating = true } },
     { rule = { class = "Code" },
