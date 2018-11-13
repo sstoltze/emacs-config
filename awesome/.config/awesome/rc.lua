@@ -638,6 +638,8 @@ awful.rules.rules = {
     { rule = { class = "Emacs" },
       properties = { floating = true,
                      maximized = true } },
+    { rule = { class = "Evince" },
+      properties = { floating = true } },
     { rule = { class = "Code" },
       properties = { floating = true } },
     { rule = { class = "Skype" },
