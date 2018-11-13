@@ -525,9 +525,10 @@ point reaches the beginning or end of the buffer, stop there."
   ;; Prompt
   (eshell-prompt-function
    (lambda ()
-     (let ((standard-colour "light goldenrod")
-           (time-colour     "gray")
-           (user-colour     "light sky blue"))
+     (let ((path-colour   "light goldenrod")
+           (time-colour   "gray")
+           (user-colour   "light sky blue")
+           (prompt-colour "gray80"))
        (concat (propertize (format-time-string "%H:%M"
                                                (current-time))
                            'face (list :foreground time-colour))
@@ -536,10 +537,10 @@ point reaches the beginning or end of the buffer, stop there."
                            'face (list :foreground user-colour))
                " "
                (propertize (fish-path (eshell/pwd) 30)
-                           'face (list :foreground standard-colour))
+                           'face (list :foreground path-colour))
                (sstoltze/make-vc-prompt)
                (propertize ">"
-                           'face (list :foreground standard-colour))
+                           'face (list :foreground prompt-colour))
                ;; This resets text properties
                " "))))
   (eshell-prompt-regexp "^[0-9]\\{1,2\\}:[0-9]\\{2\\} .+ .+> ")
@@ -568,15 +569,15 @@ Can be replaced with:
                            (vc-responsible-backend
                             default-directory)))
     \"\")"
-    (let ((standard-colour  "pale goldenrod")
-          (untracked-colour "red")
-          (unstaged-colour  "yellow green")
-          (staged-colour    "royal blue")
-          (vc-response     (or (ignore-errors
-                                 (format "%s"
-                                         (vc-responsible-backend
-                                          default-directory)))
-                               "")))
+    (let ((vc-standard-colour "pale goldenrod")
+          (untracked-colour   "red")
+          (unstaged-colour    "yellow green")
+          (staged-colour      "royal blue")
+          (vc-response        (or (ignore-errors
+                                    (format "%s"
+                                            (vc-responsible-backend
+                                             default-directory)))
+                                  "")))
       (cond ((equal vc-response "Git")
              (let ((branch    (or (ignore-errors
                                     (magit-get-current-branch))
@@ -592,17 +593,17 @@ Can be replaced with:
                                   0)))
                (concat (propertize " ("
                                    'face (list :foreground
-                                               standard-colour))
+                                               vc-standard-colour))
                        (propertize branch
                                    'face (list :foreground
-                                               standard-colour))
+                                               vc-standard-colour))
                        (propertize (if (> (+ untracked unstaged staged) 0)
                                        "|"
                                      (if (equal branch "Git")
                                          ""
                                        "|✔"))
                                    'face (list :foreground
-                                               standard-colour))
+                                               vc-standard-colour))
                        (propertize (if (> untracked 0)
                                        (format "…%s" untracked)
                                      "")
@@ -620,15 +621,15 @@ Can be replaced with:
                                                staged-colour))
                        (propertize ")"
                                    'face (list :foreground
-                                               standard-colour)))))
+                                               vc-standard-colour)))))
             ((equal vc-response "")
              (propertize  ""
                           'face (list :foreground
-                                      standard-colour)))
+                                      vc-standard-colour)))
             (t
              (propertize (format " (%s)" vc-response)
                          'face (list :foreground
-                                     standard-colour))))))
+                                     vc-standard-colour))))))
   (defun fish-path (path max-len)
     "Return a potentially trimmed-down version of the directory PATH, replacing
 parent directories with their initial characters to try to get the character
