@@ -335,52 +335,6 @@ point reaches the beginning or end of the buffer, stop there."
   (byte-recompile-directory user-emacs-directory 0))
 
 ;;;; --- Frame-setup ---
-;; Set initial frame size and position
-(defvar *sstoltze/position-factor*   0.40)
-(defvar *sstoltze/width-factor*      0.85)
-(defvar *sstoltze/height-factor*     0.90)
-(defvar *sstoltze/half-width-factor* 0.45)
-(defun sstoltze/get-main-monitor-size ()
-  "Get pixels for multiple-monitor setup."
-  (let* ((monitors          (display-monitor-attributes-list))
-         (main-monitor      (car monitors))
-         (main-workarea     (cadr main-monitor))
-         (main-pixel-width  (nth 3 main-workarea))
-         (main-pixel-height (nth 4 main-workarea)))
-    (list main-pixel-width main-pixel-height)))
-(defun sstoltze/set-normal-frame ()
-  "Standard frame setup."
-  (let* ((pixels             (sstoltze/get-main-monitor-size))
-         (main-pixel-width   (nth 0 pixels))
-         (main-pixel-height  (nth 1 pixels))
- 	 (frame-pixel-width  (truncate (* main-pixel-width  *sstoltze/width-factor*)))
-         (frame-pixel-height (truncate (* main-pixel-height *sstoltze/height-factor*)))
-         (frame-pixel-left   (truncate (* (- main-pixel-width  frame-pixel-width)  *sstoltze/position-factor*)))
- 	 (frame-pixel-top    (truncate (* (- main-pixel-height frame-pixel-height) *sstoltze/position-factor*))))
-    (set-frame-position (selected-frame) frame-pixel-left  frame-pixel-top)
-    (set-frame-size     (selected-frame) frame-pixel-width frame-pixel-height t)))
-(defun sstoltze/set-left-small-frame ()
-  "Frame on the left."
-  (let* ((pixels             (sstoltze/get-main-monitor-size))
-         (main-pixel-width   (nth 0 pixels))
-         (main-pixel-height  (nth 1 pixels))
-         (frame-pixel-width  (truncate (* main-pixel-width  *sstoltze/half-width-factor*)))
-         (frame-pixel-height (truncate (* main-pixel-height *sstoltze/height-factor*)))
-         (frame-pixel-left   0)
- 	 (frame-pixel-top    (truncate (* (- main-pixel-height frame-pixel-height) *sstoltze/position-factor*))))
-    (set-frame-position (selected-frame) frame-pixel-left  frame-pixel-top)
-    (set-frame-size     (selected-frame) frame-pixel-width frame-pixel-height t)))
-(defun sstoltze/set-right-small-frame ()
-  "Frame on the right."
-  (let* ((pixels             (sstoltze/get-main-monitor-size))
-         (main-pixel-width   (nth 0 pixels))
-         (main-pixel-height  (nth 1 pixels))
-         (frame-pixel-width  (truncate (* main-pixel-width  *sstoltze/half-width-factor*)))
-         (frame-pixel-height (truncate (* main-pixel-height *sstoltze/height-factor*)))
-         (frame-pixel-left   (truncate (- (* main-pixel-width 0.98) frame-pixel-width)))
- 	 (frame-pixel-top    (truncate (* (- main-pixel-height frame-pixel-height) *sstoltze/position-factor*))))
-    (set-frame-position (selected-frame) frame-pixel-left  frame-pixel-top)
-    (set-frame-size     (selected-frame) frame-pixel-width frame-pixel-height t)))
 (cond ((display-graphic-p) ;; Window system
        (load-theme 'deeper-blue t)
        ;; Fringe (default): black, background: #181a26
@@ -1185,7 +1139,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                 ("M-p"     . outline-previous-visible-heading))
   :bind-keymap (("C-z"     . outline-mode-prefix-map)))
 
-;;;; --- System specific ---
+;;;; --- System specific setup ---
 (when (executable-find "fish")
   (use-package fish-completion
     :ensure t
@@ -1203,6 +1157,53 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     (setq default-directory desktop-dir)
     (set-register ?d (cons 'file desktop-dir)))
 
+  ;; This code interacts strangely with awesomewm, so it is windows-specific for now
+  ;; Set initial frame size and position
+  (defvar *sstoltze/position-factor*   0.40)
+  (defvar *sstoltze/width-factor*      0.85)
+  (defvar *sstoltze/height-factor*     0.90)
+  (defvar *sstoltze/half-width-factor* 0.45)
+  (defun sstoltze/get-main-monitor-size ()
+    "Get pixels for multiple-monitor setup."
+    (let* ((monitors          (display-monitor-attributes-list))
+           (main-monitor      (car monitors))
+           (main-workarea     (cadr main-monitor))
+           (main-pixel-width  (nth 3 main-workarea))
+           (main-pixel-height (nth 4 main-workarea)))
+      (list main-pixel-width main-pixel-height)))
+  (defun sstoltze/set-normal-frame ()
+    "Standard frame setup."
+    (let* ((pixels             (sstoltze/get-main-monitor-size))
+           (main-pixel-width   (nth 0 pixels))
+           (main-pixel-height  (nth 1 pixels))
+           (frame-pixel-width  (truncate (* main-pixel-width  *sstoltze/width-factor*)))
+           (frame-pixel-height (truncate (* main-pixel-height *sstoltze/height-factor*)))
+           (frame-pixel-left   (truncate (* (- main-pixel-width  frame-pixel-width)  *sstoltze/position-factor*)))
+           (frame-pixel-top    (truncate (* (- main-pixel-height frame-pixel-height) *sstoltze/position-factor*))))
+      (set-frame-position (selected-frame) frame-pixel-left  frame-pixel-top)
+      (set-frame-size     (selected-frame) frame-pixel-width frame-pixel-height t)))
+  (defun sstoltze/set-left-small-frame ()
+    "Frame on the left."
+    (let* ((pixels             (sstoltze/get-main-monitor-size))
+           (main-pixel-width   (nth 0 pixels))
+           (main-pixel-height  (nth 1 pixels))
+           (frame-pixel-width  (truncate (* main-pixel-width  *sstoltze/half-width-factor*)))
+           (frame-pixel-height (truncate (* main-pixel-height *sstoltze/height-factor*)))
+           (frame-pixel-left   0)
+           (frame-pixel-top    (truncate (* (- main-pixel-height frame-pixel-height) *sstoltze/position-factor*))))
+      (set-frame-position (selected-frame) frame-pixel-left  frame-pixel-top)
+      (set-frame-size     (selected-frame) frame-pixel-width frame-pixel-height t)))
+  (defun sstoltze/set-right-small-frame ()
+    "Frame on the right."
+    (let* ((pixels             (sstoltze/get-main-monitor-size))
+           (main-pixel-width   (nth 0 pixels))
+           (main-pixel-height  (nth 1 pixels))
+           (frame-pixel-width  (truncate (* main-pixel-width  *sstoltze/half-width-factor*)))
+           (frame-pixel-height (truncate (* main-pixel-height *sstoltze/height-factor*)))
+           (frame-pixel-left   (truncate (- (* main-pixel-width 0.98) frame-pixel-width)))
+           (frame-pixel-top    (truncate (* (- main-pixel-height frame-pixel-height) *sstoltze/position-factor*))))
+      (set-frame-position (selected-frame) frame-pixel-left  frame-pixel-top)
+      (set-frame-size     (selected-frame) frame-pixel-width frame-pixel-height t)))
   ;; Set starting frame
   (sstoltze/set-normal-frame)
   ;; Alt-enter toggles screensize
