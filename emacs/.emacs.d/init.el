@@ -674,8 +674,13 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :diminish flycheck-mode
   :hook ((prog-mode . flycheck-mode)
          (text-mode . flycheck-mode))
-  :custom
-  (flycheck-highlighting-mode 'lines))
+  ;; Already bound to M-g n and M-g p, so this can be removed
+  ;; :bind
+  ;; (("M-n" . flycheck-next-error)
+  ;;  ("M-p" . flycheck-previous-error))
+  ;; :custom
+  ;; (flycheck-highlighting-mode 'lines)
+  )
 
 ;;;; --- Auto-insert ---
 (use-package autoinsert
@@ -723,8 +728,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (org-html-html5-fancy           t)
   (org-html-doctype               "html5")
   ;; Todo
-  (org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
-                       (sequence "WAITING(w)")))
+  (org-todo-keywords '((sequence "✦ TODO(t)" "★ NEXT(n)" "|" "✔ DONE(d)")
+                       (sequence "⚑ WAITING(w)" "|" "❌ CANCELED(c)")))
   (org-time-stamp-custom-formats  (quote ("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>")))
   (org-use-fast-todo-selection    t)
   (org-log-done                   t)
@@ -943,11 +948,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
       (replace-regexp-in-string "\n" ""
                                 (shell-command-to-string
                                  (format "cygpath.exe --windows %s" filename))))
-    (defun cyg-lisp-to-slime-translation (filename)
+    (defun cyg-slime-from-lisp-translation (filename)
       (replace-regexp-in-string "\n" "" (shell-command-to-string
                                          (format "cygpath.exe --unix %s" filename))))
-    (setq slime-to-lisp-filename-function #'cyg-slime-to-lisp-translation
-          lisp-to-slime-filename-function #'cyg-lisp-to-slime-translation)))
+    (setq slime-to-lisp-filename-function   #'cyg-slime-to-lisp-translation
+          slime-from-lisp-filename-function #'cyg-slime-from-lisp-translation)))
 
 ;;;; --- LaTeX ---
 (use-package tex
@@ -1174,7 +1179,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; Always enabled, do not show in mode-line
   :diminish outline-minor-mode
   :hook ((prog-mode . outline-minor-mode))
-  :bind        (("<C-tab>" . outline-cycle))
+  :bind        (("<C-tab>" . outline-cycle)
+                ("M-n"     . outline-next-visible-heading)
+                ("M-p"     . outline-previous-visible-heading))
   :bind-keymap (("C-z"     . outline-mode-prefix-map)))
 
 ;;;; --- System specific ---
@@ -1303,7 +1310,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                            (make-mu4e-context
                             :name "gmail"
                             :match-func (lambda (msg) (when msg
-                                                        (string-prefix-p "/gmail" (mu4e-message-field msg :maildir))))
+                                                   (string-prefix-p "/gmail" (mu4e-message-field msg :maildir))))
                             :vars '((user-mail-address            . "sstoltze@gmail.com")
                                     (mu4e-trash-folder            . "/gmail/[Gmail].Trash")
                                     (mu4e-refile-folder           . "/gmail/[Gmail].Archive")
@@ -1315,7 +1322,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                            (make-mu4e-context
                             :name "work"
                             :match-func (lambda (msg) (when msg
-                                                        (string-prefix-p "/work" (mu4e-message-field msg :maildir))))
+                                                   (string-prefix-p "/work" (mu4e-message-field msg :maildir))))
                             :vars '((user-mail-address            . "sisto@sd.dk")
                                     (mu4e-trash-folder            . "/work/Deleted Items")
                                     (mu4e-refile-folder           . "/work/Archive")
