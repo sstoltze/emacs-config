@@ -334,6 +334,18 @@ point reaches the beginning or end of the buffer, stop there."
   (interactive)
   (byte-recompile-directory user-emacs-directory 0))
 
+(defun sstoltze/replace-danish-in-buffer ()
+  "Replace weird characters in copied danish text."
+  (interactive)
+  (save-excursion
+    (dolist (l '(("\346" . "æ")
+                 ("\370" . "ø")
+                 ("\345" . "å")
+                 ("\351" . "é")))
+      (beginning-of-buffer)
+      (while (re-search-forward (car l) nil t)
+        (replace-match (cdr l))))))
+
 ;;;; --- Frame-setup ---
 (cond ((display-graphic-p) ;; Window system
        (load-theme 'deeper-blue t)
