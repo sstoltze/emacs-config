@@ -137,7 +137,13 @@
       ;; Font lock
       jit-lock-stealth-time                 1
       jit-lock-chunk-size                   1000
-      jit-lock-defer-time                   0.05)
+      jit-lock-defer-time                   0.05
+
+      ;; Themes
+      custom-theme-directory                "~/.emacs.d/themes/"
+      custom-safe-themes                    (quote
+                                             ("491417843dee886b649cf0dd70c8c86c8bccbbe373239058ba9900b348bad5cf"
+                                              default)))
 
 ;; Do not use tabs
 (setq-default indent-tabs-mode              nil)
@@ -329,57 +335,6 @@ point reaches the beginning or end of the buffer, stop there."
   (byte-recompile-directory user-emacs-directory 0))
 
 ;;;; --- Frame-setup ---
-;; Set initial frame size and position
-(defvar *sstoltze/position-factor*   0.40)
-(defvar *sstoltze/width-factor*      0.85)
-(defvar *sstoltze/height-factor*     0.90)
-(defvar *sstoltze/half-width-factor* 0.45)
-(defun sstoltze/get-main-monitor-size ()
-  "Get pixels for multiple-monitor setup."
-  (let* ((monitors          (display-monitor-attributes-list))
-         (main-monitor      (car monitors))
-         (main-workarea     (cadr main-monitor))
-         (main-pixel-width  (nth 3 main-workarea))
-         (main-pixel-height (nth 4 main-workarea)))
-    (list main-pixel-width main-pixel-height)))
-(defun sstoltze/set-normal-frame ()
-  "Standard frame setup."
-  (let* ((pixels             (sstoltze/get-main-monitor-size))
-         (main-pixel-width   (nth 0 pixels))
-         (main-pixel-height  (nth 1 pixels))
- 	 (frame-pixel-width  (truncate (* main-pixel-width  *sstoltze/width-factor*)))
-         (frame-pixel-height (truncate (* main-pixel-height *sstoltze/height-factor*)))
-         (frame-pixel-left   (truncate (* (- main-pixel-width  frame-pixel-width)  *sstoltze/position-factor*)))
- 	 (frame-pixel-top    (truncate (* (- main-pixel-height frame-pixel-height) *sstoltze/position-factor*))))
-    (set-frame-position (selected-frame) frame-pixel-left  frame-pixel-top)
-    (set-frame-size     (selected-frame) frame-pixel-width frame-pixel-height t)))
-(defun sstoltze/set-left-small-frame ()
-  "Frame on the left."
-  (let* ((pixels             (sstoltze/get-main-monitor-size))
-         (main-pixel-width   (nth 0 pixels))
-         (main-pixel-height  (nth 1 pixels))
-         (frame-pixel-width  (truncate (* main-pixel-width  *sstoltze/half-width-factor*)))
-         (frame-pixel-height (truncate (* main-pixel-height *sstoltze/height-factor*)))
-         (frame-pixel-left   0)
- 	 (frame-pixel-top    (truncate (* (- main-pixel-height frame-pixel-height) *sstoltze/position-factor*))))
-    (set-frame-position (selected-frame) frame-pixel-left  frame-pixel-top)
-    (set-frame-size     (selected-frame) frame-pixel-width frame-pixel-height t)))
-(defun sstoltze/set-right-small-frame ()
-  "Frame on the right."
-  (let* ((pixels             (sstoltze/get-main-monitor-size))
-         (main-pixel-width   (nth 0 pixels))
-         (main-pixel-height  (nth 1 pixels))
-         (frame-pixel-width  (truncate (* main-pixel-width  *sstoltze/half-width-factor*)))
-         (frame-pixel-height (truncate (* main-pixel-height *sstoltze/height-factor*)))
-         (frame-pixel-left   (truncate (- (* main-pixel-width 0.98) frame-pixel-width)))
- 	 (frame-pixel-top    (truncate (* (- main-pixel-height frame-pixel-height) *sstoltze/position-factor*))))
-    (set-frame-position (selected-frame) frame-pixel-left  frame-pixel-top)
-    (set-frame-size     (selected-frame) frame-pixel-width frame-pixel-height t)))
-;; Frame resizing and theme
-(setq custom-theme-directory "~/.emacs.d/themes/"
-      custom-safe-themes (quote
-                          ("491417843dee886b649cf0dd70c8c86c8bccbbe373239058ba9900b348bad5cf"
-                           default)))
 (cond ((display-graphic-p) ;; Window system
        (load-theme 'deeper-blue t)
        ;; Fringe (default): black, background: #181a26
@@ -387,8 +342,7 @@ point reaches the beginning or end of the buffer, stop there."
          (set-face-background 'highlight-indentation-face "#081218"))
        ;; The default "Yellow" of deeper-blue is not great
        (set-face-foreground 'warning "goldenrod1")
-       (setq frame-resize-pixelwise t)
-       (sstoltze/set-normal-frame))
+       (setq frame-resize-pixelwise t))
       (t ;; Terminal
        (use-package hc-zenburn-theme
          :ensure t
@@ -674,8 +628,13 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :diminish flycheck-mode
   :hook ((prog-mode . flycheck-mode)
          (text-mode . flycheck-mode))
-  :custom
-  (flycheck-highlighting-mode 'lines))
+  ;; Already bound to M-g n and M-g p, so this can be removed
+  ;; :bind
+  ;; (("M-n" . flycheck-next-error)
+  ;;  ("M-p" . flycheck-previous-error))
+  ;; :custom
+  ;; (flycheck-highlighting-mode 'lines)
+  )
 
 ;;;; --- Auto-insert ---
 (use-package autoinsert
@@ -723,8 +682,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (org-html-html5-fancy           t)
   (org-html-doctype               "html5")
   ;; Todo
-  (org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
-                       (sequence "WAITING(w)")))
+  (org-todo-keywords '((sequence "✦ TODO(t)" "★ NEXT(n)" "|" "✔ DONE(d)")
+                       ;; Symbols can be found in Symbola, http://users.teilar.gr/~g1951d/
+                       (sequence "⚑ WAITING(w)" "|" "❌ CANCELED(c)")))
   (org-time-stamp-custom-formats  (quote ("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>")))
   (org-use-fast-todo-selection    t)
   (org-log-done                   t)
@@ -943,11 +903,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
       (replace-regexp-in-string "\n" ""
                                 (shell-command-to-string
                                  (format "cygpath.exe --windows %s" filename))))
-    (defun cyg-lisp-to-slime-translation (filename)
+    (defun cyg-slime-from-lisp-translation (filename)
       (replace-regexp-in-string "\n" "" (shell-command-to-string
                                          (format "cygpath.exe --unix %s" filename))))
-    (setq slime-to-lisp-filename-function #'cyg-slime-to-lisp-translation
-          lisp-to-slime-filename-function #'cyg-lisp-to-slime-translation)))
+    (setq slime-to-lisp-filename-function   #'cyg-slime-to-lisp-translation
+          slime-from-lisp-filename-function #'cyg-slime-from-lisp-translation)))
 
 ;;;; --- LaTeX ---
 (use-package tex
@@ -1174,10 +1134,12 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; Always enabled, do not show in mode-line
   :diminish outline-minor-mode
   :hook ((prog-mode . outline-minor-mode))
-  :bind        (("<C-tab>" . outline-cycle))
+  :bind        (("<C-tab>" . outline-cycle)
+                ("M-n"     . outline-next-visible-heading)
+                ("M-p"     . outline-previous-visible-heading))
   :bind-keymap (("C-z"     . outline-mode-prefix-map)))
 
-;;;; --- System specific ---
+;;;; --- System specific setup ---
 (when (executable-find "fish")
   (use-package fish-completion
     :ensure t
@@ -1195,6 +1157,55 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     (setq default-directory desktop-dir)
     (set-register ?d (cons 'file desktop-dir)))
 
+  ;; This code interacts strangely with awesomewm, so it is windows-specific for now
+  ;; Set initial frame size and position
+  (defvar *sstoltze/position-factor*   0.40)
+  (defvar *sstoltze/width-factor*      0.85)
+  (defvar *sstoltze/height-factor*     0.90)
+  (defvar *sstoltze/half-width-factor* 0.45)
+  (defun sstoltze/get-main-monitor-size ()
+    "Get pixels for multiple-monitor setup."
+    (let* ((monitors          (display-monitor-attributes-list))
+           (main-monitor      (car monitors))
+           (main-workarea     (cadr main-monitor))
+           (main-pixel-width  (nth 3 main-workarea))
+           (main-pixel-height (nth 4 main-workarea)))
+      (list main-pixel-width main-pixel-height)))
+  (defun sstoltze/set-normal-frame ()
+    "Standard frame setup."
+    (let* ((pixels             (sstoltze/get-main-monitor-size))
+           (main-pixel-width   (nth 0 pixels))
+           (main-pixel-height  (nth 1 pixels))
+           (frame-pixel-width  (truncate (* main-pixel-width  *sstoltze/width-factor*)))
+           (frame-pixel-height (truncate (* main-pixel-height *sstoltze/height-factor*)))
+           (frame-pixel-left   (truncate (* (- main-pixel-width  frame-pixel-width)  *sstoltze/position-factor*)))
+           (frame-pixel-top    (truncate (* (- main-pixel-height frame-pixel-height) *sstoltze/position-factor*))))
+      (set-frame-position (selected-frame) frame-pixel-left  frame-pixel-top)
+      (set-frame-size     (selected-frame) frame-pixel-width frame-pixel-height t)))
+  (defun sstoltze/set-left-small-frame ()
+    "Frame on the left."
+    (let* ((pixels             (sstoltze/get-main-monitor-size))
+           (main-pixel-width   (nth 0 pixels))
+           (main-pixel-height  (nth 1 pixels))
+           (frame-pixel-width  (truncate (* main-pixel-width  *sstoltze/half-width-factor*)))
+           (frame-pixel-height (truncate (* main-pixel-height *sstoltze/height-factor*)))
+           (frame-pixel-left   0)
+           (frame-pixel-top    (truncate (* (- main-pixel-height frame-pixel-height) *sstoltze/position-factor*))))
+      (set-frame-position (selected-frame) frame-pixel-left  frame-pixel-top)
+      (set-frame-size     (selected-frame) frame-pixel-width frame-pixel-height t)))
+  (defun sstoltze/set-right-small-frame ()
+    "Frame on the right."
+    (let* ((pixels             (sstoltze/get-main-monitor-size))
+           (main-pixel-width   (nth 0 pixels))
+           (main-pixel-height  (nth 1 pixels))
+           (frame-pixel-width  (truncate (* main-pixel-width  *sstoltze/half-width-factor*)))
+           (frame-pixel-height (truncate (* main-pixel-height *sstoltze/height-factor*)))
+           (frame-pixel-left   (truncate (- (* main-pixel-width 0.98) frame-pixel-width)))
+           (frame-pixel-top    (truncate (* (- main-pixel-height frame-pixel-height) *sstoltze/position-factor*))))
+      (set-frame-position (selected-frame) frame-pixel-left  frame-pixel-top)
+      (set-frame-size     (selected-frame) frame-pixel-width frame-pixel-height t)))
+  ;; Set starting frame
+  (sstoltze/set-normal-frame)
   ;; Alt-enter toggles screensize
   (defmacro handle-fullscreen-mode (func)
     `(progn
@@ -1301,7 +1312,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                            (make-mu4e-context
                             :name "gmail"
                             :match-func (lambda (msg) (when msg
-                                                        (string-prefix-p "/gmail" (mu4e-message-field msg :maildir))))
+                                                   (string-prefix-p "/gmail" (mu4e-message-field msg :maildir))))
                             :vars '((user-mail-address            . "sstoltze@gmail.com")
                                     (mu4e-trash-folder            . "/gmail/[Gmail].Trash")
                                     (mu4e-refile-folder           . "/gmail/[Gmail].Archive")
@@ -1313,7 +1324,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                            (make-mu4e-context
                             :name "work"
                             :match-func (lambda (msg) (when msg
-                                                        (string-prefix-p "/work" (mu4e-message-field msg :maildir))))
+                                                   (string-prefix-p "/work" (mu4e-message-field msg :maildir))))
                             :vars '((user-mail-address            . "sisto@sd.dk")
                                     (mu4e-trash-folder            . "/work/Deleted Items")
                                     (mu4e-refile-folder           . "/work/Archive")
