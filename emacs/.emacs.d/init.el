@@ -682,9 +682,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (org-html-html5-fancy           t)
   (org-html-doctype               "html5")
   ;; Todo
-  (org-todo-keywords '((sequence "✦ TODO(t)" "★ NEXT(n)" "|" "✔ DONE(d)")
+  (org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
                        ;; Symbols can be found in Symbola, http://users.teilar.gr/~g1951d/
-                       (sequence "⚑ WAITING(w)" "|" "❌ CANCELED(c)")))
+                       ;; ✦ ★ ✔ ⚑ ❌
+                       (sequence "WAITING(w)" "|" "CANCELED(c)")))
   (org-time-stamp-custom-formats  (quote ("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>")))
   (org-use-fast-todo-selection    t)
   (org-log-done                   t)
