@@ -1,9 +1,8 @@
 [user]
-	name = sisto
-	email = sisto@sd.dk
+	name = sstoltze
+	email = sstoltze@gmail.com
 [core]
 	editor = emacs
-	autocrlf = input
 [alias]
         lg           = !"git lg2"
         lg-sim       = !"git lg --simplify-by-decoration"

@@ -334,6 +334,18 @@ point reaches the beginning or end of the buffer, stop there."
   (interactive)
   (byte-recompile-directory user-emacs-directory 0))
 
+(defun sstoltze/replace-danish-in-buffer ()
+  "Replace weird characters in copied danish text."
+  (interactive)
+  (save-excursion
+    (dolist (l '(("\346" . "æ")
+                 ("\370" . "ø")
+                 ("\345" . "å")
+                 ("\351" . "é")))
+      (beginning-of-buffer)
+      (while (re-search-forward (car l) nil t)
+        (replace-match (cdr l))))))
+
 ;;;; --- Frame-setup ---
 (cond ((display-graphic-p) ;; Window system
        (load-theme 'deeper-blue t)
@@ -682,9 +694,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (org-html-html5-fancy           t)
   (org-html-doctype               "html5")
   ;; Todo
-  (org-todo-keywords '((sequence "✦ TODO(t)" "★ NEXT(n)" "|" "✔ DONE(d)")
+  (org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
                        ;; Symbols can be found in Symbola, http://users.teilar.gr/~g1951d/
-                       (sequence "⚑ WAITING(w)" "|" "❌ CANCELED(c)")))
+                       ;; ✦ ★ ✔ ⚑ ❌
+                       (sequence "WAITING(w)" "|" "CANCELED(c)")))
   (org-time-stamp-custom-formats  (quote ("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>")))
   (org-use-fast-todo-selection    t)
   (org-log-done                   t)
