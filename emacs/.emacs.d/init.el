@@ -756,7 +756,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
           ;; Possibly change levels here
           org-refile-targets `((,project-org-file  :maxlevel . 3)
                                (,schedule-org-file :level    . 1)
-                               (,archive-org-file  :level    . 1)
+                               (,archive-org-file  :maxlevel . 2)
                                (,journal-org-file  :maxlevel . 3)))
     (set-register ?u (cons 'file default-org-file))
     (set-register ?a (cons 'file archive-org-file))
