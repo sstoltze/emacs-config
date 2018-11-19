@@ -85,7 +85,8 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; At work?
-(defvar at-work (equal (user-login-name) "sisto"))
+(defvar at-work (equal (user-login-name)
+                       "sisto"))
 
 ;; General variables
 (setq inhibit-startup-screen                t
@@ -138,6 +139,10 @@
       jit-lock-stealth-time                 1
       jit-lock-chunk-size                   1000
       jit-lock-defer-time                   0.05
+
+      ;; Use memory to improve speed
+      ;; Possibly this does not improve anything, so delete if any issues show up
+      inhibit-compacting-font-caches        t
 
       ;; Themes
       custom-theme-directory                "~/.emacs.d/themes/"
@@ -774,7 +779,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                '("ss" "#+BEGIN_SRC ? :results silent\n\n#+END_SRC"))
   ;; At work
   (when (and at-work
-             (eq system-type 'windows-nt)
              (file-exists-p "C:/Progra~2/LibreOffice/program/soffice.exe"))
     (with-eval-after-load 'ox-odt
       ;; Export to .docx
