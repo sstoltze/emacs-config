@@ -516,6 +516,14 @@ point reaches the beginning or end of the buffer, stop there."
                " "))))
   (eshell-prompt-regexp "^[0-9]\\{1,2\\}:[0-9]\\{2\\} .+ .+> ")
   :config
+  (use-package esh-autosuggest
+    :ensure t
+    :config
+    (esh-autosuggest-mode 1)
+    ;; Match fish colours for suggestion
+    (set-face-attribute 'company-preview-common nil
+                        :foreground "gray40"
+                        :background (face-background 'default)))
   (require 'em-smart)
   (require 'esh-module)
   (with-eval-after-load 'esh-module
