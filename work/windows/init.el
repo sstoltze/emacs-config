@@ -430,6 +430,7 @@ point reaches the beginning or end of the buffer, stop there."
   :bind (("C-c e" . eshell))
   :hook ((eshell-mode . (lambda ()
                           (eshell-smart-initialize)
+                          (esh-autosuggest-mode 1)
                           ;; We only need to create aliases once
                           (when (not (file-exists-p "~/.emacs.d/eshell/alias"))
                             (eshell/alias "emacs" "find-file $1")
@@ -519,7 +520,6 @@ point reaches the beginning or end of the buffer, stop there."
   (use-package esh-autosuggest
     :ensure t
     :config
-    (esh-autosuggest-mode 1)
     ;; Match fish colours for suggestion
     (set-face-attribute 'company-preview-common nil
                         :foreground "gray40"
