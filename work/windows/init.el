@@ -808,6 +808,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
      (ruby       . t)
      (R          . t)
      (latex      . t)
+     (shell      . t)
      (sql        . t)
      (stan       . t)))
   (setq org-confirm-babel-evaluate nil
@@ -871,6 +872,15 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; Sort recentf by timestamp
   (add-to-list 'ivy-sort-functions-alist
                '(counsel-recentf . file-newer-than-file-p))
+  ;; Work specific views
+  (when at-work
+    (add-to-list 'ivy-views
+                 '("sas {}"
+                   (horz
+                    (file "C:/Users/sisto/Desktop/noter/dw/sas/noter.org")
+                    (vert
+                     (file "C:/Users/sisto/Desktop/noter/dw/sas/servere.org")
+                     (file "C:/Users/sisto/Desktop/noter/dw/sas/scripts.org"))))))
   ;; Add info to ivy-buffers like 'M-x' or 'C-x b'
   (use-package ivy-rich
     :ensure t
