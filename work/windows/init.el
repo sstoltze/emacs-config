@@ -880,7 +880,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                     (file "C:/Users/sisto/Desktop/noter/dw/sas/noter.org")
                     (vert
                      (file "C:/Users/sisto/Desktop/noter/dw/sas/servere.org")
-                     (file "C:/Users/sisto/Desktop/noter/dw/sas/scripts.org"))))))
+                     (file "C:/Users/sisto/Desktop/noter/dw/sas/scripts.org")))))
+    (add-to-list 'ivy-views
+                 '("noter {}"
+                   (file "C:/Users/sisto/Desktop/noter/"))))
   ;; Add info to ivy-buffers like 'M-x' or 'C-x b'
   (use-package ivy-rich
     :ensure t
