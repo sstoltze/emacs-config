@@ -64,7 +64,7 @@ ifeq ($(platform),CYGWIN)
 	cp git/.gitconfig /cygdrive/C/Users/$$USER/AppData/Roaming/
 else ifeq ($(platform),WINDOWS)
 	copy /Y "emacs\.emacs.d\init.el" "%USERPROFILE%\AppData\Roaming\.emacs.d"
-	copy /Y "git\.gitconfig"         "%USERPROFILE%\AppData\Roaming"
+	copy /Y "git\.gitconfig"         "%USERPROFILE%"
 endif
 
 windows-remove:
@@ -73,7 +73,7 @@ ifeq ($(platform),CYGWIN)
 	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig
 else ifeq ($(platform),WINDOWS)
 	del "%USERPROFILE%\AppData\Roaming\.emacs.d\init.el"
-	del "%USERPROFILE%\AppData\Roaming\.gitconfig"
+	del "%USERPROFILE%\.gitconfig"
 endif
 
 work:
@@ -85,8 +85,8 @@ ifeq ($(platform),CYGWIN)
 	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig
 	cp git-work/.gitconfig /cygdrive/C/Users/$$USER/AppData/Roaming/
 else ifeq ($(platform),WINDOWS)
-	del "%USERPROFILE%\AppData\Roaming\.gitconfig"
-	copy /Y "git-work\.gitconfig" "%USERPROFILE%\AppData\Roaming"
+	del "%USERPROFILE%\.gitconfig"
+	copy /Y "git-work\.gitconfig" "%USERPROFILE%"
 endif
 
 work-remove:
@@ -96,7 +96,7 @@ endif
 ifeq ($(platform),CYGWIN)
 	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig
 else ifeq ($(platform),WINDOWS)
-	del "%USERPROFILE%\AppData\Roaming\.gitconfig"
+	del "%USERPROFILE%\.gitconfig"
 endif
 
 work-update: work-remove update work
