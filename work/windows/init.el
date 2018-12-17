@@ -524,10 +524,9 @@ point reaches the beginning or end of the buffer, stop there."
     (set-face-attribute 'company-preview-common nil
                         :foreground "gray40"
                         :background (face-background 'default)))
-  (require 'em-smart)
-  (require 'esh-module)
-  (with-eval-after-load 'esh-module
-    ;; If not wrapped in this, eshell complains
+  (use-package em-smart)
+  (use-package esh-module
+    :config
     (add-to-list 'eshell-load-hook
                  (lambda ()
                    (add-to-list 'eshell-modules-list 'eshell-tramp)
@@ -646,6 +645,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          (scheme-mode                      . enable-paredit-mode)))
 
 ;;;; --- Flycheck ---
+;; Next-error and prev-error are bound to M-g n and M-g p
 (use-package flycheck
   :ensure t
   :defer t
@@ -653,10 +653,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :diminish flycheck-mode
   :hook ((prog-mode . flycheck-mode)
          (text-mode . flycheck-mode))
-  ;; Already bound to M-g n and M-g p, so this can be removed
-  ;; :bind
-  ;; (("M-n" . flycheck-next-error)
-  ;;  ("M-p" . flycheck-previous-error))
   ;; :custom
   ;; (flycheck-highlighting-mode 'lines)
   )
@@ -912,20 +908,21 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (defun my-semantic-hook ()
   "Hook for semantic to add TAGS to menubar."
   (imenu-add-to-menubar "TAGS")
-  (require 'semantic)
-  (require 'semantic/ia)
-  (require 'semantic/wisent)
-  (add-to-list 'semantic-default-submodes
-               'global-semanticdb-minor-mode)
-  (add-to-list 'semantic-default-submodes
-               'global-semantic-idle-local-symbol-highlight-mode)
-  (add-to-list 'semantic-default-submodes
-               'global-semantic-idle-scheduler-mode)
-  (add-to-list 'semantic-default-submodes
-               'global-semantic-idle-completions-mode)
-  (add-to-list 'semantic-default-submodes
-               'global-semantic-idle-summary-mode)
-  (semantic-mode t))
+  (use-package semantic
+    :config
+    (use-package semantic/ia)
+    (use-package semantic/wisent)
+    (add-to-list 'semantic-default-submodes
+                 'global-semanticdb-minor-mode)
+    (add-to-list 'semantic-default-submodes
+                 'global-semantic-idle-local-symbol-highlight-mode)
+    (add-to-list 'semantic-default-submodes
+                 'global-semantic-idle-scheduler-mode)
+    (add-to-list 'semantic-default-submodes
+                 'global-semantic-idle-completions-mode)
+    (add-to-list 'semantic-default-submodes
+                 'global-semantic-idle-summary-mode)
+    (semantic-mode t)))
 
 ;;;; --- Lisp ---
 (use-package slime
@@ -1013,7 +1010,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (c-set-style "bsd")
   (setq c-basic-offset 2
         tab-width 2)
-  (require 'semantic/bovine/gcc)
+  (use-package semantic/bovine/gcc)
   (my-semantic-hook))
 (defun my-cpp-hook ()
   "C++ specific packages."
