@@ -948,6 +948,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package tex
   :ensure auctex
   :defer t
+  :hook ((LaTeX-mode . turn-on-auto-fill))
   :custom
   (TeX-view-program-selection
    '(((output-dvi style-pstricks) "dvips and gv")
@@ -957,10 +958,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (TeX-PDF-mode nil)
   (TeX-DVI-via-PDFTeX nil)
   ;; Not sure if this belongs here
-  (doc-view-continuous t)
-  :init
-  (add-hook 'LaTeX-mode-hook
-            'turn-on-auto-fill))
+  (doc-view-continuous t))
 
 ;;;; --- Text-mode ---
 ;; visual-line-mode only pretends to insert linebreaks
