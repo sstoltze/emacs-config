@@ -996,13 +996,13 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package haskell-mode
   :ensure t
   :defer t
-  :hook ((haskell-mode-hook . turn-on-haskell-indent))
+  :hook ((haskell-mode . turn-on-haskell-indent))
   :custom
   (haskell-indent-spaces 4)
   :init
   (use-package intero
     :ensure t
-    :hook ((haskell-mode-hook . intero-mode))))
+    :hook ((haskell-mode . intero-mode))))
 
 ;;;; --- C/C++ ---
 (defun common-c-hook ()
