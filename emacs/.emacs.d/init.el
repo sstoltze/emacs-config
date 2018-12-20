@@ -425,6 +425,18 @@ point reaches the beginning or end of the buffer, stop there."
     (use-package dired-async))
   (put 'dired-find-alternate-file 'disabled nil))
 
+;;;; --- Proced ---
+;; To highlight processes use highlight-lines-matching-regexp, M-s h l
+;; Unhighlight by unhighlight-regexp, M-s h u
+(use-package proced
+  :bind (("C-c p" . proced))
+  :hook ((proced-mode . hl-line-mode)
+         ;; Update every 5 seconds
+         (proced-mode . sstoltze/proced-settings))
+  :init
+  (defun sstoltze/proced-settings ()
+    (proced-toggle-auto-update 1)))
+
 ;;;; --- Eshell ---
 (use-package eshell
   :bind (("C-c e" . eshell))
