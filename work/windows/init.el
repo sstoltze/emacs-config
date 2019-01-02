@@ -425,6 +425,18 @@ point reaches the beginning or end of the buffer, stop there."
     (use-package dired-async))
   (put 'dired-find-alternate-file 'disabled nil))
 
+;;;; --- Proced ---
+;; To highlight processes use highlight-lines-matching-regexp, M-s h l
+;; Unhighlight by unhighlight-regexp, M-s h u
+(use-package proced
+  :bind (("C-c p" . proced))
+  :hook ((proced-mode . hl-line-mode)
+         ;; Update every 5 seconds
+         (proced-mode . sstoltze/proced-settings))
+  :init
+  (defun sstoltze/proced-settings ()
+    (proced-toggle-auto-update 1)))
+
 ;;;; --- Eshell ---
 (use-package eshell
   :bind (("C-c e" . eshell))
@@ -812,6 +824,13 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (when (eq system-type 'gnu/linux)
     (setq org-babel-python-command "python3")))
 
+;;;; --- Avy ---
+(use-package avy
+  :ensure t
+  :config
+  (avy-setup-default)
+  (global-set-key (kbd "C-c C-j") 'avy-resume))
+
 ;;;; --- Counsel / Swiper / Ivy ---
 ;;;;; Counsel pulls in ivy and swiper
 ;;;;; Doing C-x C-f, C-M-j will create currently entered text as file-name
@@ -861,6 +880,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; Better fuzzy-matching
   (use-package flx
     :ensure t)
+  :config
   (ivy-mode 1)
   (counsel-mode 1)
   ;; Show how deep the minibuffer goes
@@ -948,6 +968,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package tex
   :ensure auctex
   :defer t
+  :hook ((LaTeX-mode . turn-on-auto-fill))
   :custom
   (TeX-view-program-selection
    '(((output-dvi style-pstricks) "dvips and gv")
@@ -957,10 +978,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (TeX-PDF-mode nil)
   (TeX-DVI-via-PDFTeX nil)
   ;; Not sure if this belongs here
-  (doc-view-continuous t)
-  :init
-  (add-hook 'LaTeX-mode-hook
-            'turn-on-auto-fill))
+  (doc-view-continuous t))
 
 ;;;; --- Text-mode ---
 ;; visual-line-mode only pretends to insert linebreaks
@@ -996,13 +1014,13 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package haskell-mode
   :ensure t
   :defer t
-  :hook ((haskell-mode-hook . turn-on-haskell-indent))
+  :hook ((haskell-mode . turn-on-haskell-indent))
   :custom
   (haskell-indent-spaces 4)
   :init
   (use-package intero
     :ensure t
-    :hook ((haskell-mode-hook . intero-mode))))
+    :hook ((haskell-mode . intero-mode))))
 
 ;;;; --- C/C++ ---
 (defun common-c-hook ()
