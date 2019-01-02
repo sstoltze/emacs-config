@@ -347,7 +347,7 @@ point reaches the beginning or end of the buffer, stop there."
                  ("\370" . "ø")
                  ("\345" . "å")
                  ("\351" . "é")))
-      (beginning-of-buffer)
+      (goto-char (point-min))
       (while (re-search-forward (car l) nil t)
         (replace-match (cdr l))))))
 
@@ -827,9 +827,12 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;;;; --- Avy ---
 (use-package avy
   :ensure t
+  :bind (("C-c '"   . avy-goto-char-timer)
+         ;; This behaves as goto-line if a number is entered
+         ("M-g g"   . avy-goto-line)
+         ("C-c C-j" . avy-resume))
   :config
-  (avy-setup-default)
-  (global-set-key (kbd "C-c C-j") 'avy-resume))
+  (avy-setup-default))
 
 ;;;; --- Counsel / Swiper / Ivy ---
 ;;;;; Counsel pulls in ivy and swiper
@@ -852,7 +855,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          ;; Remove a stored view
          ("C-c V"   . ivy-pop-view)
          ;; Use ivy to complete symbol at point
-         ("C-M-i"   . complete-symbol))
+         ("C-M-i"   . complete-symbol)
+         :map swiper-map
+         ("C-c '"   . swiper-avy))
   :custom
   ;; Allow "M-x lis-pac" to match "M-x list-packages"
   (ivy-re-builders-alist        '((swiper . ivy--regex-plus)
