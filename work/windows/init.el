@@ -842,8 +842,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; Always enabled, do not show in mode-line
   :diminish counsel-mode
   :diminish ivy-mode
-  ;; counsel-grep-or-swiper should be faster on large buffers
-  :bind (("C-s"     . counsel-grep-or-swiper)
+  :bind (("M-x"     . counsel-M-x)
+         ;; counsel-grep-or-swiper should be faster on large buffers
+         ("C-s"     . counsel-grep-or-swiper)
          ;; Find recent files
          ("C-x C-r" . counsel-recentf)
          ;; Resume last ivy completion
@@ -885,7 +886,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; Better fuzzy-matching
   (use-package flx
     :ensure t)
-  :config
   (ivy-mode 1)
   (counsel-mode 1)
   ;; Show how deep the minibuffer goes
