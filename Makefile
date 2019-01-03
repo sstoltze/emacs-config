@@ -47,16 +47,16 @@ linux:
 	stow --no-folding -S -t ~ $(linux_no_folding)
 
 linux-remove:
-	stow -D -t ~ $(linux_packages)
-	stow -D -t ~ $(linux_no_folding)
+	stow              -D -t ~ $(linux_packages)
+	stow              -D -t ~ $(linux_no_folding)
 
 cygwin: windows
 	stow              -S -t ~ $(cygwin_packages)
 	stow --no-folding -S -t ~ $(cygwin_no_folding)
 
 cygwin-remove: windows-remove
-	stow -D -t ~ $(cygwin_packages)
-	stow -D -t ~ $(cygwin_no_folding)
+	stow              -D -t ~ $(cygwin_packages)
+	stow              -D -t ~ $(cygwin_no_folding)
 
 windows:
 ifeq ($(platform),CYGWIN)
@@ -78,8 +78,8 @@ endif
 
 work:
 ifneq (,$(filter Linux CYGWIN,$(platform)))
-	stow -D -t ~ git
-	stow -S -t ~ git-work
+	stow              -D -t ~ git
+	stow              -S -t ~ git-work
 endif
 ifeq ($(platform),CYGWIN)
 	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig
@@ -91,7 +91,7 @@ endif
 
 work-remove:
 ifneq (,$(filter Linux CYGWIN,$(platform)))
-	stow -D -t ~ git-work
+	stow              -D -t ~ git-work
 endif
 ifeq ($(platform),CYGWIN)
 	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig
