@@ -333,9 +333,8 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key [remap move-beginning-of-line]
                 'my/smarter-move-beginning-of-line)
 
-;; Command for compiling .emacs.d/
 (defun byte-compile-init-dir ()
-  "Byte-compile all your dotfiles."
+  "Byte-compile .emacs.d/."
   (interactive)
   (byte-recompile-directory user-emacs-directory 0))
 
@@ -346,7 +345,15 @@ point reaches the beginning or end of the buffer, stop there."
     (dolist (l '(("\346" . "æ")
                  ("\370" . "ø")
                  ("\345" . "å")
-                 ("\351" . "é")))
+                 ("\306" . "Æ")
+                 ("\330" . "Ø")
+                 ("\305" . "Å")
+                 ("\351" . "é")
+                 ("\344" . "ä")
+                 ("\353" . "ë")
+                 ("\357" . "ï")
+                 ("\366" . "ö")
+                 ("\374" . "ü")))
       (goto-char (point-min))
       (while (re-search-forward (car l) nil t)
         (replace-match (cdr l))))))
@@ -702,36 +709,39 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          ([remap org-set-tags-command] . counsel-org-tag))
   :custom
   ;; Startup
-  (org-ellipsis                   "…")
-  (org-startup-folded             nil)
-  (org-startup-indented           t)
-  (org-startup-with-inline-images t)
-  ;;; Use the current window for indirect buffer display
-  (org-indirect-buffer-display    'current-window)
+  (org-ellipsis                           "…")
+  (org-startup-folded                     nil)
+  (org-startup-indented                   t)
+  (org-startup-with-inline-images         t)
+  ;; Use the current window for most things
+  (org-agenda-window-setup                'current-window)
+  (org-agenda-restore-windows-after-quit  t)
+  (org-indirect-buffer-display            'current-window)
   ;; Export
-  (org-export-backends            (quote (ascii beamer html icalendar latex md odt)))
+  (org-export-backends                    '(ascii beamer html icalendar latex md odt))
   ;;; Author, email, date of creation, validation link at bottom of exported html
-  (org-html-postamble             nil)
-  (org-html-html5-fancy           t)
-  (org-html-doctype               "html5")
+  (org-html-postamble                     nil)
+  (org-html-html5-fancy                   t)
+  (org-html-doctype                       "html5")
   ;; Todo
-  (org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
-                       ;; Symbols can be found in Symbola, http://users.teilar.gr/~g1951d/
-                       ;; ✦ ★ ✔ ⚑ ❌
-                       (sequence "WAITING(w)" "|" "CANCELED(c)")))
-  (org-time-stamp-custom-formats  (quote ("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>")))
-  (org-use-fast-todo-selection    t)
-  (org-log-done                   t)
+  (org-todo-keywords                      '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+                                            ;; Symbols can be found in Symbola:
+                                            ;; http://users.teilar.gr/~g1951d/
+                                            ;; ✦ ★ ✔ ⚑ ❌
+                                            (sequence "WAITING(w)" "|" "CANCELED(c)")))
+  (org-time-stamp-custom-formats          '("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>"))
+  (org-use-fast-todo-selection            t)
+  (org-log-done                           t)
   ;;; Round clock to 5 minute intervals, delete anything shorter
-  (org-clock-rounding-minutes     5)
+  (org-clock-rounding-minutes             5)
   ;;; Allow editing invisible region if it does that you would expect
-  (org-catch-invisible-edits      'smart)
+  (org-catch-invisible-edits              'smart)
   ;; Refile
-  (org-refile-use-outline-path    t)
+  (org-refile-use-outline-path            t)
   ;;; Targets complete directly with Ivy
-  (org-outline-path-complete-in-steps nil)
+  (org-outline-path-complete-in-steps     nil)
   ;;; Allow refile to create parent tasks with confirmation
-  (org-refile-allow-creating-parent-nodes (quote confirm))
+  (org-refile-allow-creating-parent-nodes 'confirm)
   :init
   ;; Most GTD setup is taken from https://emacs.cafe/emacs/orgmode/gtd/2017/06/30/orgmode-gtd.html
   (let ((default-org-file  "~/.emacs.d/org-files/gtd/unsorted.org") ;; Unsorted items
@@ -827,10 +837,13 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;;;; --- Avy ---
 (use-package avy
   :ensure t
-  :bind (("C-c '"   . avy-goto-char-timer)
+  :demand t
+  :bind (("C-c s"   . avy-goto-char-timer)
          ;; This behaves as goto-line if a number is entered
          ("M-g g"   . avy-goto-line)
          ("C-c C-j" . avy-resume))
+  :custom
+  (avy-all-windows nil)
   :config
   (avy-setup-default))
 
@@ -839,6 +852,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;;;;; Doing C-x C-f, C-M-j will create currently entered text as file-name
 (use-package counsel
   :ensure t
+  :demand t
   ;; Always enabled, do not show in mode-line
   :diminish counsel-mode
   :diminish ivy-mode
@@ -880,9 +894,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                 (horz
                  (file "~/.emacs.d/org-files/gtd/unsorted.org")
                  (file "~/.emacs.d/org-files/gtd/projects.org")))))
-  ;; Control whether ./ and ../ shows up in find-file et al
-  ;;(ivy-extra-directories nil)
-  :init
+  :config
   ;; Better fuzzy-matching
   (use-package flx
     :ensure t)
@@ -1053,7 +1065,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;;;; --- Magit ---
 (use-package magit
   :ensure t
-  :defer 1
+  :defer t
   ;; Magit turns on auto-revert so a file changed on disk is changed in Emacs
   ;; This could be an issue...
   :diminish auto-revert-mode
