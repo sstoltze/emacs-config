@@ -941,6 +941,136 @@ length of PATH (sans directory slashes) down to MAX-LEN."
    ("C-c m s" . mc/mark-sgml-tag-pair)
    ("C-c m d" . mc/mark-all-like-this-in-defun)))
 
+;;;; --- Hydra ---
+(use-package hydra
+  :ensure t
+  :init
+  (define-prefix-command 'sstoltze/hydra)
+  (global-set-key (kbd "C-c h") 'sstoltze/hydra)
+  :config
+  ;; Marking and movement
+  (defhydra hydra-goto-line (nil nil
+                                 :color pink ;; Can only quit by pressing q
+                                 :pre   (linum-mode 1)
+                                 :post  (linum-mode -1))
+    "mark and move"
+    ("m" set-mark-command "mark" :bind nil)
+    ("g" avy-goto-line "goto-line")
+    ("n" next-line)
+    ("p" previous-line)
+    ("f" forward-char)
+    ("F" forward-word)
+    ("b" backward-char)
+    ("B" backward-word)
+    ("a" my/smarter-move-beginning-of-line)
+    ("e" move-end-of-line)
+    ("v" scroll-up-command)
+    ("V" scroll-down-command)
+    ("<" beginning-of-buffer)
+    (">" end-of-buffer)
+    ("l" recenter-top-bottom)
+    ("q" nil "quit"))
+  (define-key sstoltze/hydra (kbd "m") 'hydra-goto-line/body)
+  ;; Apropos
+  (defhydra hydra-apropos (:color blue)
+    "Apropos"
+    ("a" apropos "apropos")
+    ("c" apropos-command "cmd")
+    ("d" apropos-documentation "doc")
+    ("e" apropos-value "val")
+    ("l" apropos-library "lib")
+    ("o" apropos-user-option "option")
+    ("u" apropos-user-option "option")
+    ("v" apropos-variable "var")
+    ("i" info-apropos "info")
+    ("t" tags-apropos "tags"))
+  (define-key sstoltze/hydra (kbd "a") 'hydra-apropos/body)
+  ;; Ediff
+  (defhydra hydra-ediff (:color blue :hint nil)
+    "
+^Buffers           Files           VC                     Ediff regions
+----------------------------------------------------------------------
+_b_uffers           _f_iles (_=_)       _r_evisions              _l_inewise
+_B_uffers (3-way)   _F_iles (3-way)                          _w_ordwise
+                  _c_urrent file
+"
+    ("b" ediff-buffers)
+    ("B" ediff-buffers3)
+    ("=" ediff-files)
+    ("f" ediff-files)
+    ("F" ediff-files3)
+    ("c" ediff-current-file)
+    ("r" ediff-revision)
+    ("l" ediff-regions-linewise)
+    ("w" ediff-regions-wordwise)
+    ("q" nil "quit"))
+  (define-key sstoltze/hydra (kbd "d") 'hydra-ediff/body)
+  ;; Org
+  (with-eval-after-load 'org
+    (defhydra hydra-global-org (:color blue)
+      "Org"
+      ("t" org-timer-start "Start Timer")
+      ("s" org-timer-stop "Stop Timer")
+      ("r" org-timer-set-timer "Set Timer") ; This one requires you be in an orgmode doc, as it sets the timer for the header
+      ("p" org-timer "Print Timer")     ; output timer value to buffer
+      ("w" (org-clock-in '(4)) "Clock-In") ; used with (org-clock-persistence-insinuate) (setq org-clock-persist t)
+      ("o" org-clock-out "Clock-Out") ; you might also want (setq org-log-note-clock-out t)
+      ("j" org-clock-goto "Clock Goto") ; global visit the clocked task
+      ("c" org-capture "Capture") ; Don't forget to define the captures you want http://orgmode.org/manual/Capture.html
+      ("l" org-capture-goto-last-stored "Last Capture"))
+    (define-key sstoltze/hydra (kbd "c") 'hydra-global-org/body))
+  ;; Outline
+  (with-eval-after-load 'outline
+    (defhydra hydra-outline (:color pink :hint nil)
+      "
+^Hide^             ^Show^           ^Move
+^^^^^^------------------------------------------------------
+_h_: sublevels     _a_: all         _u_: up
+_t_: body          _e_: entry       _n_: next visible
+_o_: other         _i_: children    _p_: previous visible
+_c_: entry         _k_: branches    _f_: forward same level
+_l_: leaves        _s_: subtree     _b_: backward same level
+_d_: subtree
+"
+      ;; Hide
+      ("h" hide-sublevels) ; Hide everything but the top-level headings
+      ("t" hide-body)  ; Hide everything but headings (all body lines)
+      ("o" hide-other) ; Hide other branches
+      ("c" hide-entry) ; Hide this entry's body
+      ("l" hide-leaves) ; Hide body lines in this entry and sub-entries
+      ("d" hide-subtree) ; Hide everything in this entry and sub-entries
+      ;; Show
+      ("a" show-all)                    ; Show (expand) everything
+      ("e" show-entry)                  ; Show this heading's body
+      ("i" show-children) ; Show this heading's immediate child sub-headings
+      ("k" show-branches) ; Show all sub-headings under this heading
+      ("s" show-subtree) ; Show (expand) everything in this heading & below
+      ;; Move
+      ("u" outline-up-heading)               ; Up
+      ("n" outline-next-visible-heading)     ; Next
+      ("p" outline-previous-visible-heading) ; Previous
+      ("f" outline-forward-same-level)       ; Forward - same level
+      ("b" outline-backward-same-level)      ; Backward - same level
+      ("TAB" outline-cycle "cycle")
+      ("q" nil "quit"))
+    (define-key sstoltze/hydra (kbd "o") 'hydra-outline/body)))
+
+;;;; --- Outline ---
+;; For elisp:
+;; - ;;; is a headline
+;; - ;;;; is on the same level as a top-level sexp
+(use-package outline
+  ;; Always enabled, do not show in mode-line
+  :diminish outline-minor-mode
+  :hook ((prog-mode . outline-minor-mode))
+  :bind (("<C-tab>" . outline-cycle)
+         ("M-n"     . outline-next-visible-heading)
+         ("M-p"     . outline-previous-visible-heading))
+  :bind-keymap (("C-z" . outline-mode-prefix-map))
+  :config
+  (use-package outline-magic
+    :ensure t))
+
 ;;;; --- Semantic ---
 (defun my-semantic-hook ()
   "Hook for semantic to add TAGS to menubar."
@@ -1193,20 +1323,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (twittering-icon-mode           t)
   :config
   (sstoltze/setup-epa))
-
-;;;; --- Outline ---
-;; For elisp:
-;; - ;;; is a headline
-;; - ;;;; is on the same level as a top-level sexp
-(use-package outline-magic
-  :ensure t
-  ;; Always enabled, do not show in mode-line
-  :diminish outline-minor-mode
-  :hook ((prog-mode . outline-minor-mode))
-  :bind        (("<C-tab>" . outline-cycle)
-                ("M-n"     . outline-next-visible-heading)
-                ("M-p"     . outline-previous-visible-heading))
-  :bind-keymap (("C-z"     . outline-mode-prefix-map)))
 
 ;;;; --- System specific setup ---
 (when (executable-find "fish")
