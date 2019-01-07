@@ -945,17 +945,25 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package hydra
   :ensure t
   :init
-  (define-prefix-command 'sstoltze/hydra)
-  (global-set-key (kbd "C-c h") 'sstoltze/hydra)
+  (define-prefix-command 'sstoltze/hydra-map)
+  (global-set-key (kbd "C-c h") 'sstoltze/hydra-map)
   :config
   ;; Marking and movement
-  (defhydra hydra-goto-line (nil nil
+  (defhydra hydra-movement (nil nil
                                  :color pink ;; Can only quit by pressing q
                                  :pre   (linum-mode 1)
-                                 :post  (linum-mode -1))
-    "mark and move"
-    ("m" set-mark-command "mark" :bind nil)
-    ("g" avy-goto-line "goto-line")
+                                 :post  (linum-mode -1)
+                                 :hint  nil)
+    "
+^  Characters        Words           Lines                  Buffer
+----------------------------------------------------------------------
+_f_ Forward         _F_ Forward       _n_ Next                 _v_ Scroll up
+_b_ Backward        _B_ Backwards     _p_ Previous             _V_ Scroll down
+                                  _a_ Beginning            _>_ End
+                                  _e_ End                  _<_ Beginning
+                                  _g_ Goto line            _l_ Recenter
+"
+    ("g" avy-goto-line)
     ("n" next-line)
     ("p" previous-line)
     ("f" forward-char)
@@ -969,8 +977,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     ("<" beginning-of-buffer)
     (">" end-of-buffer)
     ("l" recenter-top-bottom)
+    ("m" set-mark-command "mark")
     ("q" nil "quit"))
-  (define-key sstoltze/hydra (kbd "m") 'hydra-goto-line/body)
+  (define-key sstoltze/hydra-map (kbd "m") 'hydra-movement/body)
   ;; Apropos
   (defhydra hydra-apropos (:color blue)
     "Apropos"
@@ -984,7 +993,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     ("v" apropos-variable "var")
     ("i" info-apropos "info")
     ("t" tags-apropos "tags"))
-  (define-key sstoltze/hydra (kbd "a") 'hydra-apropos/body)
+  (define-key sstoltze/hydra-map (kbd "a") 'hydra-apropos/body)
   ;; Ediff
   (defhydra hydra-ediff (:color blue :hint nil)
     "
@@ -1004,7 +1013,7 @@ _B_uffers (3-way)   _F_iles (3-way)                          _w_ordwise
     ("l" ediff-regions-linewise)
     ("w" ediff-regions-wordwise)
     ("q" nil "quit"))
-  (define-key sstoltze/hydra (kbd "d") 'hydra-ediff/body)
+  (define-key sstoltze/hydra-map (kbd "d") 'hydra-ediff/body)
   ;; Org
   (with-eval-after-load 'org
     (defhydra hydra-global-org (:color blue)
@@ -1018,7 +1027,7 @@ _B_uffers (3-way)   _F_iles (3-way)                          _w_ordwise
       ("j" org-clock-goto "Clock Goto") ; global visit the clocked task
       ("c" org-capture "Capture") ; Don't forget to define the captures you want http://orgmode.org/manual/Capture.html
       ("l" org-capture-goto-last-stored "Last Capture"))
-    (define-key sstoltze/hydra (kbd "c") 'hydra-global-org/body))
+    (define-key sstoltze/hydra-map (kbd "c") 'hydra-global-org/body))
   ;; Outline
   (with-eval-after-load 'outline
     (defhydra hydra-outline (:color pink :hint nil)
@@ -1053,7 +1062,7 @@ _d_: subtree
       ("b" outline-backward-same-level)      ; Backward - same level
       ("TAB" outline-cycle "cycle")
       ("q" nil "quit"))
-    (define-key sstoltze/hydra (kbd "o") 'hydra-outline/body)))
+    (define-key sstoltze/hydra-map (kbd "o") 'hydra-outline/body)))
 
 ;;;; --- Outline ---
 ;; For elisp:
