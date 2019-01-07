@@ -15,7 +15,10 @@
 (prefer-coding-system        'utf-8)
 (set-default-coding-systems  'utf-8)
 (set-language-environment    'utf-8)
-(set-selection-coding-system 'utf-8)
+(if (eq system-type 'windows-nt)
+    ;; Fixes pasting character codes instead of symbols and danish letters
+    (set-selection-coding-system 'utf-16-le)
+    (set-selection-coding-system 'utf-8))
 
 ;;;; --- Use-package ---
 (require 'package)
