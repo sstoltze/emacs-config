@@ -921,7 +921,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; Add info to ivy-buffers like 'M-x' or 'C-x b'
   (use-package ivy-rich
     :ensure t
-    :defer 1
     :custom
     (ivy-rich-path-style 'abbrev)
     :config
@@ -1068,7 +1067,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :ensure t
   :defer t
   ;; Magit turns on auto-revert so a file changed on disk is changed in Emacs
-  ;; This could be an issue...
+  ;; This could be an issue at some point.
   :diminish auto-revert-mode
   :bind (("C-x g"   . magit-status)          ; Display the main magit popup
          ("C-x M-g" . magit-dispatch-popup)) ; Display keybinds for magit
@@ -1089,7 +1088,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :config
   (use-package eww-lnum
     :ensure t
-    :defer t
     :bind (:map eww-mode-map
                 ("f"     . eww-lnum-follow)
                 ("F"     . eww-lnum-universal))))
@@ -1110,8 +1108,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :defer t
   :config
   (use-package stan-snippets
-    :defer t
-    :ensure t))
+    :ensure t
+    :defer t))
 
 ;;;; --- Python ---
 ;; python -m pip install --upgrade jedi rope black flake8 yapf autopep8 elpy
