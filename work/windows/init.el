@@ -15,7 +15,10 @@
 (prefer-coding-system        'utf-8)
 (set-default-coding-systems  'utf-8)
 (set-language-environment    'utf-8)
-(set-selection-coding-system 'utf-8)
+(if (eq system-type 'windows-nt)
+    ;; Fixes pasting character codes instead of symbols and danish letters
+    (set-selection-coding-system 'utf-16-le)
+    (set-selection-coding-system 'utf-8))
 
 ;;;; --- Use-package ---
 (require 'package)
@@ -950,10 +953,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :config
   ;; Marking and movement
   (defhydra hydra-movement (nil nil
-                                 :color pink ;; Can only quit by pressing q
-                                 :pre   (linum-mode 1)
-                                 :post  (linum-mode -1)
-                                 :hint  nil)
+                                :color pink ;; Can only quit by pressing q
+                                :pre   (linum-mode 1)
+                                :post  (linum-mode -1)
+                                :hint  nil)
     "
 ^  Characters        Words           Lines                  Buffer
 ----------------------------------------------------------------------
@@ -983,16 +986,16 @@ _b_ Backward        _B_ Backwards     _p_ Previous             _V_ Scroll down
   ;; Apropos
   (defhydra hydra-apropos (:color blue)
     "Apropos"
-    ("a" apropos "apropos")
-    ("c" apropos-command "cmd")
+    ("a" apropos               "apropos")
+    ("c" apropos-command       "cmd")
     ("d" apropos-documentation "doc")
-    ("e" apropos-value "val")
-    ("l" apropos-library "lib")
-    ("o" apropos-user-option "option")
-    ("u" apropos-user-option "option")
-    ("v" apropos-variable "var")
-    ("i" info-apropos "info")
-    ("t" tags-apropos "tags"))
+    ("e" apropos-value         "val")
+    ("l" apropos-library       "lib")
+    ("o" apropos-user-option   "option")
+    ("u" apropos-user-option   "option")
+    ("v" apropos-variable      "var")
+    ("i" info-apropos          "info")
+    ("t" xref-find-apropos     "tags"))
   (define-key sstoltze/hydra-map (kbd "a") 'hydra-apropos/body)
   ;; Ediff
   (defhydra hydra-ediff (:color blue :hint nil)
@@ -1014,6 +1017,23 @@ _B_uffers (3-way)   _F_iles (3-way)                          _w_ordwise
     ("w" ediff-regions-wordwise)
     ("q" nil "quit"))
   (define-key sstoltze/hydra-map (kbd "d") 'hydra-ediff/body)
+  ;; Flycheck
+  (defhydra hydra-flycheck
+    (nil nil
+         :pre (progn (setq hydra-lv t)
+                     (flycheck-list-errors))
+         :post (progn (setq hydra-lv nil)
+                      (quit-windows-on "*Flycheck errors*"))
+         :hint nil)
+    "Errors"
+    ("c" flycheck-buffer                                           "Check")
+    ("f" flycheck-error-list-set-filter                            "Filter")
+    ("n" flycheck-next-error                                       "Next")
+    ("p" flycheck-previous-error                                   "Previous")
+    ("<" flycheck-first-error                                      "First")
+    (">" (progn (goto-char (point-max)) (flycheck-previous-error)) "Last")
+    ("q" nil                                                       "Quit"))
+  (define-key sstoltze/hydra-map (kbd "!") 'hydra-flycheck/body)
   ;; Org
   (with-eval-after-load 'org
     (defhydra hydra-global-org (:color blue)
