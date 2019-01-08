@@ -1,3 +1,10 @@
+;;;; --- Projectile ---
+(use-package projectile
+  :ensure t
+  :defer t
+  :custom
+  (projectile-completion-system 'ivy)
+  (projectile-indexing-method 'alien))
 
 ;;;; --- Ido ---
 ;;;;; Tips:
