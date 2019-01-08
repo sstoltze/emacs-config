@@ -665,7 +665,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          (ielm-mode                        . enable-paredit-mode)
          (lisp-mode                        . enable-paredit-mode)
          (lisp-interaction-mode            . enable-paredit-mode)
-         (scheme-mode                      . enable-paredit-mode)))
+         (scheme-mode                      . enable-paredit-mode)
+         (clojure-mode                     . enable-paredit-mode)
+         (cider-repl-mode                  . enable-paredit-mode)))
 
 ;;;; --- Flycheck ---
 ;; Next-error and prev-error are bound to M-g n and M-g p
@@ -986,7 +988,7 @@ _b_ Backward        _B_ Backwards     _p_ Previous             _V_ Scroll down
   ;; Apropos
   (defhydra hydra-apropos (:color blue)
     "Apropos"
-    ("a" apropos               "apropos")
+    ("a" counsel-apropos       "apropos")
     ("c" apropos-command       "cmd")
     ("d" apropos-documentation "doc")
     ("e" apropos-value         "val")
@@ -1062,18 +1064,18 @@ _l_: leaves        _s_: subtree     _b_: backward same level
 _d_: subtree
 "
       ;; Hide
-      ("h" hide-sublevels) ; Hide everything but the top-level headings
-      ("t" hide-body)  ; Hide everything but headings (all body lines)
-      ("o" hide-other) ; Hide other branches
-      ("c" hide-entry) ; Hide this entry's body
-      ("l" hide-leaves) ; Hide body lines in this entry and sub-entries
-      ("d" hide-subtree) ; Hide everything in this entry and sub-entries
+      ("h" outline-hide-sublevels) ; Hide everything but the top-level headings
+      ("t" outline-hide-body)  ; Hide everything but headings (all body lines)
+      ("o" outline-hide-other) ; Hide other branches
+      ("c" outline-hide-entry) ; Hide this entry's body
+      ("l" outline-hide-leaves) ; Hide body lines in this entry and sub-entries
+      ("d" outline-hide-subtree) ; Hide everything in this entry and sub-entries
       ;; Show
-      ("a" show-all)                    ; Show (expand) everything
-      ("e" show-entry)                  ; Show this heading's body
-      ("i" show-children) ; Show this heading's immediate child sub-headings
-      ("k" show-branches) ; Show all sub-headings under this heading
-      ("s" show-subtree) ; Show (expand) everything in this heading & below
+      ("a" outline-show-all)                    ; Show (expand) everything
+      ("e" outline-show-entry)                  ; Show this heading's body
+      ("i" outline-show-children) ; Show this heading's immediate child sub-headings
+      ("k" outline-show-branches) ; Show all sub-headings under this heading
+      ("s" outline-show-subtree) ; Show (expand) everything in this heading & below
       ;; Move
       ("u" outline-up-heading)               ; Up
       ("n" outline-next-visible-heading)     ; Next
@@ -1082,7 +1084,18 @@ _d_: subtree
       ("b" outline-backward-same-level)      ; Backward - same level
       ("TAB" outline-cycle "cycle")
       ("q" nil "quit"))
-    (define-key sstoltze/hydra-map (kbd "o") 'hydra-outline/body)))
+    (define-key sstoltze/hydra-map (kbd "o") 'hydra-outline/body))
+  (with-eval-after-load 'cider
+    (use-package cider-hydra
+      :ensure t
+      :config
+      (defhydra cider-hydra-top (:color blue :exit t)
+        "cider-hydra"
+        ("d" cider-hydra-doc/body "Doc")
+        ("e" cider-hydra-eval/body "Eval")
+        ("r" cider-hydra-repl/body "REPL")
+        ("t" cider-hydra-test/body "Test"))
+      (define-key sstoltze/hydra-map (kbd "j") 'cider-hydra-top/body))))
 
 ;;;; --- Outline ---
 ;; For elisp:
@@ -1332,6 +1345,12 @@ _d_: subtree
       :ensure t
       :config
       (flycheck-ocaml-setup))))
+
+;;;; --- Clojure ---
+(use-package cider
+  :ensure t
+  :defer t
+  :hook ((clojure-mode . cider-mode)))
 
 ;;;; --- EPA ---
 (defun sstoltze/setup-epa ()
