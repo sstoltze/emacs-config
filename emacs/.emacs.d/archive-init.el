@@ -1,3 +1,6 @@
+;; org
+("C-c b" . org-iswitchb)
+
 ;;;; --- Projectile ---
 (use-package projectile
   :ensure t
