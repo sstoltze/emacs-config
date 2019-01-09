@@ -708,8 +708,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                        (org-indent-mode  1)))
          (org-babel-after-execute . org-display-inline-images))
   :bind (("C-c l" . org-store-link)
-         ("C-c c" . org-capture)
-         ("C-c b" . org-iswitchb)
+         ("C-c c" . counsel-org-capture)
          ("C-c a" . org-agenda)
          ;; Use counsel for org tag selection (C-c C-q)
          ([remap org-set-tags-command] . counsel-org-tag))
@@ -826,11 +825,14 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; Make org mode allow eval of some langs
   (org-babel-do-load-languages
    'org-babel-load-languages
-   '((lisp       . t)
+   '((clojure    . t)
+     (lisp       . t)
      (emacs-lisp . t)
+     (haskell    . t)
+     (ocaml      . t)
      (python     . t)
-     (ruby       . t)
      (R          . t)
+     (ruby       . t)
      (latex      . t)
      (shell      . t)
      (sql        . t)
