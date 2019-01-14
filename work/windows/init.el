@@ -18,7 +18,7 @@
 (if (eq system-type 'windows-nt)
     ;; Fixes pasting character codes instead of symbols and danish letters
     (set-selection-coding-system 'utf-16-le)
-    (set-selection-coding-system 'utf-8))
+  (set-selection-coding-system 'utf-8))
 
 ;;;; --- Use-package ---
 (require 'package)
@@ -845,7 +845,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;;;; --- Avy ---
 (use-package avy
   :ensure t
-  :demand t
+  :defer t
   :bind (("C-c s"   . avy-goto-char-timer)
          ;; This behaves as goto-line if a number is entered
          ("M-g g"   . avy-goto-line)
@@ -860,11 +860,12 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;;;;; Doing C-x C-f, C-M-j will create currently entered text as file-name
 (use-package counsel
   :ensure t
-  :demand t
+  :defer t
   ;; Always enabled, do not show in mode-line
   :diminish counsel-mode
   :diminish ivy-mode
   :bind (("M-x"     . counsel-M-x)
+         ("C-x b"   . ivy-switch-buffer)
          ;; counsel-grep-or-swiper should be faster on large buffers
          ("C-s"     . counsel-grep-or-swiper)
          ;; Find recent files
@@ -880,7 +881,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          ;; Use ivy to complete symbol at point
          ("C-M-i"   . complete-symbol)
          :map swiper-map
-         ("C-c '"   . swiper-avy))
+         ("C-c s"   . swiper-avy))
   :custom
   ;; Allow "M-x lis-pac" to match "M-x list-packages"
   (ivy-re-builders-alist        '((swiper . ivy--regex-plus)
@@ -1067,14 +1068,14 @@ _d_: subtree
 "
       ;; Hide
       ("h" outline-hide-sublevels) ; Hide everything but the top-level headings
-      ("t" outline-hide-body)  ; Hide everything but headings (all body lines)
-      ("o" outline-hide-other) ; Hide other branches
-      ("c" outline-hide-entry) ; Hide this entry's body
+      ("t" outline-hide-body) ; Hide everything but headings (all body lines)
+      ("o" outline-hide-other)          ; Hide other branches
+      ("c" outline-hide-entry)          ; Hide this entry's body
       ("l" outline-hide-leaves) ; Hide body lines in this entry and sub-entries
       ("d" outline-hide-subtree) ; Hide everything in this entry and sub-entries
       ;; Show
-      ("a" outline-show-all)                    ; Show (expand) everything
-      ("e" outline-show-entry)                  ; Show this heading's body
+      ("a" outline-show-all)            ; Show (expand) everything
+      ("e" outline-show-entry)          ; Show this heading's body
       ("i" outline-show-children) ; Show this heading's immediate child sub-headings
       ("k" outline-show-branches) ; Show all sub-headings under this heading
       ("s" outline-show-subtree) ; Show (expand) everything in this heading & below
@@ -1255,11 +1256,12 @@ _d_: subtree
   :ensure t
   :defer t
   :bind (("C-c w" . eww))
-  :custom
-  (browse-url-browser-function '((".*youtube.*" . browse-url-default-browser)
-                                 (".*github.*"  . browse-url-default-browser)
-                                 ("."           . eww-browse-url)))
   :config
+  (use-package browse-url
+    :custom
+    (browse-url-browser-function '((".*youtube.*" . browse-url-default-browser)
+                                   (".*github.*"  . browse-url-default-browser)
+                                   ("."           . eww-browse-url))))
   (use-package eww-lnum
     :ensure t
     :bind (:map eww-mode-map
