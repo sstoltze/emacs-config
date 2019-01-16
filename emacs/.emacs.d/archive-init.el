@@ -46,7 +46,12 @@ Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
 
     (advice-add #'ido-find-file :after #'help/ido-find-file)))
 
-;;;; Ivy
-;; Avy for finding matches in swiper, C-'
-    (use-package avy
-      :ensure t)
+;;;; Counsel
+;;; Keybinds - for :defer t
+("C-x b"   . ivy-switch-buffer)
+("C-x C-f" . counsel-find-file)
+;; Help commands
+("C-h a"   . counsel-apropos)
+("C-h b"   . counsel-descbinds)
+("C-h f"   . counsel-describe-function)
+("C-h v"   . counsel-describe-variable)
