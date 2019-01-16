@@ -866,6 +866,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :diminish ivy-mode
   :bind (("M-x"     . counsel-M-x)
          ("C-x b"   . ivy-switch-buffer)
+         ("C-x C-f" . counsel-find-file)
          ;; counsel-grep-or-swiper should be faster on large buffers
          ("C-s"     . counsel-grep-or-swiper)
          ;; Find recent files
