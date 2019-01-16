@@ -860,13 +860,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;;;;; Doing C-x C-f, C-M-j will create currently entered text as file-name
 (use-package counsel
   :ensure t
-  :defer t
+  ;; :defer t
   ;; Always enabled, do not show in mode-line
   :diminish counsel-mode
   :diminish ivy-mode
   :bind (("M-x"     . counsel-M-x)
-         ("C-x b"   . ivy-switch-buffer)
-         ("C-x C-f" . counsel-find-file)
          ;; counsel-grep-or-swiper should be faster on large buffers
          ("C-s"     . counsel-grep-or-swiper)
          ;; Find recent files
