@@ -860,6 +860,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;;;;; Doing C-x C-f, C-M-j will create currently entered text as file-name
 (use-package counsel
   :ensure t
+  :demand
   ;; :defer t
   ;; Always enabled, do not show in mode-line
   :diminish counsel-mode
