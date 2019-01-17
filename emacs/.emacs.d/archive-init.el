@@ -1,3 +1,166 @@
+;; Save history
+(use-package savehist
+  :custom
+  (savehist-save-minibuffer-history t)
+  (savehist-additional-variables    '(kill-ring
+                                      search-ring
+                                      regexp-search-ring))
+  (savehist-file                    "~/.emacs.d/savehist")
+  :init
+  (savehist-mode 1))
+
+;;;; --- Hydra ---
+(use-package hydra
+  :ensure t
+  :init
+  (define-prefix-command 'sstoltze/hydra-map)
+  (global-set-key (kbd "C-c h") 'sstoltze/hydra-map)
+  :config
+  ;; Marking and movement
+  (defhydra hydra-movement (nil nil
+                                :color pink ;; Can only quit by pressing q
+                                :pre   (linum-mode 1)
+                                :post  (linum-mode -1)
+                                :hint  nil)
+    "
+^  Characters        Words           Lines                  Buffer
+----------------------------------------------------------------------
+_f_ Forward         _F_ Forward       _n_ Next                 _v_ Scroll up
+_b_ Backward        _B_ Backwards     _p_ Previous             _V_ Scroll down
+                                  _a_ Beginning            _>_ End
+                                  _e_ End                  _<_ Beginning
+                                  _g_ Goto line            _l_ Recenter
+"
+    ("g" avy-goto-line)
+    ("n" next-line)
+    ("p" previous-line)
+    ("f" forward-char)
+    ("F" forward-word)
+    ("b" backward-char)
+    ("B" backward-word)
+    ("a" my/smarter-move-beginning-of-line)
+    ("e" move-end-of-line)
+    ("v" scroll-up-command)
+    ("V" scroll-down-command)
+    ("<" beginning-of-buffer)
+    (">" end-of-buffer)
+    ("l" recenter-top-bottom)
+    ("m" set-mark-command "mark")
+    ("q" nil "quit"))
+  (define-key sstoltze/hydra-map (kbd "m") 'hydra-movement/body)
+  ;; Apropos
+  (defhydra hydra-apropos (:color blue)
+    "Apropos"
+    ("a" counsel-apropos       "apropos")
+    ("c" apropos-command       "cmd")
+    ("d" apropos-documentation "doc")
+    ("e" apropos-value         "val")
+    ("l" apropos-library       "lib")
+    ("o" apropos-user-option   "option")
+    ("u" apropos-user-option   "option")
+    ("v" apropos-variable      "var")
+    ("i" info-apropos          "info")
+    ("t" xref-find-apropos     "tags"))
+  (define-key sstoltze/hydra-map (kbd "a") 'hydra-apropos/body)
+  ;; Ediff
+  (defhydra hydra-ediff (:color blue :hint nil)
+    "
+^Buffers           Files           VC                     Ediff regions
+----------------------------------------------------------------------
+_b_uffers           _f_iles (_=_)       _r_evisions              _l_inewise
+_B_uffers (3-way)   _F_iles (3-way)                          _w_ordwise
+                  _c_urrent file
+"
+    ("b" ediff-buffers)
+    ("B" ediff-buffers3)
+    ("=" ediff-files)
+    ("f" ediff-files)
+    ("F" ediff-files3)
+    ("c" ediff-current-file)
+    ("r" ediff-revision)
+    ("l" ediff-regions-linewise)
+    ("w" ediff-regions-wordwise)
+    ("q" nil "quit"))
+  (define-key sstoltze/hydra-map (kbd "d") 'hydra-ediff/body)
+  ;; Flycheck
+  (defhydra hydra-flycheck
+    (nil nil
+         :pre (progn (setq hydra-lv t)
+                     (flycheck-list-errors))
+         :post (progn (setq hydra-lv nil)
+                      (quit-windows-on "*Flycheck errors*"))
+         :hint nil)
+    "Errors"
+    ("c" flycheck-buffer                                           "Check")
+    ("f" flycheck-error-list-set-filter                            "Filter")
+    ("n" flycheck-next-error                                       "Next")
+    ("p" flycheck-previous-error                                   "Previous")
+    ("<" flycheck-first-error                                      "First")
+    (">" (progn (goto-char (point-max)) (flycheck-previous-error)) "Last")
+    ("q" nil                                                       "Quit"))
+  (define-key sstoltze/hydra-map (kbd "!") 'hydra-flycheck/body)
+  ;; Org
+  (with-eval-after-load 'org
+    (defhydra hydra-global-org (:color blue)
+      "Org"
+      ("t" org-timer-start "Start Timer")
+      ("s" org-timer-stop "Stop Timer")
+      ("r" org-timer-set-timer "Set Timer") ; This one requires you be in an orgmode doc, as it sets the timer for the header
+      ("p" org-timer "Print Timer")     ; output timer value to buffer
+      ("w" (org-clock-in '(4)) "Clock-In") ; used with (org-clock-persistence-insinuate) (setq org-clock-persist t)
+      ("o" org-clock-out "Clock-Out") ; you might also want (setq org-log-note-clock-out t)
+      ("j" org-clock-goto "Clock Goto") ; global visit the clocked task
+      ("c" org-capture "Capture") ; Don't forget to define the captures you want http://orgmode.org/manual/Capture.html
+      ("l" org-capture-goto-last-stored "Last Capture"))
+    (define-key sstoltze/hydra-map (kbd "c") 'hydra-global-org/body))
+  ;; Outline
+  (with-eval-after-load 'outline
+    (defhydra hydra-outline (:color pink :hint nil)
+      "
+^Hide^             ^Show^           ^Move
+^^^^^^------------------------------------------------------
+_h_: sublevels     _a_: all         _u_: up
+_t_: body          _e_: entry       _n_: next visible
+_o_: other         _i_: children    _p_: previous visible
+_c_: entry         _k_: branches    _f_: forward same level
+_l_: leaves        _s_: subtree     _b_: backward same level
+_d_: subtree
+"
+      ;; Hide
+      ("h" outline-hide-sublevels) ; Hide everything but the top-level headings
+      ("t" outline-hide-body) ; Hide everything but headings (all body lines)
+      ("o" outline-hide-other)          ; Hide other branches
+      ("c" outline-hide-entry)          ; Hide this entry's body
+      ("l" outline-hide-leaves) ; Hide body lines in this entry and sub-entries
+      ("d" outline-hide-subtree) ; Hide everything in this entry and sub-entries
+      ;; Show
+      ("a" outline-show-all)            ; Show (expand) everything
+      ("e" outline-show-entry)          ; Show this heading's body
+      ("i" outline-show-children) ; Show this heading's immediate child sub-headings
+      ("k" outline-show-branches) ; Show all sub-headings under this heading
+      ("s" outline-show-subtree) ; Show (expand) everything in this heading & below
+      ;; Move
+      ("u" outline-up-heading)               ; Up
+      ("n" outline-next-visible-heading)     ; Next
+      ("p" outline-previous-visible-heading) ; Previous
+      ("f" outline-forward-same-level)       ; Forward - same level
+      ("b" outline-backward-same-level)      ; Backward - same level
+      ("TAB" outline-cycle "cycle")
+      ("q" nil "quit"))
+    (define-key sstoltze/hydra-map (kbd "o") 'hydra-outline/body))
+  (with-eval-after-load 'cider
+    (use-package cider-hydra
+      :ensure t
+      :config
+      (defhydra cider-hydra-top (:color blue :exit t)
+        "cider-hydra"
+        ("d" cider-hydra-doc/body "Doc")
+        ("e" cider-hydra-eval/body "Eval")
+        ("r" cider-hydra-repl/body "REPL")
+        ("t" cider-hydra-test/body "Test"))
+      (define-key sstoltze/hydra-map (kbd "j") 'cider-hydra-top/body))))
+
+
 ;; org
 ("C-c b" . org-iswitchb)
 
@@ -45,13 +208,3 @@ Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
         (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
 
     (advice-add #'ido-find-file :after #'help/ido-find-file)))
-
-;;;; Counsel
-;;; Keybinds - for :defer t
-("C-x b"   . ivy-switch-buffer)
-("C-x C-f" . counsel-find-file)
-;; Help commands
-("C-h a"   . counsel-apropos)
-("C-h b"   . counsel-descbinds)
-("C-h f"   . counsel-describe-function)
-("C-h v"   . counsel-describe-variable)
