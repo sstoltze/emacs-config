@@ -961,6 +961,12 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (use-package outline-magic
     :ensure t))
 
+(use-package symbol-overlay
+  :ensure t
+  :defer t
+  :hook ((prog-mode . symbol-overlay-mode))
+  :bind-keymap (("C-c o" . symbol-overlay-map)))
+
 ;;;; --- Semantic ---
 (defun my-semantic-hook ()
   "Hook for semantic to add TAGS to menubar."
