@@ -894,23 +894,22 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (ivy-use-virtual-buffers      t)
   ;; Special views in ivy-switch-buffer
   ;; Use {} to easily find views in C-x b
-  (ivy-views `(("init.el {}"
-                (file "~/.emacs.d/init.el"))
-               ("gtd {}"
-                (horz
-                 (file "~/.emacs.d/org-files/gtd/unsorted.org")
-                 (file "~/.emacs.d/org-files/gtd/projects.org")))
-               ;; Work specific views
-               ,(when at-work
-                  '("sas {}"
-                    (horz
-                     (file "C:/Users/sisto/Desktop/noter/dw/sas/noter.org")
-                     (vert
-                      (file "C:/Users/sisto/Desktop/noter/dw/sas/servere.org")
-                      (file "C:/Users/sisto/Desktop/noter/dw/sas/scripts.org")))))
-               ,(when at-work
-                  '("noter {}"
-                   (file "C:/Users/sisto/Desktop/noter/")))))
+  (ivy-views (append `(("init.el {}"
+                        (file "~/.emacs.d/init.el"))
+                       ("gtd {}"
+                        (horz
+                         (file "~/.emacs.d/org-files/gtd/unsorted.org")
+                         (file "~/.emacs.d/org-files/gtd/projects.org"))))
+                     ;; Work specific views
+                     (when at-work
+                       (list '("sas {}"
+                               (horz
+                                (file "C:/Users/sisto/Desktop/noter/dw/sas/noter.org")
+                                (vert
+                                 (file "C:/Users/sisto/Desktop/noter/dw/sas/servere.org")
+                                 (file "C:/Users/sisto/Desktop/noter/dw/sas/scripts.org"))))
+                             '("noter {}"
+                               (file "C:/Users/sisto/Desktop/noter/"))))))
   :config
   ;; Better fuzzy-matching
   (use-package flx
