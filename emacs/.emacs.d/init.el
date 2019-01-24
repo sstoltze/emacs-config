@@ -356,7 +356,7 @@ point reaches the beginning or end of the buffer, stop there."
        (load-theme 'deeper-blue t)
        ;; Fringe (default): black, background: #181a26
        (with-eval-after-load 'highlight-indentation
-         (set-face-background 'highlight-indentation-face "#081218"))
+         (set-face-background 'highlight-indentation-face "#252040"))
        ;; The default "Yellow" of deeper-blue is not great
        (set-face-foreground 'warning "goldenrod1")
        (setq frame-resize-pixelwise t))
