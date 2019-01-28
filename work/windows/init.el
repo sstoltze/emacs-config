@@ -1201,10 +1201,14 @@ length of PATH (sans directory slashes) down to MAX-LEN."
       (flycheck-ocaml-setup))))
 
 ;;;; --- Clojure ---
-(use-package cider
+(use-package clojure-mode
   :ensure t
   :defer t
-  :hook ((clojure-mode . cider-mode)))
+  :init
+  (use-package cider
+    :ensure t
+    :defer t
+    :hook ((clojure-mode . cider-mode))))
 
 ;;;; --- EPA ---
 (defun sstoltze/setup-epa ()
