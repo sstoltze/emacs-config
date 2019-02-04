@@ -731,7 +731,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;;; Allow editing invisible region if it does that you would expect
   (org-catch-invisible-edits              'smart)
   ;; Refile
-  (org-refile-use-outline-path            t)
+  (org-refile-use-outline-path            'file)
   ;;; Targets complete directly with Ivy
   (org-outline-path-complete-in-steps     nil)
   ;;; Allow refile to create parent tasks with confirmation
@@ -764,7 +764,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
              "* TODO %?\n%a\n"
              :empty-lines 1)
             ("m" "Meeting"   entry (file ,default-org-file)
-             "* %? - %u:MEETING:\n:ATTENDEES:\nSimon Stoltze\n:END:\n"
+             "* %? - %u :meeting:\n:ATTENDEES:\nSimon Stoltze\n:END:\n"
              :clock-in t :clock-resume t
              :empty-lines 1)
             ("n" "Next"      entry (file+headline ,default-org-file "Unsorted")
