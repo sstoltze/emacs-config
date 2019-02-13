@@ -710,6 +710,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; Use the current window for most things
   (org-agenda-window-setup                'current-window)
   (org-agenda-restore-windows-after-quit  t)
+  (org-agenda-start-on-weekday            nil)
   (org-indirect-buffer-display            'current-window)
   ;; Export
   (org-export-backends                    '(ascii beamer html icalendar latex md odt))
@@ -736,6 +737,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (org-outline-path-complete-in-steps     nil)
   ;;; Allow refile to create parent tasks with confirmation
   (org-refile-allow-creating-parent-nodes 'confirm)
+  ;; Reverse note order
+  (org-reverse-note-order                 t)
   :init
   ;; Most GTD setup is taken from https://emacs.cafe/emacs/orgmode/gtd/2017/06/30/orgmode-gtd.html
   (let ((default-org-file  "~/.emacs.d/org-files/gtd/unsorted.org") ;; Unsorted items
