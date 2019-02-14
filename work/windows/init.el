@@ -691,13 +691,14 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                  "#+OPTIONS: toc:nil title:nil author:nil email:nil date:nil creator:nil" n)))
 
 ;;;; --- Org ---
+;; Use C-c C-, to replace <sTAB
 (use-package org
   :hook ((org-mode . (lambda ()
                        (visual-line-mode 1)
                        (org-indent-mode  1)))
          (org-babel-after-execute . org-display-inline-images))
   :bind (("C-c l" . org-store-link)
-         ("C-c c" . counsel-org-capture)
+         ("C-c c" . org-capture) ;; counsel-org-capture requires more keypresses
          ("C-c a" . org-agenda)
          ;; Use counsel for org tag selection (C-c C-q)
          ([remap org-set-tags-command] . counsel-org-tag))
@@ -727,15 +728,15 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (org-time-stamp-custom-formats          '("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>"))
   (org-use-fast-todo-selection            t)
   (org-log-done                           t)
-  ;;; Round clock to 5 minute intervals, delete anything shorter
+  ;; Round clock to 5 minute intervals, delete anything shorter
   (org-clock-rounding-minutes             5)
-  ;;; Allow editing invisible region if it does that you would expect
+  ;; Allow editing invisible region if it does that you would expect
   (org-catch-invisible-edits              'smart)
   ;; Refile
   (org-refile-use-outline-path            'file)
-  ;;; Targets complete directly with Ivy
+  ;; Targets complete directly with Ivy
   (org-outline-path-complete-in-steps     nil)
-  ;;; Allow refile to create parent tasks with confirmation
+  ;; Allow refile to create parent tasks with confirmation
   (org-refile-allow-creating-parent-nodes 'confirm)
   ;; Reverse note order
   (org-reverse-note-order                 t)
@@ -743,7 +744,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; Most GTD setup is taken from https://emacs.cafe/emacs/orgmode/gtd/2017/06/30/orgmode-gtd.html
   (let ((default-org-file  "~/.emacs.d/org-files/gtd/unsorted.org") ;; Unsorted items
         (project-org-file  "~/.emacs.d/org-files/gtd/projects.org") ;; Currently active projects
-        (archive-org-file  "~/.emacs.d/org-files/gtd/archive.org")  ;; Projects that are currently waiting for something else
+        (archive-org-file  "~/.emacs.d/org-files/gtd/archive.org") ;; Projects that are done
         (schedule-org-file "~/.emacs.d/org-files/gtd/schedule.org") ;; C-c C-s to schedule. C-c C-d to deadline
         (journal-org-file  "~/.emacs.d/org-files/journal.org"))
     (dolist (org-file (list default-org-file
@@ -760,27 +761,27 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                         nil      ; Lockname
                         'excl))) ; Mustbenew - error if already exists
     (setq org-capture-templates
-          `(("j" "Journal"      entry (file+olp+datetree ,journal-org-file)
+          `(("j" "Journal"   entry (file+olp+datetree ,journal-org-file)
              "* %?"
-             :empty-lines 1)
-            ("t" "TODO"      entry (file+headline ,default-org-file "Unsorted")
-             "* TODO %?\n%a\n"
-             :empty-lines 1)
-            ("m" "Meeting"   entry (file ,default-org-file)
+             :empty-lines-before 1)
+            ("t" "Todo"      entry (file+headline ,default-org-file "Unsorted")
+             "* TODO %?\nCREATED: %U\n"
+             :empty-lines-before 1)
+            ("m" "Meeting"   entry (file+headline ,default-org-file "Meetings")
              "* %? - %u :meeting:\n:ATTENDEES:\nSimon Stoltze\n:END:\n"
-             :clock-in t :clock-resume t
-             :empty-lines 1)
+             :empty-lines-before 1)
             ("n" "Next"      entry (file+headline ,default-org-file "Unsorted")
-             "* NEXT %?\n%a\n"
-             :empty-lines 1)
+             "* NEXT %?\nCREATED: %U\n"
+             :empty-lines-before 1)
             ("s" "Schedule"  entry (file+headline ,schedule-org-file "Schedule")
-             "* %i%?\n%U"
-             :empty-lines 1))
+             "* %i%?\nCREATED: %U\nSCHEDULED: %^{Enter date}t"
+             :empty-lines-before 1))
           org-default-notes-file journal-org-file
           org-agenda-files (list default-org-file
                                  project-org-file
                                  schedule-org-file
                                  journal-org-file)
+          org-archive-location (concat archive-org-file "::datetree/* %s")
           ;; Possibly change levels here
           org-refile-targets `((,project-org-file  :maxlevel . 3)
                                (,schedule-org-file :level    . 1)
@@ -792,14 +793,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     (set-register ?s (cons 'file schedule-org-file))
     (set-register ?j (cons 'file journal-org-file)))
   :config
-  ;; Two options for literate programming.
-  ;; Usage is as for SRC and EXAMPLE blocks, <pr<TAB> to expand
-  (add-to-list 'org-structure-template-alist ;; A property drawer with correct settings for org-babel
-               '("pr" ":PROPERTIES:\n:header-args: :results output :tangle yes :session *?*\n:END:"))
-  (add-to-list 'org-structure-template-alist ;; A source block with header-args for exporting an image
-               '("si" "#+BEGIN_SRC ? :results graphics :file ./images/\n\n#+END_SRC"))
-  (add-to-list 'org-structure-template-alist ;; A source block with silent enabled
-               '("ss" "#+BEGIN_SRC ? :results silent\n\n#+END_SRC"))
   ;; At work
   (when (and at-work
              (file-exists-p "C:/Progra~2/LibreOffice/program/soffice.exe"))
@@ -863,6 +856,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          ("C-x C-f" . counsel-find-file)
          ;; counsel-grep-or-swiper should be faster on large buffers
          ("C-s"     . counsel-grep-or-swiper)
+         ("C-r"     . counsel-grep-or-swiper)
          ;; Find recent files
          ("C-x C-r" . counsel-recentf)
          ;; Resume last ivy completion
