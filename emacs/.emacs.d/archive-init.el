@@ -164,6 +164,16 @@ _d_: subtree
 ;; org
 ("C-c b" . org-iswitchb)
 
+;; org-tempo is untested
+(require 'org-tempo)
+;; Usage is as for SRC and EXAMPLE blocks, <pr<TAB> to expand
+(add-to-list 'org-structure-template-alist ;; A property drawer with correct settings for org-babel
+             '("pr" ":PROPERTIES:\n:header-args: :results output :tangle yes :session *?*\n:END:"))
+(add-to-list 'org-structure-template-alist ;; A source block with header-args for exporting an image
+             '("si" "#+BEGIN_SRC ? :results graphics :file ./images/\n\n#+END_SRC"))
+(add-to-list 'org-structure-template-alist ;; A source block with silent enabled
+             '("ss" "#+BEGIN_SRC ? :results silent\n\n#+END_SRC"))
+
 ;;;; --- Projectile ---
 (use-package projectile
   :ensure t
