@@ -1,3 +1,12 @@
+;; LSP
+(use-package lsp-mode
+  :ensure t
+  :defer t
+  :hook (prog-mode . lsp)
+  :config
+  (use-package lsp-ui
+    :ensure t))
+
 ;; Save history
 (use-package savehist
   :custom
