@@ -153,7 +153,8 @@
                                               default)))
 
 ;; Do not use tabs
-(setq-default indent-tabs-mode              nil)
+(setq-default indent-tabs-mode              nil
+              tab-always-indent             'complete)
 
 ;; Delete extra lines and spaces when saving
 (add-hook 'before-save-hook
