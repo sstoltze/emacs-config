@@ -10,7 +10,6 @@
 
 ;;; Code:
 ;;; *** General setup ***
-
 ;;;; --- Encoding ---
 (prefer-coding-system        'utf-8)
 (set-default-coding-systems  'utf-8)
@@ -646,17 +645,26 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 
 ;;;; --- Paredit ---
 ;; http://pub.gajendra.net/src/paredit-refcard.pdf
-(use-package paredit
+;; (use-package paredit
+;;   :ensure t
+;;   :defer t
+;;   :hook ((emacs-lisp-mode                  . enable-paredit-mode)
+;;          (eval-expression-minibuffer-setup . enable-paredit-mode)
+;;          (ielm-mode                        . enable-paredit-mode)
+;;          (lisp-mode                        . enable-paredit-mode)
+;;          (lisp-interaction-mode            . enable-paredit-mode)
+;;          (scheme-mode                      . enable-paredit-mode)
+;;          (clojure-mode                     . enable-paredit-mode)
+;;          (cider-repl-mode                  . enable-paredit-mode)
+;;          (racket-mode                      . enable-paredit-mode)))
+
+(use-package smartparens
   :ensure t
   :defer t
-  :hook ((emacs-lisp-mode                  . enable-paredit-mode)
-         (eval-expression-minibuffer-setup . enable-paredit-mode)
-         (ielm-mode                        . enable-paredit-mode)
-         (lisp-mode                        . enable-paredit-mode)
-         (lisp-interaction-mode            . enable-paredit-mode)
-         (scheme-mode                      . enable-paredit-mode)
-         (clojure-mode                     . enable-paredit-mode)
-         (cider-repl-mode                  . enable-paredit-mode)))
+  :hook ((prog-mode . turn-on-smartparens-strict-mode))
+  :config
+  ;; Ensure ' works in lisps and does other setup
+  (require 'smartparens-config))
 
 ;;;; --- Flycheck ---
 ;; Next-error and prev-error are bound to M-g n and M-g p
@@ -1206,6 +1214,12 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     :ensure t
     :defer t
     :hook ((clojure-mode . cider-mode))))
+
+(use-package racket-mode
+  :ensure t
+  :defer t
+  :hook
+  (racket-mode . racket-unicode-input-method-enable))
 
 ;;;; --- EPA ---
 (defun sstoltze/setup-epa ()
