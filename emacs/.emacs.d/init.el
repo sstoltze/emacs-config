@@ -663,6 +663,13 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :ensure t
   :defer t
   :hook ((prog-mode . turn-on-smartparens-strict-mode))
+  :bind (("M-s" . sp-splice-sexp)
+         ("C-(" . sp-backward-slurp-sexp)
+         ("C-)" . sp-forward-slurp-sexp)
+         ("C-{" . sp-backward-barf-sexp)
+         ("C-}" . sp-forward-barf-sexp))
+  :custom
+  (sp-highlight-pair-overlay nil)
   :config
   ;; Ensure ' works in lisps and does other setup
   (require 'smartparens-config))
