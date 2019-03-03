@@ -662,7 +662,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package smartparens
   :ensure t
   :defer t
-  :hook ((prog-mode . turn-on-smartparens-strict-mode))
+  :hook ((prog-mode             . turn-on-smartparens-strict-mode)
+         (racket-repl-mode      . turn-on-smartparens-strict-mode)
+         (cider-repl-mode       . turn-on-smartparens-strict-mode)
+         (lisp-interaction-mode . turn-on-smartparens-strict-mode))
   :bind (("M-s" . sp-splice-sexp)
          ("C-(" . sp-backward-slurp-sexp)
          ("C-)" . sp-forward-slurp-sexp)
