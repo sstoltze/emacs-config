@@ -96,6 +96,7 @@
       load-prefer-newer                     t
       select-enable-clipboard               t
       delete-by-moving-to-trash             t
+      view-read-only                        t
 
       ;; Make case insensitive
       completion-ignore-case                t
