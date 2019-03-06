@@ -689,7 +689,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :diminish flycheck-mode
   :hook ((prog-mode . flycheck-mode)
          (text-mode . flycheck-mode))
-  ;;:custom
+  :custom
+  (flycheck-check-syntax-automatically '(save idle-change mode-enable))
+  (flycheck-idle-change-delay          4)
   ;;(flycheck-highlighting-mode 'lines)
   )
 
