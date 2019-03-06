@@ -70,7 +70,8 @@
 (dolist (mode '(tool-bar-mode
                 scroll-bar-mode
                 tooltip-mode
-                menu-bar-mode))
+                menu-bar-mode
+                electric-indent-mode))
   (when (fboundp mode)
     (funcall mode -1)))
 
@@ -676,7 +677,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (sp-highlight-pair-overlay nil)
   :config
   ;; Ensure ' works in lisps and does other setup
-  (require 'smartparens-config))
+  (require 'smartparens-config)
+)
 
 ;;;; --- Flycheck ---
 ;; Next-error and prev-error are bound to M-g n and M-g p
@@ -687,8 +689,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :diminish flycheck-mode
   :hook ((prog-mode . flycheck-mode)
          (text-mode . flycheck-mode))
-  ;; :custom
-  ;; (flycheck-highlighting-mode 'lines)
+  ;;:custom
+  ;;(flycheck-highlighting-mode 'lines)
   )
 
 ;;;; --- Auto-insert ---
