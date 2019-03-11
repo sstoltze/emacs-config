@@ -172,6 +172,13 @@ _d_: subtree
 
 ;; org
 ("C-c b" . org-iswitchb)
+;; At work
+  (when (and at-work
+             (file-exists-p "C:/Progra~2/LibreOffice/program/soffice.exe"))
+    (with-eval-after-load 'ox-odt
+      ;; Export to .docx
+      (setq org-odt-preferred-output-format "docx"
+            org-odt-convert-processes '(("LibreOffice" "C:/Progra~2/LibreOffice/program/soffice.exe --headless --convert-to %f%x --outdir %d %i")))))
 
 ;; org-tempo is untested
 (require 'org-tempo)
@@ -227,3 +234,49 @@ Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
         (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
 
     (advice-add #'ido-find-file :after #'help/ido-find-file)))
+
+;;;;; --- Work specific ---
+  (when at-work
+    (use-package cobol-mode
+      :ensure t
+      :defer t
+      :mode "\\.cbl\\'"
+      :mode "\\.cob\\'"))
+
+(make-mu4e-context
+                            :name "work"
+                            :match-func (lambda (msg) (when msg
+                                                   (string-prefix-p "/work" (mu4e-message-field msg :maildir))))
+                            :vars '((user-mail-address            . "sisto@sd.dk")
+                                    (mu4e-trash-folder            . "/work/Deleted Items")
+                                    (mu4e-refile-folder           . "/work/Archive")
+                                    ;; Exchange does not handle sent messages for us
+                                    (mu4e-sent-messages-behavior  . sent)
+                                    (smtpmail-default-smtp-server . "smtp.office365.com")
+                                    (smtpmail-smtp-server         . "smtp.office365.com")
+                                    (smtpmail-smtp-service        . 587)
+                                    (mu4e-compose-signature       . (concat "\n"
+                                                                            "Venlig hilsen\n"
+                                                                            "\n"
+                                                                            "Simon Stoltze\n"
+                                                                            "Developer\n"
+                                                                            "Silkeborg Data A/S"))))
+(add-to-list 'mu4e-bookmarks
+                   (make-mu4e-bookmark
+                    :name "Work"
+                    :query "maildir:/work/Inbox"
+                    :key ?e)
+                   t)
+
+
+;; Ivy
+;; Work specific views
+                     (when at-work
+                       (list '("sas {}"
+                               (horz
+                                (file "C:/Users/sisto/Desktop/noter/dw/sas/noter.org")
+                                (vert
+                                 (file "C:/Users/sisto/Desktop/noter/dw/sas/servere.org")
+                                 (file "C:/Users/sisto/Desktop/noter/dw/sas/scripts.org"))))
+                             '("noter {}"
+                               (file "C:/Users/sisto/Desktop/noter/"))))
