@@ -88,8 +88,7 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; At work?
-(defvar at-work (equal (user-login-name)
-                       "sisto"))
+(defvar at-work nil)
 
 ;; General variables
 (setq inhibit-startup-screen                t
@@ -127,7 +126,7 @@
 
       ;; Personal info
       user-full-name                        "Simon Stoltze"
-      user-mail-address                     (cond (at-work "sisto@sd.dk" )
+      user-mail-address                     (cond (at-work "" )
                                                   (t       "sstoltze@gmail.com"))
 
       ;; Disable the bell
@@ -678,7 +677,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :config
   ;; Ensure ' works in lisps and does other setup
   (require 'smartparens-config)
-)
+  )
 
 ;;;; --- Flycheck ---
 ;; Next-error and prev-error are bound to M-g n and M-g p
@@ -817,13 +816,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     (set-register ?s (cons 'file schedule-org-file))
     (set-register ?j (cons 'file journal-org-file)))
   :config
-  ;; At work
-  (when (and at-work
-             (file-exists-p "C:/Progra~2/LibreOffice/program/soffice.exe"))
-    (with-eval-after-load 'ox-odt
-      ;; Export to .docx
-      (setq org-odt-preferred-output-format "docx"
-            org-odt-convert-processes '(("LibreOffice" "C:/Progra~2/LibreOffice/program/soffice.exe --headless --convert-to %f%x --outdir %d %i")))))
   ;; Refile settings
   ;; Exclude DONE state tasks from refile targets
   (defun bh/verify-refile-target ()
@@ -920,17 +912,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                        ("gtd {}"
                         (horz
                          (file "~/.emacs.d/org-files/gtd/unsorted.org")
-                         (file "~/.emacs.d/org-files/gtd/projects.org"))))
-                     ;; Work specific views
-                     (when at-work
-                       (list '("sas {}"
-                               (horz
-                                (file "C:/Users/sisto/Desktop/noter/dw/sas/noter.org")
-                                (vert
-                                 (file "C:/Users/sisto/Desktop/noter/dw/sas/servere.org")
-                                 (file "C:/Users/sisto/Desktop/noter/dw/sas/scripts.org"))))
-                             '("noter {}"
-                               (file "C:/Users/sisto/Desktop/noter/"))))))
+                         (file "~/.emacs.d/org-files/gtd/projects.org"))))))
   :config
   ;; Better fuzzy-matching
   (use-package flx
@@ -1231,11 +1213,16 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     :defer t
     :hook ((clojure-mode . cider-mode))))
 
+;;;; --- Racket ---
 (use-package racket-mode
   :ensure t
   :defer t
   :hook
   (racket-mode . racket-unicode-input-method-enable))
+
+(use-package scribble-mode
+  :ensure t
+  :defer t)
 
 ;;;; --- EPA ---
 (defun sstoltze/setup-epa ()
@@ -1369,15 +1356,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                                ";"
                                (getenv "PATH")))
         (add-to-list 'exec-path
-                     plink-file))))
-
-;;;;; --- Work specific ---
-  (when at-work
-    (use-package cobol-mode
-      :ensure t
-      :defer t
-      :mode "\\.cbl\\'"
-      :mode "\\.cob\\'")))
+                     plink-file)))))
 
  ;; --- Linux specific ---
  ((eq system-type 'gnu/linux)
@@ -1438,25 +1417,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                                     (mu4e-sent-messages-behavior  . delete)
                                     (smtpmail-default-smtp-server . "smtp.gmail.com")
                                     (smtpmail-smtp-server         . "smtp.gmail.com")
-                                    (smtpmail-smtp-service        . 587)))
-                           (make-mu4e-context
-                            :name "work"
-                            :match-func (lambda (msg) (when msg
-                                                   (string-prefix-p "/work" (mu4e-message-field msg :maildir))))
-                            :vars '((user-mail-address            . "sisto@sd.dk")
-                                    (mu4e-trash-folder            . "/work/Deleted Items")
-                                    (mu4e-refile-folder           . "/work/Archive")
-                                    ;; Exchange does not handle sent messages for us
-                                    (mu4e-sent-messages-behavior  . sent)
-                                    (smtpmail-default-smtp-server . "smtp.office365.com")
-                                    (smtpmail-smtp-server         . "smtp.office365.com")
-                                    (smtpmail-smtp-service        . 587)
-                                    (mu4e-compose-signature       . (concat "\n"
-                                                                            "Venlig hilsen\n"
-                                                                            "\n"
-                                                                            "Simon Stoltze\n"
-                                                                            "Developer\n"
-                                                                            "Silkeborg Data A/S"))))))
+                                    (smtpmail-smtp-service        . 587)))))
       ;; Authinfo - open in emacs and add lines for each context, e.g.
       ;; machine <smtp.foo.com> login <mail@address.com> password <secret> port <587>
       (add-to-list 'auth-sources
@@ -1472,12 +1433,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                     :name "Gmail"
                     :query "maildir:/gmail/Inbox"
                     :key ?g)
-                   t)
-      (add-to-list 'mu4e-bookmarks
-                   (make-mu4e-bookmark
-                    :name "Work"
-                    :query "maildir:/work/Inbox"
-                    :key ?e)
                    t)
       ;; Headers to see which account a mail is stored in
       (add-to-list 'mu4e-header-info-custom
