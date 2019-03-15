@@ -1014,14 +1014,17 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package tex
   :ensure auctex
   :defer t
-  :hook ((LaTeX-mode . turn-on-auto-fill))
+  :hook ((LaTeX-mode . turn-on-auto-fill)
+         (LaTeX-mode . TeX-source-correlate-mode))
   :custom
+  (TeX-source-correlate-start-server t)
+  (TeX-view-program-list '(("Evince" "evince --page-index=%(outpage) %o")))
   (TeX-view-program-selection
    '(((output-dvi style-pstricks) "dvips and gv")
      (output-dvi "xdvi")
      (output-pdf "Evince")
      (output-html "xdg-open")))
-  (TeX-PDF-mode nil)
+  (TeX-PDF-mode t)
   (TeX-DVI-via-PDFTeX nil)
   ;; Not sure if this belongs here
   (doc-view-continuous t))
