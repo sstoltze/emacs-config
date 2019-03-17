@@ -1024,8 +1024,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
      (output-dvi "xdvi")
      (output-pdf "Evince")
      (output-html "xdg-open")))
-  (TeX-PDF-mode t)
-  (TeX-DVI-via-PDFTeX nil)
   ;; Not sure if this belongs here
   (doc-view-continuous t))
 
