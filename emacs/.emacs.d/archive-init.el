@@ -1,3 +1,7 @@
+;; racket-mode
+:hook
+(racket-mode . racket-unicode-input-method-enable)
+
 ;; LSP
 (use-package lsp-mode
   :ensure t
