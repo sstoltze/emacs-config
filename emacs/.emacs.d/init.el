@@ -1218,9 +1218,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;;;; --- Racket ---
 (use-package racket-mode
   :ensure t
-  :defer t
-  :hook
-  (racket-mode . racket-unicode-input-method-enable))
+  :defer t)
 
 (use-package scribble-mode
   :ensure t
