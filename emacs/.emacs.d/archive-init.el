@@ -1,3 +1,20 @@
+
+;;;; --- Paredit ---
+;; http://pub.gajendra.net/src/paredit-refcard.pdf
+;; (use-package paredit
+;;   :ensure t
+;;   :defer t
+;;   :hook ((emacs-lisp-mode                  . enable-paredit-mode)
+;;          (eval-expression-minibuffer-setup . enable-paredit-mode)
+;;          (ielm-mode                        . enable-paredit-mode)
+;;          (lisp-mode                        . enable-paredit-mode)
+;;          (lisp-interaction-mode            . enable-paredit-mode)
+;;          (scheme-mode                      . enable-paredit-mode)
+;;          (clojure-mode                     . enable-paredit-mode)
+;;          (cider-repl-mode                  . enable-paredit-mode)
+;;          (racket-mode                      . enable-paredit-mode)))
+
+
 ;; racket-mode
 :hook
 (racket-mode . racket-unicode-input-method-enable)

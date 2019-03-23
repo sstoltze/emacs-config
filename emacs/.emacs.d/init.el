@@ -645,21 +645,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
               components (cdr components)))
       (concat str (seq-reduce (lambda (a b) (concat a "/" b)) (cdr components) (car components))))))
 
-;;;; --- Paredit ---
-;; http://pub.gajendra.net/src/paredit-refcard.pdf
-;; (use-package paredit
-;;   :ensure t
-;;   :defer t
-;;   :hook ((emacs-lisp-mode                  . enable-paredit-mode)
-;;          (eval-expression-minibuffer-setup . enable-paredit-mode)
-;;          (ielm-mode                        . enable-paredit-mode)
-;;          (lisp-mode                        . enable-paredit-mode)
-;;          (lisp-interaction-mode            . enable-paredit-mode)
-;;          (scheme-mode                      . enable-paredit-mode)
-;;          (clojure-mode                     . enable-paredit-mode)
-;;          (cider-repl-mode                  . enable-paredit-mode)
-;;          (racket-mode                      . enable-paredit-mode)))
-
 (use-package smartparens
   :ensure t
   :defer t
@@ -677,8 +662,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (sp-highlight-pair-overlay nil)
   :config
   ;; Ensure ' works in lisps and does other setup
-  (require 'smartparens-config)
-  )
+  (require 'smartparens-config))
 
 ;;;; --- Flycheck ---
 ;; Next-error and prev-error are bound to M-g n and M-g p
@@ -690,10 +674,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :hook ((prog-mode . flycheck-mode)
          (text-mode . flycheck-mode))
   :custom
-  (flycheck-check-syntax-automatically '(save idle-change mode-enable))
-  (flycheck-idle-change-delay          4)
+  ;; Enable if flycheck is slow
   ;;(flycheck-highlighting-mode 'lines)
-  )
+  (flycheck-check-syntax-automatically '(save idle-change mode-enable))
+  (flycheck-idle-change-delay          4))
 
 ;;;; --- Auto-insert ---
 (use-package autoinsert
@@ -1036,13 +1020,16 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 
 ;;;; --- Ediff ---
 ;; Ignore whitespace, no popup-window and split horizontally
-(add-hook 'ediff-before-setup-hook
-          (lambda ()
-            (setq ediff-diff-options "-w"
-                  ediff-window-setup-function 'ediff-setup-windows-plain
-                  ediff-split-window-function 'split-window-horizontally)))
-(with-eval-after-load 'ediff
-  (set-face-background 'ediff-odd-diff-B "Grey60"))
+(use-package ediff
+  :hook ((ediff-before-setup . (lambda ()
+                                 (setq ediff-diff-options "-w"
+                                       ediff-window-setup-function 'ediff-setup-windows-plain
+                                       ediff-split-window-function 'split-window-horizontally))))
+  :custom-face
+  (ediff-odd-diff-B ((t (:background "Grey60")))))
+
+;; (with-eval-after-load 'ediff
+;;   (set-face-background 'ediff-odd-diff-B "Grey60"))
 
 ;;;; --- HTML/CSS ---
 (use-package rainbow-mode
