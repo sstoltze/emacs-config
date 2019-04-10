@@ -879,8 +879,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          ("C-c s"   . swiper-avy))
   :custom
   ;; Allow "M-x lis-pac" to match "M-x list-packages"
-  (ivy-re-builders-alist        '((swiper . ivy--regex-plus)
-                                  (t      . ivy--regex-fuzzy)))
+  (ivy-re-builders-alist        '((swiper         . ivy--regex-plus)
+                                  (swiper-isearch . ivy--regex-plus)
+                                  (t              . ivy--regex-fuzzy)))
   ;; With the above, we do not need the initial ^ in the prompts
   (ivy-initial-inputs-alist     '())
   ;; Allows selecting the prompt with C-p (same as C-M-j)
