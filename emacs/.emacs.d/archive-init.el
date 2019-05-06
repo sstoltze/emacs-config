@@ -211,14 +211,6 @@ _d_: subtree
 (add-to-list 'org-structure-template-alist ;; A source block with silent enabled
              '("ss" "#+BEGIN_SRC ? :results silent\n\n#+END_SRC"))
 
-;;;; --- Projectile ---
-(use-package projectile
-  :ensure t
-  :defer t
-  :custom
-  (projectile-completion-system 'ivy)
-  (projectile-indexing-method 'alien))
-
 ;;;; --- Ido ---
 ;;;;; Tips:
 ;;;;; C-p makes ido only match beginning of names
