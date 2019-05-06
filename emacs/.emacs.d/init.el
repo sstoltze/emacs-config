@@ -664,6 +664,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; Ensure ' works in lisps and does other setup
   (require 'smartparens-config))
 
+(use-package rainbow-delimiters
+  :ensure t
+  :defer t
+  :hook ((prog-mode . rainbow-delimiters-mode)))
+
 ;;;; --- Flycheck ---
 ;; Next-error and prev-error are bound to M-g n and M-g p
 (use-package flycheck
