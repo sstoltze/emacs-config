@@ -1084,6 +1084,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;;;; --- Java ---
 (add-hook 'java-mode-hook
           'my-semantic-hook)
+(add-hook 'java-mode-hook
+          (lambda ()
+            (subword-mode 1)))
 
 ;;;; --- Magit ---
 (use-package magit
@@ -1202,6 +1205,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package clojure-mode
   :ensure t
   :defer t
+  :hook ((clojure-mode . subword-mode))
   :init
   (use-package cider
     :ensure t
