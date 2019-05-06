@@ -307,7 +307,8 @@
   (interactive)
   (exchange-point-and-mark)
   (deactivate-mark nil))
-(define-key global-map [remap exchange-point-and-mark] 'exchange-point-and-mark-no-activate)
+(global-set-key [remap exchange-point-and-mark]
+                'exchange-point-and-mark-no-activate)
 
 ;; Better C-a
 (defun my/smarter-move-beginning-of-line (arg)
@@ -322,12 +323,10 @@ If ARG is not nil or 1, move forward ARG - 1 lines first.  If
 point reaches the beginning or end of the buffer, stop there."
   (interactive "^p")
   (setq arg (or arg 1))
-
   ;; Move lines first
   (when (/= arg 1)
     (let ((line-move-visual nil))
       (forward-line (1- arg))))
-
   (let ((orig-point (point)))
     (back-to-indentation)
     (when (= orig-point (point))
@@ -981,24 +980,26 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :bind-keymap (("C-c o" . symbol-overlay-map)))
 
 ;;;; --- Semantic ---
-(defun my-semantic-hook ()
-  "Hook for semantic to add TAGS to menubar."
-  (imenu-add-to-menubar "TAGS")
-  (use-package semantic
-    :config
-    (use-package semantic/ia)
-    (use-package semantic/wisent)
-    (add-to-list 'semantic-default-submodes
-                 'global-semanticdb-minor-mode)
-    (add-to-list 'semantic-default-submodes
-                 'global-semantic-idle-local-symbol-highlight-mode)
-    (add-to-list 'semantic-default-submodes
-                 'global-semantic-idle-scheduler-mode)
-    (add-to-list 'semantic-default-submodes
-                 'global-semantic-idle-completions-mode)
-    (add-to-list 'semantic-default-submodes
-                 'global-semantic-idle-summary-mode)
-    (semantic-mode t)))
+(use-package semantic
+  :ensure t
+  :defer t
+  :hook ((c-mode    . semantic-mode)
+         (c++-mode  . semantic-mode)
+         (java-mode . semantic-mode))
+  :config
+  (use-package semantic/ia)
+  (use-package semantic/wisent)
+  (add-to-list 'semantic-default-submodes
+               'global-semanticdb-minor-mode)
+  (add-to-list 'semantic-default-submodes
+               'global-semantic-idle-local-symbol-highlight-mode)
+  (add-to-list 'semantic-default-submodes
+               'global-semantic-idle-scheduler-mode)
+  (add-to-list 'semantic-default-submodes
+               'global-semantic-idle-completions-mode)
+  (add-to-list 'semantic-default-submodes
+               'global-semantic-idle-summary-mode)
+  (imenu-add-to-menubar "TAGS"))
 
 ;;;; --- Lisp ---
 (use-package slime
@@ -1049,15 +1050,13 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;;;; --- Ediff ---
 ;; Ignore whitespace, no popup-window and split horizontally
 (use-package ediff
+  :defer t
   :hook ((ediff-before-setup . (lambda ()
                                  (setq ediff-diff-options "-w"
                                        ediff-window-setup-function 'ediff-setup-windows-plain
                                        ediff-split-window-function 'split-window-horizontally))))
   :custom-face
   (ediff-odd-diff-B ((t (:background "Grey60")))))
-
-;; (with-eval-after-load 'ediff
-;;   (set-face-background 'ediff-odd-diff-B "Grey60"))
 
 ;;;; --- HTML/CSS ---
 (use-package rainbow-mode
@@ -1090,8 +1089,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (c-set-style "bsd")
   (setq c-basic-offset 2
         tab-width 2)
-  (use-package semantic/bovine/gcc)
-  (my-semantic-hook))
+  (use-package semantic/bovine/gcc))
 (defun my-cpp-hook ()
   "C++ specific packages."
   (use-package modern-cpp-font-lock
@@ -1105,10 +1103,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 
 ;;;; --- Java ---
 (add-hook 'java-mode-hook
-          'my-semantic-hook)
-(add-hook 'java-mode-hook
-          (lambda ()
-            (subword-mode 1)))
+          'subword-mode)
 
 ;;;; --- Magit ---
 (use-package magit
