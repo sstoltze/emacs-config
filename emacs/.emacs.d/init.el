@@ -653,11 +653,15 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          (cider-repl-mode       . turn-on-smartparens-strict-mode)
          (lisp-interaction-mode . turn-on-smartparens-strict-mode)
          (slime-repl-mode       . turn-on-smartparens-strict-mode))
-  :bind (("M-s" . sp-splice-sexp)
-         ("C-(" . sp-backward-slurp-sexp)
-         ("C-)" . sp-forward-slurp-sexp)
-         ("C-{" . sp-backward-barf-sexp)
-         ("C-}" . sp-forward-barf-sexp))
+  :bind (("M-s"  . sp-splice-sexp)
+         ("C-("  . sp-backward-slurp-sexp)
+         ("C-)"  . sp-forward-slurp-sexp)
+         ("C-{"  . sp-backward-barf-sexp)
+         ("C-}"  . sp-forward-barf-sexp)
+         ("M-("  . sp-wrap-round)
+         ("M-{"  . sp-wrap-curly)
+         ("M-["  . sp-wrap-square)
+         ("M-\"" . (lambda (&optional arg) (interactive "P") (sp-wrap-with-pair "\""))))
   :custom
   (sp-highlight-pair-overlay nil)
   :config
@@ -984,6 +988,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package slime
   :ensure t
   :defer t
+  :bind ((:map slime-repl-mode-map
+               ("M-s" . sp-splice-sexp)))
   :custom
   (inferior-lisp-program "sbcl --dynamic-space-size 2560")
   (slime-default-lisp "sbcl")
@@ -1210,7 +1216,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (use-package cider
     :ensure t
     :defer t
-    :hook ((clojure-mode . cider-mode))))
+    :hook ((clojure-mode . cider-mode))
+    :bind (:map cider-repl-mode-map
+                ("M-s" . sp-splice-sexp))))
 
 ;;;; --- Racket ---
 (use-package racket-mode
