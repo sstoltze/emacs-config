@@ -71,7 +71,8 @@
                 scroll-bar-mode
                 tooltip-mode
                 menu-bar-mode
-                electric-indent-mode))
+                electric-indent-mode
+                blink-cursor-mode))
   (when (fboundp mode)
     (funcall mode -1)))
 
@@ -93,10 +94,19 @@
 ;; General variables
 (setq inhibit-startup-screen                t
       initial-scratch-message               nil
+
+      ;; Load newest file from disk
       load-prefer-newer                     t
-      select-enable-clipboard               t
+
+      ;; Delete to trash
       delete-by-moving-to-trash             t
+
+      ;; Exit read-only buffers with q
       view-read-only                        t
+
+      ;; Copy-paste
+      select-enable-clipboard               t
+      save-interprogram-paste-before-kill   t
 
       ;; Make case insensitive
       completion-ignore-case                t
@@ -322,7 +332,7 @@ point reaches the beginning or end of the buffer, stop there."
     (back-to-indentation)
     (when (= orig-point (point))
       (move-beginning-of-line 1))))
-;; remap C-a to `smarter-move-beginning-of-line'
+;; Remap C-a to `smarter-move-beginning-of-line'
 (global-set-key [remap move-beginning-of-line]
                 'my/smarter-move-beginning-of-line)
 
@@ -351,6 +361,12 @@ point reaches the beginning or end of the buffer, stop there."
       (goto-char (point-min))
       (while (re-search-forward (car l) nil t)
         (replace-match (cdr l))))))
+
+(defun toggle-comment-on-line ()
+  "Comment or uncomment current line."
+  (interactive)
+  (comment-or-uncomment-region (line-beginning-position) (line-end-position)))
+(global-set-key (kbd "C-;") 'toggle-comment-on-line)
 
 ;;;; --- Frame-setup ---
 (cond ((display-graphic-p) ;; Window system
