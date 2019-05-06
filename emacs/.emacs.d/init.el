@@ -445,7 +445,7 @@ point reaches the beginning or end of the buffer, stop there."
 ;; To highlight processes use highlight-lines-matching-regexp, M-s h l
 ;; Unhighlight by unhighlight-regexp, M-s h u
 (use-package proced
-  :bind (("C-c p" . proced))
+  :bind (("C-c t" . proced))
   :hook ((proced-mode . hl-line-mode)
          ;; Update every 5 seconds
          (proced-mode . sstoltze/proced-settings))
@@ -1000,6 +1000,22 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (add-to-list 'semantic-default-submodes
                'global-semantic-idle-summary-mode)
   (imenu-add-to-menubar "TAGS"))
+
+;;;; --- Projectile ---
+(use-package projectile
+  :ensure t
+  :defer t
+  :bind-keymap (("C-c p" . projectile-command-map))
+  :custom
+  (projectile-completion-system 'ivy)
+  ;; Seems to be necessary for windows
+  (projectile-git-submodule-command nil)
+  (projectile-indexing-method 'alien)
+  :config
+  (use-package counsel-projectile
+    :ensure t
+    :init
+    (counsel-projectile-mode 1)))
 
 ;;;; --- Lisp ---
 (use-package slime
