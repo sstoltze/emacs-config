@@ -1022,7 +1022,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :ensure t
   :defer t
   :bind ((:map slime-repl-mode-map
-               ("M-s" . sp-splice-sexp)))
+               ("M-s" . sp-splice-sexp)
+               ("C-M-i" . counsel-cl))
+         (:map lisp-mode-map
+               ("C-M-i" . counsel-cl)))
   :custom
   (inferior-lisp-program "sbcl --dynamic-space-size 2560")
   (slime-default-lisp "sbcl")
@@ -1244,8 +1247,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     :ensure t
     :defer t
     :hook ((clojure-mode . cider-mode))
-    :bind (:map cider-repl-mode-map
-                ("M-s" . sp-splice-sexp))))
+    :bind ((:map cider-repl-mode-map
+                 ("M-s" . sp-splice-sexp)))))
 
 ;;;; --- Racket ---
 (use-package racket-mode
