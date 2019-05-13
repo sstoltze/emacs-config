@@ -161,7 +161,10 @@
       custom-theme-directory                "~/.emacs.d/themes/"
       custom-safe-themes                    (quote
                                              ("491417843dee886b649cf0dd70c8c86c8bccbbe373239058ba9900b348bad5cf"
-                                              default)))
+                                              default))
+
+      ;; Scrolling forward and then back preserves point position
+      scroll-preserve-screen-position       t)
 
 ;; Do not use tabs
 (setq-default indent-tabs-mode              nil
@@ -177,6 +180,8 @@
 ;; Automatic indent on pressing RET
 (global-set-key (kbd "RET")
                 'newline-and-indent)
+(global-set-key (kbd "C-x k")
+                'kill-this-buffer)
 
 ;; Prettify symbols
 ;; C-x 8 RET to find and insert unicode char
