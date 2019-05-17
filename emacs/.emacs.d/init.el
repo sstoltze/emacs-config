@@ -89,7 +89,7 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; At work?
-(defvar at-work nil)
+(defvar at-work-p nil)
 
 ;; General variables
 (setq inhibit-startup-screen                t
@@ -136,8 +136,8 @@
 
       ;; Personal info
       user-full-name                        "Simon Stoltze"
-      user-mail-address                     (cond (at-work "" )
-                                                  (t       "sstoltze@gmail.com"))
+      user-mail-address                     (cond (at-work-p "" )
+                                                  (t         "sstoltze@gmail.com"))
 
       ;; Disable the bell
       ring-bell-function                    'ignore
@@ -936,6 +936,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (counsel-mode 1)
   ;; Show how deep the minibuffer goes
   (minibuffer-depth-indicate-mode 1)
+  (add-to-list 'ivy-display-functions-alist
+               '(complete-symbol . ivy-display-function-overlay))
+  (add-to-list 'ivy-display-functions-alist
+               '(completion-at-point . ivy-display-function-overlay))
   ;; Sort recentf by timestamp
   (add-to-list 'ivy-sort-functions-alist
                '(counsel-recentf . file-newer-than-file-p))
