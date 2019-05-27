@@ -197,9 +197,12 @@
                                     ("=>"  . ?⇒)
                                     ("..." . ?…)))))
 
-;; Enable C-x C-u (upcase-region) and C-x C-l (downcase region)
-(put 'upcase-region   'disabled nil)
-(put 'downcase-region 'disabled nil)
+;; Enable C-x C-u (upcase-region)
+(put 'upcase-region    'disabled nil)
+;; Enable C-x C-l (downcase region)
+(put 'downcase-region  'disabled nil)
+;; Enable C-x n n (narrow-to-region)
+(put 'narrow-to-region 'disabled nil)
 
 ;; Press 'C-x r j e' to go to init.el
 (set-register ?e '(file . "~/.emacs.d/init.el"))
@@ -1308,10 +1311,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 
   ;; This code interacts strangely with awesomewm, so it is windows-specific for now
   ;; Set initial frame size and position
-  (defvar *sstoltze/position-factor*   0.40)
-  (defvar *sstoltze/width-factor*      0.85)
-  (defvar *sstoltze/height-factor*     0.90)
-  (defvar *sstoltze/half-width-factor* 0.45)
+  (defvar *sstoltze/position-factor*    0.40)
+  (defvar *sstoltze/width-factor*       0.90)
+  (defvar *sstoltze/half-width-factor*  0.45)
+  (defvar *sstoltze/height-factor*      0.90)
+  (defvar *sstoltze/half-height-factor* 0.50)
   (defun sstoltze/get-main-monitor-size ()
     "Get pixels for multiple-monitor setup."
     (let* ((monitors          (display-monitor-attributes-list))
@@ -1353,6 +1357,28 @@ length of PATH (sans directory slashes) down to MAX-LEN."
            (frame-pixel-top    (truncate (* (- main-pixel-height frame-pixel-height) *sstoltze/position-factor*))))
       (set-frame-position (selected-frame) frame-pixel-left  frame-pixel-top)
       (set-frame-size     (selected-frame) frame-pixel-width frame-pixel-height t)))
+  (defun sstoltze/set-top-small-frame ()
+    "Frame on the left."
+    (let* ((pixels             (sstoltze/get-main-monitor-size))
+           (main-pixel-width   (nth 0 pixels))
+           (main-pixel-height  (nth 1 pixels))
+           (frame-pixel-width  (truncate (* main-pixel-width  *sstoltze/width-factor*)))
+           (frame-pixel-height (truncate (* main-pixel-height *sstoltze/half-height-factor*)))
+           (frame-pixel-left   (truncate (* (- main-pixel-width  frame-pixel-width)  *sstoltze/position-factor*)))
+           (frame-pixel-top    0))
+      (set-frame-position (selected-frame) frame-pixel-left  frame-pixel-top)
+      (set-frame-size     (selected-frame) frame-pixel-width frame-pixel-height t)))
+  (defun sstoltze/set-bottom-small-frame ()
+    "Frame on the left."
+    (let* ((pixels             (sstoltze/get-main-monitor-size))
+           (main-pixel-width   (nth 0 pixels))
+           (main-pixel-height  (nth 1 pixels))
+           (frame-pixel-width  (truncate (* main-pixel-width  *sstoltze/width-factor*)))
+           (frame-pixel-height (truncate (* main-pixel-height *sstoltze/half-height-factor*)))
+           (frame-pixel-left   (truncate (* (- main-pixel-width  frame-pixel-width)  *sstoltze/position-factor*)))
+           (frame-pixel-top    (truncate (- (* main-pixel-height 0.97) frame-pixel-height))))
+      (set-frame-position (selected-frame) frame-pixel-left  frame-pixel-top)
+      (set-frame-size     (selected-frame) frame-pixel-width frame-pixel-height t)))
   ;; Set starting frame
   (sstoltze/set-normal-frame)
   ;; Alt-enter toggles screensize
@@ -1363,8 +1389,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          (setq *fullscreen-set* nil))
        (,func)))
   (defvar *fullscreen-set* nil)
-  (defvar *window-status* 0)
+  (defvar *window-status*  0)
   (defvar *window-options* (list
+                            (lambda ()
+                              (handle-fullscreen-mode sstoltze/set-normal-frame))
                             (lambda ()
                               (when (not *fullscreen-set*)
                                 (toggle-frame-fullscreen)
@@ -1374,19 +1402,24 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                             (lambda ()
                               (handle-fullscreen-mode sstoltze/set-right-small-frame))
                             (lambda ()
-                              (handle-fullscreen-mode sstoltze/set-normal-frame))))
+                              (handle-fullscreen-mode sstoltze/set-top-small-frame))
+                            (lambda ()
+                              (handle-fullscreen-mode sstoltze/set-bottom-small-frame))))
   (defun toggle-window (arg)
     (interactive "P")
     (when arg
       (message "%s" arg)
-      (setq *window-status* (mod (prefix-numeric-value arg)
+      ;; (- arg 2) makes C-1 M-RET correspond to sstoltze/set-normal-frame
+      (setq *window-status* (mod (- (prefix-numeric-value arg) 2)
                                  (length *window-options*))))
-    (funcall (nth *window-status* *window-options*))
     (setq *window-status* (mod (1+ *window-status*)
-                               (length *window-options*))))
+                               (length *window-options*)))
+    (funcall (nth *window-status* *window-options*)))
   (global-set-key (kbd "M-RET")     'toggle-window)
-  (global-set-key (kbd "M-<left>")  '(lambda () (interactive) (toggle-window 1)))
-  (global-set-key (kbd "M-<right>") '(lambda () (interactive) (toggle-window 2)))
+  (global-set-key (kbd "M-<left>")  '(lambda () (interactive) (toggle-window 3)))
+  (global-set-key (kbd "M-<right>") '(lambda () (interactive) (toggle-window 4)))
+  (global-set-key (kbd "M-<up>")    '(lambda () (interactive) (toggle-window 5)))
+  (global-set-key (kbd "M-<down>")  '(lambda () (interactive) (toggle-window 6)))
 
   ;; --- Tramp - Windows ---
   ;; C-x C-f /plink:<user>@host: ENTER
