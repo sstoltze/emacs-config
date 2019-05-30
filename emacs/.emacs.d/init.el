@@ -893,7 +893,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          ;; Find recent files
          ("C-x C-r" . counsel-recentf)
          ;; Resume last ivy completion
-         ("C-c r"   . ivy-resume)
+         ("C-c C-r" . ivy-resume)
          ;; Find file in git repository
          ("C-c g"   . counsel-git)
          ;; Help commands
@@ -1261,10 +1261,14 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     :hook ((clojure-mode . cider-mode))
     :bind ((:map cider-repl-mode-map
                  ("M-s" . sp-splice-sexp))))
+  ;; C-c C-r - clojure-refactor-map
+  ;; C-c r   - clj-refactor-mode-map - see https://github.com/clojure-emacs/clj-refactor.el/wiki
   (use-package clj-refactor
     :ensure t
     :defer t
-    :hook ((clojure-mode . clj-refactor-mode))))
+    :hook ((clojure-mode . clj-refactor-mode))
+    :config
+    (cljr-add-keybindings-with-prefix (kbd "C-c r"))))
 
 ;;;; --- Racket ---
 (use-package racket-mode
