@@ -893,7 +893,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          ;; Find recent files
          ("C-x C-r" . counsel-recentf)
          ;; Resume last ivy completion
-         ("C-c C-r" . ivy-resume)
+         ("C-c r"   . ivy-resume)
          ;; Find file in git repository
          ("C-c g"   . counsel-git)
          ;; Help commands
@@ -1260,7 +1260,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     :defer t
     :hook ((clojure-mode . cider-mode))
     :bind ((:map cider-repl-mode-map
-                 ("M-s" . sp-splice-sexp)))))
+                 ("M-s" . sp-splice-sexp))))
+  (use-package clj-refactor
+    :ensure t
+    :defer t
+    :hook ((clojure-mode . clj-refactor-mode))))
 
 ;;;; --- Racket ---
 (use-package racket-mode
