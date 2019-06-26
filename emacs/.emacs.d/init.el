@@ -191,8 +191,9 @@
 (add-hook 'prog-mode-hook (lambda ()
                             (mapc (lambda (pair)
                                     (push pair prettify-symbols-alist))
-                                  '(("lambda" . (?· (Br . Bl) ?· (Br . Bl) ?λ
-                                                    (Br . Bl) ?· (Br . Bl) ?·))
+                                  '(("lambda" . (?·  (Br . Bl) ?\s (Br . Bl) ?\s
+                                                     (Br . Bl) ?\s (Br . Bl) ?\s
+                                                     (Br . Bl) ?· (Bc . Bc) ?λ))
                                     ("<="     . (?·  (Br . Bl) ?≤))
                                     (">="     . (?·  (Br . Bl) ?≥))
                                     ("!="     . (?·  (Br . Bl) ?≠))
@@ -1502,7 +1503,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                            (make-mu4e-context
                             :name "gmail"
                             :match-func (lambda (msg) (when msg
-                                                     (string-prefix-p "/gmail" (mu4e-message-field msg :maildir))))
+                                                      (string-prefix-p "/gmail" (mu4e-message-field msg :maildir))))
                             :vars '((user-mail-address            . "sstoltze@gmail.com")
                                     (mu4e-trash-folder            . "/gmail/[Gmail].Trash")
                                     (mu4e-refile-folder           . "/gmail/[Gmail].Archive")
