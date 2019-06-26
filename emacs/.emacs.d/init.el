@@ -185,17 +185,25 @@
 
 ;; Prettify symbols
 ;; C-x 8 RET to find and insert unicode char
+;; Old non-monospaced version:
+;; ("<="  . ?≤) (">="  . ?≥) ("!="  . ?≠) ("/="  . ?≠)
+;; ("->"  . ?→) ("<-"  . ?←) ("=>"  . ?⇒) ("..." . ?…)
 (add-hook 'prog-mode-hook (lambda ()
                             (mapc (lambda (pair)
                                     (push pair prettify-symbols-alist))
-                                  '(("<="  . ?≤)
-                                    (">="  . ?≥)
-                                    ("!="  . ?≠) ;; C
-                                    ("/="  . ?≠) ;; Lisp
-                                    ("->"  . ?→)
-                                    ("<-"  . ?←)
-                                    ("=>"  . ?⇒)
-                                    ("..." . ?…)))))
+                                  '(("lambda" . (?· (Br . Bl) ?· (Br . Bl) ?λ
+                                                    (Br . Bl) ?· (Br . Bl) ?·))
+                                    ("<="     . (?·  (Br . Bl) ?≤))
+                                    (">="     . (?·  (Br . Bl) ?≥))
+                                    ("!="     . (?·  (Br . Bl) ?≠))
+                                    ("/="     . (?·  (Br . Bl) ?≠))
+                                    ("->"     . (?-  (Br . Bc) ?- (Br . Bc) ?>))
+                                    ("->>"    . (?\s (Br . Bl) ?\s (Br . Bl) ?\s
+                                                     (Bl . Bl) ?- (Bc . Br) ?- (Bc . Bc) ?>
+                                                     (Bc . Bl) ?- (Br . Br) ?>))
+                                    ("<-"     . (?<  (Br . Bc) ?- (Br . Bc) ?-))
+                                    ("=>"     . (?·  (Br . Bl) ?⇒))
+                                    ("..."    . (?…  (Br . Bl) ?\s (Br . Bl) ?\s))))))
 
 ;; Enable C-x C-u (upcase-region)
 (put 'upcase-region    'disabled nil)
@@ -1494,7 +1502,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                            (make-mu4e-context
                             :name "gmail"
                             :match-func (lambda (msg) (when msg
-                                                   (string-prefix-p "/gmail" (mu4e-message-field msg :maildir))))
+                                                     (string-prefix-p "/gmail" (mu4e-message-field msg :maildir))))
                             :vars '((user-mail-address            . "sstoltze@gmail.com")
                                     (mu4e-trash-folder            . "/gmail/[Gmail].Trash")
                                     (mu4e-refile-folder           . "/gmail/[Gmail].Archive")
