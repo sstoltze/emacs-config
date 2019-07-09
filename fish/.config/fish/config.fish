@@ -52,13 +52,17 @@ switch $system
 
     case Linux
         # Cabal
-        set -x PATH ~/.cabal/bin $PATH
+        if test -d ~/.cabal/bin
+            set -x PATH ~/.cabal/bin $PATH
+        end
         # Stack
-        set -x PATH ~/.local/bin $PATH
+        if test -d ~/.local/bin
+            set -x PATH ~/.local/bin $PATH
+        end
 
         # start X at login
         if status --is-login
-            if test -z "$DISPLAY" -a $XDG_VTNR -eq 1
+            if test -z "$DISPLAY" -a "$XDG_VTNR" -eq 1
                 exec startx
             end
         end
