@@ -194,7 +194,6 @@
                                   '(("lambda" . (?·  (Br . Bl) ?\s (Br . Bl) ?\s
                                                      (Br . Bl) ?\s (Br . Bl) ?\s
                                                      (Br . Bl) ?· (Bc . Bc) ?λ))
-                                    ("fn"     . (?·  (Br . Bl) ?λ))
                                     ("<="     . (?·  (Br . Bl) ?≤))
                                     (">="     . (?·  (Br . Bl) ?≥))
                                     ("!="     . (?·  (Br . Bl) ?≠))
