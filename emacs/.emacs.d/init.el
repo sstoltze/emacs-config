@@ -954,14 +954,16 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                '(completion-at-point . ivy-display-function-overlay))
   ;; Sort recentf by timestamp
   (add-to-list 'ivy-sort-functions-alist
-               '(counsel-recentf . file-newer-than-file-p))
-  ;; Add info to ivy-buffers like 'M-x' or 'C-x b'
-  (use-package ivy-rich
-    :ensure t
-    :custom
-    (ivy-rich-path-style 'abbrev)
-    :config
-    (ivy-rich-mode 1)))
+               '(counsel-recentf . file-newer-than-file-p)))
+;; Add info to ivy-buffers like 'M-x' or 'C-x b'
+(use-package ivy-rich
+  :ensure t
+  :after ivy
+  :custom
+  (ivy-rich-path-style 'abbrev)
+  :config
+  (ivy-rich-mode 1))
+
 
 ;;;; --- Multiple cursors ---
 (use-package multiple-cursors
