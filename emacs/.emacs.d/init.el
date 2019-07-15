@@ -450,13 +450,15 @@ point reaches the beginning or end of the buffer, stop there."
   ;; Auto refresh dired
   (global-auto-revert-non-file-buffers t)
   :config
-  (use-package dired-x
-    :config
-    (add-to-list 'dired-omit-extensions ".DS_Store"))
-  (use-package dired-aux
-    :init
-    (use-package dired-async))
   (put 'dired-find-alternate-file 'disabled nil))
+(use-package dired-x
+  :after dired
+  :config
+  (add-to-list 'dired-omit-extensions ".DS_Store"))
+(use-package dired-aux
+  :after dired
+  :init
+  (use-package dired-async))
 
 ;;;; --- Proced ---
 ;; To highlight processes use highlight-lines-matching-regexp, M-s h l
@@ -991,10 +993,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :bind (("<C-tab>" . outline-cycle)
          ("M-n"     . outline-next-visible-heading)
          ("M-p"     . outline-previous-visible-heading))
-  :bind-keymap (("C-z" . outline-mode-prefix-map))
-  :config
-  (use-package outline-magic
-    :ensure t))
+  :bind-keymap (("C-z" . outline-mode-prefix-map)))
+(use-package outline-magic
+  :ensure t
+  :after outline)
 
 (use-package symbol-overlay
   :ensure t
@@ -1033,12 +1035,12 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (projectile-completion-system 'ivy)
   ;; Seems to be necessary for windows
   (projectile-git-submodule-command nil)
-  (projectile-indexing-method 'alien)
-  :config
-  (use-package counsel-projectile
-    :ensure t
-    :init
-    (counsel-projectile-mode 1)))
+  (projectile-indexing-method 'alien))
+(use-package counsel-projectile
+  :ensure t
+  :after (counsel projectile)
+  :init
+  (counsel-projectile-mode 1))
 
 ;;;; --- Lisp ---
 (use-package slime
@@ -1119,11 +1121,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :defer t
   :hook ((haskell-mode . turn-on-haskell-indent))
   :custom
-  (haskell-indent-spaces 4)
-  :init
-  (use-package intero
-    :ensure t
-    :hook ((haskell-mode . intero-mode))))
+  (haskell-indent-spaces 4))
+(use-package intero
+  :ensure t
+  :after haskell-mode
+  :hook ((haskell-mode . intero-mode)))
 
 ;;;; --- C/C++ ---
 (defun common-c-hook ()
@@ -1165,18 +1167,19 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package eww
   :ensure t
   :defer t
-  :bind (("C-c w" . eww))
-  :config
-  (use-package browse-url
-    :custom
-    (browse-url-browser-function '((".*youtube.*" . browse-url-default-browser)
-                                   (".*github.*"  . browse-url-default-browser)
-                                   ("."           . eww-browse-url))))
-  (use-package eww-lnum
-    :ensure t
-    :bind (:map eww-mode-map
-                ("f"     . eww-lnum-follow)
-                ("F"     . eww-lnum-universal))))
+  :bind (("C-c w" . eww)))
+(use-package browse-url
+  :after eww
+  :custom
+  (browse-url-browser-function '((".*youtube.*" . browse-url-default-browser)
+                                 (".*github.*"  . browse-url-default-browser)
+                                 ("."           . eww-browse-url))))
+(use-package eww-lnum
+  :ensure t
+  :after eww
+  :bind (:map eww-mode-map
+              ("f"     . eww-lnum-follow)
+              ("F"     . eww-lnum-universal)))
 
 ;;;; --- Fish ---
 (use-package fish-mode
@@ -1191,11 +1194,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;;;; --- Stan ---
 (use-package stan-mode
   :ensure t
+  :defer t)
+(use-package stan-snippets
+  :ensure t
   :defer t
-  :config
-  (use-package stan-snippets
-    :ensure t
-    :defer t))
+  :after stan-mode)
 
 ;;;; --- Python ---
 ;; python -m pip install --upgrade jedi rope black flake8 yapf autopep8 elpy
@@ -1249,37 +1252,38 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;;;; --- Ocaml ---
 (use-package tuareg
   :ensure t
-  :defer t
+  :defer t)
+(use-package merlin
+  :ensure t
+  :after tuareg
+  :hook ((tuareg-mode . merlin-mode)))
+(use-package flycheck-ocaml
+  :ensure t
+  :after merlin
   :config
-  (use-package merlin
-    :ensure t
-    :hook ((tuareg-mode . merlin-mode))
-    :config
-    (use-package flycheck-ocaml
-      :ensure t
-      :config
-      (flycheck-ocaml-setup))))
+  (flycheck-ocaml-setup))
 
 ;;;; --- Clojure ---
 (use-package clojure-mode
   :ensure t
   :defer t
-  :hook ((clojure-mode . subword-mode))
-  :init
-  (use-package cider
-    :ensure t
-    :defer t
-    :hook ((clojure-mode . cider-mode))
-    :bind ((:map cider-repl-mode-map
-                 ("M-s" . sp-splice-sexp))))
-  ;; C-c C-r - clojure-refactor-map
-  ;; C-c r   - clj-refactor-mode-map - see https://github.com/clojure-emacs/clj-refactor.el/wiki
-  (use-package clj-refactor
-    :ensure t
-    :defer t
-    :hook ((clojure-mode . clj-refactor-mode))
-    :config
-    (cljr-add-keybindings-with-prefix (kbd "C-c r"))))
+  :hook ((clojure-mode . subword-mode)))
+(use-package cider
+  :ensure t
+  :defer t
+  :after clojure-mode
+  :hook ((clojure-mode . cider-mode))
+  :bind ((:map cider-repl-mode-map
+               ("M-s" . sp-splice-sexp))))
+;; C-c C-r - clojure-refactor-map
+;; C-c r   - clj-refactor-mode-map - see https://github.com/clojure-emacs/clj-refactor.el/wiki
+(use-package clj-refactor
+  :ensure t
+  :defer t
+  :after cider
+  :hook ((clojure-mode . clj-refactor-mode))
+  :config
+  (cljr-add-keybindings-with-prefix (kbd "C-c r")))
 
 ;;;; --- Racket ---
 (use-package racket-mode
@@ -1550,9 +1554,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
               (:thread-subject)))
       ;; Use imagemagick for images, if available
       (when (fboundp 'imagemagick-register-types)
-        (imagemagick-register-types))
-      (use-package mu4e-alert
+        (imagemagick-register-types)))
+    (use-package mu4e-alert
         :ensure t
+        :after mu4e
         :custom
         (mu4e-alert-interesting-mail-query
          (concat
@@ -1567,7 +1572,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
           (mu4e~proc-kill)
           (mu4e-alert-enable-mode-line-display))
         ;; Refresh every 10 minutes
-        (run-with-timer 600 600 'gjstein-refresh-mu4e-alert-mode-line))))
+        (run-with-timer 600 600 'gjstein-refresh-mu4e-alert-mode-line)))
 
   ;; --- Lua ---
   ;; For editing awesome/rc.lua
