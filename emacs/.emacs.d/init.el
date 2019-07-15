@@ -185,24 +185,24 @@
 
 ;; Prettify symbols
 ;; C-x 8 RET to find and insert unicode char
-;; Old non-monospaced version:
-;; ("<="  . ?≤) (">="  . ?≥) ("!="  . ?≠) ("/="  . ?≠)
-;; ("->"  . ?→) ("<-"  . ?←) ("=>"  . ?⇒) ("..." . ?…)
+;; Look at variable reference-point-alist for explanation
 (add-hook 'prog-mode-hook (lambda ()
                             (mapc (lambda (pair)
                                     (push pair prettify-symbols-alist))
                                   '(("lambda" . (?·  (Br . Bl) ?\s (Br . Bl) ?\s
                                                      (Br . Bl) ?\s (Br . Bl) ?\s
-                                                     (Br . Bl) ?· (Bc . Bc) ?λ))
+                                                     (Br . Bl) ?·  (Bc . Bc) ?λ))
                                     ("<="     . (?·  (Br . Bl) ?≤))
                                     (">="     . (?·  (Br . Bl) ?≥))
                                     ("!="     . (?·  (Br . Bl) ?≠))
                                     ("/="     . (?·  (Br . Bl) ?≠))
-                                    ("->"     . (?-  (Br . Bc) ?- (Br . Bc) ?>))
+                                    ("->"     . (?\s (Br . Bl) ?\s
+                                                     (Bl . Bl) ?-  (Bc . Bc) ?- (Br . Br) ?>))
                                     ("->>"    . (?\s (Br . Bl) ?\s (Br . Bl) ?\s
-                                                     (Bl . Bl) ?- (Bc . Br) ?- (Bc . Bc) ?>
-                                                     (Bc . Bl) ?- (Br . Br) ?>))
-                                    ("<-"     . (?<  (Br . Bc) ?- (Br . Bc) ?-))
+                                                     (Bl . Bl) ?-  (Bc . Br) ?- (Bc . Bc) ?>
+                                                     (Bc . Bl) ?-  (Br . Br) ?>))
+                                    ("<-"     . (?\s (Br . Bl) ?\s
+                                                     (Bl . Bl )?<  (Bc . Bc) ?-  (Br . Br) ?-))
                                     ("=>"     . (?·  (Br . Bl) ?⇒))
                                     ("..."    . (?…  (Br . Bl) ?\s (Br . Bl) ?\s))))))
 
