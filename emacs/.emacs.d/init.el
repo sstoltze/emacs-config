@@ -1038,7 +1038,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (projectile-indexing-method 'alien))
 (use-package counsel-projectile
   :ensure t
-  :after (counsel projectile)
+  :after (:all counsel projectile)
   :init
   (counsel-projectile-mode 1))
 
