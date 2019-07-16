@@ -1298,6 +1298,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (defun sstoltze/setup-epa ()
   "Quick setup for EPA."
   ;; These allow entry of passphrase in emacs
+  (use-package pinentry
+    :ensure t)
   (use-package epa
     :custom
     (epa-pinentry-mode 'loopback)
