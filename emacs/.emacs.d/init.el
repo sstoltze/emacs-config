@@ -969,7 +969,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :config
   (ivy-rich-mode 1))
 
-
 ;;;; --- Multiple cursors ---
 (use-package multiple-cursors
   :ensure t
@@ -987,7 +986,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
    ("C-c m u n" . mc/unmark-next-like-this)
    ("C-c m u p" . mc/unmark-previous-like-this)
    ("C-c m i n" . mc/insert-numbers)
-   ("C-c m i l" . mc/insert-letters)))
+   ("C-c m i l" . mc/insert-letters)
+   ("C-c m r s" . mc/sort-regions)
+   ("C-c m r r" . mc/reverse-regions)))
 
 ;;;; --- Outline ---
 ;; For elisp:
