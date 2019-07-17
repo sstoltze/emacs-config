@@ -451,10 +451,12 @@ point reaches the beginning or end of the buffer, stop there."
   (global-auto-revert-non-file-buffers t)
   :config
   (put 'dired-find-alternate-file 'disabled nil))
+
 (use-package dired-x
   :after dired
   :config
   (add-to-list 'dired-omit-extensions ".DS_Store"))
+
 (use-package dired-aux
   :after dired
   :init
@@ -957,6 +959,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; Sort recentf by timestamp
   (add-to-list 'ivy-sort-functions-alist
                '(counsel-recentf . file-newer-than-file-p)))
+
 ;; Add info to ivy-buffers like 'M-x' or 'C-x b'
 (use-package ivy-rich
   :ensure t
@@ -972,15 +975,19 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :ensure t
   :defer t
   :bind
-  (("C-c m t" . mc/mark-all-like-this)
-   ("C-c m m" . mc/mark-all-like-this-dwim)
-   ("C-c m l" . mc/edit-lines)
-   ("C-c m e" . mc/edit-ends-of-lines)
-   ("C-c m a" . mc/edit-beginnings-of-lines)
-   ("C-c m n" . mc/mark-next-like-this)
-   ("C-c m p" . mc/mark-previous-like-this)
-   ("C-c m s" . mc/mark-sgml-tag-pair)
-   ("C-c m d" . mc/mark-all-like-this-in-defun)))
+  (("C-c m t"   . mc/mark-all-like-this)
+   ("C-c m m"   . mc/mark-all-like-this-dwim)
+   ("C-c m l"   . mc/edit-lines)
+   ("C-c m e"   . mc/edit-ends-of-lines)
+   ("C-c m a"   . mc/edit-beginnings-of-lines)
+   ("C-c m n"   . mc/mark-next-like-this)
+   ("C-c m p"   . mc/mark-previous-like-this)
+   ("C-c m s"   . mc/mark-sgml-tag-pair)
+   ("C-c m d"   . mc/mark-all-like-this-in-defun)
+   ("C-c m u n" . mc/unmark-next-like-this)
+   ("C-c m u p" . mc/unmark-previous-like-this)
+   ("C-c m i n" . mc/insert-numbers)
+   ("C-c m i l" . mc/insert-letters)))
 
 ;;;; --- Outline ---
 ;; For elisp:
@@ -994,6 +1001,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          ("M-n"     . outline-next-visible-heading)
          ("M-p"     . outline-previous-visible-heading))
   :bind-keymap (("C-z" . outline-mode-prefix-map)))
+
 (use-package outline-magic
   :ensure t
   :after outline)
@@ -1036,6 +1044,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; Seems to be necessary for windows
   (projectile-git-submodule-command nil)
   (projectile-indexing-method 'alien))
+
 (use-package counsel-projectile
   :ensure t
   :after (:all counsel projectile)
@@ -1122,6 +1131,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :hook ((haskell-mode . turn-on-haskell-indent))
   :custom
   (haskell-indent-spaces 4))
+
 (use-package intero
   :ensure t
   :after haskell-mode
@@ -1134,10 +1144,12 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (setq c-basic-offset 2
         tab-width 2)
   (use-package semantic/bovine/gcc))
+
 (defun my-cpp-hook ()
   "C++ specific packages."
   (use-package modern-cpp-font-lock
     :ensure t))
+
 (add-hook 'c-mode-hook
           'common-c-hook)
 (add-hook 'c++-mode-hook
@@ -1168,12 +1180,14 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :ensure t
   :defer t
   :bind (("C-c w" . eww)))
+
 (use-package browse-url
   :after eww
   :custom
   (browse-url-browser-function '((".*youtube.*" . browse-url-default-browser)
                                  (".*github.*"  . browse-url-default-browser)
                                  ("."           . eww-browse-url))))
+
 (use-package eww-lnum
   :ensure t
   :after eww
@@ -1195,6 +1209,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package stan-mode
   :ensure t
   :defer t)
+
 (use-package stan-snippets
   :ensure t
   :defer t
@@ -1253,10 +1268,12 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package tuareg
   :ensure t
   :defer t)
+
 (use-package merlin
   :ensure t
   :after tuareg
   :hook ((tuareg-mode . merlin-mode)))
+
 (use-package flycheck-ocaml
   :ensure t
   :after merlin
@@ -1268,6 +1285,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :ensure t
   :defer t
   :hook ((clojure-mode . subword-mode)))
+
 (use-package cider
   :ensure t
   :defer t
@@ -1275,6 +1293,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :hook ((clojure-mode . cider-mode))
   :bind ((:map cider-repl-mode-map
                ("M-s" . sp-splice-sexp))))
+
 ;; C-c C-r - clojure-refactor-map
 ;; C-c r   - clj-refactor-mode-map - see https://github.com/clojure-emacs/clj-refactor.el/wiki
 (use-package clj-refactor
