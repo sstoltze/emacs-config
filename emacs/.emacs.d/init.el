@@ -186,25 +186,28 @@
 ;; Prettify symbols
 ;; C-x 8 RET to find and insert unicode char
 ;; Look at variable reference-point-alist for explanation
-(add-hook 'prog-mode-hook (lambda ()
-                            (mapc (lambda (pair)
-                                    (push pair prettify-symbols-alist))
-                                  '(("lambda" . (?·  (Br . Bl) ?\s (Br . Bl) ?\s
-                                                     (Br . Bl) ?\s (Br . Bl) ?\s
-                                                     (Br . Bl) ?·  (Bc . Bc) ?λ))
-                                    ("<="     . (?·  (Br . Bl) ?≤))
-                                    (">="     . (?·  (Br . Bl) ?≥))
-                                    ("!="     . (?·  (Br . Bl) ?≠))
-                                    ("/="     . (?·  (Br . Bl) ?≠))
-                                    ("->"     . (?\s (Br . Bl) ?\s
-                                                     (Bl . Bl) ?-  (Bc . Bc) ?- (Br . Br) ?>))
-                                    ("->>"    . (?\s (Br . Bl) ?\s (Br . Bl) ?\s
-                                                     (Bl . Bl) ?-  (Bc . Br) ?- (Bc . Bc) ?>
-                                                     (Bc . Bl) ?-  (Br . Br) ?>))
-                                    ("<-"     . (?\s (Br . Bl) ?\s
-                                                     (Bl . Bl )?<  (Bc . Bc) ?-  (Br . Br) ?-))
-                                    ("=>"     . (?·  (Br . Bl) ?⇒))
-                                    ("..."    . (?…  (Br . Bl) ?\s (Br . Bl) ?\s))))))
+(defun sstoltze/prettify-symbols-setup ()
+  (mapc (lambda (pair)
+          (push pair prettify-symbols-alist))
+        '(("lambda" . (?·  (Br . Bl) ?\s (Br . Bl) ?\s
+                           (Br . Bl) ?\s (Br . Bl) ?\s
+                           (Br . Bl) ?·  (Bc . Bc) ?λ))
+          ("fn"     . (?\s (Br . Bl) ?\s
+                           (Bc . Bc) ?λ))
+          ("<="     . (?·  (Br . Bl) ?≤))
+          (">="     . (?·  (Br . Bl) ?≥))
+          ("!="     . (?·  (Br . Bl) ?≠))
+          ("/="     . (?·  (Br . Bl) ?≠))
+          ("->"     . (?\s (Br . Bl) ?\s
+                           (Bl . Bl) ?-  (Bc . Bc) ?- (Br . Br) ?>))
+          ("->>"    . (?\s (Br . Bl) ?\s (Br . Bl) ?\s
+                           (Bl . Bl) ?-  (Bc . Br) ?- (Bc . Bc) ?>
+                           (Bc . Bl) ?-  (Br . Br) ?>))
+          ("<-"     . (?\s (Br . Bl) ?\s
+                           (Bl . Bl )?<  (Bc . Bc) ?-  (Br . Br) ?-))
+          ("=>"     . (?·  (Br . Bl) ?⇒))
+          ("..."    . (?…  (Br . Bl) ?\s (Br . Bl) ?\s)))))
+(add-hook 'prog-mode-hook 'sstoltze/prettify-symbols-setup)
 
 ;; Enable C-x C-u (upcase-region)
 (put 'upcase-region    'disabled nil)
@@ -1291,7 +1294,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :ensure t
   :defer t
   :after clojure-mode
-  :hook ((clojure-mode . cider-mode))
+  :hook ((clojure-mode    . cider-mode)
+         (cider-repl-mode . sstoltze/prettify-symbols-setup ))
   :bind ((:map cider-repl-mode-map
                ("M-s" . sp-splice-sexp))))
 
