@@ -1307,7 +1307,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :after cider
   :hook ((clojure-mode . clj-refactor-mode))
   :config
-  (cljr-add-keybindings-with-prefix (kbd "C-c r")))
+  (cljr-add-keybindings-with-prefix (kbd "C-c r"))
+  (push '("s" . "clojure.spec")
+        cljr-magic-require-namespaces))
 
 ;;;; --- Racket ---
 (use-package racket-mode
