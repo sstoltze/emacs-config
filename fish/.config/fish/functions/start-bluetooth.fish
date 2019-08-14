@@ -1,5 +1,5 @@
 #/usr/fish
 function start-bluetooth
-    modprobe btusb
-    service bluetooth restart
+    sudo modprobe btusb
+    sudo service bluetooth restart
 end
