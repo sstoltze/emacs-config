@@ -1308,7 +1308,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :hook ((clojure-mode . clj-refactor-mode))
   :config
   (cljr-add-keybindings-with-prefix (kbd "C-c r"))
-  (push '("s" . "clojure.spec")
+  (push '("s" . "clojure.spec.alpha")
         cljr-magic-require-namespaces))
 
 ;;;; --- Racket ---
