@@ -89,7 +89,8 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; At work?
-(defvar at-work-p nil)
+(defvar at-work-p (string= user-login-name
+                           "w26164"))
 
 ;; General variables
 (setq inhibit-startup-screen                t
@@ -136,7 +137,7 @@
 
       ;; Personal info
       user-full-name                        "Simon Stoltze"
-      user-mail-address                     (cond (at-work-p "" )
+      user-mail-address                     (cond (at-work-p "Simon.Stoltze@ufst.dk" )
                                                   (t         "sstoltze@gmail.com"))
 
       ;; Disable the bell
