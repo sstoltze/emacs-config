@@ -819,8 +819,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                         'excl))) ; Mustbenew - error if already exists
     (setq org-capture-templates
           `(("j" "Journal"   entry (file+olp+datetree ,journal-org-file)
-             "* %?"
-             :empty-lines-after 1)
+             "* %(format-time-string \"%R\") %?")
             ("t" "Todo"      entry (file+headline ,default-org-file "Unsorted")
              "* TODO %?\nCREATED: %U\n"
              :empty-lines-after 1)
@@ -947,7 +946,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                        ("gtd {}"
                         (horz
                          (file "~/.emacs.d/org-files/gtd/unsorted.org")
-                         (file "~/.emacs.d/org-files/gtd/projects.org"))))))
+                         (vert (file "~/.emacs.d/org-files/gtd/projects.org")
+                               (file "~/.emacs.d/org-files/journal.org")))))))
   :config
   ;; Better fuzzy-matching
   (use-package flx
