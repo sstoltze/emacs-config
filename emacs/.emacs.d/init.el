@@ -820,19 +820,19 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     (setq org-capture-templates
           `(("j" "Journal"   entry (file+olp+datetree ,journal-org-file)
              "* %?"
-             :empty-lines-before 1)
+             :empty-lines-after 1)
             ("t" "Todo"      entry (file+headline ,default-org-file "Unsorted")
              "* TODO %?\nCREATED: %U\n"
-             :empty-lines-before 1)
+             :empty-lines-after 1)
             ("m" "Meeting"   entry (file+headline ,default-org-file "Meetings")
              "* %? - %u :meeting:\n:ATTENDEES:\nSimon Stoltze\n:END:\n"
-             :empty-lines-before 1)
+             :empty-lines-after 1)
             ("n" "Next"      entry (file+headline ,default-org-file "Unsorted")
              "* NEXT %?\nCREATED: %U\n"
-             :empty-lines-before 1)
+             :empty-lines-after 1)
             ("s" "Schedule"  entry (file+headline ,schedule-org-file "Schedule")
              "* %i%?\nCREATED: %U\nSCHEDULED: %^{Enter date}t"
-             :empty-lines-before 1))
+             :empty-lines-after 1))
           org-default-notes-file journal-org-file
           org-agenda-files (list default-org-file
                                  project-org-file
