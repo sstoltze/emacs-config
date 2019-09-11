@@ -35,6 +35,10 @@ set __fish_git_prompt_char_dirtystate      '+'
 set __fish_git_prompt_char_stagedstate     '→'
 set __fish_git_prompt_char_stashstate      '↩'
 
+if test $USER = "w26164"
+    direnv hook fish | source
+end
+
 # System specific setup
 set -l system (uname)
 
@@ -55,7 +59,7 @@ switch $system
         if test -d ~/.cabal/bin
             set -x PATH ~/.cabal/bin $PATH
         end
-        # Stack
+        # Stack/pip/...
         if test -d ~/.local/bin
             set -x PATH ~/.local/bin $PATH
         end
