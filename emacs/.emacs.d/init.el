@@ -1630,5 +1630,9 @@ If ARG is provided, move directly to option ARG."
       :custom
       (sage-command "/usr/lib/sagemath/sage")))))
 
+(let ((local-init-file "~/.emacs.d/local-init.el"))
+  (when (file-exists-p local-init-file)
+    (load-file local-init-file)))
+
 (provide 'init)
 ;;; init.el ends here
