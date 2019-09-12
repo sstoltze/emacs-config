@@ -943,6 +943,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     (setq org-capture-templates
           `(("j" "Journal"   entry (file+olp+datetree ,journal-org-file)
              "* %(format-time-string \"%R\") %?")
+            ("e" "EOD" item (file+headline ,journal-org-file ,(format-time-string "EOD - %F"))
+             "- %?")
             ("t" "Todo"      entry (file+headline ,default-org-file "Unsorted")
              "* TODO %?\nCREATED: %U\n"
              :empty-lines-after 1)
