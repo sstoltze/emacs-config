@@ -817,6 +817,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          (lisp-interaction-mode . turn-on-smartparens-strict-mode)
          (slime-repl-mode       . turn-on-smartparens-strict-mode))
   :bind (("M-s"  . sp-splice-sexp)
+         ("M-m"  . sp-mark-sexp)
          ("C-("  . sp-backward-slurp-sexp)
          ("C-)"  . sp-forward-slurp-sexp)
          ("C-{"  . sp-backward-barf-sexp)
@@ -1634,6 +1635,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     :ensure t
     :config
     (direnv-mode)))
+
 (let ((local-init-file "~/.emacs.d/local-init.el"))
   (when (file-exists-p local-init-file)
     (load-file local-init-file)))
