@@ -39,6 +39,7 @@ set __fish_git_prompt_char_stashstate      '↩'
 if test "$USER" = "w26164"
     direnv hook fish | source
     set -x JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
+    set -x FLAMEGRAPH_DIR ~/git/FlameGraph
 end
 
 # System specific setup
