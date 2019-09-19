@@ -1299,8 +1299,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; Magit turns on auto-revert so a file changed on disk is changed in Emacs
   ;; This could be an issue at some point.
   :diminish auto-revert-mode
-  :bind (("C-x g"   . magit-status)          ; Display the main magit popup
-         ("C-x M-g" . magit-dispatch-popup)) ; Display keybinds for magit
+  :bind (("C-x g"   . magit-status)) ; Display the main magit popup
   :custom
   (magit-completing-read-function 'ivy-completing-read)
   ;; Remove the startup message about turning on auto-revert
