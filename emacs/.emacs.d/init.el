@@ -814,24 +814,31 @@ length of PATH (sans directory slashes) down to MAX-LEN."
               components (cdr components)))
       (concat str (seq-reduce (lambda (a b) (concat a "/" b)) (cdr components) (car components))))))
 
+(defun sstoltze/mark-sexp-up ()
+  "Move point one level up and mark the following sexp."
+  (interactive)
+  (backward-up-list)
+  (sp-mark-sexp))
 (use-package smartparens
   :ensure t
   :defer t
-  :hook ((prog-mode             . turn-on-smartparens-strict-mode)
-         (racket-repl-mode      . turn-on-smartparens-strict-mode)
-         (cider-repl-mode       . turn-on-smartparens-strict-mode)
-         (lisp-interaction-mode . turn-on-smartparens-strict-mode)
-         (slime-repl-mode       . turn-on-smartparens-strict-mode))
-  :bind (("M-s"  . sp-splice-sexp)
-         ("M-m"  . sp-mark-sexp)
-         ("C-("  . sp-backward-slurp-sexp)
-         ("C-)"  . sp-forward-slurp-sexp)
-         ("C-{"  . sp-backward-barf-sexp)
-         ("C-}"  . sp-forward-barf-sexp)
-         ("M-("  . sp-wrap-round)
-         ("M-{"  . sp-wrap-curly)
-         ("M-["  . sp-wrap-square)
-         ("M-\"" . (lambda (&optional arg) (interactive "P") (sp-wrap-with-pair "\""))))
+  :hook ((prog-mode                        . turn-on-smartparens-strict-mode)
+         (racket-repl-mode                 . turn-on-smartparens-strict-mode)
+         (cider-repl-mode                  . turn-on-smartparens-strict-mode)
+         (lisp-interaction-mode            . turn-on-smartparens-strict-mode)
+         (slime-repl-mode                  . turn-on-smartparens-strict-mode)
+         (eval-expression-minibuffer-setup . turn-on-smartparens-strict-mode))
+  :bind (("M-s"   . sp-splice-sexp)
+         ;; C-M-SPC marks next sexp
+         ("C-M-m" . sstoltze/mark-sexp-up)
+         ("C-("   . sp-backward-slurp-sexp)
+         ("C-)"   . sp-forward-slurp-sexp)
+         ("C-{"   . sp-backward-barf-sexp)
+         ("C-}"   . sp-forward-barf-sexp)
+         ("M-("   . sp-wrap-round)
+         ("M-{"   . sp-wrap-curly)
+         ("M-["   . sp-wrap-square)
+         ("M-\""  . (lambda (&optional arg) (interactive "P") (sp-wrap-with-pair "\""))))
   :custom
   (sp-highlight-pair-overlay nil)
   :config
@@ -1193,7 +1200,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :ensure t
   :defer t
   :bind ((:map slime-repl-mode-map
-               ("M-s" . sp-splice-sexp)
+               ("M-s"   . sp-splice-sexp)
                ("C-M-i" . counsel-cl))
          (:map lisp-mode-map
                ("C-M-i" . counsel-cl)))
@@ -1305,7 +1312,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; Magit turns on auto-revert so a file changed on disk is changed in Emacs
   ;; This could be an issue at some point.
   :diminish auto-revert-mode
-  :bind (("C-x g"   . magit-status)) ; Display the main magit popup
+  :bind (("C-x g" . magit-status)) ; Display the main magit popup
   :custom
   (magit-completing-read-function 'ivy-completing-read)
   ;; Remove the startup message about turning on auto-revert
@@ -1328,8 +1335,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :ensure t
   :after eww
   :bind (:map eww-mode-map
-              ("f"     . eww-lnum-follow)
-              ("F"     . eww-lnum-universal)))
+              ("f" . eww-lnum-follow)
+              ("F" . eww-lnum-universal)))
 
 ;;;; --- Fish ---
 (use-package fish-mode
