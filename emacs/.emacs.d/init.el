@@ -1185,9 +1185,12 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :bind-keymap (("C-c p" . projectile-command-map))
   :custom
   (projectile-completion-system 'ivy)
-  ;; Seems to be necessary for windows
-  (projectile-git-submodule-command nil)
-  (projectile-indexing-method 'alien))
+  (projectile-use-git-grep      t)
+  :config
+  (when (eq system-type 'windows-nt)
+    ;; Seems to be necessary for windows
+    (projectile-git-submodule-command nil)
+    (projectile-indexing-method 'alien)))
 
 (use-package counsel-projectile
   :ensure t
