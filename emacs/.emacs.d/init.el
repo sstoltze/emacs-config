@@ -591,9 +591,10 @@ If ARG is provided, move directly to option ARG."
   (add-to-list 'dired-omit-extensions ".DS_Store"))
 
 (use-package dired-aux
-  :after dired
-  :init
-  (use-package dired-async))
+  :after dired)
+
+(use-package dired-async
+  :after dired)
 
 ;;;; --- Proced ---
 ;; To highlight processes use highlight-lines-matching-regexp, M-s h l
@@ -819,6 +820,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (interactive)
   (backward-up-list)
   (sp-mark-sexp))
+
 (use-package smartparens
   :ensure t
   :defer t
@@ -1167,8 +1169,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          (c++-mode  . semantic-mode)
          (java-mode . semantic-mode))
   :config
-  (use-package semantic/ia)
-  (use-package semantic/wisent)
   (add-to-list 'semantic-default-submodes
                'global-semanticdb-minor-mode)
   (add-to-list 'semantic-default-submodes
@@ -1180,6 +1180,12 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (add-to-list 'semantic-default-submodes
                'global-semantic-idle-summary-mode)
   (imenu-add-to-menubar "TAGS"))
+
+(use-package semantic/ia
+  :after semantic)
+
+(use-package semantic/wisent
+  :after semantic)
 
 ;;;; --- Projectile ---
 (use-package projectile
