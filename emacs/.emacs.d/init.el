@@ -1567,8 +1567,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
       (setq mu4e-contexts (list
                            (make-mu4e-context
                             :name "gmail"
-                            :match-func (lambda (msg) (when msg
-                                                      (string-prefix-p "/gmail" (mu4e-message-field msg :maildir))))
+                            :match-func (lambda (msg)
+                                          (when msg
+                                            (string-prefix-p "/gmail" (mu4e-message-field msg :maildir))))
                             :vars '((user-mail-address            . "sstoltze@gmail.com")
                                     (mu4e-trash-folder            . "/gmail/[Gmail].Trash")
                                     (mu4e-refile-folder           . "/gmail/[Gmail].Archive")
