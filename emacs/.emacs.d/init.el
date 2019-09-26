@@ -1088,9 +1088,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                          (vert (file "~/.emacs.d/org-files/gtd/projects.org")
                                (file "~/.emacs.d/org-files/journal.org")))))))
   :config
-  ;; Better fuzzy-matching
-  (use-package flx
-    :ensure t)
   (ivy-mode 1)
   (counsel-mode 1)
   ;; Show how deep the minibuffer goes
@@ -1102,6 +1099,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; Sort recentf by timestamp
   (add-to-list 'ivy-sort-functions-alist
                '(counsel-recentf . file-newer-than-file-p)))
+
+;; Better fuzzy-matching
+(use-package flx
+  :ensure t
+  :after ivy)
 
 ;; Add info to ivy-buffers like 'M-x' or 'C-x b'
 (use-package ivy-rich
