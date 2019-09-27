@@ -183,6 +183,8 @@
 ;; Unset suspend keys. Never used anyway
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-x C-z"))
+(define-key input-decode-map [?\C-m] [C-m])
+(define-key input-decode-map [?\C-\M-m] [C-M-m])
 ;; Automatic indent on pressing RET
 (global-set-key (kbd "RET")
                 'newline-and-indent)
@@ -818,7 +820,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (defun sstoltze/mark-sexp-up ()
   "Move point one level up and mark the following sexp."
   (interactive)
-  (backward-up-list)
+  (sp-up-sexp -1)
   (sp-mark-sexp))
 
 (use-package smartparens
@@ -830,17 +832,17 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          (lisp-interaction-mode            . turn-on-smartparens-strict-mode)
          (slime-repl-mode                  . turn-on-smartparens-strict-mode)
          (eval-expression-minibuffer-setup . turn-on-smartparens-strict-mode))
-  :bind (("M-s"   . sp-splice-sexp)
+  :bind (("M-s"     . sp-splice-sexp)
          ;; C-M-SPC marks next sexp
-         ("C-M-m" . sstoltze/mark-sexp-up)
-         ("C-("   . sp-backward-slurp-sexp)
-         ("C-)"   . sp-forward-slurp-sexp)
-         ("C-{"   . sp-backward-barf-sexp)
-         ("C-}"   . sp-forward-barf-sexp)
-         ("M-("   . sp-wrap-round)
-         ("M-{"   . sp-wrap-curly)
-         ("M-["   . sp-wrap-square)
-         ("M-\""  . (lambda (&optional arg) (interactive "P") (sp-wrap-with-pair "\""))))
+         ("<C-M-m>" . sstoltze/mark-sexp-up)
+         ("C-("     . sp-backward-slurp-sexp)
+         ("C-)"     . sp-forward-slurp-sexp)
+         ("C-{"     . sp-backward-barf-sexp)
+         ("C-}"     . sp-forward-barf-sexp)
+         ("M-("     . sp-wrap-round)
+         ("M-{"     . sp-wrap-curly)
+         ("M-["     . sp-wrap-square)
+         ("M-\""    . (lambda (&optional arg) (interactive "P") (sp-wrap-with-pair "\""))))
   :custom
   (sp-highlight-pair-overlay nil)
   :config
