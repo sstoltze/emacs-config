@@ -417,14 +417,15 @@ point reaches the beginning or end of the buffer, stop there."
            "Get pixels for multiple-monitor setup."
            (let* ((monitors          (display-monitor-attributes-list))
                   (main-monitor      (car monitors))
-                  (main-workarea     (caddr main-monitor))
+                  (main-workarea     (assoc 'workarea main-monitor))
                   (main-pixel-width  (nth 3 main-workarea))
                   (main-pixel-height (nth 4 main-workarea)))
              (list main-pixel-width main-pixel-height)))
          (defun sstoltze/set-frame-position (left top width height)
            "Automatically place frame on correct display.
 LEFT and TOP are window placements, WIDTH and HEIGHT are sizes."
-           (let* ((main-workarea (caddr (car (display-monitor-attributes-list))))
+           (let* ((main-workarea (assoc 'workarea
+                                        (car (display-monitor-attributes-list))))
                   (monitor-x     (nth 1 main-workarea))
                   (monitor-y     (nth 2 main-workarea)))
              (set-frame-position (selected-frame) (+ monitor-x left) (+ monitor-y top))
