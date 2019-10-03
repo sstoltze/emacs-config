@@ -81,7 +81,9 @@
                 ;; Prettify symbols
                 global-prettify-symbols-mode
                 ;; Column in modeline
-                column-number-mode))
+                column-number-mode
+                ;; Recent files
+                recentf-mode))
   (when (fboundp mode)
     (funcall mode 1)))
 
@@ -184,7 +186,7 @@
           'delete-trailing-whitespace)
 
 ;; Save recent files periodically (every 10m)
- (run-at-time nil (* 10 60) 'recentf-save-list)
+(run-at-time nil (* 10 60) 'recentf-save-list)
 
 ;; Unset suspend keys. Never used anyway
 (global-unset-key (kbd "C-z"))
