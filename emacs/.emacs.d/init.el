@@ -1469,7 +1469,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package clj-refactor
   :ensure t
   :defer t
-  :after cider
   :hook ((clojure-mode . clj-refactor-mode))
   :config
   (cljr-add-keybindings-with-prefix (kbd "C-c r"))
