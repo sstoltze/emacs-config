@@ -131,6 +131,9 @@
       history-length                        t
       history-delete-duplicates             t
 
+      ;; Recentf
+      recentf-max-saved-items               50
+
       ;; Add newlines when scrolling a file
       next-line-add-newlines                t
 
@@ -180,14 +183,22 @@
 (add-hook 'before-save-hook
           'delete-trailing-whitespace)
 
+;; Save recent files periodically (every 10m)
+ (run-at-time nil (* 10 60) 'recentf-save-list)
+
 ;; Unset suspend keys. Never used anyway
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-x C-z"))
+
+;; Unset C-m = RET
 (define-key input-decode-map [?\C-m] [C-m])
 (define-key input-decode-map [?\C-\M-m] [C-M-m])
+
 ;; Automatic indent on pressing RET
 (global-set-key (kbd "RET")
                 'newline-and-indent)
+
+;; Do not ask to kill buffer every time
 (global-set-key (kbd "C-x k")
                 'kill-this-buffer)
 
