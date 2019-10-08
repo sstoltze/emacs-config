@@ -12,6 +12,7 @@ local naughty = require("naughty")
 local menubar = require("menubar")
 local vicious = require("vicious") -- Install awesome-extra
 local hotkeys_popup = require("awful.hotkeys_popup").widget
+local xrandr = require("xrandr")
 
 -- Load Debian menu entries
 require("debian.menu")
@@ -44,12 +45,12 @@ end
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
 -- beautiful.init(awful.util.get_themes_dir() .. "default/theme.lua")
-beautiful.init("/home/simon/.config/awesome/themes/ww/theme.lua")
+beautiful.init("~/.config/awesome/themes/ww/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
---terminal = "x-terminal-emulator"
+terminal = "x-terminal-emulator"
 --editor = os.getenv("EDITOR") or "editor"
-terminal = "urxvt"
+--terminal = "urxvt"
 editor = "emacs -nw" or os.getenv("EDITOR") or "editor"
 editor_cmd = terminal .. " -e " .. editor
 
@@ -166,23 +167,23 @@ volumetimer:connect_signal("timeout", function () updatevolume(tbvolume) end)
 volumetimer:start()
 
 spotifytitle = awful.tooltip({ objects = { tbvolume }, })
-old_l = ''
-spotimer = timer ({ timeout = 11 })
-spotimer:connect_signal("timeout", function()
-	local f = io.popen("/home/simon/getify")
-        local l = f:read()
-	f:close()
-        if l == nil then
-                l = ''
-        end
-	l = l:gsub("&", "&amp;")
-        spotifytitle:set_text(l)
-	if l ~= old_l and l ~= '' then
-	     	old_l = l
-	     	naughty.notify({text = l, icon = "/home/simon/Documents/icons/Spotify-icon-32.png", icon_size = 16})
-	end
-end)
-spotimer:start()
+-- old_l = ''
+-- spotimer = timer ({ timeout = 11 })
+-- spotimer:connect_signal("timeout", function()
+-- 	local f = io.popen("/home/simon/getify")
+--         local l = f:read()
+-- 	f:close()
+--         if l == nil then
+--                 l = ''
+--         end
+-- 	l = l:gsub("&", "&amp;")
+--         spotifytitle:set_text(l)
+-- 	if l ~= old_l and l ~= '' then
+-- 	     	old_l = l
+-- 	     	naughty.notify({text = l, icon = "/home/simon/Documents/icons/Spotify-icon-32.png", icon_size = 16})
+-- 	end
+-- end)
+-- spotimer:start()
 
 -- CPU widget
 -- Initialize widget
@@ -271,15 +272,15 @@ local tasklist_buttons = awful.util.table.join(
 
 local function set_wallpaper(s)
     -- Wallpaper
---    if beautiful.wallpaper then
---        local wallpaper = beautiful.wallpaper
---        -- If wallpaper is a function, call it with the screen
---        if type(wallpaper) == "function" then
---            wallpaper = wallpaper(s)
---        end
---        gears.wallpaper.maximized(wallpaper, s, true)
---    end
-    awful.util.spawn_with_shell("feh --bg-fill --randomize /home/simon/Dropbox/comp/wallpapers/torment/*")
+    if beautiful.wallpaper then
+        local wallpaper = beautiful.wallpaper
+        -- If wallpaper is a function, call it with the screen
+        if type(wallpaper) == "function" then
+            wallpaper = wallpaper(s)
+        end
+        gears.wallpaper.maximized(wallpaper, s, true)
+    end
+--    awful.util.spawn_with_shell("feh --bg-fill --randomize /home/simon/Dropbox/comp/wallpapers/torment/*")
 end
 
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
@@ -512,6 +513,9 @@ clientkeys = awful.util.table.join(
             c:raise()
         end ,
         {description = "maximize", group = "client"})
+    ,
+    awful.key({ modkey, "Control", "Shift" }, "o", function () xrandr.xrandr() end),
+    awful.key({ modkey,                    }, "q", function () awful.util.spawn_with_shell("slock")  end)
 )
 
 -- Bind all key numbers to tags.
@@ -633,7 +637,7 @@ awful.rules.rules = {
       properties = { floating = true } },
     { rule = { class = "Firefox" },
       properties = { floating = true,
-                     screen = 1,
+                     --screen = 1,
       		     tag = "Net" } },
     { rule = { class = "Emacs" },
       properties = { floating = true,
