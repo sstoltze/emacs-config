@@ -418,18 +418,7 @@ point reaches the beginning or end of the buffer, stop there."
        (set-face-foreground 'warning "goldenrod1")
        (setq frame-resize-pixelwise t)
 
-       ;; This code interacts strangely with awesomewm
-       ;; XDG_CURRENT_DESKTOP - Tells you what desktop environment you are using
-       ;; GDMSESSION - Tells you what option you selected from the lightdm greeter to login.
-       ;; Code for testing wm:
-       ;; printf 'Desktop: %s\nSession: %s\n' "$XDG_CURRENT_DESKTOP" "$GDMSESSION"
-       ;; Ubuntu gnome:
-       ;; - Desktop: ubuntu:GNOME
-       ;;   Session: ubuntu
-       ;; xprop -id (xprop -root -notype | awk '$1=="_NET_SUPPORTING_WM_CHECK:"{print $5}') -notype -f _NET_WM_NAME 8t | grep "_NET_WM_NAME = " | cut --delimiter=' ' --fields=3 | cut --delimiter='"' --fields=2
-       ;; Ubuntu gnome:
-       ;; - GNOME
-       (when (not (boundp 'no-resize))
+       (when (not (string= (getenv "GDMSESSION") "awesome"))
          ;; Set initial frame size and position
          (defvar *sstoltze/position-factor*    0.40)
          (defvar *sstoltze/width-factor*       0.90)
