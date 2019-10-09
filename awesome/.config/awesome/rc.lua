@@ -48,9 +48,9 @@ end
 beautiful.init("~/.config/awesome/themes/ww/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
-terminal = "x-terminal-emulator"
+--terminal = "x-terminal-emulator"
 --editor = os.getenv("EDITOR") or "editor"
---terminal = "urxvt"
+terminal = "urxvt"
 editor = "emacs -nw" or os.getenv("EDITOR") or "editor"
 editor_cmd = terminal .. " -e " .. editor
 
