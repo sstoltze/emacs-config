@@ -15,6 +15,22 @@
 ;;          (racket-mode                      . enable-paredit-mode)))
 
 
+;; XDG_CURRENT_DESKTOP - Tells you what desktop environment you are using
+;; GDMSESSION - Tells you what option you selected from the lightdm greeter to login.
+;; Code for testing wm:
+;; printf 'Desktop: %s\nSession: %s\n' "$XDG_CURRENT_DESKTOP" "$GDMSESSION"
+;; Ubuntu gnome:
+;; - Desktop: ubuntu:GNOME
+;;   Session: ubuntu
+;; awesome:
+;; - Desktop: ubuntu:GNOME
+;;   Session: awesome
+;; xprop -id (xprop -root -notype | awk '$1=="_NET_SUPPORTING_WM_CHECK:"{print $5}') -notype -f _NET_WM_NAME 8t | grep "_NET_WM_NAME = " | cut --delimiter=' ' --fields=3 | cut --delimiter='"' --fields=2
+;; Ubuntu gnome:
+;; - GNOME
+;; awesome:
+;; - awesome
+
 ;; racket-mode
 :hook
 (racket-mode . racket-unicode-input-method-enable)
