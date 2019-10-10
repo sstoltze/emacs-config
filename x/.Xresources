@@ -1,22 +1,22 @@
 ! General
-!urxvt*termName:  rxvt-256color
-urxvt*loginShell:         true
-urxvt*scrollBar:         false
-urxvt*secondaryScroll:    true
-urxvt*saveLines:         65535
-urxvt*cursorBlink:       false
-urxvt*urgentOnBell:       true
+!URxvt*termName:  rxvt-256color
+URxvt*loginShell:         true
+URxvt*scrollBar:         false
+URxvt*secondaryScroll:    true
+URxvt*saveLines:         65535
+URxvt*cursorBlink:       false
+URxvt*urgentOnBell:       true
 URxvt.geometry:         100x30
-!urxvt*override-redirect:false
-!urxvt*borderLess:       false
-!urxvt*internalBorder:       0
-!urxvt*externalBorder:       0
+!URxvt*override-redirect:false
+!URxvt*borderLess:       false
+!URxvt*internalBorder:       0
+!URxvt*externalBorder:       0
 
 ! Extensions
-urxvt*perl-lib:        /usr/lib/urxvt/perl/
-urxvt*perl-ext-common: default,matcher,searchable-scrollback,clipboard
-urxvt*urlLauncher:     /usr/bin/firefox
-urxvt*matcher.button:  1
+URxvt*perl-lib:        /usr/lib/URxvt/perl/
+URxvt*perl-ext-common: default,matcher,searchable-scrollback,selection-to-clipboard
+URxvt*urlLauncher:     /usr/bin/firefox
+URxvt*matcher.button:  1
 
 ! Clipboard
 URxvt.clipboard.autocopy: true
@@ -27,50 +27,50 @@ URxvt.keysym.C-S-v: perl:clipboard:paste
 
 ! Appearance
 !  - use a bitmap font
-urxvt*font:        xft:Ubuntu Mono:pixelsize=17:scalable=true
+URxvt*font:        xft:Ubuntu Mono:pixelsize=17:scalable=true
 !-unknown-Ubuntu Mono-normal-normal-normal-*-17-*-*-*-m-0-iso10646-1
 !        -xos4-terminus-medium-*-*-*-12-*-*-*-*-*-*-*
-urxvt*boldFont:    xft:Ubuntu Mono:pixelsize=17:bold:scalable=true
+URxvt*boldFont:    xft:Ubuntu Mono:pixelsize=17:bold:scalable=true
 !        -xos4-terminus-bold-*-*-*-12-*-*-*-*-*-*-*
 !  - use xft for drawing fonts
-!urxvt*font:       xft:Terminus:8
-urxvt.letterSpace: -1
+!URxvt*font:       xft:Terminus:8
+URxvt.letterSpace: -1
 
 !  - cursor
-urxvt*cursorColor: #DCDCCC
+URxvt*cursorColor: #DCDCCC
 !  - pseudo transparency
-!urxvt*shading:    50
-!urxvt*transparent:true
+!URxvt*shading:    50
+!URxvt*transparent:true
 
 ! Old - color scheme
-! urxvt.background:  #000000
-! urxvt.foreground:  #FFFF33
-! !urxvt.foreground:  #EBEBFF
+! URxvt.background:  #000000
+! URxvt.foreground:  #FFFF33
+! !URxvt.foreground:  #EBEBFF
 ! ! black + red
-! !urxvt*color0:     #3f3f3f
-! urxvt*color0:      #000000
-! urxvt*color1:      #e01010
+! !URxvt*color0:     #3f3f3f
+! URxvt*color0:      #000000
+! URxvt*color1:      #e01010
 ! ! green + yellow
-! urxvt*color2:      #00AA00
-! urxvt*color3:      #FFFF00
+! URxvt*color2:      #00AA00
+! URxvt*color3:      #FFFF00
 ! ! blue + purple
-! urxvt*color4:      #112037
-! urxvt*color5:      #A020F0
+! URxvt*color4:      #112037
+! URxvt*color5:      #A020F0
 ! ! cyan + white
-! urxvt*color6:      #5B5BC7
-! urxvt*color7:      #fefefe
+! URxvt*color6:      #5B5BC7
+! URxvt*color7:      #fefefe
 ! ! bright-black + bright-red
-! urxvt*color8:      #6a6a6a
-! urxvt*color9:      #FF5555
+! URxvt*color8:      #6a6a6a
+! URxvt*color9:      #FF5555
 ! ! bright-green + bright-yellow
-! urxvt*color10:     #90EE90
-! urxvt*color11:     #ffff2f
+! URxvt*color10:     #90EE90
+! URxvt*color11:     #ffff2f
 ! ! bright-blue + bright-purple
-! urxvt*color12:     #5Bu5BC7
-! urxvt*color13:     #e628ba
+! URxvt*color12:     #5Bu5BC7
+! URxvt*color13:     #e628ba
 ! ! bright-cyan + bright-white
-! urxvt*color14:     #7D7DFB
-! urxvt*color15:     #ffffff
+! URxvt*color14:     #7D7DFB
+! URxvt*color15:     #ffffff
 
 ! Zenburn - white
 ! URxvt.foreground:       #0c0c0c
@@ -91,7 +91,7 @@ urxvt*cursorColor: #DCDCCC
 ! URxvt.color14:          #93e0e3
 ! URxvt.color15:          #ffffff
 
-! https://addy-dclxvi.github.io/post/configuring-urxvt/
+! https://addy-dclxvi.github.io/post/configuring-URxvt/
 ! special
 !*.foreground: #93a1a1
 *.foreground: #c6d4d4
@@ -123,4 +123,4 @@ urxvt*cursorColor: #DCDCCC
 *.color15: #fdf6e3
 
 !  - catch ugly URLs
-urxvt.cutchars:        `()'*<>[]{|}"
+URxvt.cutchars:        `()'*<>[]{|}"
