@@ -28,11 +28,11 @@ URxvt.keysym.C-S-v: perl:clipboard:paste
 ! Appearance
 !  - use a bitmap font
 URxvt*font:        xft:Ubuntu Mono:pixelsize=17:scalable=true
-!-unknown-Ubuntu Mono-normal-normal-normal-*-17-*-*-*-m-0-iso10646-1
-!        -xos4-terminus-medium-*-*-*-12-*-*-*-*-*-*-*
+                   ! -unknown-Ubuntu Mono-normal-normal-normal-*-17-*-*-*-m-0-iso10646-1
+                   ! -xos4-terminus-medium-*-*-*-12-*-*-*-*-*-*-*
 URxvt*boldFont:    xft:Ubuntu Mono:pixelsize=17:bold:scalable=true
-!        -xos4-terminus-bold-*-*-*-12-*-*-*-*-*-*-*
-!  - use xft for drawing fonts
+                   ! -xos4-terminus-bold-*-*-*-12-*-*-*-*-*-*-*
+                   ! - use xft for drawing fonts
 !URxvt*font:       xft:Terminus:8
 URxvt.letterSpace: -1
 

@@ -31,9 +31,10 @@ set __fish_git_prompt_color_dirtystate  -o red
 set __fish_git_prompt_color_stagedstate -o blue
 set __fish_git_prompt_color                cyan
 # Git status
+set __fish_git_prompt_char_
 set __fish_git_prompt_char_dirtystate      '+'
-set __fish_git_prompt_char_stagedstate     '→'
-set __fish_git_prompt_char_stashstate      '↩'
+set __fish_git_prompt_char_stagedstate     '→ '
+set __fish_git_prompt_char_stashstate      '↩ '
 
 # At work?
 if test "$USER" = "w26164"
