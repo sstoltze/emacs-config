@@ -6,6 +6,7 @@ urxvt*secondaryScroll:    true
 urxvt*saveLines:         65535
 urxvt*cursorBlink:       false
 urxvt*urgentOnBell:       true
+URxvt.geometry:         100x30
 !urxvt*override-redirect:false
 !urxvt*borderLess:       false
 !urxvt*internalBorder:       0
@@ -40,36 +41,86 @@ urxvt*cursorColor: #DCDCCC
 !  - pseudo transparency
 !urxvt*shading:    50
 !urxvt*transparent:true
-!
-!  - color scheme
-urxvt.background:  #000000
-urxvt.foreground:  #FFFF33
-!urxvt.foreground:  #EBEBFF
-! black + red
-!urxvt*color0:     #3f3f3f
-urxvt*color0:      #000000
-urxvt*color1:      #e01010
-! green + yellow
-urxvt*color2:      #00AA00
-urxvt*color3:      #FFFF00
-! blue + purple
-urxvt*color4:      #112037
-urxvt*color5:      #A020F0
-! cyan + white
-urxvt*color6:      #5B5BC7
-urxvt*color7:      #fefefe
-! bright-black + bright-red
-urxvt*color8:      #6a6a6a
-urxvt*color9:      #FF5555
-! bright-green + bright-yellow
-urxvt*color10:     #90EE90
-urxvt*color11:     #ffff2f
-! bright-blue + bright-purple
-urxvt*color12:     #5B5BC7
-urxvt*color13:     #e628ba
-! bright-cyan + bright-white
-urxvt*color14:     #7D7DFB
-urxvt*color15:     #ffffff
+
+! Old - color scheme
+! urxvt.background:  #000000
+! urxvt.foreground:  #FFFF33
+! !urxvt.foreground:  #EBEBFF
+! ! black + red
+! !urxvt*color0:     #3f3f3f
+! urxvt*color0:      #000000
+! urxvt*color1:      #e01010
+! ! green + yellow
+! urxvt*color2:      #00AA00
+! urxvt*color3:      #FFFF00
+! ! blue + purple
+! urxvt*color4:      #112037
+! urxvt*color5:      #A020F0
+! ! cyan + white
+! urxvt*color6:      #5B5BC7
+! urxvt*color7:      #fefefe
+! ! bright-black + bright-red
+! urxvt*color8:      #6a6a6a
+! urxvt*color9:      #FF5555
+! ! bright-green + bright-yellow
+! urxvt*color10:     #90EE90
+! urxvt*color11:     #ffff2f
+! ! bright-blue + bright-purple
+! urxvt*color12:     #5Bu5BC7
+! urxvt*color13:     #e628ba
+! ! bright-cyan + bright-white
+! urxvt*color14:     #7D7DFB
+! urxvt*color15:     #ffffff
+
+! Zenburn - white
+! URxvt.foreground:       #0c0c0c
+! URxvt.color0:           #3f3f3f
+! URxvt.color1:           #705050
+! URxvt.color2:           #00b45a
+! URxvt.color3:           #dfcf8f
+! URxvt.color4:           #506070
+! URxvt.color5:           #dc8cc3
+! URxvt.color6:           #8cd0d3
+! URxvt.color7:           #dcdccc
+! URxvt.color8:           #709080
+! URxvt.color9:           #cc5454
+! URxvt.color10:          #4d9f4d
+! URxvt.color11:          #f0dfaf
+! URxvt.color12:          #4186be
+! URxvt.color13:          #ec93d3
+! URxvt.color14:          #93e0e3
+! URxvt.color15:          #ffffff
+
+! https://addy-dclxvi.github.io/post/configuring-urxvt/
+! special
+!*.foreground: #93a1a1
+*.foreground: #c6d4d4
+*.background: #141c21
+!*.cursorColor: #afbfbf
+! black
+*.color0: #263640
+*.color8: #4a697d
+! red
+*.color1: #d12f2c
+*.color9: #fa3935
+! green
+*.color2: #819400
+*.color10: #a4bd00
+! yellow
+*.color3: #b08500
+*.color11: #d9a400
+! blue
+*.color4: #2587cc
+*.color12: #2ca2f5
+! magenta
+*.color5: #696ebf
+*.color13: #8086e8
+! cyan
+*.color6: #289c93
+*.color14: #33c5ba
+! white
+*.color7: #bfbaac
+*.color15: #fdf6e3
 
 !  - catch ugly URLs
 urxvt.cutchars:        `()'*<>[]{|}"
