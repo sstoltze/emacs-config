@@ -765,7 +765,11 @@ client.connect_signal("focus", function(c) c.border_color = beautiful.border_foc
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
 
-
-awful.util.spawn_with_shell("xfce4-power-manager --no-daemon")
-awful.util.spawn_with_shell("pgrep nm-applet >/dev/null; or nm-applet &")
-awful.util.spawn_with_shell("dropbox start")
+-- Computer specific setup
+awful.spawn.easy_async('echo "$USER"', function(stdout, stderr, reason, exit_code)
+                          if not stdout == "w26164" then
+                             awful.util.spawn_with_shell("xfce4-power-manager --no-daemon")
+                             awful.util.spawn_with_shell("pgrep nm-applet >/dev/null; or nm-applet &")
+                             awful.util.spawn_with_shell("dropbox start")
+                          end
+end)
