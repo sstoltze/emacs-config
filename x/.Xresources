@@ -13,12 +13,17 @@ urxvt*urgentOnBell:       true
 
 ! Extensions
 urxvt*perl-lib:        /usr/lib/urxvt/perl/
-urxvt*perl-ext-common: default,matcher,searchable-scrollback
+urxvt*perl-ext-common: default,matcher,searchable-scrollback,clipboard
 urxvt*urlLauncher:     /usr/bin/firefox
 urxvt*matcher.button:  1
-!  - catch ugly URLs
-urxvt.cutchars:        `()'*<>[]{|}"
- 
+
+! Clipboard
+URxvt.clipboard.autocopy: true
+URxvt.keysym.M-c: perl:clipboard:copy
+URxvt.keysym.M-v: perl:clipboard:paste
+URxvt.keysym.C-S-c: perl:clipboard:copy
+URxvt.keysym.C-S-v: perl:clipboard:paste
+
 ! Appearance
 !  - use a bitmap font
 urxvt*font:        xft:Ubuntu Mono:pixelsize=17:scalable=true
@@ -65,3 +70,6 @@ urxvt*color13:     #e628ba
 ! bright-cyan + bright-white
 urxvt*color14:     #7D7DFB
 urxvt*color15:     #ffffff
+
+!  - catch ugly URLs
+urxvt.cutchars:        `()'*<>[]{|}"
