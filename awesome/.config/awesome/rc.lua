@@ -291,7 +291,8 @@ local function set_wallpaper(s)
    --     gears.wallpaper.maximized(wallpaper, s, true)
    -- end
    -- Handle multiple monitors somehow...
-   awful.util.spawn_with_shell("feh --bg-fill --randomize /home/simon/Dropbox/comp/wallpapers/torment/*")
+   -- awful.util.spawn_with_shell("feh --bg-fill --randomize ~/Dropbox/comp/wallpapers/torment/*")
+   awful.util.spawn_with_shell("feh --bg-fill --randomize ~/.local/wallpapers/*")
 end
 
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
