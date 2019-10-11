@@ -291,8 +291,8 @@ local function set_wallpaper(s)
    --     gears.wallpaper.maximized(wallpaper, s, true)
    -- end
    -- Handle multiple monitors somehow...
-   -- awful.util.spawn_with_shell("feh --bg-fill --randomize ~/Dropbox/comp/wallpapers/torment/*")
-   awful.util.spawn_with_shell("feh --bg-fill --randomize ~/.local/wallpapers/*")
+   -- awful.spawn.with_shell("feh --bg-fill --randomize ~/Dropbox/comp/wallpapers/torment/*")
+   awful.spawn.with_shell("feh --bg-fill --randomize ~/.local/wallpapers/*")
 end
 
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
@@ -465,33 +465,33 @@ globalkeys = awful.util.table.join(
       {description = "show the menubar", group = "launcher"}),
    awful.key({ }, "XF86AudioLowerVolume",
       function ()
-         awful.util.spawn_with_shell("amixer -q sset Master 5%-")
+         awful.spawn.with_shell("amixer -q sset Master 5%-")
          -- updatevolume(tbvolume) -- The previous command takes too long to complete, so this is usually not relevant
       end, {description = "volume down", group = "launcher"}),
    awful.key({ }, "XF86AudioRaiseVolume",
       function ()
-         awful.util.spawn_with_shell("amixer -q sset Master 5%+")
+         awful.spawn.with_shell("amixer -q sset Master 5%+")
          -- updatevolume(tbvolume) -- See above
       end, {description = "volume up", group = "launcher"}),
    awful.key({ }, "XF86AudioMute",
       function ()
-         awful.util.spawn_with_shell("amixer -D pulse set Master toggle")
+         awful.spawn.with_shell("amixer -D pulse set Master toggle")
          -- updatevolume(tbvolume) -- See above
       end, {description = "volume mute", group = "launcher"}),
    awful.key({ modkey, }, ".",
       function () -- Currently does not work... spotify and dbus are not friends
-         awful.util.spawn_with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause")
+         awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause")
          -- "xdotool key --window (xdotool search --name 'Spotify' | head -n1) 'XF86AudioPlay'")
    end),
    awful.key({ modkey, }, ",",
       function () -- Currently does not work... spotify and dbus are not friends
-         awful.util.spawn_with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous")
-         --                 awful.util.spawn_with_shell("xdotool key --window (xdotool search --name 'Spotify' | head -n1) 'XF86AudioPrev'")
+         awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous")
+         --                 awful.spawn.with_shell("xdotool key --window (xdotool search --name 'Spotify' | head -n1) 'XF86AudioPrev'")
    end),
    awful.key({ modkey, }, "-",
       function () -- Currently does not work... spotify and dbus are not friends
-         awful.util.spawn_with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next")
-         --                 awful.util.spawn_with_shell("xdotool key --window (xdotool search --name 'Spotify' | head -n1) 'XF86AudioNext'")
+         awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next")
+         --                 awful.spawn.with_shell("xdotool key --window (xdotool search --name 'Spotify' | head -n1) 'XF86AudioNext'")
    end)
 )
 
@@ -527,7 +527,7 @@ clientkeys = awful.util.table.join(
       {description = "maximize", group = "client"})
    ,
    awful.key({ modkey, "Control", "Shift" }, "o", function () xrandr.xrandr() end),
-   awful.key({ modkey,                    }, "q", function () awful.util.spawn_with_shell("slock")  end)
+   awful.key({ modkey,                    }, "q", function () awful.spawn.with_shell("slock")  end)
 )
 
 -- Bind all key numbers to tags.
@@ -768,11 +768,12 @@ client.connect_signal("focus", function(c) c.border_color = beautiful.border_foc
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
 
+awful.spawn.with_shell("pgrep nm-applet >/dev/null; or nm-applet &")
+
 -- Computer specific setup
 awful.spawn.easy_async('echo "$USER"', function(stdout, stderr, reason, exit_code)
                           if not stdout == "w26164" then
-                             awful.util.spawn_with_shell("xfce4-power-manager --no-daemon")
-                             awful.util.spawn_with_shell("pgrep nm-applet >/dev/null; or nm-applet &")
-                             awful.util.spawn_with_shell("dropbox start")
+                             awful.spawn.with_shell("xfce4-power-manager --no-daemon")
+                             awful.spawn.with_shell("dropbox start")
                           end
 end)
