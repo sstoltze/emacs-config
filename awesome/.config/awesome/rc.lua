@@ -649,10 +649,10 @@ awful.rules.rules = {
      properties = { floating = true } },
    { rule = { class = "Firefox" },
      properties = { floating = true,
-                    --screen = 1,
                     tag = "Net" } },
    { rule = { class = "Slack" },
-     properties = { floating = true } },
+     properties = { floating = true,
+                    screen = 1} },
    { rule = { class = "Emacs" },
      properties = { floating = true,
                     maximized = true } },
@@ -681,7 +681,6 @@ awful.rules.rules = {
      properties = { floating = true } },
    { rule = { class = "Spotify" },
      properties = { floating = true,
-                    screen = 1,
                     tag = "Music" } },
    { rule = { instance = "xfi" }, --- xfimage
      --- class = "Xfe" also matches xfe
@@ -689,7 +688,6 @@ awful.rules.rules = {
                     fullscreen = true } },
    { rule = { class = "Mathematica" },
      properties = { floating = true,
-                    screen = 1,
                     tag = "Math",
                     fullscreen = true } }
 
