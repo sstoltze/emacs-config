@@ -113,3 +113,11 @@ endif
 mbsync-setup:
 	$(shell test -s /home/$$USER/.gnupg/pubring.gpg || gpg2 --generate-key)
 	$(shell test -s /home/$$USER/.mailpass.gpg || gpg2 -o ~/.mailpass.gpg -r $$USER -e) # Enter password in file
+
+# Test if kitty already installed?
+kitty-setup:
+	curl -L https://sw.kovidgoyal.net/kitty/installer.sh | bash /dev/stdin
+        ln -s ~/.local/kitty.app/bin/kitty ~/.local/bin/kitty
+	cp -r ~/.local/kitty.app/share/ ~/.local/
+	sudo update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator ~/.local/bin/kitty 50
+	sudo update-alternatives --config x-terminal-emulator
