@@ -192,10 +192,6 @@
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-x C-z"))
 
-;; Unset C-m = RET
-(define-key input-decode-map [?\C-m] [C-m])
-(define-key input-decode-map [?\C-\M-m] [C-M-m])
-
 ;; Automatic indent on pressing RET
 (global-set-key (kbd "RET")
                 'newline-and-indent)
@@ -417,6 +413,10 @@ point reaches the beginning or end of the buffer, stop there."
        ;; The default "Yellow" of deeper-blue is not great
        (set-face-foreground 'warning "goldenrod1")
        (setq frame-resize-pixelwise t)
+
+       ;; Unset C-m = RET
+       (define-key input-decode-map [?\C-m] [C-m])
+       (define-key input-decode-map [?\C-\M-m] [C-M-m])
 
        (when (not (string= (getenv "GDMSESSION") "awesome"))
          ;; Set initial frame size and position
