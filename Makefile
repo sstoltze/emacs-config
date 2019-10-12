@@ -117,7 +117,7 @@ mbsync-setup:
 # Test if kitty already installed?
 kitty-setup:
 	curl -L https://sw.kovidgoyal.net/kitty/installer.sh | bash /dev/stdin
-        ln -s ~/.local/kitty.app/bin/kitty ~/.local/bin/kitty
+	ln -s ~/.local/kitty.app/bin/kitty ~/.local/bin/kitty
 	cp -r ~/.local/kitty.app/share/ ~/.local/
 	sudo update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator ~/.local/bin/kitty 50
 	sudo update-alternatives --config x-terminal-emulator
