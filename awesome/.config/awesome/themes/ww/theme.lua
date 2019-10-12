@@ -8,9 +8,9 @@
 
 -- {{{ Main
 theme = {}
-local wallpaper_folder  = "/home/simon/Dropbox/comp/wallpapers/torment/"
-local wallpaper_command = "awsetbg -r " .. wallpaper_folder
-theme.wallpaper_cmd = { wallpaper_command }
+local wallpaper_folder  = "~/.local/wallpapers/"
+--local wallpaper_command = "awsetbg -r " .. wallpaper_folder
+--theme.wallpaper_cmd = { wallpaper_command }
 
 --theme.wallpaper_cmd = { "awsetbg /usr/share/awesome/themes/zenburn/zenburn-background.png" }
 -- }}}
