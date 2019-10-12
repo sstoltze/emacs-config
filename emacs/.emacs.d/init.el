@@ -1515,6 +1515,12 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     :config
     (fish-completion-mode 1)))
 
+;; --- Lua ---
+;; For editing awesome/rc.lua
+(use-package lua-mode
+  :ensure t
+  :defer t)
+
 (cond
  ;; --- Windows specific ---
  ((eq system-type 'windows-nt)
@@ -1654,12 +1660,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
         (mu4e-alert-enable-mode-line-display))
       ;; Refresh every 10 minutes
       (run-with-timer 600 600 'gjstein-refresh-mu4e-alert-mode-line)))
-
-  ;; --- Lua ---
-  ;; For editing awesome/rc.lua
-  (use-package lua-mode
-    :ensure t
-    :defer t)
 
   ;; --- SAGE ---
   (when (file-directory-p "/usr/lib/sagemath")
