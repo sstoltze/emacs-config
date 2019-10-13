@@ -52,16 +52,11 @@ local theme = beautiful.get()
 
 -- This is used later as the default terminal and editor to run.
 --terminal = "x-terminal-emulator"
---editor = os.getenv("EDITOR") or "editor"
 terminal = "kitty"
 editor = "emacs -nw" or os.getenv("EDITOR") or "editor"
 editor_cmd = terminal .. " -e " .. editor
 
 -- Default modkey.
--- Usually, Mod4 is the key with a logo between Control and Alt.
--- If you do not like this or do not have such a key,
--- I suggest you to remap Mod4 to another key using xmodmap or other tools.
--- However, you can use another modifier like Mod1, but it may interact with others.
 modkey = "Mod4"
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
@@ -169,7 +164,7 @@ volumetimer = timer({timeout = 13})
 volumetimer:connect_signal("timeout", function () updatevolume(tbvolume) end)
 volumetimer:start()
 
-spotifytitle = awful.tooltip({ objects = { tbvolume }, })
+-- spotifytitle = awful.tooltip({ objects = { tbvolume }, })
 -- old_l = ''
 -- spotimer = timer ({ timeout = 11 })
 -- spotimer:connect_signal("timeout", function()
@@ -215,7 +210,7 @@ vicious.register(bat, vicious.widgets.bat,
                  function (widgets, args)
                     local f = io.popen("acpi -V | head -1 | cut -d ' ' -f 5")
                     local l = "Error"
-                    local colour = "black"
+                    local colour = theme.fg_normal
                     if f ~= nil then
                        l = f:read()
                     end
@@ -223,7 +218,7 @@ vicious.register(bat, vicious.widgets.bat,
                     for h,m in string.gmatch(l,"(%d+):(%d+)") do
                        -- If discharging battery and time is less than 30 minutes or 20% battery remaining, text is red
                        if args[1] == "-" and (tonumber(h) == 0 and tonumber(m) < 30 or args[2] < 20) then
-                          colour = "red"
+                          colour = theme.bg_urgent
                        end
                     end
                     bat_t:set_text( (args[1] == "-" and "Time left: " or ("Charging done in: ")) .. l)
@@ -274,17 +269,6 @@ local tasklist_buttons = awful.util.table.join(
 end))
 
 local function set_wallpaper(s)
-   -- Wallpaper
-   -- if beautiful.wallpaper then
-   --     local wallpaper = beautiful.wallpaper
-   --     -- If wallpaper is a function, call it with the screen
-   --     if type(wallpaper) == "function" then
-   --         wallpaper = wallpaper(s)
-   --     end
-   --     gears.wallpaper.maximized(wallpaper, s, true)
-   -- end
-   -- Handle multiple monitors somehow...
-   -- awful.spawn.with_shell("feh --bg-fill --randomize ~/Dropbox/comp/wallpapers/torment/*")
    awful.spawn.with_shell("feh --bg-fill --randomize ~/.local/wallpapers/*")
 end
 
@@ -296,7 +280,6 @@ awful.screen.connect_for_each_screen(function(s)
       set_wallpaper(s)
 
       -- Each screen has its own tag table.
-      --    awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
       awful.tag({ "Main", "Net", "Music", "Math", "Video", "Skype", "Steam", 8, "VPN"  }, s, awful.layout.layouts[3])
 
       -- Create a promptbox for each screen
