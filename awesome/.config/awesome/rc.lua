@@ -210,7 +210,8 @@ vicious.register(bat, vicious.widgets.bat,
                  function (widgets, args)
                     local f = io.popen("acpi -V | head -1 | cut -d ' ' -f 5")
                     local l = "Error"
-                    local colour = theme.fg_normal
+                    local fg_colour = theme.fg_normal
+                    local bg_colour = theme.bg_normal
                     if f ~= nil then
                        l = f:read()
                     end
@@ -218,11 +219,12 @@ vicious.register(bat, vicious.widgets.bat,
                     for h,m in string.gmatch(l,"(%d+):(%d+)") do
                        -- If discharging battery and time is less than 30 minutes or 20% battery remaining, text is red
                        if args[1] == "-" and (tonumber(h) == 0 and tonumber(m) < 30 or args[2] < 20) then
-                          colour = theme.bg_urgent
+                          fg_colour = theme.fg_urgent
+                          bg_colour = theme.bg_urgent
                        end
                     end
                     bat_t:set_text( (args[1] == "-" and "Time left: " or ("Charging done in: ")) .. l)
-                    return string.format("Bat: <span fgcolor='%s'>%2d%s</span>", colour, args[2], args[1] == "-" and "%" or "+")
+                    return string.format("Bat: <span fgcolor='%s' bgcolor='%s'>%2d%s</span>", fg_colour, bg_colour, args[2], args[1] == "-" and "%" or "+")
                  end, 61, "BAT0")
 
 -- Create a wibox for each screen and add it
