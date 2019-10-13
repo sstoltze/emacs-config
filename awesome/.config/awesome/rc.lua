@@ -44,11 +44,11 @@ end
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
--- beautiful.init(awful.util.get_themes_dir() .. "default/theme.lua")
-beautiful.init("~/.config/awesome/themes/ww/theme.lua")
---beautiful.init("/usr/share/awesome/themes/xresources/theme.lua")
---beautiful.init("/usr/share/awesome/themes/sky/theme.lua")
---beautiful.init("/usr/share/awesome/themes/zenburn/theme.lua")
+--beautiful.init("~/.config/awesome/themes/ww/theme.lua")
+beautiful.init("~/.config/awesome/themes/xresources/theme.lua")
+
+-- For use in widgets
+local theme = beautiful.get()
 
 -- This is used later as the default terminal and editor to run.
 --terminal = "x-terminal-emulator"
@@ -134,24 +134,14 @@ calendar = awful.tooltip({ objects = { mytextclock }, })
 -- See https://awesomewm.org/doc/api/libraries/awful.spawn.html
 awful.spawn.easy_async("ncal -bM", function(stdout, stderr, reason, exit_code)
                           cal_text = stdout:gsub("%p%c([%d%s])%p%c(%d)",
-                                                 '<span underline="single" background="#81654F">%1%2</span>') -- Erstat bold i terminalen med underline og baggrundsfarve
+                                                 '<span underline="single" background="' .. theme.bg_focus .. '">%1%2</span>') -- Erstat bold i terminalen med underline og baggrundsfarve
                              :gsub("[%c%s]+$", " ") -- Fjern alt overskydende whitespace og ekstra linier
                           :gsub("%s%s%c", " \n ") -- Lidt dumt, men outputtet er for langt på nogle linier og tomme strenge har en grim baggrundsfarve
-                          calendar:set_markup('<tt><span background="#C1C48B"> ' -- Monospace og rigtig baggrundsfarve
+                          calendar:set_markup('<tt><span background="' .. theme.bg_normal .. '"> ' -- Monospace og rigtig baggrundsfarve
                                                  .. cal_text
                                                  .. string.rep(" ", 58 + (select(2, cal_text:gsub('\n', '\n'))+1)*22 - cal_text:len()) -- Længde (7*22) + <spans> og lign. (58, åbenbart). Dette går nok hurtigt i stykker igen
                                                  .. "</span></tt>")
 end)
--- cal_pipe = io.popen("ncal -bM")
--- cal_text = cal_pipe:read("*all"):gsub("%p%c([%d%s])%p%c(%d)",
---                                       '<span underline="single" background="#81654F">%1%2</span>') -- Erstat bold i terminalen med underline og baggrundsfarve
---    :gsub("[%c%s]+$", " ") -- Fjern alt overskydende whitespace og ekstra linier
--- :gsub("%s%s%c", " \n ") -- Lidt dumt, men outputtet er for langt på nogle linier og tomme strenge har en grim baggrundsfarve
--- cal_pipe:close()
--- calendar:set_markup('<tt><span background="#C1C48B"> ' -- Monospace og rigtig baggrundsfarve
---                        .. cal_text
---                        .. string.rep(" ", 58 + (select(2, cal_text:gsub('\n', '\n'))+1)*22 - cal_text:len()) -- Længde (7*22) + <spans> og lign. (58, åbenbart). Dette går nok hurtigt i stykker igen
---                        .. "</span></tt>")
 
 -- Volume
 tbvolume = wibox.widget.textbox() -- center
