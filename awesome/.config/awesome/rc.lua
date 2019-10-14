@@ -630,6 +630,7 @@ awful.rules.rules = {
                     tag = "Net" } },
    { rule = { class = "Slack" },
      properties = { floating = true,
+                    maximized = true,
                     screen = 1} },
    { rule = { class = "Emacs" },
      properties = { floating = true,
