@@ -1,6 +1,6 @@
 #!/usr/bin/fish
 
-set -l theme "adventuretime"
+set -l theme "$argv[1]"
 set -l url (string join "" "https://raw.githubusercontent.com/Mayccoll/Gogh/master/themes/" $theme ".sh")
 
 if test ! -e "$theme.sh"
@@ -41,3 +41,7 @@ kittyv=v;
 kittyval=val;
 print kittyv, " ", kittyval > kittyconf;
 }' "$theme.sh"
+
+rm "$theme.sh"
+mv "$theme.Xresources" "../x/.config/x/$theme.theme"
+mv "$theme.conf"       "../kitty/.config/kitty/themes/$theme.conf"
