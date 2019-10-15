@@ -1,7 +1,8 @@
 ! Colours:
-#include ".config/x/.iceberg.theme"
-! #include ".config/x/.material.theme"
-! #include ".config/x/.random.theme"
+! #include ".config/x/iceberg.theme"
+! #include ".config/x/material.theme"
+! #include ".config/x/random.theme"
+#include ".config/x/adventuretime.theme"
 
 
 ! #include ".config/x/urxvt.Xresouces"
