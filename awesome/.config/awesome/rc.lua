@@ -470,17 +470,17 @@ globalkeys = awful.util.table.join(
    awful.key({ modkey }, "Up",            raisevolume, {description = "volume up",   group = "volume"}),
    awful.key({ }, "XF86AudioMute",        togglemute,  {description = "volume mute", group = "volume"}),
    awful.key({ modkey }, "+",             togglemute,  {description = "volume mute", group = "volume"}),
-   awful.key({ modkey, }, ".",
+   awful.key({ modkey }, ".",
       function () -- Currently does not work... spotify and dbus are not friends
          awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause")
          -- "xdotool key --window (xdotool search --name 'Spotify' | head -n1) 'XF86AudioPlay'")
    end),
-   awful.key({ modkey, }, ",",
+   awful.key({ modkey }, ",",
       function () -- Currently does not work... spotify and dbus are not friends
          awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous")
          --                 awful.spawn.with_shell("xdotool key --window (xdotool search --name 'Spotify' | head -n1) 'XF86AudioPrev'")
    end),
-   awful.key({ modkey, }, "-",
+   awful.key({ modkey }, "-",
       function () -- Currently does not work... spotify and dbus are not friends
          awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next")
          --                 awful.spawn.with_shell("xdotool key --window (xdotool search --name 'Spotify' | head -n1) 'XF86AudioNext'")
