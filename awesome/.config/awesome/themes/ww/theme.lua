@@ -28,8 +28,8 @@ theme.bg_focus      = "#81654F"
 theme.bg_urgent     = "#C1C48B"
 theme.bg_minimize   = "#81654F"
 
-theme.taglist_sel   = "#eeeeee"
-theme.taglist_unsel = "#eeeeee"
+theme.taglist_sel   = "#ffffff"
+theme.taglist_unsel = "#ffffff"
 -- }}}
 
 -- {{{ Borders
