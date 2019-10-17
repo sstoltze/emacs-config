@@ -227,6 +227,29 @@ vicious.register(bat, vicious.widgets.bat,
                     return string.format("Bat: <span fgcolor='%s' bgcolor='%s'>%2d%s</span>", fg_colour, bg_colour, args[2], args[1] == "-" and "%" or "+")
                  end, 61, "BAT0")
 
+-- Volume control
+local get_sink = "pactl list short sinks | grep -i running | cut -f 1"
+function lowervolume ()
+      awful.spawn.easy_async(get_sink,
+                          function(sink, stderr, reason, exit_code)
+                             awful.spawn.with_shell("pactl set-sink-volume " .. sink .. " -5%")
+   end)
+end
+
+function raisevolume ()
+   awful.spawn.easy_async(get_sink,
+                          function(sink, stderr, reason, exit_code)
+                             awful.spawn.with_shell("pactl set-sink-volume " .. sink .. " +5%")
+   end)
+end
+
+function togglemute ()
+   awful.spawn.easy_async(get_sink,
+                          function(sink, stderr, reason, exit_code)
+                             awful.spawn.with_shell("pactl set-sink-mute " .. sink .. " toggle")
+   end)
+end
+
 -- Create a wibox for each screen and add it
 local taglist_buttons = awful.util.table.join(
    awful.button({ }, 1, function(t) t:view_only() end),
@@ -441,33 +464,12 @@ globalkeys = awful.util.table.join(
    -- Menubar
    awful.key({ modkey }, "p", function() menubar.show() end,
       {description = "show the menubar", group = "launcher"}),
-   awful.key({ }, "XF86AudioLowerVolume",
-      function ()
-         awful.spawn.easy_async("pactl list short sinks | grep -i running | cut -f 1",
-                                function(sink, stderr, reason, exit_code)
-                                   awful.spawn.with_shell("pactl set-sink-volume " .. sink .. " -5%")
-         end)
-         -- awful.spawn.with_shell("amixer -q sset Master 5%-")
-         -- updatevolume(tbvolume) -- The previous command takes too long to complete, so this is usually not relevant
-      end, {description = "volume down", group = "launcher"}),
-   awful.key({ }, "XF86AudioRaiseVolume",
-      function ()
-         awful.spawn.easy_async("pactl list short sinks | grep -i running | cut -f 1",
-                                function(sink, stderr, reason, exit_code)
-                                   awful.spawn.with_shell("pactl set-sink-volume " .. sink .. " +5%")
-         end)
-         -- awful.spawn.with_shell("amixer -q sset Master 5%+")
-         -- updatevolume(tbvolume) -- See above
-      end, {description = "volume up", group = "launcher"}),
-   awful.key({ }, "XF86AudioMute",
-      function ()
-         awful.spawn.easy_async("pactl list short sinks | grep -i running | cut -f 1",
-                                function(sink, stderr, reason, exit_code)
-                                   awful.spawn.with_shell("pactl set-sink-mute " .. sink .. " toggle")
-         end)
-         -- awful.spawn.with_shell("amixer -D pulse set Master toggle")
-         -- updatevolume(tbvolume) -- See above
-      end, {description = "volume mute", group = "launcher"}),
+   awful.key({ }, "XF86AudioLowerVolume", lowervolume, {description = "volume down", group = "volume"}),
+   awful.key({ modkey }, "Down",          lowervolume, {description = "volume down", group = "volume"}),
+   awful.key({ }, "XF86AudioRaiseVolume", raisevolume, {description = "volume up",   group = "volume"}),
+   awful.key({ modkey }, "Up",            raisevolume, {description = "volume up",   group = "volume"}),
+   awful.key({ }, "XF86AudioMute",        togglemute,  {description = "volume mute", group = "volume"}),
+   awful.key({ modkey }, "+",             togglemute,  {description = "volume mute", group = "volume"}),
    awful.key({ modkey, }, ".",
       function () -- Currently does not work... spotify and dbus are not friends
          awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause")
