@@ -230,7 +230,7 @@ vicious.register(bat, vicious.widgets.bat,
 -- Volume control
 local get_sink = "pactl list short sinks | grep -i running | cut -f 1"
 function lowervolume ()
-      awful.spawn.easy_async(get_sink,
+   awful.spawn.easy_async(get_sink,
                           function(sink, stderr, reason, exit_code)
                              awful.spawn.with_shell("pactl set-sink-volume " .. sink .. " -5%")
    end)
@@ -464,27 +464,24 @@ globalkeys = awful.util.table.join(
    -- Menubar
    awful.key({ modkey }, "p", function() menubar.show() end,
       {description = "show the menubar", group = "launcher"}),
-   awful.key({ }, "XF86AudioLowerVolume", lowervolume, {description = "volume down", group = "volume"}),
-   awful.key({ modkey }, "Down",          lowervolume, {description = "volume down", group = "volume"}),
-   awful.key({ }, "XF86AudioRaiseVolume", raisevolume, {description = "volume up",   group = "volume"}),
-   awful.key({ modkey }, "Up",            raisevolume, {description = "volume up",   group = "volume"}),
-   awful.key({ }, "XF86AudioMute",        togglemute,  {description = "volume mute", group = "volume"}),
-   awful.key({ modkey }, "+",             togglemute,  {description = "volume mute", group = "volume"}),
+   awful.key({ }, "XF86AudioLowerVolume", lowervolume, {description = "volume down", group = "audio"}),
+   awful.key({ modkey }, "Down",          lowervolume, {description = "volume down", group = "audio"}),
+   awful.key({ }, "XF86AudioRaiseVolume", raisevolume, {description = "volume up",   group = "audio"}),
+   awful.key({ modkey }, "Up",            raisevolume, {description = "volume up",   group = "audio"}),
+   awful.key({ }, "XF86AudioMute",        togglemute,  {description = "volume mute", group = "audio"}),
+   awful.key({ modkey }, "+",             togglemute,  {description = "volume mute", group = "audio"}),
    awful.key({ modkey }, ".",
-      function () -- Currently does not work... spotify and dbus are not friends
+      function ()
          awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause")
-         -- "xdotool key --window (xdotool search --name 'Spotify' | head -n1) 'XF86AudioPlay'")
-   end),
+      end, {description = "play/pause", group = "audio"}),
    awful.key({ modkey }, ",",
-      function () -- Currently does not work... spotify and dbus are not friends
+      function ()
          awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous")
-         --                 awful.spawn.with_shell("xdotool key --window (xdotool search --name 'Spotify' | head -n1) 'XF86AudioPrev'")
-   end),
+      end, {description = "previous", group = "audio"}),
    awful.key({ modkey }, "-",
-      function () -- Currently does not work... spotify and dbus are not friends
+      function ()
          awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next")
-         --                 awful.spawn.with_shell("xdotool key --window (xdotool search --name 'Spotify' | head -n1) 'XF86AudioNext'")
-   end)
+      end, {description = "next", group = "audio"})
 )
 
 clientkeys = awful.util.table.join(
