@@ -5,43 +5,50 @@
 --  * inspired by wmii colors --
 --------------------------------
 
+local theme_assets = require("beautiful.theme_assets")
+local xresources = require("beautiful.xresources")
+local dpi = xresources.apply_dpi
+local xrdb = xresources.get_current_theme()
+local gfs = require("gears.filesystem")
+local themes_path = gfs.get_themes_dir()
 
--- {{{ Main
-theme = {}
-local wallpaper_folder  = "~/.local/wallpapers/"
---local wallpaper_command = "awsetbg -r " .. wallpaper_folder
---theme.wallpaper_cmd = { wallpaper_command }
-
---theme.wallpaper_cmd = { "awsetbg /usr/share/awesome/themes/zenburn/zenburn-background.png" }
--- }}}
-
+local theme = dofile(themes_path.."default/theme.lua")
 
 -- {{{ Styles
-theme.font          = "Profont 8"
+theme.font          = "sans 8"
 
 -- {{{ Colors
 theme.fg_normal     = "#000000"
 theme.fg_focus      = "#000000"
 theme.fg_urgent     = "#CF6171"
---theme.fg_minimize = "#000000"
+theme.fg_minimize   = "#000000"
+
 theme.bg_normal     = "#C1C48B"
 theme.bg_focus      = "#81654F"
 theme.bg_urgent     = "#C1C48B"
---theme.bg_minimize = "#81654F"
+theme.bg_minimize   = "#81654F"
+
+theme.taglist_sel   = "#eeeeee"
+theme.taglist_unsel = "#eeeeee"
 -- }}}
 
 -- {{{ Borders
-theme.border_width  = "1"
-theme.border_normal = "#81654F"
-theme.border_focus  = "#000000"
-theme.border_marked = "#CF6171"
+--theme.border_width  = "1"
+theme.border_normal = theme.bg_focus
+theme.border_focus  = theme.fg_focus
+theme.border_marked = theme.fg_marked
 -- }}}
 
+theme.tooltip_fg = theme.fg_normal
+theme.tooltip_bg = theme.bg_normal
+
 -- {{{ Titlebars
-theme.titlebar_bg_focus  = "#81654F"
-theme.titlebar_bg_normal = "#C1C48B"
+theme.titlebar_bg_focus  = theme.bg_focus
+theme.titlebar_bg_normal = theme.bg_normal
 -- theme.titlebar_[normal|focus]
 -- }}}
+
+theme = theme_assets.recolor_layout(theme, theme.fg_normal)
 
 -- {{{ Other
 -- There are other variable sets
@@ -66,7 +73,7 @@ theme.titlebar_bg_normal = "#C1C48B"
 -- }}}
 
 -- {{{ Mouse finder
-theme.mouse_finder_color = "#CF6171"
+theme.mouse_finder_color = theme.fg_urgent
 -- theme.mouse_finder_[timeout|animate_timeout|radius|factor]
 -- }}}
 
@@ -74,63 +81,30 @@ theme.mouse_finder_color = "#CF6171"
 -- Variables set for theming the menu:
 -- menu_[bg|fg]_[normal|focus]
 -- menu_[border_color|border_width]
-theme.menu_height = "15"
-theme.menu_width  = "100"
--- }}}
+theme.menu_submenu_icon = themes_path.."default/submenu.png"
+theme.menu_height = dpi(16)
+theme.menu_width  = dpi(100)
+
 -- }}}
 
 -- {{{ Icons
--- {{{ Taglist
-theme.taglist_squares_sel   = "/usr/share/awesome/themes/default/taglist/squarefw.png"
-theme.taglist_squares_unsel = "/usr/share/awesome/themes/default/taglist/squarew.png"
---theme.taglist_squares_resize = "false"
--- }}}
+-- Define the icon theme for application icons. If not set then the icons
+-- from /usr/share/icons and /usr/share/icons/hicolor will be used.
+theme.icon_theme = nil
 
--- {{{ Misc
-theme.awesome_icon           = "/usr/share/awesome/icons/awesome16.png"
-theme.menu_submenu_icon      = "/usr/share/awesome/themes/default/submenu.png"
-theme.tasklist_floating_icon = "/usr/share/awesome/themes/default/tasklist/floating.png"
--- }}}
+-- Generate Awesome icon:
+theme.awesome_icon = theme_assets.awesome_icon(
+    theme.menu_height, theme.bg_focus, theme.fg_focus
+)
 
--- {{{ Layout
-theme.layout_fairh      = "/usr/share/awesome/themes/default/layouts/fairh.png"
-theme.layout_fairv      = "/usr/share/awesome/themes/default/layouts/fairv.png"
-theme.layout_floating   = "/usr/share/awesome/themes/default/layouts/floating.png"
-theme.layout_magnifier  = "/usr/share/awesome/themes/default/layouts/magnifier.png"
-theme.layout_max        = "/usr/share/awesome/themes/default/layouts/max.png"
-theme.layout_fullscreen = "/usr/share/awesome/themes/default/layouts/fullscreen.png"
-theme.layout_tilebottom = "/usr/share/awesome/themes/default/layouts/tilebottom.png"
-theme.layout_tileleft   = "/usr/share/awesome/themes/default/layouts/tileleft.png"
-theme.layout_tile       = "/usr/share/awesome/themes/default/layouts/tile.png"
-theme.layout_tiletop    = "/usr/share/awesome/themes/default/layouts/tiletop.png"
-theme.layout_spiral     = "/usr/share/awesome/themes/default/layouts/spiral.png"
-theme.layout_dwindle    = "/usr/share/awesome/themes/default/layouts/dwindle.png"
--- }}}
-
--- {{{ Titlebar
-theme.titlebar_close_button_normal = "/usr/share/awesome/themes/default/titlebar/close_normal.png"
-theme.titlebar_close_button_focus  = "/usr/share/awesome/themes/default/titlebar/close_focus.png"
-
-theme.titlebar_ontop_button_normal_inactive = "/usr/share/awesome/themes/default/titlebar/ontop_normal_inactive.png"
-theme.titlebar_ontop_button_focus_inactive  = "/usr/share/awesome/themes/default/titlebar/ontop_focus_inactive.png"
-theme.titlebar_ontop_button_normal_active   = "/usr/share/awesome/themes/default/titlebar/ontop_normal_active.png"
-theme.titlebar_ontop_button_focus_active    = "/usr/share/awesome/themes/default/titlebar/ontop_focus_active.png"
-
-theme.titlebar_sticky_button_normal_inactive = "/usr/share/awesome/themes/default/titlebar/sticky_normal_inactive.png"
-theme.titlebar_sticky_button_focus_inactive  = "/usr/share/awesome/themes/default/titlebar/sticky_focus_inactive.png"
-theme.titlebar_sticky_button_normal_active   = "/usr/share/awesome/themes/default/titlebar/sticky_normal_active.png"
-theme.titlebar_sticky_button_focus_active    = "/usr/share/awesome/themes/default/titlebar/sticky_focus_active.png"
-
-theme.titlebar_floating_button_normal_inactive = "/usr/share/awesome/themes/default/titlebar/floating_normal_inactive.png"
-theme.titlebar_floating_button_focus_inactive  = "/usr/share/awesome/themes/default/titlebar/floating_focus_inactive.png"
-theme.titlebar_floating_button_normal_active   = "/usr/share/awesome/themes/default/titlebar/floating_normal_active.png"
-theme.titlebar_floating_button_focus_active    = "/usr/share/awesome/themes/default/titlebar/floating_focus_active.png"
-
-theme.titlebar_maximized_button_normal_inactive = "/usr/share/awesome/themes/default/titlebar/maximized_normal_inactive.png"
-theme.titlebar_maximized_button_focus_inactive  = "/usr/share/awesome/themes/default/titlebar/maximized_focus_inactive.png"
-theme.titlebar_maximized_button_normal_active   = "/usr/share/awesome/themes/default/titlebar/maximized_normal_active.png"
-theme.titlebar_maximized_button_focus_active    = "/usr/share/awesome/themes/default/titlebar/maximized_focus_active.png"
--- }}}
+-- Generate taglist squares:
+local taglist_square_size = dpi(4)
+theme.taglist_squares_sel = theme_assets.taglist_squares_sel(
+    taglist_square_size, theme.taglist_sel --theme.fg_normal
+)
+theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(
+    taglist_square_size, theme.taglist_unsel --theme.fg_normal
+)
 -- }}}
 
 return theme

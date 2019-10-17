@@ -44,8 +44,8 @@ end
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
---beautiful.init("~/.config/awesome/themes/ww/theme.lua")
-beautiful.init("~/.config/awesome/themes/xresources/theme.lua")
+beautiful.init("~/.config/awesome/themes/ww/theme.lua")
+--beautiful.init("~/.config/awesome/themes/xresources/theme.lua")
 
 -- For use in widgets
 local theme = beautiful.get()
