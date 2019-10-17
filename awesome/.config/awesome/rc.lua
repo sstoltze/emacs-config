@@ -44,8 +44,8 @@ end
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
-beautiful.init("~/.config/awesome/themes/ww/theme.lua")
---beautiful.init("~/.config/awesome/themes/xresources/theme.lua")
+--beautiful.init("~/.config/awesome/themes/ww/theme.lua")
+beautiful.init("~/.config/awesome/themes/xresources/theme.lua")
 
 -- For use in widgets
 local theme = beautiful.get()
@@ -443,17 +443,29 @@ globalkeys = awful.util.table.join(
       {description = "show the menubar", group = "launcher"}),
    awful.key({ }, "XF86AudioLowerVolume",
       function ()
-         awful.spawn.with_shell("amixer -q sset Master 5%-")
+         awful.spawn.easy_async("pactl list short sinks | grep -i running | cut -f 1",
+                                function(sink, stderr, reason, exit_code)
+                                   awful.spawn.with_shell("pactl set-sink-volume " .. sink .. " -5%")
+         end)
+         -- awful.spawn.with_shell("amixer -q sset Master 5%-")
          -- updatevolume(tbvolume) -- The previous command takes too long to complete, so this is usually not relevant
       end, {description = "volume down", group = "launcher"}),
    awful.key({ }, "XF86AudioRaiseVolume",
       function ()
-         awful.spawn.with_shell("amixer -q sset Master 5%+")
+         awful.spawn.easy_async("pactl list short sinks | grep -i running | cut -f 1",
+                                function(sink, stderr, reason, exit_code)
+                                   awful.spawn.with_shell("pactl set-sink-volume " .. sink .. " +5%")
+         end)
+         -- awful.spawn.with_shell("amixer -q sset Master 5%+")
          -- updatevolume(tbvolume) -- See above
       end, {description = "volume up", group = "launcher"}),
    awful.key({ }, "XF86AudioMute",
       function ()
-         awful.spawn.with_shell("amixer -D pulse set Master toggle")
+         awful.spawn.easy_async("pactl list short sinks | grep -i running | cut -f 1",
+                                function(sink, stderr, reason, exit_code)
+                                   awful.spawn.with_shell("pactl set-sink-mute " .. sink .. " toggle")
+         end)
+         -- awful.spawn.with_shell("amixer -D pulse set Master toggle")
          -- updatevolume(tbvolume) -- See above
       end, {description = "volume mute", group = "launcher"}),
    awful.key({ modkey, }, ".",
