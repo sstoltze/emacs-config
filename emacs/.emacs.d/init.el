@@ -1454,7 +1454,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package clojure-mode
   :ensure t
   :defer t
-  :hook ((clojure-mode . subword-mode)))
+  :hook ((clojure-mode . subword-mode))
+  :config
+  (when at-work-p
+    (setq clojure-indent-style 'align-arguments)))
 
 (use-package cider
   :ensure t
