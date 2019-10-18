@@ -9,6 +9,11 @@ end
 set -x VISUAL "emacs -nw "
 set -x EDITOR "emacs -nw "
 
+# Env
+# Rust
+set -x CARGO_HOME  "$HOME/.local"
+set -x RUSTUP_HOME "$HOME/.local/rustup"
+
 # XDG setup
 #set -x XDG_CONFIG_HOME "$HOME/.config"      # .dotfiles and configuration data
 #set -x XDG_DATA_HOME   "$HOME/.local/share" # local data, important
@@ -22,7 +27,7 @@ set __fish_git_prompt_showdirtystate          'yes'
 set __fish_git_prompt_showstashstate          'yes'
 set __fish_git_prompt_showupstream            'yes'
 set __fish_git_prompt_show_informative_status 'yes'
-set __fish_git_prompt_showuntrackedfiles     'yes'
+set __fish_git_prompt_showuntrackedfiles      'yes'
 #set __fish_git_prompt_color_upstream_ahead   green
 #set __fish_git_prompt_color_upstream_behind  red
 #set __fish_git_prompt_color_branch           $dark_pink
