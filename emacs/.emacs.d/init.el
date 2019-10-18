@@ -1115,6 +1115,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :config
   (ivy-mode 1)
   (counsel-mode 1)
+  ;; With fuzzy matching, we do not need the initial ^ in the prompts
+  (setq ivy-initial-inputs-alist '())
   ;; Show how deep the minibuffer goes
   (minibuffer-depth-indicate-mode 1)
   (add-to-list 'ivy-display-functions-alist
