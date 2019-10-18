@@ -372,6 +372,14 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key [remap move-beginning-of-line]
                 'my/smarter-move-beginning-of-line)
 
+;; Indent entire buffer
+(defun indent-buffer ()
+  "Indent entire buffer."
+  (interactive)
+  (indent-region (point-min) (point-max)))
+(global-set-key (kbd "C-c <tab>")
+                'indent-buffer)
+
 (defun byte-compile-init-dir ()
   "Byte-compile .emacs.d/."
   (interactive)
