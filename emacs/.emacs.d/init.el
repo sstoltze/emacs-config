@@ -1496,6 +1496,32 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :ensure t
   :defer t)
 
+;;;; Rust
+(use-package rust-mode
+  :ensure t
+  :defer t
+  :bind (("C-c <tab>" . rust-format-buffer)))
+
+;; Cargo
+(use-package cargo
+  :ensure t
+  :defer t
+  :hook ((rust-mode . cargo-minor-mode)))
+
+;; Racer
+;; Clone git@github.com:rust-lang/rust.git to
+;; ~/.local/rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src
+(use-package racer
+  :ensure t
+  :defer t
+  :hook ((rust-mode . racer-mode)
+         (racer-mode . eldoc-mode)))
+
+(use-package flycheck-rust
+  :ensure t
+  :defer t
+  :hook ((rust-mode . flycheck-rust-setup)))
+
 ;;;; --- EPA ---
 (defun sstoltze/setup-epa ()
   "Quick setup for EPA."
