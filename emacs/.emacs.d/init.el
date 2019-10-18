@@ -203,28 +203,37 @@
 ;; Prettify symbols
 ;; C-x 8 RET to find and insert unicode char
 ;; Look at variable reference-point-alist for explanation
-(defun sstoltze/prettify-symbols-setup ()
+(defun sstoltze/prettify-symbol-list (list)
+  "Add a list to prettify-symbols-alist."
   (mapc (lambda (pair)
           (push pair prettify-symbols-alist))
-        '(("lambda" . (?·  (Br . Bl) ?\s (Br . Bl) ?\s
-                           (Br . Bl) ?\s (Br . Bl) ?\s
-                           (Br . Bl) ?·  (Bc . Bc) ?λ))
-          ("fn"     . (?\s (Br . Bl) ?\s
-                           (Bc . Bc) ?λ))
-          ("<="     . (?·  (Br . Bl) ?≤))
-          (">="     . (?·  (Br . Bl) ?≥))
-          ("!="     . (?·  (Br . Bl) ?≠))
-          ("/="     . (?·  (Br . Bl) ?≠))
-          ("->"     . (?\s (Br . Bl) ?\s
-                           (Bl . Bl) ?-  (Bc . Bc) ?- (Br . Br) ?>))
-          ("->>"    . (?\s (Br . Bl) ?\s (Br . Bl) ?\s
-                           (Bl . Bl) ?-  (Bc . Br) ?- (Bc . Bc) ?>
-                           (Bc . Bl) ?-  (Br . Br) ?>))
-          ("<-"     . (?\s (Br . Bl) ?\s
-                           (Bl . Bl )?<  (Bc . Bc) ?-  (Br . Br) ?-))
-          ("=>"     . (?·  (Br . Bl) ?⇒))
-          ("..."    . (?…  (Br . Bl) ?\s (Br . Bl) ?\s)))))
+        list))
+
+(defun sstoltze/prettify-symbols-setup ()
+  "Setup prettify-symbols with common expressions."
+  (sstoltze/prettify-symbol-list
+   '(("lambda" . (?·  (Br . Bl) ?\s (Br . Bl) ?\s
+                      (Br . Bl) ?\s (Br . Bl) ?\s
+                      (Br . Bl) ?·  (Bc . Bc) ?λ))
+     ("<="     . (?·  (Br . Bl) ?≤))
+     (">="     . (?·  (Br . Bl) ?≥))
+     ("!="     . (?·  (Br . Bl) ?≠))
+     ("/="     . (?·  (Br . Bl) ?≠))
+     ("->"     . (?\s (Br . Bl) ?\s
+                      (Bl . Bl) ?-  (Bc . Bc) ?- (Br . Br) ?>))
+     ("->>"    . (?\s (Br . Bl) ?\s (Br . Bl) ?\s
+                      (Bl . Bl) ?-  (Bc . Br) ?- (Bc . Bc) ?>
+                      (Bc . Bl) ?-  (Br . Br) ?>))
+     ("<-"     . (?\s (Br . Bl) ?\s
+                      (Bl . Bl )?<  (Bc . Bc) ?-  (Br . Br) ?-))
+     ("=>"     . (?·  (Br . Bl) ?⇒))
+     ("..."    . (?…  (Br . Bl) ?\s (Br . Bl) ?\s)))))
 (add-hook 'prog-mode-hook 'sstoltze/prettify-symbols-setup)
+(defun sstoltze/prettify-clojure ()
+  "Setup pretty clojure symbols."
+  (sstoltze/prettify-symbol-list
+   '(("fn" . (?\s (Br . Bl) ?\s
+                  (Bc . Bc) ?λ)))))
 
 ;; Enable C-x C-u (upcase-region)
 (put 'upcase-region    'disabled nil)
@@ -1094,8 +1103,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (ivy-re-builders-alist        '((swiper         . ivy--regex-plus)
                                   (swiper-isearch . ivy--regex-plus)
                                   (t              . ivy--regex-fuzzy)))
-  ;; With the above, we do not need the initial ^ in the prompts
-  (ivy-initial-inputs-alist     '())
   ;; Allows selecting the prompt with C-p (same as C-M-j)
   (ivy-use-selectable-prompt    t)
   ;; Use ivy while in minibuffer to e.g. insert variable names
@@ -1464,7 +1471,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package clojure-mode
   :ensure t
   :defer t
-  :hook ((clojure-mode . subword-mode))
+  :hook ((clojure-mode . subword-mode)
+         (clojure-mode . sstoltze/prettify-clojure))
   :config
   (when at-work-p
     (setq clojure-indent-style 'align-arguments)))
