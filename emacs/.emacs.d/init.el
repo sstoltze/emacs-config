@@ -1510,7 +1510,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package rust-mode
   :ensure t
   :defer t
-  :bind (("C-c <tab>" . rust-format-buffer)))
+  :bind (:map rust-mode-map
+              ("C-c <tab>" . rust-format-buffer)
+              ("C-c C-b" . rust-run))
+  :custom
+  (rust-format-on-save t))
 
 ;; Cargo
 (use-package cargo
@@ -1525,7 +1529,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :ensure t
   :defer t
   :hook ((rust-mode . racer-mode)
-         (racer-mode . eldoc-mode)))
+         (racer-mode . eldoc-mode))
+  :bind (:map rust-mode-map
+              ("C-c C-d" . racer-describe)))
 
 (use-package flycheck-rust
   :ensure t
