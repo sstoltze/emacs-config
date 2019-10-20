@@ -1529,7 +1529,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :hook ((rust-mode . cargo-minor-mode)))
 
 ;; Racer
-;; Clone git@github.com:rust-lang/rust.git to
+;; rustup component add rust-src
+;; Or: clone git@github.com:rust-lang/rust.git to
 ;; ~/.local/rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src
 (use-package racer
   :ensure t
