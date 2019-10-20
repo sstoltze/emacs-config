@@ -1514,7 +1514,12 @@ length of PATH (sans directory slashes) down to MAX-LEN."
               ("C-c <tab>" . rust-format-buffer)
               ("C-c C-b" . rust-run))
   :custom
-  (rust-format-on-save t))
+  (rust-format-on-save t)
+  :init
+  (when (eq system-type 'gnu/linux)
+    (setenv "CARGO_HOME"  (concat (getenv "HOME") "/.local"))
+    (setenv "RUSTUP_HOME" (concat (getenv "HOME") "/.local/rustup"))))
+
 
 ;; Cargo
 (use-package cargo
