@@ -18,8 +18,8 @@ local xrandr = require("xrandr")
 require("debian.menu")
 
 -- Theme
-local theme_name = "xresources" -- "ww"
-local theme_dir = "~/.config/awesome/themes/" .. theme_name .. "/theme.lua"
+local theme_name = "orange" -- "orange" "ww" "xresources"
+local theme_dir = awful.util.getdir("config") .. "/themes/" .. theme_name .. "/theme.lua"
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
