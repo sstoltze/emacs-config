@@ -33,11 +33,14 @@ theme.border_focus  = theme.bg_focus
 theme.border_marked = xrdb.color10
 
 theme.bg_widget     = theme.bg_focus
+theme.fg_widget     = theme.fg_focus
 
 -- Orange text on focus
--- theme.bg_focus      = xrdb.background
--- theme.fg_focus      = "#F2AA4C"
--- theme.border_focus  = theme.fg_focus
+theme.bg_focus      = xrdb.background
+theme.fg_focus      = "#F2AA4C" -- goes well with "#101820"
+theme.border_focus  = theme.fg_focus
+theme.bg_widget     = theme.bg_normal
+theme.fg_widget     = theme.fg_focus
 
 -- no extra borders
 -- theme.useless_gap   = dpi(3)
