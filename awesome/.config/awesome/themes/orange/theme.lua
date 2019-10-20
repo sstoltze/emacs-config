@@ -20,7 +20,9 @@ local function darker(color_value, darker_n)
     return result
 end
 
-theme.font          = "sans 8"
+--theme.font          = "sans 8"
+-- sudo apt install xfonts-terminus
+theme.font          = "terminus 8"
 
 -- Normal
 theme.bg_normal     = "#101820"
