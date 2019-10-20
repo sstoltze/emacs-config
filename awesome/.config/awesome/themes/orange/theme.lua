@@ -1,12 +1,7 @@
----------------------------------------------
--- Awesome theme which follows xrdb config --
---   by Yauhen Kirylau                    --
----------------------------------------------
-
 local theme_assets = require("beautiful.theme_assets")
 local xresources = require("beautiful.xresources")
 local dpi = xresources.apply_dpi
-local xrdb = xresources.get_current_theme()
+--local xrdb = xresources.get_current_theme()
 local gfs = require("gears.filesystem")
 local themes_path = gfs.get_themes_dir()
 
@@ -14,26 +9,50 @@ local themes_path = gfs.get_themes_dir()
 local theme = dofile(themes_path.."default/theme.lua")
 -- load vector assets' generators for this theme
 
+local function darker(color_value, darker_n)
+    local result = "#"
+    for s in color_value:gmatch("[a-fA-F0-9][a-fA-F0-9]") do
+        local bg_numeric_value = tonumber("0x"..s) - darker_n
+        if bg_numeric_value < 0 then bg_numeric_value = 0 end
+        if bg_numeric_value > 255 then bg_numeric_value = 255 end
+        result = result .. string.format("%2.2x", bg_numeric_value)
+    end
+    return result
+end
+
 theme.font          = "sans 8"
 
--- Default:
-theme.bg_normal     = xrdb.background
-theme.bg_focus      = xrdb.color12
-theme.bg_urgent     = xrdb.color9
-theme.bg_minimize   = xrdb.color8
+-- Normal
+theme.bg_normal     = "#101820"
+--theme.fg_normal     = xrdb.foreground
+
+-- Focus
+theme.bg_focus      = darker(theme.bg_normal, -15)
+theme.fg_focus      = "#F2AA4C"
+
+-- Urgent
+theme.bg_urgent     = "#F21133" --"#900C3F"--  -- "#9E1030" --darker(theme.fg_focus, 60)
+theme.fg_urgent     = theme.bg_normal
+
+-- Systray
 theme.bg_systray    = theme.bg_normal
 
-theme.fg_normal     = xrdb.foreground
-theme.fg_focus      = theme.bg_normal
-theme.fg_urgent     = theme.bg_normal
-theme.fg_minimize   = theme.bg_normal
+-- Minimize
+theme.fg_minimize   = darker(theme.fg_normal, 50)
+theme.bg_minimize   = darker(theme.bg_normal, 5)
 
-theme.border_normal = xrdb.color0
-theme.border_focus  = theme.bg_focus
-theme.border_marked = xrdb.color10
+-- Border
+theme.border_focus  = theme.fg_focus
+--theme.border_normal = xrdb.color0
+--theme.border_marked = xrdb.color10
 
-theme.bg_widget     = theme.bg_focus
+-- Widgets
+theme.bg_widget     = theme.bg_normal
 theme.fg_widget     = theme.fg_focus
+
+-- Tooltip
+theme.tooltip_fg    = theme.fg_normal
+theme.tooltip_bg    = theme.bg_normal
 
 -- no extra borders
 -- theme.useless_gap   = dpi(3)
@@ -50,8 +69,6 @@ theme.fg_widget     = theme.fg_focus
 -- Example:
 --theme.taglist_bg_focus = "#ff0000"
 
-theme.tooltip_fg = theme.fg_normal
-theme.tooltip_bg = theme.bg_normal
 
 -- Variables set for theming the menu:
 -- menu_[bg|fg]_[normal|focus]
@@ -64,9 +81,8 @@ theme.menu_width  = dpi(100)
 -- you wish and access them by using
 -- beautiful.variable in your rc.lua
 
-
 -- Recolor Layout icons:
-theme = theme_assets.recolor_layout(theme, theme.fg_normal)
+--theme = theme_assets.recolor_layout(theme, theme.fg_normal)
 
 -- Recolor titlebar icons:
 --
@@ -80,24 +96,24 @@ local function darker(color_value, darker_n)
     end
     return result
 end
-theme = theme_assets.recolor_titlebar(
-    theme, theme.fg_normal, "normal"
-)
-theme = theme_assets.recolor_titlebar(
-    theme, darker(theme.fg_normal, -60), "normal", "hover"
-)
-theme = theme_assets.recolor_titlebar(
-    theme, xrdb.color1, "normal", "press"
-)
-theme = theme_assets.recolor_titlebar(
-    theme, theme.fg_focus, "focus"
-)
-theme = theme_assets.recolor_titlebar(
-    theme, darker(theme.fg_focus, -60), "focus", "hover"
-)
-theme = theme_assets.recolor_titlebar(
-    theme, xrdb.color1, "focus", "press"
-)
+-- theme = theme_assets.recolor_titlebar(
+--     theme, theme.fg_normal, "normal"
+-- )
+-- theme = theme_assets.recolor_titlebar(
+--     theme, darker(theme.fg_normal, -60), "normal", "hover"
+-- )
+-- theme = theme_assets.recolor_titlebar(
+--     theme, xrdb.color1, "normal", "press"
+-- )
+-- theme = theme_assets.recolor_titlebar(
+--     theme, theme.fg_focus, "focus"
+-- )
+-- theme = theme_assets.recolor_titlebar(
+--     theme, darker(theme.fg_focus, -60), "focus", "hover"
+-- )
+-- theme = theme_assets.recolor_titlebar(
+--     theme, xrdb.color1, "focus", "press"
+-- )
 
 -- Define the icon theme for application icons. If not set then the icons
 -- from /usr/share/icons and /usr/share/icons/hicolor will be used.
@@ -117,24 +133,4 @@ theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(
     taglist_square_size, theme.fg_normal
 )
 
--- Try to determine if we are running light or dark colorscheme:
-local bg_numberic_value = 0;
-for s in theme.bg_normal:gmatch("[a-fA-F0-9][a-fA-F0-9]") do
-    bg_numberic_value = bg_numberic_value + tonumber("0x"..s);
-end
-local is_dark_bg = (bg_numberic_value < 383)
-
--- Generate wallpaper:
-local wallpaper_bg = xrdb.color8
-local wallpaper_fg = xrdb.color7
-local wallpaper_alt_fg = xrdb.color12
-if not is_dark_bg then
-    wallpaper_bg, wallpaper_fg = wallpaper_fg, wallpaper_bg
-end
-theme.wallpaper = function(s)
-    return theme_assets.wallpaper(wallpaper_bg, wallpaper_fg, wallpaper_alt_fg, s)
-end
-
 return theme
-
--- vim: filetype=lua:expandtab:shiftwidth=4:tabstop=8:softtabstop=4:textwidth=80
