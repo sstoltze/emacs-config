@@ -17,6 +17,10 @@ local xrandr = require("xrandr")
 -- Load Debian menu entries
 require("debian.menu")
 
+-- Theme
+local theme_name = "xresources" -- "ww"
+local theme_dir = "~/.config/awesome/themes/" .. theme_name .. "/theme.lua"
+
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
@@ -44,8 +48,7 @@ end
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
---beautiful.init("~/.config/awesome/themes/ww/theme.lua")
-beautiful.init("~/.config/awesome/themes/xresources/theme.lua")
+beautiful.init(theme_dir)
 
 -- For use in widgets
 local theme = beautiful.get()
@@ -129,7 +132,7 @@ calendar = awful.tooltip({ objects = { mytextclock }, })
 -- See https://awesomewm.org/doc/api/libraries/awful.spawn.html
 awful.spawn.easy_async("ncal -bM", function(stdout, stderr, reason, exit_code)
                           cal_text = stdout:gsub("%p%c([%d%s])%p%c(%d)",
-                                                 '<span underline="single" background="' .. theme.bg_focus .. '">%1%2</span>') -- Erstat bold i terminalen med underline og baggrundsfarve
+                                                 '<span underline="single" background="' .. theme.bg_widget .. '">%1%2</span>') -- Erstat bold i terminalen med underline og baggrundsfarve
                              :gsub("[%c%s]+$", " ") -- Fjern alt overskydende whitespace og ekstra linier
                           :gsub("%s%s%c", " \n ") -- Lidt dumt, men outputtet er for langt på nogle linier og tomme strenge har en grim baggrundsfarve
                           calendar:set_markup('<tt><span background="' .. theme.bg_normal .. '"> ' -- Monospace og rigtig baggrundsfarve

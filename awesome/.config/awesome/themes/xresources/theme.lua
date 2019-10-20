@@ -16,6 +16,7 @@ local theme = dofile(themes_path.."default/theme.lua")
 
 theme.font          = "sans 8"
 
+-- Default:
 theme.bg_normal     = xrdb.background
 theme.bg_focus      = xrdb.color12
 theme.bg_urgent     = xrdb.color9
@@ -27,12 +28,20 @@ theme.fg_focus      = theme.bg_normal
 theme.fg_urgent     = theme.bg_normal
 theme.fg_minimize   = theme.bg_normal
 
--- no extra borders
--- theme.useless_gap   = dpi(3)
--- theme.border_width  = dpi(2)
 theme.border_normal = xrdb.color0
 theme.border_focus  = theme.bg_focus
 theme.border_marked = xrdb.color10
+
+theme.bg_widget     = theme.bg_focus
+
+-- Orange text on focus
+-- theme.bg_focus      = xrdb.background
+-- theme.fg_focus      = "#F2AA4C"
+-- theme.border_focus  = theme.fg_focus
+
+-- no extra borders
+-- theme.useless_gap   = dpi(3)
+-- theme.border_width  = dpi(2)
 
 -- There are other variable sets
 -- overriding the default one when
@@ -58,7 +67,7 @@ theme.menu_width  = dpi(100)
 -- You can add as many variables as
 -- you wish and access them by using
 -- beautiful.variable in your rc.lua
---theme.bg_widget = "#cc0000"
+
 
 -- Recolor Layout icons:
 theme = theme_assets.recolor_layout(theme, theme.fg_normal)
