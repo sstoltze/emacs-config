@@ -872,7 +872,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          ("M-("     . sp-wrap-round)
          ("M-{"     . sp-wrap-curly)
          ("M-["     . sp-wrap-square)
-         ("M-\""    . (lambda (&optional arg) (interactive "P") (sp-wrap-with-pair "\""))))
+         ("M-\""    . (lambda (&optional arg) (interactive "P") (sp-wrap-with-pair "\"")))
+         ("C-x n s" . sp-narrow-to-sexp))
   :custom
   (sp-highlight-pair-overlay nil)
   :config
