@@ -114,8 +114,9 @@ mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesom
 }
                        })
 
-mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
-                                     menu = mymainmenu })
+-- Not used at the moment
+-- mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
+--                                      menu = mymainmenu })
 
 -- Menubar configuration
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
@@ -132,7 +133,7 @@ calendar = awful.tooltip({ objects = { mytextclock }, })
 -- See https://awesomewm.org/doc/api/libraries/awful.spawn.html
 awful.spawn.easy_async("ncal -bM", function(stdout, stderr, reason, exit_code)
                           cal_text = stdout:gsub("%p%c([%d%s])%p%c(%d)",
-                                                 '<span underline="single" background="' .. theme.bg_widget .. '">%1%2</span>') -- Erstat bold i terminalen med underline og baggrundsfarve
+                                                 '<span underline="single" background="' .. theme.bg_widget .. '" foreground="' .. theme.fg_widget .. '">%1%2</span>') -- Erstat bold i terminalen med underline og baggrundsfarve
                              :gsub("[%c%s]+$", " ") -- Fjern alt overskydende whitespace og ekstra linier
                           :gsub("%s%s%c", " \n ") -- Lidt dumt, men outputtet er for langt på nogle linier og tomme strenge har en grim baggrundsfarve
                           calendar:set_markup('<tt><span background="' .. theme.bg_normal .. '"> ' -- Monospace og rigtig baggrundsfarve
@@ -334,7 +335,7 @@ awful.screen.connect_for_each_screen(function(s)
          layout = wibox.layout.align.horizontal,
          { -- Left widgets
             layout = wibox.layout.fixed.horizontal,
-            mylauncher,
+            --mylauncher, -- not needed IMO, kept here if I want it back
             s.mytaglist,
             s.mypromptbox,
          },
