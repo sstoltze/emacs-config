@@ -424,6 +424,11 @@ point reaches the beginning or end of the buffer, stop there."
 ;;;; --- Frame-setup ---
 (cond ((display-graphic-p) ;; Window system
        (load-theme 'deeper-blue t)
+
+       ;; Fonts
+       ;;(add-to-list 'default-frame-alist '(font . "Hack"))
+       (add-to-list 'default-frame-alist '(font . "Fira Code Regular"))
+
        ;; Fringe (default): black, background: #181a26
        (with-eval-after-load 'highlight-indentation
          (set-face-background 'highlight-indentation-face "#252040"))
