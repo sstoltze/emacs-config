@@ -427,11 +427,12 @@ point reaches the beginning or end of the buffer, stop there."
 
        ;; Fonts
        ;; Better horizontal splits - weird %
-       ;; (set-frame-font "Iosevka Slab-10")
+       ;; sudo add-apt-repository ppa:laurent-boulard/fonts
+       ;; sudo apt install fonts-iosevka-slab
+       (set-frame-font "Iosevka Slab-10.5")
        ;; Better vertical splits - better modeline - weird @
-       (set-frame-font "Fira Code-10")
-       ;; Similar to Fira Code
-       ;; (set-frame-font "Hack-10")
+       ;; sudo apt install fonts-firacode
+       ;; (set-frame-font "Fira Code-10")
        ;; This seems decent
        ;; (set-frame-font "Sudo-12")
        ;; Weird size?
