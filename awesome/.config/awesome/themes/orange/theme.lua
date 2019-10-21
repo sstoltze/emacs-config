@@ -56,6 +56,9 @@ theme.fg_widget     = theme.fg_focus
 theme.tooltip_fg    = theme.fg_normal
 theme.tooltip_bg    = theme.bg_normal
 
+-- Hotkeys
+theme.hotkeys_modifiers_fg = theme.fg_minimize
+
 -- no extra borders
 -- theme.useless_gap   = dpi(3)
 -- theme.border_width  = dpi(2)
