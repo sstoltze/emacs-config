@@ -426,8 +426,10 @@ point reaches the beginning or end of the buffer, stop there."
        (load-theme 'deeper-blue t)
 
        ;; Fonts
-       ;;(add-to-list 'default-frame-alist '(font . "Hack"))
-       (add-to-list 'default-frame-alist '(font . "Fira Code Regular"))
+       ;; Better horizontal splits
+       ;;(add-to-list 'default-frame-alist '(font . "Iosevka Slab-10"))
+       ;; Better vertical splits - better modeline
+       (add-to-list 'default-frame-alist '(font . "Fira Code Regular-10"))
 
        ;; Fringe (default): black, background: #181a26
        (with-eval-after-load 'highlight-indentation
