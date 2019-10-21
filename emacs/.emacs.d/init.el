@@ -427,12 +427,15 @@ point reaches the beginning or end of the buffer, stop there."
 
        ;; Fonts
        ;; Better horizontal splits - weird %
-       ;;(add-to-list 'default-frame-alist '(font . "Iosevka Slab-10"))
+       ;; (set-frame-font "Iosevka Slab-10")
        ;; Better vertical splits - better modeline - weird @
-       (add-to-list 'default-frame-alist '(font . "Fira Code Regular-10"))
-       ;;(add-to-list 'default-frame-alist '(font . "Hack-12"))
-       ;;(add-to-list 'default-frame-alist '(font . "Sudo-12"))
-       ;;(add-to-list 'default-frame-alist '(font . "Monoid-8"))
+       (set-frame-font "Fira Code-10")
+       ;; Similar to Fira Code
+       ;; (set-frame-font "Hack-10")
+       ;; This seems decent
+       ;; (set-frame-font "Sudo-12")
+       ;; Weird size?
+       ;; (set-frame-font "Monoid-8")
 
        ;; Fringe (default): black, background: #181a26
        (with-eval-after-load 'highlight-indentation
