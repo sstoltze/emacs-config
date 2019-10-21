@@ -55,12 +55,12 @@ local theme = beautiful.get()
 
 -- This is used later as the default terminal and editor to run.
 --terminal = "x-terminal-emulator"
-terminal = "kitty"
-editor = "emacs -nw" or os.getenv("EDITOR") or "editor"
-editor_cmd = terminal .. " -e " .. editor
+local terminal = "kitty"
+local editor = "emacs -nw" or os.getenv("EDITOR") or "editor"
+local editor_cmd = terminal .. " -e " .. editor
 
 -- Default modkey.
-modkey = "Mod4"
+local modkey = "Mod4"
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
 awful.layout.layouts = {
@@ -100,7 +100,7 @@ end
 
 -- {{{ Menu
 -- Create a launcher widget and a main menu
-myawesomemenu = {
+local myawesomemenu = {
    { "hotkeys", function() return false, hotkeys_popup.show_help end},
    { "manual", terminal .. " -e man awesome" },
    { "edit config", editor_cmd .. " " .. awesome.conffile },
@@ -108,9 +108,9 @@ myawesomemenu = {
    { "quit", function() awesome.quit() end}
 }
 
-mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
-                             { "Debian", debian.menu.Debian_menu.Debian },
-                             { "open terminal", terminal }
+local mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
+                                   { "Debian", debian.menu.Debian_menu.Debian },
+                                   { "open terminal", terminal }
 }
                        })
 
@@ -123,12 +123,12 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 -- }}}
 
 -- Keyboard map indicator and switcher
-mykeyboardlayout = awful.widget.keyboardlayout()
+local mykeyboardlayout = awful.widget.keyboardlayout()
 
 -- {{{ Wibar
 -- Create a textclock widget
-mytextclock = wibox.widget.textclock()
-calendar = awful.tooltip({ objects = { mytextclock }, })
+local mytextclock = wibox.widget.textclock()
+local calendar = awful.tooltip({ objects = { mytextclock }, })
 
 -- See https://awesomewm.org/doc/api/libraries/awful.spawn.html
 awful.spawn.easy_async("ncal -bM", function(stdout, stderr, reason, exit_code)
@@ -143,46 +143,38 @@ awful.spawn.easy_async("ncal -bM", function(stdout, stderr, reason, exit_code)
 end)
 
 -- Volume
-tbvolume = wibox.widget.textbox() -- center
-cardid = "0"
-channel = "Master"
+local tbvolume = wibox.widget.textbox() -- center
 local vol_command = "pactl list sinks | awk 'BEGIN { running = 0; } /RUNNING/ { running = 1; } /^[^a-zA-Z]*Volume/ { if ( running) { print $5; } } /SUSPENDED/ { running = 0; }'"
 
 function updatevolume(widget)
    awful.spawn.easy_async_with_shell(vol_command, function(vol, stderr, reason, exit_code)
-                             print(vol)
-                             local volume = "Vol: " .. vol
-                             widget:set_markup(volume)
-                                       end
+                                        widget:set_markup("Vol: " .. vol)
+                                                  end
    )
 end
 updatevolume(tbvolume)
-volumetimer = timer({timeout = 13})
+local volumetimer = timer({timeout = 13})
 volumetimer:connect_signal("timeout", function () updatevolume(tbvolume) end)
 volumetimer:start()
 
--- spotifytitle = awful.tooltip({ objects = { tbvolume }, })
--- old_l = ''
--- spotimer = timer ({ timeout = 11 })
--- spotimer:connect_signal("timeout", function()
--- 	local f = io.popen("/home/simon/getify")
---         local l = f:read()
--- 	f:close()
---         if l == nil then
---                 l = ''
---         end
--- 	l = l:gsub("&", "&amp;")
---         spotifytitle:set_text(l)
--- 	if l ~= old_l and l ~= '' then
--- 	     	old_l = l
--- 	     	naughty.notify({text = l, icon = "/home/simon/Documents/icons/Spotify-icon-32.png", icon_size = 16})
--- 	end
--- end)
--- spotimer:start()
+-- Spotify notifications
+naughty.config.presets.spotify = {
+    -- if you want to disable Spotify notifications completely, return false
+    callback = function(args)
+        return true
+    end,
+
+    -- Adjust the size of the notification
+    height = 50,
+    width  = 300,
+    -- Guessing the value, find a way to fit it to the proper size later
+    icon_size = 40
+}
+table.insert(naughty.dbus.config.mapping, {{appname = "Spotify"}, naughty.config.presets.spotify})
 
 -- CPU widget
 -- Initialize widget
-cpuwidget = wibox.widget.textbox()
+local cpuwidget = wibox.widget.textbox()
 -- Register widget
 vicious.register(cpuwidget, vicious.widgets.cpu, "CPU: $1%")
 
@@ -193,16 +185,16 @@ cpuwidget:buttons(awful.util.table.join(
 end)))
 
 -- RAM usage widget
-memwidget = wibox.widget.textbox()
+local memwidget = wibox.widget.textbox()
 vicious.cache(vicious.widgets.mem)
 vicious.register(memwidget, vicious.widgets.mem, "RAM: $2/$3", 71)
 --update every 71 seconds
 
-divider = wibox.widget.textbox() -- center
+local divider = wibox.widget.textbox() -- center
 divider:set_text(" | ")
 
-bat = wibox.widget.textbox() -- center
-bat_t = awful.tooltip({ objects = { bat }, })
+local bat = wibox.widget.textbox() -- center
+local bat_t = awful.tooltip({ objects = { bat }, })
 vicious.register(bat, vicious.widgets.bat,
                  function (widgets, args)
                     local f = io.popen("acpi -V | head -1 | cut -d ' ' -f 5")
@@ -226,21 +218,21 @@ vicious.register(bat, vicious.widgets.bat,
 
 -- Volume control
 local get_sink = "pactl list short sinks | grep -i running | cut -f 1"
-function lowervolume ()
+local function lowervolume ()
    awful.spawn.easy_async(get_sink,
                           function(sink, stderr, reason, exit_code)
                              awful.spawn.with_shell("pactl set-sink-volume " .. sink .. " -5%")
    end)
 end
 
-function raisevolume ()
+local function raisevolume ()
    awful.spawn.easy_async(get_sink,
                           function(sink, stderr, reason, exit_code)
                              awful.spawn.with_shell("pactl set-sink-volume " .. sink .. " +5%")
    end)
 end
 
-function togglemute ()
+local function togglemute ()
    awful.spawn.easy_async(get_sink,
                           function(sink, stderr, reason, exit_code)
                              awful.spawn.with_shell("pactl set-sink-mute " .. sink .. " toggle")
@@ -363,7 +355,7 @@ root.buttons(awful.util.table.join(
 -- }}}
 
 -- {{{ Key bindings
-globalkeys = awful.util.table.join(
+local globalkeys = awful.util.table.join(
    awful.key({ modkey,           }, "s",      hotkeys_popup.show_help,
       {description="show help", group="awesome"}),
    awful.key({ modkey,           }, "Left",   awful.tag.viewprev,
