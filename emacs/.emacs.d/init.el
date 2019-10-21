@@ -204,7 +204,7 @@
 ;; C-x 8 RET to find and insert unicode char
 ;; Look at variable reference-point-alist for explanation
 (defun sstoltze/prettify-symbol-list (list)
-  "Add a list to prettify-symbols-alist."
+  "Add LIST to 'prettify-symbols-alist'."
   (mapc (lambda (pair)
           (push pair prettify-symbols-alist))
         list))
@@ -219,8 +219,7 @@
      (">="     . (?·  (Br . Bl) ?≥))
      ("!="     . (?·  (Br . Bl) ?≠))
      ("/="     . (?·  (Br . Bl) ?≠))
-     ("->"     . (?\s (Br . Bl) ?\s
-                      (Bl . Bl) ?-  (Bc . Bc) ?- (Br . Br) ?>))
+     ("->"     . (?- (Br . Bc) ?- (Br . Bc) ?>))
      ("->>"    . (?\s (Br . Bl) ?\s (Br . Bl) ?\s
                       (Bl . Bl) ?-  (Bc . Br) ?- (Bc . Bc) ?>
                       (Bc . Bl) ?-  (Br . Br) ?>))
@@ -229,8 +228,11 @@
      ("=>"     . (?·  (Br . Bl) ?⇒))
      ("..."    . (?…  (Br . Bl) ?\s (Br . Bl) ?\s)))))
 (add-hook 'prog-mode-hook 'sstoltze/prettify-symbols-setup)
+
 (defun sstoltze/prettify-clojure ()
   "Setup pretty clojure symbols."
+  (setq prettify-symbols-alist (delq (assoc "fn" prettify-symbols-alist)
+                                     prettify-symbols-alist))
   (sstoltze/prettify-symbol-list
    '(("fn" . (?\s (Br . Bl) ?\s
                   (Bc . Bc) ?λ)))))
@@ -1489,8 +1491,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package clojure-mode
   :ensure t
   :defer t
-  :hook ((clojure-mode . subword-mode)
-         (clojure-mode . sstoltze/prettify-clojure))
+  :hook (((clojure-mode clojurescript-mode) . subword-mode)
+         ((clojure-mode clojurescript-mode) . sstoltze/prettify-clojure))
   :config
   (when at-work-p
     (setq clojure-indent-style 'align-arguments)))
@@ -1500,7 +1502,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :defer t
   :after clojure-mode
   :hook ((clojure-mode    . cider-mode)
-         (cider-repl-mode . sstoltze/prettify-symbols-setup ))
+         (cider-repl-mode . sstoltze/prettify-symbols-setup )
+         (cider-repl-mode . sstoltze/prettify-clojure))
   :bind ((:map cider-repl-mode-map
                ("M-s" . sp-splice-sexp))))
 

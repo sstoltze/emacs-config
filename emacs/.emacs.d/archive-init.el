@@ -315,3 +315,7 @@ Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
   :defer t
   :custom
   (excorporate-configuration '("Simon.Stoltze@ufst.dk" . "https://outlook.office365.com/EWS/Exchange.asmx")))
+
+;; prettify-symbols
+("->"     . (?\s (Br . Bl) ?\s
+                 (Bl . Bl) ?-  (Bc . Bc) ?- (Br . Br) ?>))
