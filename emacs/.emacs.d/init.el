@@ -426,17 +426,20 @@ point reaches the beginning or end of the buffer, stop there."
        (load-theme 'deeper-blue t)
 
        ;; Fonts
-       ;; Better horizontal splits - weird %
+       ;; Better horizontal splits
        ;; sudo add-apt-repository ppa:laurent-boulard/fonts
        ;; sudo apt install fonts-iosevka-slab
        (set-frame-font "Iosevka Slab-10.5")
-       ;; Better vertical splits - better modeline - weird @
+       ;; Better vertical splits - better modeline
        ;; sudo apt install fonts-firacode
        ;; (set-frame-font "Fira Code-10")
        ;; This seems decent
        ;; (set-frame-font "Sudo-12")
        ;; Weird size?
        ;; (set-frame-font "Monoid-8")
+       ;; Better vertical splits
+       ;; sudo apt install xfonts-terminus
+       ;; (set-frame-font "Terminus")
 
        ;; Fringe (default): black, background: #181a26
        (with-eval-after-load 'highlight-indentation
