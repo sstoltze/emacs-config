@@ -231,8 +231,7 @@
 
 (defun sstoltze/prettify-clojure ()
   "Setup pretty clojure symbols."
-  (setq prettify-symbols-alist (delq (assoc "fn" prettify-symbols-alist)
-                                     prettify-symbols-alist))
+  (setq prettify-symbols-alist (assoc-delete-all "fn" prettify-symbols-alist))
   (sstoltze/prettify-symbol-list
    '(("fn" . (?\s (Br . Bl) ?\s
                   (Bc . Bc) ?λ)))))
