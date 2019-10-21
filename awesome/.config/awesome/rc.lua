@@ -146,22 +146,15 @@ end)
 tbvolume = wibox.widget.textbox() -- center
 cardid = "0"
 channel = "Master"
+local vol_command = "pactl list sinks | awk 'BEGIN { running = 0; } /RUNNING/ { running = 1; } /^[^a-zA-Z]*Volume/ { if ( running) { print $5; } } /SUSPENDED/ { running = 0; }'"
+
 function updatevolume(widget)
-   local fd = io.popen("amixer -c " .. cardid .. " -- sget " .. channel)
-   local status = fd:read("*all")
-   fd:close()
-
-   local volume = string.match(status, "(%d?%d?%d)%%") or "0"
-   volume = string.format("% 3d", volume)
-
-   status = string.match(status, "%[(o[^%]]*)%]") or "off"
-
-   if string.find(status, "on", 1, true) then
-      volume = "Vol:" .. volume .. "%"
-   else
-      volume = "Vol:" .. volume .. "M"
-   end
-   widget:set_markup(volume)
+   awful.spawn.easy_async_with_shell(vol_command, function(vol, stderr, reason, exit_code)
+                             print(vol)
+                             local volume = "Vol: " .. vol
+                             widget:set_markup(volume)
+                                       end
+   )
 end
 updatevolume(tbvolume)
 volumetimer = timer({timeout = 13})
