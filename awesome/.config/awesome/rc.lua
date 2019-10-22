@@ -108,9 +108,14 @@ local myawesomemenu = {
    { "quit", function() awesome.quit() end}
 }
 
+local function shutdown_fn()
+   awful.spawn.with_shell("shutdown now")
+end
+
 local mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
                                    { "Debian", debian.menu.Debian_menu.Debian },
-                                   { "open terminal", terminal }
+                                   { "open terminal", terminal },
+                                   { "shutdown", shutdown_fn }
 }
                              })
 
