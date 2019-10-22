@@ -143,18 +143,24 @@ awful.spawn.easy_async("ncal -bM", function(stdout, stderr, reason, exit_code)
 end)
 
 -- Volume
-local tbvolume = wibox.widget.textbox() -- center
-local vol_command = "pactl list sinks | awk 'BEGIN { running = 0; } /RUNNING/ { running = 1; } /^[^a-zA-Z]*Volume/ { if ( running) { print $5; } } /SUSPENDED/ { running = 0; }'"
+local tbvolume = wibox.widget.textbox()
+local vol_command = [[pactl list sinks | awk '
+BEGIN               { mute = "no"; running = 0; }
+/RUNNING/           { running = 1; }
+/^[^a-zA-Z]Mute/    { if ( running ) { mute = $2 } }
+/^[^a-zA-Z]*Volume/ { if ( running ) { if ( mute ~ /yes/ ) { gsub(/%/, "M", $5); }; print $5; } }
+/SUSPENDED/         { running = 0; }']]
 
-function updatevolume(widget)
+function updatevolume()
    awful.spawn.easy_async_with_shell(vol_command, function(vol, stderr, reason, exit_code)
-                                        widget:set_markup("Vol: " .. vol)
+                                        tbvolume:set_markup("Vol: " .. vol)
                                                   end
    )
 end
-updatevolume(tbvolume)
+
+updatevolume()
 local volumetimer = timer({timeout = 13})
-volumetimer:connect_signal("timeout", function () updatevolume(tbvolume) end)
+volumetimer:connect_signal("timeout", updatevolume)
 volumetimer:start()
 
 -- Spotify notifications
@@ -218,24 +224,28 @@ vicious.register(bat, vicious.widgets.bat,
 
 -- Media controls
 local get_sink = "pactl list short sinks | grep -i running | cut -f 1"
+
+local async_volume = function (stdout, stderr, reason, exit_code)
+   updatevolume()
+end
 local function lowervolume()
    awful.spawn.easy_async_with_shell(get_sink,
                                      function(sink, stderr, reason, exit_code)
-                                        awful.spawn.with_shell("pactl set-sink-volume " .. sink .. " -5%")
+                                        awful.spawn.easy_async("pactl set-sink-volume " .. sink .. " -5%", async_volume)
    end)
 end
 
 local function raisevolume ()
    awful.spawn.easy_async_with_shell(get_sink,
                                      function(sink, stderr, reason, exit_code)
-                                        awful.spawn.with_shell("pactl set-sink-volume " .. sink .. " +5%")
+                                        awful.spawn.easy_async("pactl set-sink-volume " .. sink .. " +5%", async_volume)
    end)
 end
 
 local function togglemute ()
    awful.spawn.easy_async_with_shell(get_sink,
                                      function(sink, stderr, reason, exit_code)
-                                        awful.spawn.with_shell("pactl set-sink-mute " .. sink .. " toggle")
+                                        awful.spawn.easy_async("pactl set-sink-mute " .. sink .. " toggle", async_volume)
    end)
 end
 
@@ -477,10 +487,12 @@ local globalkeys = awful.util.table.join(
    -- Media controls
    awful.key({ }, "XF86AudioLowerVolume", lowervolume, {description = "volume down",   group = "audio"}),
    awful.key({ modkey }, "Down",          lowervolume, {description = "volume down",   group = "audio"}),
+   awful.key({ modkey }, "æ",             lowervolume, {description = "volume down",   group = "audio"}),
    awful.key({ }, "XF86AudioRaiseVolume", raisevolume, {description = "volume up",     group = "audio"}),
    awful.key({ modkey }, "Up",            raisevolume, {description = "volume up",     group = "audio"}),
+   awful.key({ modkey }, "ø",             raisevolume, {description = "volume up",     group = "audio"}),
    awful.key({ }, "XF86AudioMute",        togglemute,  {description = "volume mute",   group = "audio"}),
-   awful.key({ modkey }, "+",             togglemute,  {description = "volume mute",   group = "audio"}),
+   awful.key({ modkey }, "'",             togglemute,  {description = "volume mute",   group = "audio"}),
    awful.key({ modkey }, ".",             playpause,   {description = "play/pause",    group = "audio"}),
    awful.key({ }, "XF86AudioPause",       pausemedia,  {description = "pause media",   group = "audio"}),
    awful.key({ }, "XF86AudioPlay",        playmedia,   {description = "play media",    group = "audio"}),
