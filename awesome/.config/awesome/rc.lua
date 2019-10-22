@@ -112,7 +112,7 @@ local mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.
                                    { "Debian", debian.menu.Debian_menu.Debian },
                                    { "open terminal", terminal }
 }
-                       })
+                             })
 
 -- Not used at the moment
 -- mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
@@ -159,16 +159,16 @@ volumetimer:start()
 
 -- Spotify notifications
 naughty.config.presets.spotify = {
-    -- if you want to disable Spotify notifications completely, return false
-    callback = function(args)
-        return true
-    end,
+   -- if you want to disable Spotify notifications completely, return false
+   callback = function(args)
+      return true
+   end,
 
-    -- Adjust the size of the notification
-    height = 50,
-    width  = 300,
-    -- Guessing the value, find a way to fit it to the proper size later
-    icon_size = 40
+   -- Adjust the size of the notification
+   height = 50,
+   width  = 300,
+   -- Guessing the value, find a way to fit it to the proper size later
+   icon_size = 40
 }
 table.insert(naughty.dbus.config.mapping, {{appname = "Spotify"}, naughty.config.presets.spotify})
 
@@ -220,22 +220,22 @@ vicious.register(bat, vicious.widgets.bat,
 local get_sink = "pactl list short sinks | grep -i running | cut -f 1"
 local function lowervolume()
    awful.spawn.easy_async_with_shell(get_sink,
-                          function(sink, stderr, reason, exit_code)
-                             awful.spawn.with_shell("pactl set-sink-volume " .. sink .. " -5%")
+                                     function(sink, stderr, reason, exit_code)
+                                        awful.spawn.with_shell("pactl set-sink-volume " .. sink .. " -5%")
    end)
 end
 
 local function raisevolume ()
    awful.spawn.easy_async_with_shell(get_sink,
-                          function(sink, stderr, reason, exit_code)
-                             awful.spawn.with_shell("pactl set-sink-volume " .. sink .. " +5%")
+                                     function(sink, stderr, reason, exit_code)
+                                        awful.spawn.with_shell("pactl set-sink-volume " .. sink .. " +5%")
    end)
 end
 
 local function togglemute ()
    awful.spawn.easy_async_with_shell(get_sink,
-                          function(sink, stderr, reason, exit_code)
-                             awful.spawn.with_shell("pactl set-sink-mute " .. sink .. " toggle")
+                                     function(sink, stderr, reason, exit_code)
+                                        awful.spawn.with_shell("pactl set-sink-mute " .. sink .. " toggle")
    end)
 end
 
