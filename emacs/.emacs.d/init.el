@@ -430,7 +430,7 @@ point reaches the beginning or end of the buffer, stop there."
        ;; Better horizontal splits
        ;; sudo add-apt-repository ppa:laurent-boulard/fonts
        ;; sudo apt install fonts-iosevka-slab
-       (set-frame-font "Iosevka Slab-10.5")
+       (set-frame-font "Iosevka-10.5")
        ;; Better vertical splits - better modeline
        ;; sudo apt install fonts-firacode
        ;; (set-frame-font "Fira Code-10")
