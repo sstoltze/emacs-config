@@ -786,5 +786,9 @@ awful.spawn.easy_async('echo "$USER"', function(stdout, stderr, reason, exit_cod
                           if not stdout == "w26164" then
                              awful.spawn.with_shell("xfce4-power-manager --no-daemon")
                              awful.spawn.with_shell("dropbox start")
+                          else -- Work setup
+                             awful.spawn.once("solaar")
+                             awful.spawn.once("start-bt")
+                             awful.spawn.once("slack", { screen = 1, tag = "Main"})
                           end
 end)
