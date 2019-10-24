@@ -779,16 +779,22 @@ client.connect_signal("focus", function(c) c.border_color = beautiful.border_foc
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
 
-awful.spawn.with_shell("pgrep nm-applet >/dev/null; or nm-applet &")
+local function spawn_once_with_shell(prg, prg_opts, spawn_opts)
+   prg_opts = prg_opts or ""
+   spawn_opts = spawn_opts or {}
+   awful.spawn.with_shell("pgrep " .. prg .. " >/dev/null; or " .. prg .. " " .. prg_opts, spawn_opts)
+end
+
+spawn_once_with_shell("nm-applet", "&")
 
 -- Computer specific setup
-awful.spawn.easy_async('echo "$USER"', function(stdout, stderr, reason, exit_code)
-                          if not stdout == "w26164" then
-                             awful.spawn.with_shell("xfce4-power-manager --no-daemon")
-                             awful.spawn.with_shell("dropbox start")
-                          else -- Work setup
-                             awful.spawn.once("solaar")
-                             awful.spawn.once("start-bt")
-                             awful.spawn.once("slack", { screen = 1, tag = "Main"})
+awful.spawn.easy_async('echo "$USER"', function(user, stderr, reason, exit_code)
+                          if user == "simon" then -- Laptop
+                             spawn_once_with_shell("xfce4-power-manager", "--no-daemon")
+                             spawn_once_with_shell("dropbox", "start")
+                          elseif user == "w26164" then -- Work setup
+                             spawn_once_with_shell("solaar")
+                             spawn_once_with_shell("blueman-applet", "&")
+                             spawn_once_with_shell("slack", "", { screen = 1, tag = "Main"})
                           end
 end)
