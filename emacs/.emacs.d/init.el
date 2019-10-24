@@ -609,16 +609,6 @@ If ARG is provided, move directly to option ARG."
                               visible-mark-active))
   (global-visible-mark-mode 1))
 
-;;;; --- Guru-mode ----
-(use-package guru-mode
-  :ensure t
-  ;; Always enabled, do not show in mode-line
-  :diminish guru-mode
-  :custom
-  (guru-warn-only t)
-  :init
-  (guru-global-mode 1))
-
 ;;;; --- Dired ---
 (use-package dired
   :bind (("C-x C-j"  . dired-jump))
