@@ -317,6 +317,7 @@ local tasklist_buttons = awful.util.table.join(
          awful.client.focus.byidx(-1)
 end))
 
+-- Set all wallpapers at once
 local function set_wallpaper(s)
    awful.spawn.with_shell("feh --bg-fill --randomize ~/.local/wallpapers/*")
 end
@@ -324,10 +325,10 @@ end
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 screen.connect_signal("property::geometry", set_wallpaper)
 
-awful.screen.connect_for_each_screen(function(s)
-      -- Wallpaper
-      set_wallpaper(s)
+-- Set wallpaper
+set_wallpaper(true)
 
+awful.screen.connect_for_each_screen(function(s)
       -- Each screen has its own tag table.
       awful.tag({ "Main", "Net", "Music", "Math", "Video", "Skype", "Steam", 8, "VPN"  }, s, awful.layout.layouts[3])
 
