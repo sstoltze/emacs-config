@@ -660,44 +660,36 @@ awful.rules.rules = {
    { rule = { class = "Gimp" },
      properties = { floating = true } },
    { rule = { class = "Firefox" },
-     properties = { floating = true,
+     properties = { maximized = true,
                     tag = "Net" } },
    { rule = { class = "Slack" },
-     properties = { floating = true,
-                    screen = 1,
-                    maximized = true} },
+     properties = { maximized = true} },
    { rule = { class = "Emacs" },
-     properties = { floating = true,
-                    maximized = true } },
+     properties = { maximized = true } },
    { rule = { class = "Steam" },
-     properties = { floating = true,
-                    maximized = true,
-                    -- screen = 1,
+     properties = { maximized = true,
                     tag = "Steam" } },
-   { rule = { class = "Evince" },
-     properties = { floating = true } },
+   -- { rule = { class = "Evince" },
+   --   properties = { floating = true } },
    { rule = { class = "Code" },
      properties = { floating = true } },
    { rule = { class = "Skype" },
-     properties = { floating = true,
-                    -- screen = 1,
+     properties = { maximized = 1,
                     tag = "Skype" } },
    { rule = { class = "Totem" },
-     properties = { floating = true,
-                    -- screen = 1,
+     properties = { maximized = true,
                     tag = "Video" } },
    { rule = { class = "Conkeror" },
-     properties = { floating = true,
-                    -- screen = 1,
+     properties = { maximized = true,
                     tag = "Net" } },
    { rule = { class = "Dwarf_Fortress" },
-     properties = { floating = true } },
-   { rule = { class = "Spotify" },
-     properties = { floating = true,
+     properties = { maximized = true } },
+   { rule = { class = "[Ss]potify" },
+     properties = { maximized = true,
                     tag = "Music" } },
    { rule = { instance = "xfi" }, --- xfimage
      --- class = "Xfe" also matches xfe
-     properties = { floating = true,
+     properties = { maximized= true,
                     fullscreen = true } },
    { rule = { class = "Mathematica" },
      properties = { floating = true,
@@ -708,6 +700,10 @@ awful.rules.rules = {
    -- { rule = { class = "Firefox" },
    --   properties = { screen = 1, tag = "2" } },
 }
+client.connect_signal("manage",
+                      function (c)
+
+end)
 -- }}}
 
 -- {{{ Signals
@@ -722,6 +718,16 @@ client.connect_signal("manage", function (c)
                          and not c.size_hints.program_position then
                             -- Prevent clients from being unreachable after screen count changes.
                             awful.placement.no_offscreen(c)
+                         end
+
+                         -- Fix spotify spawning without a class by applying rules again after class is set
+                         if c.class == nil then
+                            c.minimized = true
+                            c:connect_signal("property::class",
+                                             function ()
+                                                c.minimized = false
+                                                awful.rules.apply(c)
+                            end)
                          end
 end)
 
