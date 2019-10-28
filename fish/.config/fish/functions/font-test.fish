@@ -1,4 +1,5 @@
 function font-test --description "Print various text styles in terminal."
+    echo -e "normal"
     echo -e "\e[1mbold\e[0m"
     echo -e "\e[3mitalic\e[0m"
     echo -e "\e[4munderline\e[0m"
