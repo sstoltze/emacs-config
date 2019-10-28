@@ -1318,6 +1318,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :defer t
   :hook ((css-mode . rainbow-mode)))
 
+(use-package restclient
+  :ensure t
+  :defer t)
+
 ;;;; --- CSV ---
 (use-package csv-mode
   :ensure t
