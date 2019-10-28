@@ -87,6 +87,8 @@ ifeq ($(platform),CYGWIN)
 else ifeq ($(platform),WINDOWS)
 	del "%USERPROFILE%\.gitconfig"
 	copy /Y "git-work\.gitconfig" "%USERPROFILE%"
+else ifeq ($(platform),Linux)
+	stow              -S -t ~ autorandr-work
 endif
 
 work-remove:
