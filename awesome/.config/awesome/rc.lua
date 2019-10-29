@@ -539,8 +539,8 @@ clientkeys = awful.util.table.join(
       end ,
       {description = "maximize", group = "client"})
    ,
-   awful.key({ modkey, "Control", "Shift" }, "o", function () xrandr.xrandr() end),
-   awful.key({ modkey,                    }, "q", function () awful.spawn.with_shell("slock")  end)
+   awful.key({ modkey, "Control" }, "o", function () xrandr.xrandr() end, { description = "toggle xrandr options", group = "screen"}),
+   awful.key({ modkey,                    }, "q", function () awful.spawn.with_shell("slock")  end, { description = "slock", group = "awesome" })
 )
 
 -- Bind all key numbers to tags.
