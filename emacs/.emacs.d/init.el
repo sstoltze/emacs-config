@@ -186,7 +186,10 @@
           'delete-trailing-whitespace)
 
 ;; Save recent files periodically (every 10m)
-(run-at-time nil (* 10 60) 'recentf-save-list)
+(run-at-time nil (* 10 60)
+             (lambda ()
+               (let ((save-silently t))
+                 (recentf-save-list))))
 
 ;; Unset suspend keys. Never used anyway
 (global-unset-key (kbd "C-z"))
