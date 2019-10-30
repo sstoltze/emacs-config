@@ -779,8 +779,20 @@ client.connect_signal("mouse::enter", function(c)
                          end
 end)
 
-client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
-client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
+-- client.connect_signal("property::screen", function(c)
+--                          if client.focus == c then
+--                             print("the current client changed!", c)
+--                          end
+-- end)
+
+client.connect_signal("focus", function(c)
+                         c.border_color = beautiful.border_focus
+                         -- Check if screen changed?
+end)
+client.connect_signal("unfocus", function(c)
+                         c.border_color = beautiful.border_normal
+                         -- Check if screen changed?
+end)
 -- }}}
 
 local function spawn_once_with_shell(prg, prg_opts)
