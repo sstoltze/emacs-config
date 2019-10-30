@@ -701,15 +701,7 @@ awful.rules.rules = {
      properties = { floating = true,
                     tag = "Math",
                     fullscreen = true } }
-
-   -- Set Firefox to always map on the tag named "2" on screen 1.
-   -- { rule = { class = "Firefox" },
-   --   properties = { screen = 1, tag = "2" } },
 }
-client.connect_signal("manage",
-                      function (c)
-
-end)
 -- }}}
 
 -- {{{ Signals
