@@ -125,6 +125,8 @@ local mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.
 
 -- Menubar configuration
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
+-- This should make menubar show up quicker the first time it is run
+menubar.menu_gen.lookup_category_icons = function() end
 -- }}}
 
 -- Keyboard map indicator and switcher
