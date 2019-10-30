@@ -801,7 +801,7 @@ local function spawn_once_with_shell(prg, prg_opts)
    awful.spawn.with_shell("pgrep " .. prg .. " >/dev/null; or " .. prg .. " " .. prg_opts)
 end
 
-spawn_once_with_shell("nm-applet", "&")
+spawn_once_with_shell("nm-applet")
 
 -- Computer specific setup
 awful.spawn.easy_async_with_shell('echo -n "$USER"', function(user, stderr, reason, exit_code)
@@ -810,6 +810,7 @@ awful.spawn.easy_async_with_shell('echo -n "$USER"', function(user, stderr, reas
                                         spawn_once_with_shell("dropbox", "start")
                                      elseif user == "w26164\n" then -- Work setup
                                         spawn_once_with_shell("solaar")
-                                        spawn_once_with_shell("blueman-applet", "&")
+                                        spawn_once_with_shell("blueman-applet")
+                                        spawn_once_with_shell("slack")
                                      end
 end)
