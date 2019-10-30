@@ -673,6 +673,8 @@ awful.rules.rules = {
                     tag = "Steam" } },
    -- { rule = { class = "Evince" },
    --   properties = { floating = true } },
+   { rule = { class = "Gnome-calculator" },
+     properties = { floating = true } },
    { rule = { class = "Code" },
      properties = { floating = true } },
    { rule = { class = "Skype" },
