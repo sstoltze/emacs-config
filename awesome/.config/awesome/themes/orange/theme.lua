@@ -10,17 +10,16 @@ local theme = dofile(themes_path.."default/theme.lua")
 -- load vector assets' generators for this theme
 
 local function darker(color_value, darker_n)
-    local result = "#"
-    for s in color_value:gmatch("[a-fA-F0-9][a-fA-F0-9]") do
-        local bg_numeric_value = tonumber("0x"..s) - darker_n
-        if bg_numeric_value < 0 then bg_numeric_value = 0 end
-        if bg_numeric_value > 255 then bg_numeric_value = 255 end
-        result = result .. string.format("%2.2x", bg_numeric_value)
-    end
-    return result
+   local result = "#"
+   for s in color_value:gmatch("[a-fA-F0-9][a-fA-F0-9]") do
+      local bg_numeric_value = tonumber("0x"..s) - darker_n
+      if bg_numeric_value < 0 then bg_numeric_value = 0 end
+      if bg_numeric_value > 255 then bg_numeric_value = 255 end
+      result = result .. string.format("%2.2x", bg_numeric_value)
+   end
+   return result
 end
 
---theme.font          = "sans 8"
 -- sudo apt install xfonts-terminus
 theme.font          = "terminus 8"
 
@@ -116,16 +115,16 @@ theme.icon_theme = nil
 
 -- Generate Awesome icon:
 theme.awesome_icon = theme_assets.awesome_icon(
-    theme.menu_height, theme.bg_focus, theme.fg_focus
+   theme.menu_height, theme.bg_focus, theme.fg_focus
 )
 
 -- Generate taglist squares:
 local taglist_square_size = dpi(4)
 theme.taglist_squares_sel = theme_assets.taglist_squares_sel(
-    taglist_square_size, theme.fg_normal
+   taglist_square_size, theme.fg_normal
 )
 theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(
-    taglist_square_size, theme.fg_normal
+   taglist_square_size, theme.fg_normal
 )
 
 return theme
