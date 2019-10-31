@@ -641,7 +641,9 @@ If ARG is provided, move directly to option ARG."
 
 (use-package dired-sidebar
   :ensure t
-  :bind (("C-c j" . dired-sidebar-toggle-sidebar)))
+  :bind (("C-c j" . dired-sidebar-toggle-sidebar))
+  :custom
+  (dired-sidebar-theme 'ascii))
 
 ;;;; --- Proced ---
 ;; To highlight processes use highlight-lines-matching-regexp, M-s h l
