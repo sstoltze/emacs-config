@@ -40,7 +40,7 @@ theme.bg_systray    = theme.bg_normal
 
 -- Minimize
 theme.fg_minimize   = darker(theme.fg_normal, 50)
-theme.bg_minimize   = darker(theme.bg_normal, 5)
+theme.bg_minimize   = darker(theme.bg_normal, 15)
 
 -- Border
 theme.border_focus  = theme.fg_focus
