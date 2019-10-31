@@ -160,6 +160,9 @@ BEGIN               { mute = "no"; running = 0; }
 
 function updatevolume()
    awful.spawn.easy_async_with_shell(vol_command, function(vol, stderr, reason, exit_code)
+                                        if vol == "" then
+                                           vol = "off"
+                                        end
                                         tbvolume:set_markup("Vol: " .. vol)
                                                   end
    )
@@ -360,6 +363,7 @@ awful.screen.connect_for_each_screen(function(s)
             layout = wibox.layout.fixed.horizontal,
             --mylauncher, -- not needed IMO, kept here if I want it back
             s.mytaglist,
+            divider,
             s.mypromptbox,
          },
          s.mytasklist, -- Middle widget
