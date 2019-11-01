@@ -479,7 +479,7 @@ local globalkeys = awful.util.table.join(
       {description = "restore minimized", group = "client"}),
 
    -- Prompt
-   awful.key({ modkey },            "r",     function () awful.screen.focused().mypromptbox:run() end,
+   awful.key({ modkey            }, "r", function () awful.screen.focused().mypromptbox:run() end,
       {description = "run prompt", group = "launcher"}),
 
    awful.key({ modkey }, "x",
@@ -547,8 +547,10 @@ clientkeys = awful.util.table.join(
       end ,
       {description = "maximize", group = "client"})
    ,
-   awful.key({ modkey, "Control" }, "o", function () xrandr.xrandr() end, { description = "toggle xrandr options", group = "screen"}),
-   awful.key({ modkey,                    }, "q", function () awful.spawn.with_shell("slock")  end, { description = "slock", group = "awesome" })
+   awful.key({ modkey, "Control" }, "o", function () xrandr.xrandr() end,
+      { description = "toggle xrandr options", group = "screen"}),
+   awful.key({ modkey,           }, "q", function () awful.spawn.with_shell("slock")  end,
+      { description = "slock", group = "awesome" })
 )
 
 -- Bind all key numbers to tags.
