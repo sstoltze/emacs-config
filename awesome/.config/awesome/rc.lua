@@ -727,7 +727,7 @@ client.connect_signal("manage", function (c)
                          end
 
                          -- Fix spotify spawning without a class by applying rules again after class is set
-                         if c.class == nil and not c.name == "Event Tester" then
+                         if c.class == nil and c.name ~= "Event Tester" then
                             c.minimized = true
                             c:connect_signal("property::class",
                                              function ()
