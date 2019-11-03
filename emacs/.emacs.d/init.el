@@ -879,7 +879,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          (lisp-interaction-mode            . turn-on-smartparens-strict-mode)
          (slime-repl-mode                  . turn-on-smartparens-strict-mode)
          (eval-expression-minibuffer-setup . turn-on-smartparens-strict-mode))
-  :bind (("M-s"     . sp-splice-sexp)
+  :bind (:map smartparens-mode-map
+         ("M-s"     . sp-splice-sexp)
+         ("M-S"     . sp-split-sexp)
+         ("M-J"     . sp-join-sexp)
          ;; C-M-SPC marks next sexp
          ("<C-M-m>" . sstoltze/mark-sexp-up)
          ("C-("     . sp-backward-slurp-sexp)
@@ -890,12 +893,21 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          ("M-{"     . sp-wrap-curly)
          ("M-["     . sp-wrap-square)
          ("M-\""    . (lambda (&optional arg) (interactive "P") (sp-wrap-with-pair "\"")))
+         ("C-M-q"   . sp-indent-defun)
+         ("M-R"     . sp-raise-sexp)
+         ("M-?"     . sp-convolute-sexp)
+         ("C-M-u"   . sp-backward-up-sexp)
+         ("C-M-n"   . sp-up-sexp)
+         ("C-M-d"   . sp-down-sexp)
+         ("C-M-p"   . sp-backward-down-sexp)
          ("C-x n s" . sp-narrow-to-sexp))
   :custom
   (sp-highlight-pair-overlay nil)
   :config
   ;; Ensure ' works in lisps and does other setup
-  (require 'smartparens-config))
+  (require 'smartparens-config)
+  ;; This might make a lot of the bindings above obsolete
+  (sp-use-smartparens-bindings))
 
 (use-package rainbow-delimiters
   :ensure t
