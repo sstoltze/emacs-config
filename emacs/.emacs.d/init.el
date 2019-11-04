@@ -907,7 +907,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; Ensure ' works in lisps and does other setup
   (require 'smartparens-config)
   ;; This might make a lot of the bindings above obsolete
-  (sp-use-smartparens-bindings))
+  (sp-use-paredit-bindings))
 
 (use-package rainbow-delimiters
   :ensure t
