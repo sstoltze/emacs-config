@@ -880,27 +880,27 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          (slime-repl-mode                  . turn-on-smartparens-strict-mode)
          (eval-expression-minibuffer-setup . turn-on-smartparens-strict-mode))
   :bind (:map smartparens-mode-map
-         ("M-s"     . sp-splice-sexp)
-         ("M-S"     . sp-split-sexp)
-         ("M-J"     . sp-join-sexp)
-         ("C-M-SPC" . sp-mark-sexp)
-         ("<C-M-m>" . sstoltze/mark-sexp-up)
-         ("C-("     . sp-backward-slurp-sexp)
-         ("C-)"     . sp-forward-slurp-sexp)
-         ("C-{"     . sp-backward-barf-sexp)
-         ("C-}"     . sp-forward-barf-sexp)
-         ("M-("     . sp-wrap-round)
-         ("M-{"     . sp-wrap-curly)
-         ("M-["     . sp-wrap-square)
-         ("M-\""    . (lambda (&optional arg) (interactive "P") (sp-wrap-with-pair "\"")))
-         ("C-M-q"   . sp-indent-defun)
-         ("M-R"     . sp-raise-sexp)
-         ("M-?"     . sp-convolute-sexp)
-         ("C-M-u"   . sp-backward-up-sexp)
-         ("C-M-n"   . sp-up-sexp)
-         ("C-M-d"   . sp-down-sexp)
-         ("C-M-p"   . sp-backward-down-sexp)
-         ("C-x n s" . sp-narrow-to-sexp))
+              ("M-s"     . sp-splice-sexp)
+              ("M-S"     . sp-split-sexp)
+              ("M-J"     . sp-join-sexp)
+              ("C-M-SPC" . sp-mark-sexp)
+              ("<C-M-m>" . sstoltze/mark-sexp-up)
+              ("C-("     . sp-backward-slurp-sexp)
+              ("C-)"     . sp-forward-slurp-sexp)
+              ("C-{"     . sp-backward-barf-sexp)
+              ("C-}"     . sp-forward-barf-sexp)
+              ("M-("     . sp-wrap-round)
+              ("M-{"     . sp-wrap-curly)
+              ("M-["     . sp-wrap-square)
+              ("M-\""    . (lambda (&optional arg) (interactive "P") (sp-wrap-with-pair "\"")))
+              ("C-M-q"   . sp-indent-defun)
+              ("M-R"     . sp-raise-sexp)
+              ("M-?"     . sp-convolute-sexp)
+              ("C-M-u"   . sp-backward-up-sexp)
+              ("C-M-n"   . sp-up-sexp)
+              ("C-M-d"   . sp-down-sexp)
+              ("C-M-p"   . sp-backward-down-sexp)
+              ("C-x n s" . sp-narrow-to-sexp))
   :custom
   (sp-highlight-pair-overlay nil)
   :config
@@ -1126,10 +1126,12 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          ("C-c s"   . swiper-avy))
   :custom
   ;; Allow "M-x lis-pac" to match "M-x list-packages"
-  (ivy-re-builders-alist        '((swiper           . ivy--regex-plus)
-                                  (swiper-isearch   . ivy--regex-plus)
-                                  (counsel-git-grep . ivy--regex-plus)
-                                  (t                . ivy--regex-fuzzy)))
+  (ivy-re-builders-alist        '((swiper                . ivy--regex-plus)
+                                  (swiper-isearch        . ivy--regex-plus)
+                                  (counsel-rg            . ivy--regex-plus)
+                                  (counsel-projectile-rg . ivy--regex-plus)
+                                  (counsel-git-grep      . ivy--regex-plus)
+                                  (t                     . ivy--regex-fuzzy)))
   ;; Allows selecting the prompt with C-p (same as C-M-j)
   (ivy-use-selectable-prompt    t)
   ;; Use ivy while in minibuffer to e.g. insert variable names
@@ -1257,8 +1259,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :config
   (when (eq system-type 'windows-nt)
     ;; Seems to be necessary for windows
-    (projectile-git-submodule-command nil)
-    (projectile-indexing-method 'alien)))
+    (setq projectile-git-submodule-command nil
+          projectile-indexing-method       'alien)))
 
 (use-package counsel-projectile
   :ensure t
