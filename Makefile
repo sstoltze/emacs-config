@@ -112,6 +112,17 @@ ifneq (,$(filter Linux CYGWIN,$(platform)))
 	chsh -s /usr/bin/fish
 endif
 
+# Add permission from
+mu4e-setup:
+	sudo apt install isync mu4e
+	mkdir ~/.mail/gmail
+	mkdir ~/.mail/work
+
+# Fonts used by terminal, emacs, awesomewm
+font-setup:
+	sudo add-apt-repository ppa:laurent-boulard/fonts
+	sudo apt install fonts-firacode xfonts-terminus fonts-iosevka fonts-iosevka-term
+
 mbsync-setup:
 	$(shell test -s /home/$$USER/.gnupg/pubring.gpg || gpg2 --generate-key)
 	$(shell test -s /home/$$USER/.mailpass.gpg || gpg2 -o ~/.mailpass.gpg -r $$USER -e) # Enter password in file
