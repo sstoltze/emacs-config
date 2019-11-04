@@ -1646,10 +1646,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (setq tramp-default-method "ssh")
 
   ;; --- Mu4e ---
-  (when (file-directory-p "/usr/local/share/emacs/site-lisp/mu4e")
+  (when (file-directory-p "/usr/share/emacs/site-lisp/mu4e")
     (use-package mu4e
       :defer t
-      :load-path "/usr/local/share/emacs/site-lisp/mu/mu4e"
+      :load-path "/usr/share/emacs/site-lisp/mu/mu4e"
       :bind (("C-c q" . mu4e)
              :map mu4e-view-mode-map
              ("G" . (lambda ()
