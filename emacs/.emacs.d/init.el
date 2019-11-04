@@ -1128,9 +1128,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          ("C-c s"   . swiper-avy))
   :custom
   ;; Allow "M-x lis-pac" to match "M-x list-packages"
-  (ivy-re-builders-alist        '((swiper         . ivy--regex-plus)
-                                  (swiper-isearch . ivy--regex-plus)
-                                  (t              . ivy--regex-fuzzy)))
+  (ivy-re-builders-alist        '((swiper           . ivy--regex-plus)
+                                  (swiper-isearch   . ivy--regex-plus)
+                                  (counsel-git-grep . ivy--regex-plus)
+                                  (t                . ivy--regex-fuzzy)))
   ;; Allows selecting the prompt with C-p (same as C-M-j)
   (ivy-use-selectable-prompt    t)
   ;; Use ivy while in minibuffer to e.g. insert variable names
@@ -1147,8 +1148,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                          (file "~/.emacs.d/org-files/gtd/unsorted.org")
                          (vert (file "~/.emacs.d/org-files/gtd/projects.org")
                                (file "~/.emacs.d/org-files/journal.org")))))))
-  ;; The default value breaks counsel-git-grep
-  (ivy-case-fold-search-default nil)
   :config
   (ivy-mode 1)
   (counsel-mode 1)
