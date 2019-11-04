@@ -1148,6 +1148,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                          (file "~/.emacs.d/org-files/gtd/unsorted.org")
                          (vert (file "~/.emacs.d/org-files/gtd/projects.org")
                                (file "~/.emacs.d/org-files/journal.org")))))))
+  (ivy-flx-limit 5000)
   :config
   (ivy-mode 1)
   (counsel-mode 1)
