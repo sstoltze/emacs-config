@@ -1111,8 +1111,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          ("C-x C-r" . counsel-recentf)
          ;; Resume last ivy completion
          ("C-c C-r" . ivy-resume)
-         ;; Find file in git repository
-         ("C-c g"   . counsel-git)
          ;; Help commands
          ("C-h a"   . counsel-apropos)
          ("C-h b"   . counsel-descbinds)
@@ -1389,7 +1387,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; Magit turns on auto-revert so a file changed on disk is changed in Emacs
   ;; This could be an issue at some point.
   :diminish auto-revert-mode
-  :bind (("C-x g" . magit-status)) ; Display the main magit popup
+  :bind (("C-x g" . magit-status) ; Display the main magit popup
+         ("C-c g" . magit-file-dispatch)) ; Run blame, etc. on a file
   :custom
   (magit-completing-read-function 'ivy-completing-read)
   ;; Remove the startup message about turning on auto-revert
