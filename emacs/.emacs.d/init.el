@@ -883,7 +883,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          ("M-s"     . sp-splice-sexp)
          ("M-S"     . sp-split-sexp)
          ("M-J"     . sp-join-sexp)
-         ;; C-M-SPC marks next sexp
+         ("C-M-SPC" . sp-mark-sexp)
          ("<C-M-m>" . sstoltze/mark-sexp-up)
          ("C-("     . sp-backward-slurp-sexp)
          ("C-)"     . sp-forward-slurp-sexp)
@@ -905,9 +905,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (sp-highlight-pair-overlay nil)
   :config
   ;; Ensure ' works in lisps and does other setup
-  (require 'smartparens-config)
-  ;; This might make a lot of the bindings above obsolete
-  (sp-use-paredit-bindings))
+  (require 'smartparens-config))
 
 (use-package rainbow-delimiters
   :ensure t
