@@ -1700,7 +1700,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
       ;; Authinfo - open in emacs and add lines for each context, e.g.
       ;; machine <smtp.foo.com> login <mail@address.com> password <secret> port <587>
       (add-to-list 'auth-sources
-                   "~/.mail/.smtp-auth.gpg")
+                   "~/.mail/.mailpass.gpg")
       ;; Include a bookmark to open all of my inboxes
       (add-to-list 'mu4e-bookmarks
                    (make-mu4e-bookmark
