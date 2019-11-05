@@ -743,6 +743,7 @@ If ARG is provided, move directly to option ARG."
                (propertize (fish-path (eshell/pwd) 30)
                            'face (list :foreground path-colour))
                (sstoltze/make-vc-prompt)
+               " "
                (propertize ">"
                            'face (list :foreground prompt-colour))
                ;; This resets text properties
