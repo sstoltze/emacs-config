@@ -18,7 +18,10 @@
 
 *.background: #181a26
 *.foreground: #cccccc
-*.cursor: #cccccc
+*.cursorColor: #eedd82
+
+! Old:
+! *.cursorColor: #cccccc
 
 ! pre deep blue
 ! *.color1: #ff0833
