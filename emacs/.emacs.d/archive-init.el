@@ -35,6 +35,11 @@
 :hook
 (racket-mode . racket-unicode-input-method-enable)
 
+;; (use-package rainbow-mode
+;;   :ensure t
+;;   :defer t
+;;   :hook ((css-mode . rainbow-mode)))
+
 ;; LSP
 (use-package lsp-mode
   :ensure t
