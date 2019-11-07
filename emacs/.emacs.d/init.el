@@ -1331,11 +1331,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (ediff-odd-diff-B ((t (:background "Grey60")))))
 
 ;;;; --- HTML/CSS ---
-(use-package rainbow-mode
-  :ensure t
-  :defer t
-  :hook ((css-mode . rainbow-mode)))
-
 (use-package restclient
   :ensure t
   :defer t)
