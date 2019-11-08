@@ -1515,7 +1515,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :hook ((clojure-mode    . cider-mode)
          (cider-repl-mode . sstoltze/prettify-symbols-setup )
          (cider-repl-mode . sstoltze/prettify-clojure))
-  :bind ((:map cider-repl-mode-map
+  :bind ((:map cider-mode-map
+               ("C-c <tab>" . cider-format-buffer))
+         (:map cider-repl-mode-map
                ("M-s" . sp-splice-sexp))))
 
 ;; C-c C-r - clojure-refactor-map
@@ -1544,7 +1546,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :defer t
   :bind (:map rust-mode-map
               ("C-c <tab>" . rust-format-buffer)
-              ("C-c C-b" . rust-run))
+              ("C-c C-b"   . rust-run))
   :custom
   (rust-format-on-save t)
   :init
