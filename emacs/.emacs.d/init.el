@@ -1578,6 +1578,16 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :defer t
   :hook ((rust-mode . flycheck-rust-setup)))
 
+(use-package rustic
+  :ensure t
+  :defer t
+  :custom
+  (rustic-lsp-client nil)
+  :config
+  (when (eq system-type 'gnu/linux)
+    (setenv "CARGO_HOME"  (concat (getenv "HOME") "/.local"))
+    (setenv "RUSTUP_HOME" (concat (getenv "HOME") "/.local/rustup"))))
+
 ;;;; --- EPA ---
 (defun sstoltze/setup-epa ()
   "Quick setup for EPA."
