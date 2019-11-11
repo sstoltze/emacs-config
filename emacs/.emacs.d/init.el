@@ -212,29 +212,25 @@
           (push pair prettify-symbols-alist))
         list))
 
+(defun sstoltze/remove-prettify-symbol (string)
+  "Delete STRING from 'prettify-symbols-alist'."
+  (setq prettify-symbols-alist (delq (assoc string prettify-symbols-alist)
+                                     prettify-symbols-alist)))
+
 (defun sstoltze/prettify-symbols-setup ()
   "Setup prettify-symbols with common expressions."
+  (sstoltze/remove-prettify-symbol "lambda")
   (sstoltze/prettify-symbol-list
-   '(("lambda" . (?·  (Br . Bl) ?\s (Br . Bl) ?\s
-                      (Br . Bl) ?\s (Br . Bl) ?\s
-                      (Br . Bl) ?·  (Bc . Bc) ?λ))
-     ("<="     . (?·  (Br . Bl) ?≤))
-     (">="     . (?·  (Br . Bl) ?≥))
-     ("!="     . (?·  (Br . Bl) ?≠))
-     ("/="     . (?·  (Br . Bl) ?≠))
-     ("->"     . (?- (Br . Bc) ?- (Br . Bc) ?>))
+   '(("->"     . (?-  (Br . Bc) ?-  (Br . Bc) ?>))
      ("->>"    . (?\s (Br . Bl) ?\s (Br . Bl) ?\s
                       (Bl . Bl) ?-  (Bc . Br) ?- (Bc . Bc) ?>
                       (Bc . Bl) ?-  (Br . Br) ?>))
-     ("<-"     . (?\s (Br . Bl) ?\s
-                      (Bl . Bl )?<  (Bc . Bc) ?-  (Br . Br) ?-))
-     ("=>"     . (?·  (Br . Bl) ?⇒))
-     ("..."    . (?…  (Br . Bl) ?\s (Br . Bl) ?\s)))))
+     ("<-"     . (?<  (Br . Bc) ?-  (Br . Bc) ?-)))))
 (add-hook 'prog-mode-hook 'sstoltze/prettify-symbols-setup)
 
 (defun sstoltze/prettify-clojure ()
   "Setup pretty clojure symbols."
-  (setq prettify-symbols-alist (assoc-delete-all "fn" prettify-symbols-alist))
+  (sstoltze/remove-prettify-symbol "fn")
   (sstoltze/prettify-symbol-list
    '(("fn" . (?\s (Br . Bl) ?\s
                   (Bc . Bc) ?λ)))))
