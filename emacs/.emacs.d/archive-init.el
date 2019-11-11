@@ -324,6 +324,17 @@ Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
 ;; prettify-symbols
 ("->"     . (?\s (Br . Bl) ?\s
                  (Bl . Bl) ?-  (Bc . Bc) ?- (Br . Br) ?>))
+("<-"     . (?\s (Br . Bl) ?\s
+                 (Bl . Bl )?<  (Bc . Bc) ?-  (Br . Br) ?-))
+("lambda" . (?·  (Br . Bl) ?\s (Br . Bl) ?\s
+                      (Br . Bl) ?\s (Br . Bl) ?\s
+                      (Br . Bl) ?·  (Bc . Bc) ?λ))
+     ("<="     . (?·  (Br . Bl) ?≤))
+     (">="     . (?·  (Br . Bl) ?≥))
+     ("!="     . (?·  (Br . Bl) ?≠))
+     ("/="     . (?·  (Br . Bl) ?≠))
+("=>"     . (?·  (Br . Bl) ?⇒))
+     ("..."    . (?…  (Br . Bl) ?\s (Br . Bl) ?\s))
 
 ;; Iosevka
 (defun setup-iosevka-ligatures ()
