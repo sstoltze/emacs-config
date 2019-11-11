@@ -147,7 +147,7 @@
 
       ;; Personal info
       user-full-name                        "Simon Stoltze"
-      user-mail-address                     (cond (at-work-p "Simon.Stoltze@ufst.dk" )
+      user-mail-address                     (cond (at-work-p "Simon.Stoltze@ufst.dk")
                                                   (t         "sstoltze@gmail.com"))
 
       ;; Disable the bell
@@ -1509,7 +1509,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :defer t
   :after clojure-mode
   :hook ((clojure-mode    . cider-mode)
-         (cider-repl-mode . sstoltze/prettify-symbols-setup )
+         (cider-repl-mode . sstoltze/prettify-symbols-setup)
          (cider-repl-mode . sstoltze/prettify-clojure))
   :bind ((:map cider-mode-map
                ("C-c <tab>" . cider-format-buffer))
