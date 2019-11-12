@@ -137,7 +137,6 @@ local mykeyboardlayout = awful.widget.keyboardlayout()
 local mytextclock = wibox.widget.textclock()
 local calendar = awful.tooltip({ objects = { mytextclock }, })
 
--- See https://awesomewm.org/doc/api/libraries/awful.spawn.html
 awful.spawn.easy_async("ncal -bM", function(stdout, stderr, reason, exit_code)
                           cal_text = stdout:gsub("%p%c(%d)",
                                                  '<span underline="single" background="' .. theme.bg_widget
