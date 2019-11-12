@@ -138,10 +138,10 @@ local mytextclock = wibox.widget.textclock()
 local calendar = awful.tooltip({ objects = { mytextclock }, })
 
 awful.spawn.easy_async("ncal -bM", function(stdout, stderr, reason, exit_code)
-                          cal_text = stdout:gsub("%p%c(%d)",
-                                                 '<span underline="single" background="' .. theme.bg_widget
-                                                    .. '" foreground="' .. theme.fg_widget
-                                                    .. '">%1</span>') -- Erstat bold i terminalen med underline og baggrundsfarve
+                          local cal_text = stdout:gsub("%p%c(%d)",
+                                                       '<span underline="single" background="' .. theme.bg_widget
+                                                          .. '" foreground="' .. theme.fg_widget
+                                                          .. '">%1</span>') -- Erstat bold i terminalen med underline og baggrundsfarve
                              :gsub("%p%c%s", " ") -- Fjern bold i terminal fra whitespace
                              :gsub("[%c%s]+$", " ") -- Fjern alt overskydende whitespace og ekstra linier
                           :gsub("%s%s%c", " \n ") -- Lidt dumt, men outputtet er for langt på nogle linier og tomme strenge har en grim baggrundsfarve
