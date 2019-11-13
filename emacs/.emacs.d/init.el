@@ -134,7 +134,7 @@
       history-delete-duplicates             t
 
       ;; Recentf
-      recentf-max-saved-items               100
+      recentf-max-saved-items               500
 
       ;; Add newlines when scrolling a file
       next-line-add-newlines                t
