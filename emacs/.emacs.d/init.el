@@ -1342,10 +1342,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package haskell-mode
   :ensure t
   :defer t
-  :hook ((haskell-mode . turn-on-haskell-indent))
-  :custom
-  (haskell-indent-spaces 4))
+  :hook ((haskell-mode . haskell-indentation-mode)))
 
+;; At EoL
 (use-package intero
   :ensure t
   :after haskell-mode
