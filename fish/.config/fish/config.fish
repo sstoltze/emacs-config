@@ -10,9 +10,48 @@ set -x VISUAL "emacs -nw "
 set -x EDITOR "emacs -nw "
 
 # Env
+
+# Stack/pip/...
+if test -d ~/.local/bin
+    set -x PATH ~/.local/bin $PATH
+end
+
+# Cabal
+if test -d ~/.cabal/bin
+    set -x PATH ~/.cabal/bin $PATH
+end
+
+# Mitmproxy keylogs
+if test -d ~/.config/mitmproxy
+    set -x MITM_SSLKEYLOGFILE ~/.config/mitmproxy/sslkeylogs.log
+end
+
 # Rust
 set -x CARGO_HOME  "$HOME/.local"
 set -x RUSTUP_HOME "$HOME/.local/rustup"
+
+# System specific setup
+set -l system (uname)
+
+switch $system
+    case CYGWIN_NT-10.0
+        set -x PATH /usr/bin/ $PATH
+    case Linux
+        #
+        # start X at login
+        if status --is-login
+            if test -z "$DISPLAY" -a "$XDG_VTNR" -eq 1
+                exec startx
+            end
+        end
+end
+
+# At work?
+if test "$USER" = "w26164"
+    direnv hook fish | source
+    set -x JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
+    set -x FLAMEGRAPH_DIR ~/git/FlameGraph
+end
 
 # XDG setup
 #set -x XDG_CONFIG_HOME "$HOME/.config"      # .dotfiles and configuration data
@@ -40,43 +79,3 @@ set __fish_git_prompt_char_
 set __fish_git_prompt_char_dirtystate      '+'
 set __fish_git_prompt_char_stagedstate     '→'
 set __fish_git_prompt_char_stashstate      '↩'
-
-# At work?
-if test "$USER" = "w26164"
-    direnv hook fish | source
-    set -x JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
-    set -x FLAMEGRAPH_DIR ~/git/FlameGraph
-end
-
-# System specific setup
-set -l system (uname)
-
-switch $system
-    case CYGWIN_NT-10.0
-        set -x PATH /usr/bin/ $PATH
-
-        # UiPath
-        #set -x PATH /cygdrive/c/Program\ Files\ \(x86\)/UiPath/Studio/ $PATH
-
-        # Io
-        #if test -d /cygdrive/c/Io
-        #    set -x PATH /cygdrive/c/Io/bin /cygdrive/c/Io/lib $PATH
-        #end
-
-    case Linux
-        # Cabal
-        if test -d ~/.cabal/bin
-            set -x PATH ~/.cabal/bin $PATH
-        end
-        # Stack/pip/...
-        if test -d ~/.local/bin
-            set -x PATH ~/.local/bin $PATH
-        end
-
-        # start X at login
-        if status --is-login
-            if test -z "$DISPLAY" -a "$XDG_VTNR" -eq 1
-                exec startx
-            end
-        end
-end
