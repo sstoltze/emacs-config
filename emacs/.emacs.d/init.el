@@ -87,6 +87,9 @@
   (when (fboundp mode)
     (funcall mode 1)))
 
+;; Highlight current line
+(add-hook 'prog-mode-hook 'hl-line-mode)
+
 ;; Make it easier to answer prompts
 (defalias 'yes-or-no-p 'y-or-n-p)
 
