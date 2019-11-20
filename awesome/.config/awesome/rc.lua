@@ -306,7 +306,6 @@ end
 brightness = 0.6
 set_brightness(brightness)
 
-
 -- Create a wibox for each screen and add it
 local taglist_buttons = awful.util.table.join(
    awful.button({ }, 1, function(t) t:view_only() end),
