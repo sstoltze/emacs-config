@@ -89,6 +89,11 @@
 
 ;; Highlight current line
 (add-hook 'prog-mode-hook 'hl-line-mode)
+(add-hook 'hl-line-mode-hook
+          (lambda ()
+            (set-face-attribute 'hl-line nil
+                                ;; Magit background color
+                                :background "grey20")))
 
 ;; Make it easier to answer prompts
 (defalias 'yes-or-no-p 'y-or-n-p)
