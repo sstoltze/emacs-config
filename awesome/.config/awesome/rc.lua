@@ -280,6 +280,33 @@ local function playnext ()
    awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next")
 end
 
+local set_brightness = function (b)
+   local out = xrandr.outputs()
+   for _, o in pairs(out) do
+      os.execute("xrandr --output " .. o .. " --brightness " .. b)
+   end
+end
+
+local function increase_brightness ()
+   if brightness <= 0.9 then
+      brightness = brightness + 0.1
+   end
+   naughty.notify({text = "Brightness " .. brightness})
+   set_brightness(brightness)
+end
+
+local function decrease_brightness ()
+   if brightness >= 0.1 then
+      brightness = brightness - 0.1
+   end
+   naughty.notify({text = "Brightness " .. brightness})
+   set_brightness(brightness)
+end
+
+brightness = 0.6
+set_brightness(brightness)
+
+
 -- Create a wibox for each screen and add it
 local taglist_buttons = awful.util.table.join(
    awful.button({ }, 1, function(t) t:view_only() end),
@@ -498,21 +525,23 @@ local globalkeys = awful.util.table.join(
       {description = "show the menubar", group = "launcher"}),
 
    -- Media controls
-   awful.key({ }, "XF86AudioLowerVolume", lowervolume, {description = "volume down",   group = "audio"}),
-   awful.key({ modkey }, "Down",          lowervolume, {description = "volume down",   group = "audio"}),
-   awful.key({ modkey }, "æ",             lowervolume, {description = "volume down",   group = "audio"}),
-   awful.key({ }, "XF86AudioRaiseVolume", raisevolume, {description = "volume up",     group = "audio"}),
-   awful.key({ modkey }, "Up",            raisevolume, {description = "volume up",     group = "audio"}),
-   awful.key({ modkey }, "ø",             raisevolume, {description = "volume up",     group = "audio"}),
-   awful.key({ }, "XF86AudioMute",        togglemute,  {description = "volume mute",   group = "audio"}),
-   awful.key({ modkey }, "'",             togglemute,  {description = "volume mute",   group = "audio"}),
-   awful.key({ modkey }, ".",             playpause,   {description = "play/pause",    group = "audio"}),
-   awful.key({ }, "XF86AudioPause",       pausemedia,  {description = "pause media",   group = "audio"}),
-   awful.key({ }, "XF86AudioPlay",        playmedia,   {description = "play media",    group = "audio"}),
-   awful.key({ modkey }, ",",             playprev,    {description = "play previous", group = "audio"}),
-   awful.key({ }, "XF86AudioPrev",        playprev,    {description = "play previous", group = "audio"}),
-   awful.key({ modkey }, "-",             playnext,    {description = "play next",     group = "audio"}),
-   awful.key({ }, "XF86AudioNext",        playnext,    {description = "play next",     group = "audio"})
+   awful.key({ }, "XF86AudioLowerVolume", lowervolume,         {description = "volume down",       group = "audio"}),
+   awful.key({ modkey }, "æ",             lowervolume,         {description = "volume down",       group = "audio"}),
+   awful.key({ }, "XF86AudioRaiseVolume", raisevolume,         {description = "volume up",         group = "audio"}),
+   awful.key({ modkey }, "ø",             raisevolume,         {description = "volume up",         group = "audio"}),
+   awful.key({ }, "XF86AudioMute",        togglemute,          {description = "volume mute",       group = "audio"}),
+   awful.key({ modkey }, "'",             togglemute,          {description = "volume mute",       group = "audio"}),
+   awful.key({ modkey }, ".",             playpause,           {description = "play/pause",        group = "audio"}),
+   awful.key({ }, "XF86AudioPause",       pausemedia,          {description = "pause media",       group = "audio"}),
+   awful.key({ }, "XF86AudioPlay",        playmedia,           {description = "play media",        group = "audio"}),
+   awful.key({ modkey }, ",",             playprev,            {description = "play previous",     group = "audio"}),
+   awful.key({ }, "XF86AudioPrev",        playprev,            {description = "play previous",     group = "audio"}),
+   awful.key({ modkey }, "-",             playnext,            {description = "play next",         group = "audio"}),
+   awful.key({ }, "XF86AudioNext",        playnext,            {description = "play next",         group = "audio"}),
+
+   -- Brightness
+   awful.key({ modkey }, "Down",          decrease_brightness, {description = "brightness down",   group = "screen"}),
+   awful.key({ modkey }, "Up",            increase_brightness, {description = "brightness up",     group = "screen"})
 )
 
 clientkeys = awful.util.table.join(
