@@ -436,18 +436,12 @@ point reaches the beginning or end of the buffer, stop there."
        ;; Fonts
        ;; Better horizontal splits
        ;; sudo add-apt-repository ppa:laurent-boulard/fonts
-       ;; sudo apt install fonts-iosevka-slab
-       (set-frame-font "Iosevka-10.5")
+       ;; sudo apt install fonts-iosevka
+       (when (find-font (font-spec :name "Iosevka"))
+         (set-frame-font "Iosevka-10.5"))
        ;; Better vertical splits - better modeline
        ;; sudo apt install fonts-firacode
        ;; (set-frame-font "Fira Code-10")
-       ;; This seems decent
-       ;; (set-frame-font "Sudo-12")
-       ;; Weird size?
-       ;; (set-frame-font "Monoid-8")
-       ;; Better vertical splits
-       ;; sudo apt install xfonts-terminus
-       ;; (set-frame-font "Terminus")
 
        ;; Fringe (default): black, background: #181a26
        (with-eval-after-load 'highlight-indentation
