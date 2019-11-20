@@ -89,11 +89,6 @@
 
 ;; Highlight current line
 (add-hook 'prog-mode-hook 'hl-line-mode)
-(add-hook 'hl-line-mode-hook
-          (lambda ()
-            (set-face-attribute 'hl-line nil
-                                ;; Magit background color
-                                :background "grey20")))
 
 ;; Make it easier to answer prompts
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -432,6 +427,11 @@ point reaches the beginning or end of the buffer, stop there."
 ;;;; --- Frame-setup ---
 (cond ((display-graphic-p) ;; Window system
        (load-theme 'deeper-blue t)
+       (add-hook 'hl-line-mode-hook
+                 (lambda ()
+                   (set-face-attribute 'hl-line nil
+                                       ;; Magit background color
+                                       :background "grey20")))
 
        ;; Fonts
        ;; Better horizontal splits
