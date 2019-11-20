@@ -28,7 +28,7 @@ theme.bg_normal     = "#101820"
 --theme.fg_normal     = xrdb.foreground
 
 -- Focus
-theme.bg_focus      = darker(theme.bg_normal, -15)
+theme.bg_focus      = darker(theme.bg_normal, -20)
 theme.fg_focus      = "#F2AA4C"
 
 -- Urgent
