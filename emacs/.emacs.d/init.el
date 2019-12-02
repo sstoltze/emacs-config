@@ -1096,6 +1096,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :ensure t
   ;; Defer to save time when just opening a file
   :defer t
+  :hook ((prog-mode . ivy-mode))
   ;; Always enabled, do not show in mode-line
   :diminish counsel-mode
   :diminish ivy-mode
