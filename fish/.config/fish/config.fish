@@ -30,6 +30,13 @@ end
 set -x CARGO_HOME  "$HOME/.local"
 set -x RUSTUP_HOME "$HOME/.local/rustup"
 
+# Guix
+set -x GUIX_LOCPATH "$HOME/.guix-profile/lib/locale"
+if test -d ~/.config/guix
+    set -x PATH ~/.config/guix/current/bin $PATH
+    set -x PATH ~/.guix-profile/bin $PATH
+end
+
 # System specific setup
 set -l system (uname)
 
