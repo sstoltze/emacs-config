@@ -60,7 +60,7 @@ theme.hotkeys_modifiers_fg = theme.fg_minimize
 
 -- no extra borders
 -- theme.useless_gap   = dpi(3)
--- theme.border_width  = dpi(2)
+theme.border_width  = dpi(2)
 
 -- There are other variable sets
 -- overriding the default one when
