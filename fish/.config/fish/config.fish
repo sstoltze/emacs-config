@@ -10,6 +10,7 @@ set -x VISUAL "emacs "
 set -x EDITOR "emacs -nw "
 
 # Env
+set -l system (uname)
 
 # Stack/pip/...
 if test -d ~/.local/bin
@@ -35,22 +36,6 @@ set -x GUIX_LOCPATH "$HOME/.guix-profile/lib/locale"
 if test -d ~/.config/guix
     set -x PATH ~/.config/guix/current/bin $PATH
     set -x PATH ~/.guix-profile/bin $PATH
-end
-
-# System specific setup
-set -l system (uname)
-
-switch $system
-    case CYGWIN_NT-10.0
-        set -x PATH /usr/bin/ $PATH
-    case Linux
-        #
-        # start X at login
-        if status --is-login
-            if test -z "$DISPLAY" -a "$XDG_VTNR" -eq 1
-                exec startx
-            end
-        end
 end
 
 # At work?
@@ -86,3 +71,19 @@ set __fish_git_prompt_char_
 set __fish_git_prompt_char_dirtystate      '+'
 set __fish_git_prompt_char_stagedstate     '→'
 set __fish_git_prompt_char_stashstate      '↩'
+
+# System specific setup
+
+switch $system
+    case CYGWIN_NT-10.0
+        set -x PATH /usr/bin/ $PATH
+end
+
+# Start X at login
+if test "$system" = "Linux"
+    if status --is-login
+        if test -z "$DISPLAY" -a "$XDG_VTNR" -eq 1
+            exec startx
+        end
+    end
+end
