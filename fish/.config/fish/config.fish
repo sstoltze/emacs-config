@@ -6,7 +6,7 @@ function sh
 	 fish $argv
 end
 
-set -x VISUAL "emacs -nw "
+set -x VISUAL "emacs "
 set -x EDITOR "emacs -nw "
 
 # Env

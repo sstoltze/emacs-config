@@ -56,7 +56,7 @@ local theme = beautiful.get()
 -- This is used later as the default terminal and editor to run.
 --terminal = "x-terminal-emulator"
 local terminal = "kitty"
-local editor = "emacs -nw" or os.getenv("EDITOR") or "editor"
+local editor = os.getenv("EDITOR") or "nano" or "emacs -nw"
 local editor_cmd = terminal .. " -e " .. editor
 
 -- Default modkey.
