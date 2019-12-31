@@ -1,3 +1,41 @@
+(use-package ivy-posframe
+  :ensure t
+  :after ivy
+  :diminish ivy-posframe-mode
+  :custom
+  (ivy-posframe-font (if (member "Iosevka" (font-family-list))
+                         "Iosevka-10.5"
+                       nil))
+  (ivy-posframe-size-function
+   (defun sstoltze/ivy-posframe-window-size ()
+     (cond ((eq ivy--display-function
+                'ivy-posframe-display-at-point)
+            (list :height ivy-posframe-height
+                  :width 80))
+           ((eq ivy--display-function 'ivy-posframe-display-at-window-bottom-left)
+            (list :height ivy-posframe-height
+                  :min-width (+ (window-width) (if fringe-mode
+                                                   (+ left-fringe-width right-fringe-width)
+                                                 3))))
+           (t (list :height ivy-posframe-height
+                    :min-width (window-width))))))
+  (ivy-posframe-display-functions-alist '((swiper-isearch      . ivy-posframe-display-at-window-bottom-left) ; nil
+                                          (swiper              . nil)
+                                          (complete-symbol     . ivy-posframe-display-at-point)
+                                          (completion-at-point . ivy-posframe-display-at-point)
+                                          (t                   . ivy-posframe-display-at-frame-bottom-window-center)))
+  :config
+  (ivy-posframe-mode 1))
+
+(use-package company
+  :ensure t
+  :defer t)
+
+(use-package company-posframe
+  :ensure t
+  :after company
+  :config
+  (company-posframe-mode 1))
 
 ;;;; --- Paredit ---
 ;; http://pub.gajendra.net/src/paredit-refcard.pdf
