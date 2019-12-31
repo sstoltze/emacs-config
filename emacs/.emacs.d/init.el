@@ -926,6 +926,12 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (flycheck-check-syntax-automatically '(save idle-change mode-enable))
   (flycheck-idle-change-delay          4))
 
+(use-package flycheck-pos-tip
+  :ensure t
+  :after flycheck-mode
+  :config
+  (flycheck-pos-tip-mode 1))
+
 ;;;; --- Auto-insert ---
 (use-package autoinsert
   :defer t
@@ -1220,6 +1226,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package symbol-overlay
   :ensure t
   :defer t
+  :diminish symbol-overlay-mode
   :hook ((prog-mode . symbol-overlay-mode))
   :bind-keymap (("C-c o" . symbol-overlay-map)))
 
