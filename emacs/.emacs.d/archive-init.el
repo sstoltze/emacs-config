@@ -1,31 +1,23 @@
-(use-package ivy-posframe
-  :ensure t
-  :after ivy
-  :diminish ivy-posframe-mode
-  :custom
-  (ivy-posframe-font (if (member "Iosevka" (font-family-list))
-                         "Iosevka-10.5"
-                       nil))
-  (ivy-posframe-size-function
-   (defun sstoltze/ivy-posframe-window-size ()
-     (cond ((eq ivy--display-function
-                'ivy-posframe-display-at-point)
-            (list :height ivy-posframe-height
-                  :width 80))
-           ((eq ivy--display-function 'ivy-posframe-display-at-window-bottom-left)
-            (list :height ivy-posframe-height
-                  :min-width (+ (window-width) (if fringe-mode
-                                                   (+ left-fringe-width right-fringe-width)
-                                                 3))))
-           (t (list :height ivy-posframe-height
-                    :min-width (window-width))))))
-  (ivy-posframe-display-functions-alist '((swiper-isearch      . ivy-posframe-display-at-window-bottom-left) ; nil
-                                          (swiper              . nil)
-                                          (complete-symbol     . ivy-posframe-display-at-point)
-                                          (completion-at-point . ivy-posframe-display-at-point)
-                                          (t                   . ivy-posframe-display-at-frame-bottom-window-center)))
-  :config
-  (ivy-posframe-mode 1))
+;; Ivy-posframe display for swiper-isearch
+:preface
+  (defun ivy-display-function-window (text)
+    (let ((buffer (get-buffer-create "*ivy-candidate-window*"))
+          (str (with-current-buffer (get-buffer-create " *Minibuf-1*")
+                 (let ((point (point))
+                       (string (concat (buffer-string) "  " text)))
+                   (add-text-properties (- point 1) point '(face cursor) string)
+                   string))))
+      (with-current-buffer buffer
+        (let ((inhibit-read-only t))
+          (erase-buffer)
+          (insert str)))
+      (with-ivy-window
+        (display-buffer
+         buffer
+         `((display-buffer-reuse-window
+            display-buffer-below-selected)
+           (window-height . ,(ivy--height (ivy-state-caller ivy-last))))))))
+
 
 (use-package company
   :ensure t

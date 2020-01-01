@@ -81,9 +81,7 @@
                 ;; Prettify symbols
                 global-prettify-symbols-mode
                 ;; Column in modeline
-                column-number-mode
-                ;; Recent files
-                recentf-mode))
+                column-number-mode))
   (when (fboundp mode)
     (funcall mode 1)))
 
@@ -1131,8 +1129,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          ("C-c v"   . ivy-push-view)
          ;; Remove a stored view
          ("C-c V"   . ivy-pop-view)
-         ;; Use ivy to complete symbol at point
-         ("C-M-i"   . complete-symbol)
          :map swiper-map
          ("C-c s"   . swiper-avy))
   :custom
@@ -1167,10 +1163,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (setq ivy-initial-inputs-alist '())
   ;; Show how deep the minibuffer goes
   (minibuffer-depth-indicate-mode 1)
-  (add-to-list 'ivy-display-functions-alist
-               '(complete-symbol . ivy-display-function-overlay))
-  (add-to-list 'ivy-display-functions-alist
-               '(completion-at-point . ivy-display-function-overlay))
   ;; Sort recentf by timestamp
   (add-to-list 'ivy-sort-functions-alist
                '(counsel-recentf . file-newer-than-file-p)))
@@ -1188,6 +1180,29 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (ivy-rich-path-style 'abbrev)
   :config
   (ivy-rich-mode 1))
+
+(use-package ivy-posframe
+  :ensure t
+  :after ivy
+  :diminish ivy-posframe-mode
+  :custom
+  (ivy-posframe-font (if (member "Iosevka" (font-family-list))
+                         "Iosevka-10.5"
+                       nil))
+  (ivy-posframe-size-function
+   (defun sstoltze/ivy-posframe-window-size ()
+     (cond ((eq ivy--display-function
+                'ivy-posframe-display-at-point)
+            (list :height ivy-posframe-height
+                  :min-width (window-width))) ;; :width 80
+           (t
+            (list :height ivy-posframe-height
+                  :min-width (+ (window-width) 3))))))
+  (ivy-posframe-display-functions-alist '((swiper-isearch      . nil)
+                                          (swiper              . nil)
+                                          (t                   . ivy-posframe-display-at-point)))
+  :config
+  (ivy-posframe-mode 1))
 
 ;;;; --- Multiple cursors ---
 (use-package multiple-cursors
