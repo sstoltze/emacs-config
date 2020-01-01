@@ -933,7 +933,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 
 (use-package flycheck-pos-tip
   :ensure t
-  :after flycheck-mode
+  :after flycheck
   :config
   (flycheck-pos-tip-mode 1))
 
