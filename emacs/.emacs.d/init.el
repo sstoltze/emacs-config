@@ -136,9 +136,6 @@
       history-length                        t
       history-delete-duplicates             t
 
-      ;; Recentf
-      recentf-max-saved-items               500
-
       ;; Add newlines when scrolling a file
       next-line-add-newlines                t
 
@@ -187,12 +184,6 @@
 ;; Delete extra lines and spaces when saving
 (add-hook 'before-save-hook
           'delete-trailing-whitespace)
-
-;; Save recent files periodically (every 10m)
-(run-at-time nil (* 10 60)
-             (lambda ()
-               (let ((save-silently t))
-                 (recentf-save-list))))
 
 ;; Unset suspend keys. Never used anyway
 (global-unset-key (kbd "C-z"))
@@ -349,6 +340,20 @@
           (holiday-fixed 6 24 "Skt. Hans dag")))
   (setq calendar-holidays
         (append general-holidays other-holidays)))
+
+;;;; Recentf
+(use-package recentf
+  :custom
+  (recentf-max-saved-items 500)
+  (recentf-exclude '("/auto-install/" ".recentf" "/elpa/" ".gz" "/tmp/" "/ssh:" "/sudo:" "/scp:"))
+  :init
+  (recentf-mode 1)
+  :config
+  (setq recentf-filename-handlers (append '(abbreviate-file-name) recentf-filename-handlers))
+  (run-at-time nil (* 10 60)
+             (lambda ()
+               (let ((save-silently t))
+                 (recentf-save-list)))))
 
 ;; Make C-x C-x not activate region
 (defun exchange-point-and-mark-no-activate ()
