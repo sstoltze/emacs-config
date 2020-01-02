@@ -1189,17 +1189,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (ivy-posframe-font (if (member "Iosevka" (font-family-list))
                          "Iosevka-10.5"
                        nil))
-  (ivy-posframe-size-function
-   (defun sstoltze/ivy-posframe-window-size ()
-     (cond ((eq ivy--display-function
-                'ivy-posframe-display-at-point)
-            (list :height ivy-posframe-height
-                  :min-width (window-width))) ;; :width 80
-           (t
-            (list :height ivy-posframe-height
-                  :min-width (+ (window-width) 3))))))
-  (ivy-posframe-display-functions-alist '((swiper-isearch      . nil)
-                                          (swiper              . nil)
+  (swiper-action-recenter t)
+  (ivy-posframe-display-functions-alist '((swiper-isearch      . ivy-posframe-display-at-window-bottom-left)
+                                          (swiper              . ivy-posframe-display-at-window-bottom-left)
                                           (t                   . ivy-posframe-display-at-point)))
   :config
   (ivy-posframe-mode 1))
