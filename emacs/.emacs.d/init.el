@@ -7,6 +7,7 @@
 ;;    - https://home.elis.nu/emacs/
 ;;    - https://pages.sachachua.com/.emacs.d/Sacha.html
 ;;    - https://github.com/jorgenschaefer/Config/blob/master/emacs.el
+;;    - https://github.com/alhassy/emacs.d
 
 ;;; Code:
 ;;; *** General setup ***
@@ -168,15 +169,16 @@
 
       ;; Themes
       custom-theme-directory                "~/.emacs.d/themes/"
-      custom-safe-themes                    (quote
-                                             ("491417843dee886b649cf0dd70c8c86c8bccbbe373239058ba9900b348bad5cf"
-                                              default))
+      custom-safe-themes                    t
 
       ;; Scrolling forward and then back preserves point position
-      scroll-preserve-screen-position       t)
+      scroll-preserve-screen-position       t
+
+      show-paren-delay                      0)
 
 ;; Do not use tabs
 (setq-default indent-tabs-mode              nil
+              tab-width                     4
               tab-always-indent             'complete)
 
 ;; Delete extra lines and spaces when saving
@@ -305,28 +307,28 @@
       (calendar-dayname-on-or-before 0 (+ paschal-moon 7))))
   (setq general-holidays
         '((holiday-fixed 1 1 "Nytårsdag")
-	  (holiday-fixed 1 6 "Hellige 3 konger")
-	  ;; Easter and Pentecost
-	  (holiday-filter-visible-calendar
-	   (mapcar
-	    (lambda (dag)
-	      (list (calendar-gregorian-from-absolute
-		     (+ (da-easter displayed-year) (car dag)))
-		    (cadr dag)))
-	    '(( -49 "Fastelavn")
-	      (  -7 "Palmesøndag")
-	      (  -3 "Skærtorsdag")
-	      (  -2 "Langfredag")
-	      (   0 "Påskedag")
-	      (  +1 "Anden påskedag")
-	      ( +26 "Store bededag")
-	      ( +39 "Kristi himmelfartsdag")
-	      ( +49 "Pinsedag")
-	      ( +50 "Anden pinsedag"))))
-	  (holiday-fixed 12 24 "Juleaften")
-	  (holiday-fixed 12 25 "Juledag")
-	  (holiday-fixed 12 26 "Anden juledag")
-	  (holiday-fixed 12 31 "Nytårsaften"))
+	      (holiday-fixed 1 6 "Hellige 3 konger")
+	      ;; Easter and Pentecost
+	      (holiday-filter-visible-calendar
+	       (mapcar
+	        (lambda (dag)
+	          (list (calendar-gregorian-from-absolute
+		             (+ (da-easter displayed-year) (car dag)))
+		            (cadr dag)))
+	        '(( -49 "Fastelavn")
+	          (  -7 "Palmesøndag")
+	          (  -3 "Skærtorsdag")
+	          (  -2 "Langfredag")
+	          (   0 "Påskedag")
+	          (  +1 "Anden påskedag")
+	          ( +26 "Store bededag")
+	          ( +39 "Kristi himmelfartsdag")
+	          ( +49 "Pinsedag")
+	          ( +50 "Anden pinsedag"))))
+	      (holiday-fixed 12 24 "Juleaften")
+	      (holiday-fixed 12 25 "Juledag")
+	      (holiday-fixed 12 26 "Anden juledag")
+	      (holiday-fixed 12 31 "Nytårsaften"))
         other-holidays
         '((holiday-fixed 3 8 "Kvindernes internationale kampdag")
           (holiday-fixed 5 1 "Arbejdernes internationale kampdag")
@@ -349,9 +351,9 @@
   :config
   (setq recentf-filename-handlers (append '(abbreviate-file-name) recentf-filename-handlers))
   (run-at-time nil (* 10 60)
-             (lambda ()
-               (let ((save-silently t))
-                 (recentf-save-list)))))
+               (lambda ()
+                 (let ((save-silently t))
+                   (recentf-save-list)))))
 
 ;; Make C-x C-x not activate region
 (defun exchange-point-and-mark-no-activate ()
@@ -960,7 +962,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :hook ((org-mode . (lambda ()
                        (visual-line-mode 1)
                        (org-indent-mode  1)))
-         (org-babel-after-execute . org-display-inline-images))
+         (org-babel-after-execute . org-display-inline-images)
+         (org-clock-in . (lambda ()
+                           ;; Start timer, use default value, replace any running timer
+                           (org-timer-set-timer '(16)))))
   :bind (("C-c l" . org-store-link)
          ("C-c c" . org-capture) ;; counsel-org-capture requires more keypresses
          ("C-c a" . org-agenda)
@@ -976,6 +981,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (org-agenda-window-setup                'current-window)
   (org-agenda-restore-windows-after-quit  t)
   (org-agenda-start-on-weekday            nil)
+  (org-agenda-skip-deadline-if-done       t)
+  (org-agenda-skip-scheduled-if-done      t)
   (org-indirect-buffer-display            'current-window)
   ;; Export
   (org-export-backends                    '(ascii beamer html icalendar latex md odt))
@@ -984,16 +991,15 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (org-html-html5-fancy                   t)
   (org-html-doctype                       "html5")
   ;; Todo
-  (org-todo-keywords                      '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
-                                            ;; Symbols can be found in Symbola:
-                                            ;; http://users.teilar.gr/~g1951d/
-                                            ;; ✦ ★ ✔ ⚑ ❌
-                                            (sequence "WAITING(w)" "|" "CANCELED(c)")))
+  (org-todo-keywords                      '((sequence "TODO(t)" "NEXT(n)" "STARTED(s/!)" "|" "DONE(d/!)")
+                                            (sequence "WAITING(w@/!)" "|" "CANCELED(c@/!)")))
   (org-time-stamp-custom-formats          '("<%Y-%m-%d>" . "<%Y-%m-%d %H:%M>"))
   (org-use-fast-todo-selection            t)
-  (org-log-done                           t)
+  (org-enforce-todo-dependencies          t)
+  (org-log-done                           'time)
   ;; Round clock to 5 minute intervals, delete anything shorter
   (org-clock-rounding-minutes             5)
+  (org-log-note-clock-out                 t)
   ;; Allow editing invisible region if it does that you would expect
   (org-catch-invisible-edits              'smart)
   ;; Refile
@@ -1004,6 +1010,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (org-refile-allow-creating-parent-nodes 'confirm)
   ;; Reverse note order
   (org-reverse-note-order                 t)
+  ;; Pomodoro timer
+  ;; Check in with C-c C-x C-i (or I on heading)
+  ;; Check out with C-c C-x C-o (or O on heading)
+  (org-timer-default-timer                25)
   :init
   ;; Most GTD setup is taken from https://emacs.cafe/emacs/orgmode/gtd/2017/06/30/orgmode-gtd.html
   (let ((default-org-file  "~/.emacs.d/org-files/gtd/unsorted.org") ;; Unsorted items
