@@ -307,28 +307,28 @@
       (calendar-dayname-on-or-before 0 (+ paschal-moon 7))))
   (setq general-holidays
         '((holiday-fixed 1 1 "Nytårsdag")
-	      (holiday-fixed 1 6 "Hellige 3 konger")
-	      ;; Easter and Pentecost
-	      (holiday-filter-visible-calendar
-	       (mapcar
-	        (lambda (dag)
-	          (list (calendar-gregorian-from-absolute
-		             (+ (da-easter displayed-year) (car dag)))
-		            (cadr dag)))
-	        '(( -49 "Fastelavn")
-	          (  -7 "Palmesøndag")
-	          (  -3 "Skærtorsdag")
-	          (  -2 "Langfredag")
-	          (   0 "Påskedag")
-	          (  +1 "Anden påskedag")
-	          ( +26 "Store bededag")
-	          ( +39 "Kristi himmelfartsdag")
-	          ( +49 "Pinsedag")
-	          ( +50 "Anden pinsedag"))))
-	      (holiday-fixed 12 24 "Juleaften")
-	      (holiday-fixed 12 25 "Juledag")
-	      (holiday-fixed 12 26 "Anden juledag")
-	      (holiday-fixed 12 31 "Nytårsaften"))
+          (holiday-fixed 1 6 "Hellige 3 konger")
+          ;; Easter and Pentecost
+          (holiday-filter-visible-calendar
+           (mapcar
+            (lambda (dag)
+              (list (calendar-gregorian-from-absolute
+                     (+ (da-easter displayed-year) (car dag)))
+                    (cadr dag)))
+            '(( -49 "Fastelavn")
+              (  -7 "Palmesøndag")
+              (  -3 "Skærtorsdag")
+              (  -2 "Langfredag")
+              (   0 "Påskedag")
+              (  +1 "Anden påskedag")
+              ( +26 "Store bededag")
+              ( +39 "Kristi himmelfartsdag")
+              ( +49 "Pinsedag")
+              ( +50 "Anden pinsedag"))))
+          (holiday-fixed 12 24 "Juleaften")
+          (holiday-fixed 12 25 "Juledag")
+          (holiday-fixed 12 26 "Anden juledag")
+          (holiday-fixed 12 31 "Nytårsaften"))
         other-holidays
         '((holiday-fixed 3 8 "Kvindernes internationale kampdag")
           (holiday-fixed 5 1 "Arbejdernes internationale kampdag")
