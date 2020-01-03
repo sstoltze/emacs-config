@@ -594,7 +594,9 @@ If ARG is provided, move directly to option ARG."
 ;;;; --- Diminish ---
 ;; Remove some things from modeline. Used by use-package.
 (use-package diminish
-  :ensure t)
+  :ensure t
+  :config
+  (diminish 'eldoc-mode ""))
 
 ;;;; --- Visible mark ---
 (use-package visible-mark
