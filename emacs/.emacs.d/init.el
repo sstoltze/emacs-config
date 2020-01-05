@@ -1538,6 +1538,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (when at-work-p
     (setq clojure-indent-style 'align-arguments)))
 
+;; https://docs.cider.mx/cider/usage/misc_features.html
 (use-package cider
   :ensure t
   :defer t
