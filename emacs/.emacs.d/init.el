@@ -964,6 +964,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :hook ((org-mode . (lambda ()
                        (visual-line-mode 1)
                        (org-indent-mode  1)))
+         (org-agenda-mode . hl-line-mode)
          (org-babel-after-execute . org-display-inline-images)
          (org-clock-in . (lambda ()
                            ;; Start timer, use default value, replace any running timer
