@@ -1377,13 +1377,18 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :ensure t
   :defer t
   :hook ((haskell-mode . haskell-indentation-mode)
-         (haskell-mode . haskell-doc-mode)))
-
-;; At EoL
-(use-package intero
-  :ensure t
-  :after haskell-mode
-  :hook ((haskell-mode . intero-mode)))
+         (haskell-mode . haskell-doc-mode)
+         (haskell-mode . interactive-haskell-mode))
+  :custom
+  (haskell-process-suggest-remove-import-lines t)
+  (haskell-process-auto-import-loaded-modules  t)
+  (haskell-process-log                         t)
+  (haskell-compile-cabal-build-command         "stack build")
+  :bind (("M-." . haskell-mode-jump-to-def)
+         (:map haskell-mode-map
+               ("C-c C-c" . haskell-compile))
+         (:map haskell-cabal-mode-map
+               ("C-c C-c" . haskell-compile))))
 
 ;;;; --- C/C++ ---
 (defun common-c-hook ()
