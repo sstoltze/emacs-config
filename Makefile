@@ -1,6 +1,6 @@
 common_packages   = fish git
 common_no_folding = emacs stack leiningen
-linux_packages    = $(common_packages) awesome mbsync gpg kitty x
+linux_packages    = $(common_packages) awesome mbsync gpg kitty x screen
 linux_no_folding  = $(common_no_folding)
 cygwin_packages   = $(common_packages)
 cygwin_no_folding = $(common_no_folding)
