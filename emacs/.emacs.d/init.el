@@ -1397,7 +1397,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (c-set-style "bsd")
   (setq c-basic-offset 2
         tab-width 2)
-  (use-package semantic/bovine/gcc))
+  (use-package semantic/bovine/gcc
+    :after semantic))
 
 (defun my-cpp-hook ()
   "C++ specific packages."
