@@ -1238,9 +1238,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; Always enabled, do not show in mode-line
   :diminish outline-minor-mode
   :hook ((prog-mode . outline-minor-mode))
-  :bind (("M-n"     . outline-next-visible-heading)
-         ("M-p"     . outline-previous-visible-heading)
-         :map outline-mode-prefix-map
+  :bind (:map outline-mode-prefix-map
          ("C-z" . outline-cycle))
   :bind-keymap (("C-z" . outline-mode-prefix-map)))
 
@@ -1253,6 +1251,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :defer t
   :diminish symbol-overlay-mode
   :hook ((prog-mode . symbol-overlay-mode))
+  :bind (("M-n" . symbol-overlay-jump-next)
+         ("M-p" . symbol-overlay-jump-prev))
   :bind-keymap (("C-c o" . symbol-overlay-map)))
 
 ;;;; --- Semantic ---
