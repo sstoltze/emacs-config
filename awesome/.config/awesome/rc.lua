@@ -543,6 +543,17 @@ local globalkeys = awful.util.table.join(
    awful.key({ modkey }, "Up",            increase_brightness, {description = "brightness up",     group = "screen"})
 )
 
+local gap = 10
+if theme.useless_gap > 0 then
+   gap = theme.useless_gap
+end
+function toggle_gap ()
+   theme.useless_gap = gap - theme.useless_gap
+   -- Used to get the screen to update. This should be easier...
+   awful.tag.incmwfact( 0.05)
+   awful.tag.incmwfact(-0.05)
+end
+
 clientkeys = awful.util.table.join(
    awful.key({ modkey,           }, "f",
       function (c)
@@ -574,10 +585,11 @@ clientkeys = awful.util.table.join(
          c.maximized = not c.maximized
          c:raise()
       end ,
-      {description = "maximize", group = "client"})
-   ,
+      {description = "maximize", group = "client"}),
    awful.key({ modkey, "Control" }, "o", function () xrandr.xrandr() end,
       { description = "toggle xrandr options", group = "screen"}),
+   awful.key({ modkey, "Control" }, "g", toggle_gap,
+      { description = "toggle useless_gap", group = "layout"}),
    awful.key({ modkey,           }, "q", function () awful.spawn.with_shell("slock")  end,
       { description = "slock", group = "awesome" })
 )
