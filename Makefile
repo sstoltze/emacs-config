@@ -1,5 +1,5 @@
 common_packages   = fish git
-common_no_folding = emacs stack leiningen
+common_no_folding = emacs stack leiningen ghc
 linux_packages    = $(common_packages) awesome mbsync gpg kitty x screen
 linux_no_folding  = $(common_no_folding)
 cygwin_packages   = $(common_packages)
@@ -65,6 +65,7 @@ ifeq ($(platform),CYGWIN)
 else ifeq ($(platform),WINDOWS)
 	copy /Y "emacs\.emacs.d\init.el" "%USERPROFILE%\AppData\Roaming\.emacs.d"
 	copy /Y "git\.gitconfig"         "%USERPROFILE%"
+	copy /Y "ghc\.ghc\ghci.conf"     "%USERPROFILE%\AppData\Roaming\ghc"
 endif
 
 windows-remove:
@@ -74,6 +75,7 @@ ifeq ($(platform),CYGWIN)
 else ifeq ($(platform),WINDOWS)
 	del "%USERPROFILE%\AppData\Roaming\.emacs.d\init.el"
 	del "%USERPROFILE%\.gitconfig"
+	del "%USERPROFILE%\ghc\ghci.conf"
 endif
 
 work:
