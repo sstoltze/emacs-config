@@ -1202,10 +1202,13 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (ivy-posframe-font (if (member "Iosevka" (font-family-list))
                          "Iosevka-10.5"
                        nil))
+  (ivy-posframe-border-width 2)
   (swiper-action-recenter t)
   (ivy-posframe-display-functions-alist '((swiper-isearch      . ivy-posframe-display-at-window-bottom-left)
                                           (swiper              . ivy-posframe-display-at-window-bottom-left)
                                           (t                   . ivy-posframe-display-at-point)))
+  :custom-face
+  (ivy-posframe-border ((t (:background "goldenrod"))))
   :config
   (ivy-posframe-mode 1))
 
