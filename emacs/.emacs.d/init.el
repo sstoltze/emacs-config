@@ -898,28 +898,28 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          (lisp-interaction-mode            . turn-on-smartparens-strict-mode)
          (slime-repl-mode                  . turn-on-smartparens-strict-mode)
          (eval-expression-minibuffer-setup . turn-on-smartparens-strict-mode))
-  :bind (:map smartparens-mode-map
-              ("M-s"     . sp-splice-sexp)
-              ("M-S"     . sp-split-sexp)
-              ("M-J"     . sp-join-sexp)
-              ("C-M-SPC" . sp-mark-sexp)
-              ("<C-M-m>" . sstoltze/mark-sexp-up)
-              ("C-("     . sp-backward-slurp-sexp)
-              ("C-)"     . sp-forward-slurp-sexp)
-              ("C-{"     . sp-backward-barf-sexp)
-              ("C-}"     . sp-forward-barf-sexp)
-              ("M-("     . sp-wrap-round)
-              ("M-{"     . sp-wrap-curly)
-              ("M-["     . sp-wrap-square)
-              ("M-\""    . (lambda (&optional arg) (interactive "P") (sp-wrap-with-pair "\"")))
-              ("C-M-q"   . sp-indent-defun)
-              ("M-R"     . sp-raise-sexp)
-              ("M-?"     . sp-convolute-sexp)
-              ("C-M-u"   . sp-backward-up-sexp)
-              ("C-M-n"   . sp-up-sexp)
-              ("C-M-d"   . sp-down-sexp)
-              ("C-M-p"   . sp-backward-down-sexp)
-              ("C-x n s" . sp-narrow-to-sexp))
+  :bind ((:map smartparens-mode-map
+               ("M-s"     . sp-splice-sexp)
+               ("M-S"     . sp-split-sexp)
+               ("M-J"     . sp-join-sexp)
+               ("C-M-SPC" . sp-mark-sexp)
+               ("<C-M-m>" . sstoltze/mark-sexp-up)
+               ("C-("     . sp-backward-slurp-sexp)
+               ("C-)"     . sp-forward-slurp-sexp)
+               ("C-{"     . sp-backward-barf-sexp)
+               ("C-}"     . sp-forward-barf-sexp)
+               ("M-("     . sp-wrap-round)
+               ("M-{"     . sp-wrap-curly)
+               ("M-["     . sp-wrap-square)
+               ("M-\""    . (lambda (&optional arg) (interactive "P") (sp-wrap-with-pair "\"")))
+               ("C-M-q"   . sp-indent-defun)
+               ("M-R"     . sp-raise-sexp)
+               ("M-?"     . sp-convolute-sexp)
+               ("C-M-u"   . sp-backward-up-sexp)
+               ("C-M-n"   . sp-up-sexp)
+               ("C-M-d"   . sp-down-sexp)
+               ("C-M-p"   . sp-backward-down-sexp)
+               ("C-x n s" . sp-narrow-to-sexp)))
   :custom
   (sp-highlight-pair-overlay nil)
   :config
@@ -1155,8 +1155,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          ("C-c v"   . ivy-push-view)
          ;; Remove a stored view
          ("C-c V"   . ivy-pop-view)
-         :map swiper-map
-         ("C-c s"   . swiper-avy))
+         (:map swiper-map
+               ("C-c s" . swiper-avy)))
   :custom
   ;; Allow "M-x lis-pac" to match "M-x list-packages"
   (ivy-re-builders-alist        '((swiper                . ivy--regex-plus)
@@ -1254,8 +1254,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; Always enabled, do not show in mode-line
   :diminish outline-minor-mode
   :hook ((prog-mode . outline-minor-mode))
-  :bind (:map outline-mode-prefix-map
-         ("C-z" . outline-cycle))
+  :bind ((:map outline-mode-prefix-map
+               ("C-z" . outline-cycle)))
   :bind-keymap (("C-z" . outline-mode-prefix-map)))
 
 (use-package outline-magic
@@ -1462,9 +1462,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package eww-lnum
   :ensure t
   :after eww
-  :bind (:map eww-mode-map
-              ("f" . eww-lnum-follow)
-              ("F" . eww-lnum-universal)))
+  :bind ((:map eww-mode-map
+               ("f" . eww-lnum-follow)
+               ("F" . eww-lnum-universal))))
 
 ;;;; --- Fish ---
 (use-package fish-mode
@@ -1598,9 +1598,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package rust-mode
   :ensure t
   :defer t
-  :bind (:map rust-mode-map
-              ("C-c <tab>" . rust-format-buffer)
-              ("C-c C-b"   . rust-run))
+  :bind ((:map rust-mode-map
+               ("C-c <tab>" . rust-format-buffer)
+               ("C-c C-b"   . rust-run)))
   :custom
   (rust-format-on-save t)
   :init
@@ -1624,8 +1624,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :defer t
   :hook ((rust-mode . racer-mode)
          (racer-mode . eldoc-mode))
-  :bind (:map rust-mode-map
-              ("C-c C-d" . racer-describe)))
+  :bind ((:map rust-mode-map
+               ("C-c C-d" . racer-describe))))
 
 (use-package flycheck-rust
   :ensure t
@@ -1712,11 +1712,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
       :defer t
       :load-path "/usr/share/emacs/site-lisp/mu/mu4e"
       :bind (("C-c q" . mu4e)
-             :map mu4e-view-mode-map
-             ("G" . (lambda ()
-                      (interactive)
-                      (let ((browse-url-default-function 'browse-url-default-browser))
-                        (mu4e-view-go-to-url)))))
+             (:map mu4e-view-mode-map
+                   ("G" . (lambda ()
+                            (interactive)
+                            (let ((browse-url-default-function 'browse-url-default-browser))
+                              (mu4e-view-go-to-url))))))
       :custom
       (mu4e-maildir                      "~/.mail")
       ;; gpg-agent is set to use pinentry-qt for a dialog box
