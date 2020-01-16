@@ -892,6 +892,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package smartparens
   :ensure t
   :defer t
+  :diminish smartparens-mode
   :hook ((prog-mode                        . turn-on-smartparens-strict-mode)
          (racket-repl-mode                 . turn-on-smartparens-strict-mode)
          (cider-repl-mode                  . turn-on-smartparens-strict-mode)
