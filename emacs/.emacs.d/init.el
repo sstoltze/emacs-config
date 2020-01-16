@@ -619,7 +619,6 @@ If ARG is provided, move directly to option ARG."
 
 ;;;; --- Dired ---
 (use-package dired
-  :bind (("C-x C-j"  . dired-jump))
   :hook ((dired-mode . hl-line-mode))
   :custom
   (ls-lisp-dirs-first                  t)
@@ -635,6 +634,7 @@ If ARG is provided, move directly to option ARG."
 
 (use-package dired-x
   :after dired
+  :bind (("C-x C-j" . dired-jump))
   :config
   (add-to-list 'dired-omit-extensions ".DS_Store"))
 
@@ -648,7 +648,20 @@ If ARG is provided, move directly to option ARG."
   :ensure t
   :bind (("C-c j" . dired-sidebar-toggle-sidebar))
   :custom
-  (dired-sidebar-theme 'ascii))
+  (dired-sidebar-subtree-line-prefix "  |"))
+
+(use-package peep-dired
+  :ensure t
+  :after dired
+  :bind ((:map dired-mode-map
+               ("P" . peep-dired))
+         (:map peep-dired-mode-map
+               ("n" . peep-dired-next-file)
+               ("p" . peep-dired-prev-file)))
+  :custom
+  (peep-dired-cleanup-on-disable t)
+  (peep-dired-ignored-extensions
+   '("mkv" "webm" "mp4" "mp3" "ogg" "iso")))
 
 ;;;; --- Proced ---
 ;; To highlight processes use highlight-lines-matching-regexp, M-s h l
