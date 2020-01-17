@@ -1445,7 +1445,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :custom
   (magit-completing-read-function 'ivy-completing-read)
   ;; Remove the startup message about turning on auto-revert
-  (magit-no-message (list "Turning on magit-auto-revert-mode...")))
+  (magit-no-message (list "Turning on magit-auto-revert-mode..."))
+  ;; Command prefix for merge conflicts. Alternatively use 'e' for ediff
+  (smerge-command-prefix "\C-cv"))
 
 ;;;; --- Eww ---
 (use-package eww
