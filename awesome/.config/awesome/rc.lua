@@ -606,7 +606,7 @@ clientkeys = awful.util.table.join(
          c:raise()
       end ,
       {description = "maximize", group = "client"}),
-   awful.key({ modkey, "Control" }, "o", function () xrandr.xrandr() end,
+   awful.key({ modkey, "Control", "Shift" }, "o", function () xrandr.xrandr() end,
       { description = "toggle xrandr options", group = "screen"}),
    awful.key({ modkey, "Control" }, "g", toggle_gap,
       { description = "toggle useless_gap", group = "layout"}),
