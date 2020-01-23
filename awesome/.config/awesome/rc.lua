@@ -130,12 +130,13 @@ menubar.menu_gen.lookup_category_icons = function() end
 -- }}}
 
 -- Keyboard map indicator and switcher
-local mykeyboardlayout = awful.widget.keyboardlayout()
-local keyboardlayouts = { { "dk", "" }, { "us", "" } }
-local current_kb_layout = 1 -- Use dk as default
-local function change_kb_layout()
-   current_kb_layout = current_kb_layout % #(keyboardlayouts) + 1
-   local layout = keyboardlayouts[current_kb_layout]
+local kbdcfg = {}
+kbdcfg.layouts = { { "dk", "" }, { "us", "" } }
+kbdcfg.widget = awful.widget.keyboardlayout()
+kbdcfg.current_kb_layout = 1 -- Use dk as default
+kbdcfg.change_layout = function ()
+   kbdcfg.current_kb_layout = kbdcfg.current_kb_layout % #(kbdcfg.layouts) + 1
+   local layout = kbdcfg.layouts[kbdcfg.current_kb_layout]
    awful.spawn("setxkbmap " .. layout[1] .. " " .. layout[2])
 end
 
@@ -404,7 +405,7 @@ awful.screen.connect_for_each_screen(function(s)
          { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
             divider,
-            mykeyboardlayout,
+            kbdcfg.widget,
             divider,
             wibox.widget.systray(),
             divider,
@@ -532,7 +533,7 @@ local globalkeys = awful.util.table.join(
       {description = "show the menubar", group = "launcher"}),
 
    -- Keyboard
-   awful.key({ modkey }, "space", change_kb_layout,
+   awful.key({ modkey }, "space", kbdcfg.change_layout,
       {description = "change keyboard layout", group = "keyboard"}),
 
    -- Media controls
