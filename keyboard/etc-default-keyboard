@@ -1,0 +1,4 @@
+BACKSPACE=guess
+XKBLAYOUT="dk,us"
+XKBMODEL=pc105
+XKBOPTIONS="terminate:ctrl_alt_bksp,grp:win_space_toggle"
