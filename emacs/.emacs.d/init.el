@@ -443,7 +443,7 @@ point reaches the beginning or end of the buffer, stop there."
        ;; sudo add-apt-repository ppa:laurent-boulard/fonts
        ;; sudo apt install fonts-iosevka
        (when (find-font (font-spec :name "Iosevka"))
-         (set-frame-font "Iosevka-10.5"))
+         (set-frame-font "Iosevka-10.5" nil t))
        ;; Better vertical splits - better modeline
        ;; sudo apt install fonts-firacode
        ;; (set-frame-font "Fira Code-10")
@@ -947,11 +947,17 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (flycheck-check-syntax-automatically '(save idle-change mode-enable))
   (flycheck-idle-change-delay          4))
 
-(use-package flycheck-pos-tip
+(use-package flycheck-posframe
   :ensure t
-  :after flycheck
+  :defer t
+  :hook ((flycheck-mode . flycheck-posframe-mode))
+  :custom
+  (flycheck-posframe-border-width 1)
+  :custom-face
+  ;; This does not take effect immediately for some reason...
+  (flycheck-posframe-border-face ((t (:foreground "goldenrod"))))
   :config
-  (flycheck-pos-tip-mode 1))
+  (flycheck-posframe-configure-pretty-defaults))
 
 ;;;; --- Auto-insert ---
 (use-package autoinsert
@@ -1213,14 +1219,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :after ivy
   :diminish ivy-posframe-mode
   :custom
-  (ivy-posframe-font (if (member "Iosevka" (font-family-list))
-                         "Iosevka-10.5"
-                       nil))
-  (ivy-posframe-border-width 2)
+  (ivy-posframe-border-width 1)
   (swiper-action-recenter t)
-  (ivy-posframe-display-functions-alist '((swiper-isearch      . ivy-posframe-display-at-window-bottom-left)
-                                          (swiper              . ivy-posframe-display-at-window-bottom-left)
-                                          (t                   . ivy-posframe-display-at-point)))
+  (ivy-posframe-display-functions-alist '((swiper-isearch . ivy-posframe-display-at-window-bottom-left)
+                                          (swiper         . ivy-posframe-display-at-window-bottom-left)
+                                          (t              . ivy-posframe-display-at-point)))
   :custom-face
   (ivy-posframe-border ((t (:background "goldenrod"))))
   :config
