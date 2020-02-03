@@ -1562,10 +1562,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :ensure t
   :defer t
   :hook (((clojure-mode clojurescript-mode) . subword-mode)
-         ((clojure-mode clojurescript-mode) . sstoltze/prettify-clojure))
-  :config
-  (when at-work-p
-    (setq clojure-indent-style 'align-arguments)))
+         ((clojure-mode clojurescript-mode) . sstoltze/prettify-clojure)))
 
 ;; https://docs.cider.mx/cider/usage/misc_features.html
 (use-package cider
