@@ -1580,7 +1580,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          (:map cider-repl-mode-map
                ("M-s" . sp-splice-sexp)))
   :custom
-  (cider-use-overlays 'both))
+  (cider-use-overlays 'both)
+  (nrepl-log-messages t)
+  (cider-repl-result-prefix ";; => ")
+  (cider-repl-require-ns-on-set t))
 
 ;; C-c C-r - clojure-refactor-map
 ;; C-c r   - clj-refactor-mode-map - see https://github.com/clojure-emacs/clj-refactor.el/wiki
