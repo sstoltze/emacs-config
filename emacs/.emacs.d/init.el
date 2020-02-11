@@ -1562,7 +1562,13 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :ensure t
   :defer t
   :hook ((clojure-mode . subword-mode)
-         (clojure-mode . sstoltze/prettify-clojure)))
+         (clojure-mode . sstoltze/prettify-clojure))
+  :config
+  ;; To use clj-kondo, add a .clj-kondo directory in the project and run
+  ;; clj-kondo --lint (string join " " (lein classpath))
+  (when (executable-find "clj-kondo")
+    (use-package flycheck-clj-kondo
+      :ensure t)))
 
 ;; https://docs.cider.mx/cider/usage/misc_features.html
 (use-package cider
