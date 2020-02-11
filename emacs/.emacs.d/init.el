@@ -944,8 +944,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :custom
   ;; Enable if flycheck is slow
   ;;(flycheck-highlighting-mode 'lines)
-  (flycheck-check-syntax-automatically '(save idle-change mode-enable))
-  (flycheck-idle-change-delay          4))
+  (flycheck-check-syntax-automatically '(save idle-change mode-enable idle-buffer-switch))
+  (flycheck-idle-change-delay          2)
+  (flycheck-idle-buffer-switch-delay   2))
 
 (use-package flycheck-posframe
   :ensure t
