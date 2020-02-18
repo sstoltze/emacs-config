@@ -736,10 +736,9 @@ awful.rules.rules = {
            "pop-up",       -- e.g. Google Chrome's (detached) Developer Tools.
         }
    }, properties = { floating = true }},
-   -- Add titlebars to normal clients and dialogs
-   { rule_any = {type = { "normal", "dialog" }
-                }, properties = { titlebars_enabled = false }
-   },
+   -- Remove titlebars from normal clients and dialogs
+   { rule_any = { type = { "normal", "dialog" } },
+     properties = { titlebars_enabled = false} },
    { rule = { class = "mpv" },
      properties = { floating = true,
                     fullscreen = true,
