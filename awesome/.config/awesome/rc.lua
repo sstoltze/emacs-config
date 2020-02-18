@@ -724,8 +724,10 @@ awful.rules.rules = {
            "Wpa_gui",
            "pinentry",
            "veromix",
-           "xtightvncviewer"},
-
+           "xtightvncviewer",
+           "Gnome-calculator",
+           "Code",
+           "MPlayer"},
         name = {
            "Event Tester",  -- xev.
         },
@@ -734,27 +736,24 @@ awful.rules.rules = {
            "pop-up",       -- e.g. Google Chrome's (detached) Developer Tools.
         }
    }, properties = { floating = true }},
-
    -- Add titlebars to normal clients and dialogs
    { rule_any = {type = { "normal", "dialog" }
                 }, properties = { titlebars_enabled = false }
    },
-
-   { rule = { class = "MPlayer" },
-     properties = { floating = true } },
    { rule = { class = "mpv" },
      properties = { floating = true,
                     fullscreen = true,
-                    screen = 1,
                     tag = "Video" } },
    { rule = { class = "pinentry" },
      properties = { floating = true } },
    { rule = { class = "Gimp" },
      properties = { floating = true } },
-   { rule = { class = "Firefox" },
+   -- Net
+   { rule_any = { class = {"Firefox", "Conkeror"} },
      properties = { maximized = true,
                     tag = "Net" } },
-   { rule = { class = "Slack" },
+   -- Social
+   { rule_any = { class = {"Slack", "discord", "Skype"} },
      properties = { maximized = true,
                     tag = "Social" } },
    { rule = { class = "Emacs" },
@@ -762,21 +761,9 @@ awful.rules.rules = {
    { rule = { class = "Steam" },
      properties = { maximized = true,
                     tag = "Steam" } },
-   -- { rule = { class = "Evince" },
-   --   properties = { floating = true } },
-   { rule = { class = "Gnome-calculator" },
-     properties = { floating = true } },
-   { rule = { class = "Code" },
-     properties = { floating = true } },
-   { rule = { class = "Skype" },
-     properties = { maximized = 1,
-                    tag = "Social" } },
    { rule = { class = "Totem" },
      properties = { maximized = true,
                     tag = "Video" } },
-   { rule = { class = "Conkeror" },
-     properties = { maximized = true,
-                    tag = "Net" } },
    { rule = { class = "Dwarf_Fortress" },
      properties = { maximized = true } },
    { rule = { class = "[Ss]potify" },
