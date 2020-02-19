@@ -709,8 +709,10 @@ awful.rules.rules = {
                     placement = awful.placement.no_overlap+awful.placement.no_offscreen
      }
    },
-
-   -- Floating clients.
+   -- Remove titlebars from normal clients and dialogs
+   { rule_any = { type = { "normal", "dialog" } },
+     properties = { titlebars_enabled = false} },
+   -- Floating clients
    { rule_any = {
         instance = {
            "DTA",  -- Firefox addon DownThemAll.
@@ -728,7 +730,12 @@ awful.rules.rules = {
            "xtightvncviewer",
            "Gnome-calculator",
            "Code",
-           "MPlayer"},
+           "MPlayer",
+           "pinentry",
+           "Gimp",
+           "mpv",
+           "Mathematica",
+        },
         name = {
            "Event Tester",  -- xev.
         },
@@ -736,47 +743,53 @@ awful.rules.rules = {
            "AlarmWindow",  -- Thunderbird's calendar.
            "pop-up",       -- e.g. Google Chrome's (detached) Developer Tools.
         }
-   }, properties = { floating = true }},
-   -- Remove titlebars from normal clients and dialogs
-   { rule_any = { type = { "normal", "dialog" } },
-     properties = { titlebars_enabled = false} },
-   { rule = { class = "mpv" },
-     properties = { floating = true,
-                    fullscreen = true,
-                    tag = "Video" } },
-   { rule = { class = "pinentry" },
-     properties = { floating = true } },
-   { rule = { class = "Gimp" },
-     properties = { floating = true } },
+   }, properties = { floating = true } },
+   -- Maximized clients
+   { rule_any = {
+        instance = {
+           "xfi"
+        },
+        class = {
+           "Emacs",
+           "Firefox",
+           "Conkeror",
+           "Slack",
+           "discord",
+           "Skype",
+           "Steam",
+           "Dwarf_Fortress",
+           "[Ss]potify",
+           "Totem",
+        },
+   }, properties = { maximized = true } },
+   -- Fullscreen clients
+   { rule_any = {
+        instance = {
+           "xfi"
+        },
+        class = {
+           "mpv",
+           "Mathematica",
+        },
+   }, properties = { fullscreen = true } },
    -- Net
    { rule_any = { class = {"Firefox", "Conkeror"} },
-     properties = { maximized = true,
-                    tag = "Net" } },
+     properties = { tag = "Net" } },
    -- Social
    { rule_any = { class = {"Slack", "discord", "Skype"} },
-     properties = { maximized = true,
-                    tag = "Social" } },
-   { rule = { class = "Emacs" },
-     properties = { maximized = true } },
+     properties = { tag = "Social" } },
+   -- Steam
    { rule = { class = "Steam" },
-     properties = { maximized = true,
-                    tag = "Steam" } },
-   { rule = { class = "Totem" },
-     properties = { maximized = true,
-                    tag = "Video" } },
-   { rule = { class = "Dwarf_Fortress" },
-     properties = { maximized = true } },
+     properties = { tag = "Steam" } },
+   -- Music
    { rule = { class = "[Ss]potify" },
-     properties = { maximized = true,
-                    tag = "Music" } },
-   { rule = { instance = "xfi" }, --- xfimage
-     --- class = "Xfe" also matches xfe
-     properties = { maximized= true,
-                    fullscreen = true } },
+     properties = { tag = "Music" } },
+   -- Video
+   { rule_any = { class = {"mpv", "Totem"}},
+     properties = { tag = "Video" } },
+   -- Math
    { rule = { class = "Mathematica" },
-     properties = { floating = true,
-                    tag = "Math",
-                    fullscreen = true } }
+     properties = { tag = "Math" } }
 }
 -- }}}
 
