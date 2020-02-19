@@ -1453,6 +1453,14 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; Command prefix for merge conflicts. Alternatively use 'e' for ediff
   (smerge-command-prefix "\C-cv"))
 
+(use-package git-timemachine
+  :ensure t
+  :defer t)
+
+(use-package git-link
+  :ensure t
+  :defer t)
+
 ;;;; --- Eww ---
 (use-package eww
   :ensure t
