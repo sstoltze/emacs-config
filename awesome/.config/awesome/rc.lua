@@ -105,19 +105,19 @@ local myawesomemenu = {
    { "manual", terminal .. " -e man awesome" },
    { "edit config", editor_cmd .. " " .. awesome.conffile },
    { "restart", awesome.restart },
-   { "quit", function() awesome.quit() end}
+   { "quit", awesome.quit }
 }
 
 local function shutdown_fn()
    awful.spawn.with_shell("shutdown now")
 end
 
-local mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
+local mymainmenu = awful.menu({ items = {
+                                   { "awesome", myawesomemenu, beautiful.awesome_icon },
                                    { "Debian", debian.menu.Debian_menu.Debian },
                                    { "open terminal", terminal },
                                    { "shutdown", shutdown_fn }
-}
-                             })
+                             } })
 
 -- Not used at the moment
 -- mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
@@ -133,12 +133,13 @@ menubar.menu_gen.lookup_category_icons = function() end
 local kbdcfg = {}
 kbdcfg.layouts = { { "dk", "" }, { "us", "" } }
 kbdcfg.widget = awful.widget.keyboardlayout()
-kbdcfg.current_kb_layout = 1 -- Use dk as default
+kbdcfg.current_kb_layout = 0 -- Use first entry as default
 kbdcfg.change_layout = function ()
    kbdcfg.current_kb_layout = kbdcfg.current_kb_layout % #(kbdcfg.layouts) + 1
    local layout = kbdcfg.layouts[kbdcfg.current_kb_layout]
    awful.spawn("setxkbmap " .. layout[1] .. " " .. layout[2])
 end
+kbdcfg.change_layout()
 
 -- {{{ Wibar
 -- Create a textclock widget
