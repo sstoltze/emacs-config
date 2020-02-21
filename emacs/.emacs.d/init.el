@@ -990,6 +990,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          (org-clock-in . (lambda ()
                            ;; Start timer, use default value, replace any running timer
                            (org-timer-set-timer '(16)))))
+  :diminish org-indent-mode
+  :diminish visual-line-mode
   :bind (("C-c l" . org-store-link)
          ("C-c c" . org-capture) ;; counsel-org-capture requires more keypresses
          ("C-c a" . org-agenda)
@@ -1010,7 +1012,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (org-indirect-buffer-display            'current-window)
   ;; Export
   (org-export-backends                    '(ascii beamer html icalendar latex md odt))
-  ;;; Author, email, date of creation, validation link at bottom of exported html
+  ;; Author, email, date of creation, validation link at bottom of exported html
   (org-html-postamble                     nil)
   (org-html-html5-fancy                   t)
   (org-html-doctype                       "html5")
@@ -1051,7 +1053,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                             schedule-org-file
                             journal-org-file))
       (if (not (file-exists-p org-file))
-          (write-region ""       ; Start - What to write - handled with autoinsert
+          (write-region "" ; Start - What to write - handled with autoinsert
                         nil      ; End - Ignored when start is string
                         org-file ; Filename
                         t        ; Append
@@ -1272,8 +1274,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :defer t
   :diminish symbol-overlay-mode
   :hook ((prog-mode . symbol-overlay-mode))
-  :bind (("M-n" . symbol-overlay-jump-next)
-         ("M-p" . symbol-overlay-jump-prev))
   :bind-keymap (("C-c o" . symbol-overlay-map)))
 
 ;;;; --- Semantic ---
@@ -1498,7 +1498,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 
 (use-package stan-snippets
   :ensure t
-  :defer t
   :after stan-mode)
 
 ;;;; --- Python ---
@@ -1582,7 +1581,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;; https://docs.cider.mx/cider/usage/misc_features.html
 (use-package cider
   :ensure t
-  :defer t
   :after clojure-mode
   :hook ((clojure-mode    . cider-mode)
          (cider-repl-mode . sstoltze/prettify-symbols-setup)
