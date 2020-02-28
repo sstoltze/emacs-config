@@ -161,27 +161,55 @@ awful.spawn.easy_async("ncal -bM", function(stdout, stderr, reason, exit_code)
 end)
 
 -- Volume
-local tbvolume = wibox.widget.textbox()
-local vol_command = [[pactl list sinks | awk '
+local vol = {}
+vol.textbox = wibox.widget.textbox()
+vol.command = [[pactl list sinks | awk '
 BEGIN               { mute = "no"; running = 0; }
 /RUNNING/           { running = 1; }
 /^[^a-zA-Z]Mute/    { if ( running ) { mute = $2 } }
 /^[^a-zA-Z]*Volume/ { if ( running ) { if ( mute ~ /yes/ ) { gsub(/%/, "M", $5); }; print $5; } }
 /SUSPENDED/         { running = 0; }']]
 
-function updatevolume()
-   awful.spawn.easy_async_with_shell(vol_command, function(vol, stderr, reason, exit_code)
-                                        if vol == "" then
-                                           vol = "off"
+vol.update = function ()
+      awful.spawn.easy_async_with_shell(vol.command, function(volume, stderr, reason, exit_code)
+                                        if volume == "" then
+                                           volume = "off"
                                         end
-                                        tbvolume:set_markup("Vol: " .. vol)
+                                        vol.textbox:set_markup("Vol: " .. volume)
    end)
 end
 
-updatevolume()
-local volumetimer = timer({timeout = 13})
-volumetimer:connect_signal("timeout", updatevolume)
-volumetimer:start()
+vol.update()
+vol.timer = timer({timeout = 13})
+vol.timer:connect_signal("timeout", vol.update)
+vol.timer:start()
+
+vol.get_sink = "pactl list short sinks | grep -i running | cut -f 1"
+
+vol.async = function (stdout, stderr, reason, exit_code)
+   vol.update()
+end
+
+vol.lower = function ()
+   awful.spawn.easy_async_with_shell(vol.get_sink,
+                                     function(sink, stderr, reason, exit_code)
+                                        awful.spawn.easy_async("pactl set-sink-volume " .. sink .. " -5%", vol.async)
+   end)
+end
+
+vol.raise = function ()
+   awful.spawn.easy_async_with_shell(vol.get_sink,
+                                     function(sink, stderr, reason, exit_code)
+                                        awful.spawn.easy_async("pactl set-sink-volume " .. sink .. " +5%", vol.async)
+   end)
+end
+
+vol.mute = function ()
+   awful.spawn.easy_async_with_shell(vol.get_sink,
+                                     function(sink, stderr, reason, exit_code)
+                                        awful.spawn.easy_async("pactl set-sink-mute " .. sink .. " toggle", vol.async)
+   end)
+end
 
 -- Spotify notifications
 naughty.config.presets.spotify = {
@@ -243,49 +271,25 @@ vicious.register(bat, vicious.widgets.bat,
                  end, 61, "BAT0")
 
 -- Media controls
-local get_sink = "pactl list short sinks | grep -i running | cut -f 1"
+vol.media = {}
 
-local async_volume = function (stdout, stderr, reason, exit_code)
-   updatevolume()
-end
-local function lowervolume()
-   awful.spawn.easy_async_with_shell(get_sink,
-                                     function(sink, stderr, reason, exit_code)
-                                        awful.spawn.easy_async("pactl set-sink-volume " .. sink .. " -5%", async_volume)
-   end)
-end
-
-local function raisevolume ()
-   awful.spawn.easy_async_with_shell(get_sink,
-                                     function(sink, stderr, reason, exit_code)
-                                        awful.spawn.easy_async("pactl set-sink-volume " .. sink .. " +5%", async_volume)
-   end)
-end
-
-local function togglemute ()
-   awful.spawn.easy_async_with_shell(get_sink,
-                                     function(sink, stderr, reason, exit_code)
-                                        awful.spawn.easy_async("pactl set-sink-mute " .. sink .. " toggle", async_volume)
-   end)
-end
-
-local function playpause ()
+vol.media.playpause = function ()
    awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause")
 end
 
-local function playmedia ()
+vol.media.play = function ()
    awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Play")
 end
 
-local function pausemedia ()
+vol.media.pause = function ()
    awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Pause")
 end
 
-local function playprev ()
+vol.media.prev = function ()
    awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous")
 end
 
-local function playnext ()
+vol.media.next = function ()
    awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next")
 end
 
@@ -410,7 +414,7 @@ awful.screen.connect_for_each_screen(function(s)
             divider,
             wibox.widget.systray(),
             divider,
-            tbvolume,
+            vol.textbox,
             divider,
             bat,
             divider,
@@ -537,24 +541,24 @@ local globalkeys = awful.util.table.join(
    awful.key({ modkey }, "space", kbdcfg.change_layout,
       {description = "change keyboard layout", group = "keyboard"}),
 
-   -- Media controls
-   awful.key({ }, "XF86AudioLowerVolume", lowervolume,         {description = "volume down",       group = "audio"}),
-   awful.key({ modkey }, "æ",             lowervolume,         {description = "volume down",       group = "audio"}),
-   awful.key({ modkey }, ";",             lowervolume,         {description = "volume down",       group = "audio"}),
-   awful.key({ }, "XF86AudioRaiseVolume", raisevolume,         {description = "volume up",         group = "audio"}),
-   awful.key({ modkey }, "ø",             raisevolume,         {description = "volume up",         group = "audio"}),
-   awful.key({ modkey }, "'",             raisevolume,         {description = "volume up",         group = "audio"}),
-   awful.key({ }, "XF86AudioMute",        togglemute,          {description = "volume mute",       group = "audio"}),
-   awful.key({ modkey }, "å",             togglemute,          {description = "volume mute",       group = "audio"}),
-   awful.key({ modkey }, "[",             togglemute,          {description = "volume mute",       group = "audio"}),
-   awful.key({ }, "XF86AudioPause",       pausemedia,          {description = "pause media",       group = "audio"}),
-   awful.key({ }, "XF86AudioPlay",        playmedia,           {description = "play media",        group = "audio"}),
-   awful.key({ modkey }, ".",             playpause,           {description = "play/pause",        group = "audio"}),
-   awful.key({ }, "XF86AudioPrev",        playprev,            {description = "play previous",     group = "audio"}),
-   awful.key({ modkey }, ",",             playprev,            {description = "play previous",     group = "audio"}),
-   awful.key({ }, "XF86AudioNext",        playnext,            {description = "play next",         group = "audio"}),
-   awful.key({ modkey }, "-",             playnext,            {description = "play next",         group = "audio"}),
-   awful.key({ modkey }, "/",             playnext,            {description = "play next",         group = "audio"}),
+   -- Volume/media controls
+   awful.key({ }, "XF86AudioLowerVolume", vol.lower,           {description = "volume down",       group = "audio"}),
+   awful.key({ modkey }, "æ",             vol.lower,           {description = "volume down",       group = "audio"}),
+   awful.key({ modkey }, ";",             vol.lower,           {description = "volume down",       group = "audio"}),
+   awful.key({ }, "XF86AudioRaiseVolume", vol.raise,           {description = "volume up",         group = "audio"}),
+   awful.key({ modkey }, "ø",             vol.raise,           {description = "volume up",         group = "audio"}),
+   awful.key({ modkey }, "'",             vol.raise,           {description = "volume up",         group = "audio"}),
+   awful.key({ }, "XF86AudioMute",        vol.mute,            {description = "volume mute",       group = "audio"}),
+   awful.key({ modkey }, "å",             vol.mute,            {description = "volume mute",       group = "audio"}),
+   awful.key({ modkey }, "[",             vol.mute,            {description = "volume mute",       group = "audio"}),
+   awful.key({ }, "XF86AudioPause",       vol.media.pause,     {description = "pause media",       group = "audio"}),
+   awful.key({ }, "XF86AudioPlay",        vol.media.play,      {description = "play media",        group = "audio"}),
+   awful.key({ modkey }, ".",             vol.media.playpause, {description = "play/pause",        group = "audio"}),
+   awful.key({ }, "XF86AudioPrev",        vol.media.prev,      {description = "play previous",     group = "audio"}),
+   awful.key({ modkey }, ",",             vol.media.prev,      {description = "play previous",     group = "audio"}),
+   awful.key({ }, "XF86AudioNext",        vol.media.next,      {description = "play next",         group = "audio"}),
+   awful.key({ modkey }, "-",             vol.media.next,      {description = "play next",         group = "audio"}),
+   awful.key({ modkey }, "/",             vol.media.next,      {description = "play next",         group = "audio"}),
 
    -- Brightness
    awful.key({ modkey }, "Down",          decrease_brightness, {description = "brightness down",   group = "screen"}),
