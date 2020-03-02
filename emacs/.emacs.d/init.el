@@ -1,6 +1,9 @@
 ;;; init.el --- Init-file
-
+;;
 ;;; Commentary:
+;;   For latest Emacs version:
+;;   sudo add-apt-repository ppa:ubuntu-elisp/ppa
+;;
 ;;   Inspiration:
 ;;    - https://www.masteringemacs.org/
 ;;    - https://writequit.org/org/settings.html
@@ -8,7 +11,7 @@
 ;;    - https://pages.sachachua.com/.emacs.d/Sacha.html
 ;;    - https://github.com/jorgenschaefer/Config/blob/master/emacs.el
 ;;    - https://github.com/alhassy/emacs.d
-
+;;
 ;;; Code:
 ;;; *** General setup ***
 ;;;; --- Encoding ---
