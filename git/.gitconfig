@@ -3,6 +3,9 @@
 	email = sstoltze@gmail.com
 [core]
 	editor = emacs
+    autocrlf = input
+[credential]
+    helper = store
 [alias]
         lg           = !"git lg2"
         lg-sim       = !"git lg --simplify-by-decoration"
