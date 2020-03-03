@@ -218,11 +218,11 @@
   "Setup prettify-symbols with common expressions."
   (sstoltze/remove-prettify-symbol "lambda")
   (sstoltze/prettify-symbol-list
-   '(("->"     . (?-  (Br . Bc) ?-  (Br . Bc) ?>))
-     ("->>"    . (?\s (Br . Bl) ?\s (Br . Bl) ?\s
-                      (Bl . Bl) ?-  (Bc . Br) ?- (Bc . Bc) ?>
-                      (Bc . Bl) ?-  (Br . Br) ?>))
-     ("<-"     . (?<  (Br . Bc) ?-  (Br . Bc) ?-)))))
+   '(("->"  . (?-  (Br . Bc) ?-  (Br . Bc) ?>))
+     ("->>" . (?\s (Br . Bl) ?\s (Br . Bl) ?\s
+                   (Bl . Bl) ?-  (Bc . Br) ?- (Bc . Bc) ?>
+                   (Bc . Bl) ?-  (Br . Br) ?>))
+     ("<-"  . (?<  (Br . Bc) ?-  (Br . Bc) ?-)))))
 (add-hook 'prog-mode-hook 'sstoltze/prettify-symbols-setup)
 
 (defun sstoltze/prettify-clojure ()
