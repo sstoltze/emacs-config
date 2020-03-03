@@ -211,8 +211,9 @@ vol.mute = function ()
    end)
 end
 
--- Spotify notifications
-naughty.config.presets.spotify = {
+-- Notifications
+-- Discord and Spotify
+naughty.config.presets.notifications = {
    -- if you want to disable Spotify notifications completely, return false
    callback = function(args)
       return true
@@ -220,11 +221,13 @@ naughty.config.presets.spotify = {
 
    -- Adjust the size of the notification
    height = 50,
-   width  = 300,
+   -- width  = 300,
    -- Guessing the value, find a way to fit it to the proper size later
    icon_size = 40
 }
-table.insert(naughty.dbus.config.mapping, {{appname = "Spotify"}, naughty.config.presets.spotify})
+
+table.insert(naughty.dbus.config.mapping, {{appname = "Spotify"}, naughty.config.presets.notifications})
+table.insert(naughty.dbus.config.mapping, {{appname = "discord"}, naughty.config.presets.notifications})
 
 -- CPU widget
 -- Initialize widget
@@ -272,7 +275,6 @@ vicious.register(bat, vicious.widgets.bat,
 
 -- Media controls
 vol.media = {}
-
 vol.media.playpause = function ()
    awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause")
 end
@@ -632,7 +634,7 @@ clientkeys = awful.util.table.join(
          c:raise()
       end ,
       {description = "maximize", group = "client"}),
-   awful.key({ modkey, "Control", "Shift" }, "o", function () xrandr.xrandr() end,
+   awful.key({ modkey, "Control", "Shift" }, "o", xrandr.xrandr,
       { description = "toggle xrandr options", group = "screen"}),
    awful.key({ modkey, "Control" }, "g", toggle_gap,
       { description = "toggle useless_gap", group = "layout"}),
