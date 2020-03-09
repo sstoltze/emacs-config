@@ -1,4 +1,4 @@
-{:repl {:plugins [[cider/cider-nrepl "0.24.0-SNAPSHOT"]
+{:repl {:plugins [[cider/cider-nrepl "0.25.0-SNAPSHOT"]
                   [refactor-nrepl "2.5.0"]]
         :dependencies [[org.clojure/tools.nrepl "0.2.13"]]}
  ;; Install graphviz and run 'lein ns-dep-graph' in a project
