@@ -18,6 +18,18 @@
             display-buffer-below-selected)
            (window-height . ,(ivy--height (ivy-state-caller ivy-last))))))))
 
+;; Flycheck
+;; Configure the appearance of C-c ! l (flycheck-list-errors)
+  ;; :config
+  ;; (add-to-list 'display-buffer-alist
+  ;;              `(,(rx bos "*Flycheck errors*" eos)
+  ;;                (display-buffer-reuse-window
+  ;;                 display-buffer-in-side-window)
+  ;;                (side            . bottom)
+  ;;                (reusable-frames . visible)
+  ;;                (window-height   . 0.3)))
+;; Enable if flycheck is slow
+;;(flycheck-highlighting-mode 'lines)
 
 (use-package company
   :ensure t
