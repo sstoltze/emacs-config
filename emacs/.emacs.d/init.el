@@ -461,6 +461,66 @@ point reaches the beginning or end of the buffer, stop there."
        (define-key input-decode-map [?\C-m] [C-m])
        (define-key input-decode-map [?\C-\M-m] [C-M-m])
 
+       (global-set-key (kbd "C-<tab>")
+                       'other-window)
+       (global-set-key (kbd "C-s-<tab>")
+                       (lambda ()
+                         (interactive)
+                         (other-window -1)))
+       (global-set-key (kbd "<C-iso-lefttab>")
+                       (lambda ()
+                         (interactive)
+                         (other-window -1)))
+
+       (defun sstoltze/split-windows ()
+         "Stolen from 'https://www.simplify.ba/articles/2016/01/25/display-buffer-alist/'."
+         (interactive)
+         ;; Create new window right of the current one
+         ;; Current window is 80 characters (columns) wide
+         (split-window-right)
+         ;; Go to next window
+         (other-window 1)
+         ;; Create new window below current one
+         (split-window-below)
+         ;; Switch to a *scratch*
+         (switch-to-buffer "*scratch*")
+         ;; Go to next window
+         (other-window 1)
+         ;; Start eshell in current window
+         (eshell)
+         ;; Go to first window
+         (other-window -2)
+         ;; never open any buffer in window with shell
+         (set-window-dedicated-p (nth 2 (window-list)) t))
+
+       (defun sstoltze/display-buffer (buffer &optional alist)
+         "Select window for BUFFER (need to use word ALIST on the first line).
+Returns second visible window if there are three visible windows,
+nil otherwise.  Minibuffer is ignored.
+Also stolen from 'https://www.simplify.ba/articles/2016/01/25/display-buffer-alist/'."
+         (let ((wnr (if (active-minibuffer-window) 2 1)))
+           (when (= (+ wnr 2) (length (window-list)))
+             (let ((window (nth wnr (window-list))))
+               (set-window-buffer window buffer)
+               window))))
+
+       (defvar sstoltze/help-temp-buffers '("^\\*Flycheck errors\\*$"
+                                            "^\\*Completions\\*$"
+                                            "^\\*Help\\*$"
+                                            ;; Other buffers names...
+                                            "^\\*Colors\\*$"
+                                            "^\\*Async Shell Command\\*$"))
+
+       (while sstoltze/help-temp-buffers
+         (add-to-list 'display-buffer-alist
+                      `(,(car sstoltze/help-temp-buffers)
+                        (display-buffer-reuse-window
+                         sstoltze/display-buffer
+                         display-buffer-in-side-window)
+                        (reusable-frames     . visible)
+                        (side                . top)))
+         (setq sstoltze/help-temp-buffers (cdr sstoltze/help-temp-buffers)))
+
        (when (not (string= (getenv "GDMSESSION") "awesome"))
          ;; Set initial frame size and position
          (defvar *sstoltze/position-factor*    0.40)
