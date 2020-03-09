@@ -70,28 +70,6 @@
       ;; This is never loaded
       custom-file                    "~/.emacs.d/custom.el")
 
-;; Disable various modes
-(dolist (mode '(tool-bar-mode
-                scroll-bar-mode
-                tooltip-mode
-                menu-bar-mode
-                electric-indent-mode
-                blink-cursor-mode))
-  (when (fboundp mode)
-    (funcall mode -1)))
-
-;; Enable various modes
-(dolist (mode '(show-paren-mode
-                ;; Prettify symbols
-                global-prettify-symbols-mode
-                ;; Column in modeline
-                column-number-mode))
-  (when (fboundp mode)
-    (funcall mode 1)))
-
-;; Highlight current line
-(add-hook 'prog-mode-hook 'hl-line-mode)
-
 ;; Make it easier to answer prompts
 (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -183,6 +161,28 @@
 (setq-default indent-tabs-mode              nil
               tab-width                     4
               tab-always-indent             'complete)
+
+;; Disable various modes
+(dolist (mode '(tool-bar-mode
+                scroll-bar-mode
+                tooltip-mode
+                menu-bar-mode
+                electric-indent-mode
+                blink-cursor-mode))
+  (when (fboundp mode)
+    (funcall mode -1)))
+
+;; Enable various modes
+(dolist (mode '(show-paren-mode
+                ;; Prettify symbols
+                global-prettify-symbols-mode
+                ;; Column in modeline
+                column-number-mode))
+  (when (fboundp mode)
+    (funcall mode 1)))
+
+;; Highlight current line
+(add-hook 'prog-mode-hook 'hl-line-mode)
 
 ;; Delete extra lines and spaces when saving
 (add-hook 'before-save-hook
@@ -308,41 +308,40 @@
                              (list 4 19 year))
                             adjusted-epact)))
       (calendar-dayname-on-or-before 0 (+ paschal-moon 7))))
-  (setq general-holidays
-        '((holiday-fixed 1 1 "Nytårsdag")
-          (holiday-fixed 1 6 "Hellige 3 konger")
-          ;; Easter and Pentecost
-          (holiday-filter-visible-calendar
-           (mapcar
-            (lambda (dag)
-              (list (calendar-gregorian-from-absolute
-                     (+ (da-easter displayed-year) (car dag)))
-                    (cadr dag)))
-            '(( -49 "Fastelavn")
-              (  -7 "Palmesøndag")
-              (  -3 "Skærtorsdag")
-              (  -2 "Langfredag")
-              (   0 "Påskedag")
-              (  +1 "Anden påskedag")
-              ( +26 "Store bededag")
-              ( +39 "Kristi himmelfartsdag")
-              ( +49 "Pinsedag")
-              ( +50 "Anden pinsedag"))))
-          (holiday-fixed 12 24 "Juleaften")
-          (holiday-fixed 12 25 "Juledag")
-          (holiday-fixed 12 26 "Anden juledag")
-          (holiday-fixed 12 31 "Nytårsaften"))
-        other-holidays
-        '((holiday-fixed 3 8 "Kvindernes internationale kampdag")
-          (holiday-fixed 5 1 "Arbejdernes internationale kampdag")
-          (holiday-fixed 5 4 "Danmarks befrielse")
-          (holiday-float 5 0 2 "Mors dag")
-          (holiday-fixed 6 5 "Grundlovsdag")
-          (holiday-fixed 6 5 "Fars dag")
-          (holiday-fixed 6 15 "Valdemarsdag (Dannebrog)")
-          (holiday-fixed 6 24 "Skt. Hans dag")))
-  (setq calendar-holidays
-        (append general-holidays other-holidays)))
+  (defvar general-holidays
+    '((holiday-fixed 1 1 "Nytårsdag")
+      (holiday-fixed 1 6 "Hellige 3 konger")
+      ;; Easter and Pentecost
+      (holiday-filter-visible-calendar
+       (mapcar
+        (lambda (dag)
+          (list (calendar-gregorian-from-absolute
+                 (+ (da-easter displayed-year) (car dag)))
+                (cadr dag)))
+        '(( -49 "Fastelavn")
+          (  -7 "Palmesøndag")
+          (  -3 "Skærtorsdag")
+          (  -2 "Langfredag")
+          (   0 "Påskedag")
+          (  +1 "Anden påskedag")
+          ( +26 "Store bededag")
+          ( +39 "Kristi himmelfartsdag")
+          ( +49 "Pinsedag")
+          ( +50 "Anden pinsedag"))))
+      (holiday-fixed 12 24 "Juleaften")
+      (holiday-fixed 12 25 "Juledag")
+      (holiday-fixed 12 26 "Anden juledag")
+      (holiday-fixed 12 31 "Nytårsaften")))
+  (defvar other-holidays
+    '((holiday-fixed 3 8 "Kvindernes internationale kampdag")
+      (holiday-fixed 5 1 "Arbejdernes internationale kampdag")
+      (holiday-fixed 5 4 "Danmarks befrielse")
+      (holiday-float 5 0 2 "Mors dag")
+      (holiday-fixed 6 5 "Grundlovsdag")
+      (holiday-fixed 6 5 "Fars dag")
+      (holiday-fixed 6 15 "Valdemarsdag (Dannebrog)")
+      (holiday-fixed 6 24 "Skt. Hans dag")))
+  (defvar calendar-holidays (append general-holidays other-holidays)))
 
 ;;;; Recentf
 (use-package recentf
