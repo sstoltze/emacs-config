@@ -936,6 +936,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 
 ;;;; --- Flycheck ---
 ;; Next-error and prev-error are bound to M-g n and M-g p
+;; Use C-c ! l to list all errors in a separate buffer
 (use-package flycheck
   :ensure t
   :defer t
@@ -944,8 +945,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :hook ((prog-mode . flycheck-mode)
          (text-mode . flycheck-mode))
   :custom
-  ;; Enable if flycheck is slow
-  ;;(flycheck-highlighting-mode 'lines)
   (flycheck-check-syntax-automatically '(save idle-change mode-enable idle-buffer-switch))
   (flycheck-idle-change-delay          2)
   (flycheck-idle-buffer-switch-delay   2))
