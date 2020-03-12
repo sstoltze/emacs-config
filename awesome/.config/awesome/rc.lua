@@ -787,7 +787,7 @@ awful.rules.rules = {
    { rule_any = { class = {"Firefox", "Conkeror"} },
      properties = { tag = "Net" } },
    -- Social
-   { rule_any = { class = {"Slack", "discord", "Skype"} },
+   { rule_any = { class = {"Slack", "discord", "Skype", "Microsoft Teams - Preview"} },
      properties = { tag = "Social" } },
    -- Steam
    { rule = { class = "Steam" },
