@@ -441,12 +441,12 @@ point reaches the beginning or end of the buffer, stop there."
                                        :background "grey20")))
 
        ;; Fonts
-       ;; Better horizontal splits
+       ;; Iosevka - Better horizontal splits
        ;; sudo add-apt-repository ppa:laurent-boulard/fonts
        ;; sudo apt install fonts-iosevka
        (when (find-font (font-spec :name "Iosevka"))
          (set-frame-font "Iosevka-10.5" nil t))
-       ;; Better vertical splits - better modeline
+       ;; Fira Code - Better vertical splits - better modeline
        ;; sudo apt install fonts-firacode
        ;; (set-frame-font "Fira Code-10")
 
@@ -472,6 +472,36 @@ point reaches the beginning or end of the buffer, stop there."
                          (interactive)
                          (other-window -1)))
 
+       (defun sstoltze/display-buffer (buffer &optional alist)
+         "Select window for BUFFER (need to use word ALIST on the first line).
+Returns second visible window if there are three visible windows,
+nil otherwise.  Minibuffer is ignored.
+Also stolen from 'https://www.simplify.ba/articles/2016/01/25/display-buffer-alist/'."
+         (let ((wnr (if (active-minibuffer-window) 2 1)))
+           (when (= (+ wnr 2) (length (window-list)))
+             (let ((window (nth wnr (window-list))))
+               (set-window-buffer window buffer)
+               window))))
+
+       (defun sstoltze/setup-help-buffers ()
+         "Setup help buffers for use with sstoltze/split-windows."
+         (let ((sstoltze/help-temp-buffers '("^\\*Flycheck errors\\*$"
+                                             "^\\*Completions\\*$"
+                                             "^\\*Help\\*$"
+                                             ;; Other buffers names...
+                                             "^\\*Colors\\*$"
+                                             "^\\*Async Shell Command\\*$")))
+
+           (while sstoltze/help-temp-buffers
+             (add-to-list 'display-buffer-alist
+                          `(,(car sstoltze/help-temp-buffers)
+                            (display-buffer-reuse-window
+                             sstoltze/display-buffer
+                             display-buffer-in-side-window)
+                            (reusable-frames     . visible)
+                            (side                . top)))
+             (setq sstoltze/help-temp-buffers (cdr sstoltze/help-temp-buffers)))))
+
        (defun sstoltze/split-windows ()
          "Stolen from 'https://www.simplify.ba/articles/2016/01/25/display-buffer-alist/'."
          (interactive)
@@ -491,35 +521,8 @@ point reaches the beginning or end of the buffer, stop there."
          ;; Go to first window
          (other-window -2)
          ;; never open any buffer in window with shell
-         (set-window-dedicated-p (nth 2 (window-list)) t))
-
-       (defun sstoltze/display-buffer (buffer &optional alist)
-         "Select window for BUFFER (need to use word ALIST on the first line).
-Returns second visible window if there are three visible windows,
-nil otherwise.  Minibuffer is ignored.
-Also stolen from 'https://www.simplify.ba/articles/2016/01/25/display-buffer-alist/'."
-         (let ((wnr (if (active-minibuffer-window) 2 1)))
-           (when (= (+ wnr 2) (length (window-list)))
-             (let ((window (nth wnr (window-list))))
-               (set-window-buffer window buffer)
-               window))))
-
-       (defvar sstoltze/help-temp-buffers '("^\\*Flycheck errors\\*$"
-                                            "^\\*Completions\\*$"
-                                            "^\\*Help\\*$"
-                                            ;; Other buffers names...
-                                            "^\\*Colors\\*$"
-                                            "^\\*Async Shell Command\\*$"))
-
-       (while sstoltze/help-temp-buffers
-         (add-to-list 'display-buffer-alist
-                      `(,(car sstoltze/help-temp-buffers)
-                        (display-buffer-reuse-window
-                         sstoltze/display-buffer
-                         display-buffer-in-side-window)
-                        (reusable-frames     . visible)
-                        (side                . top)))
-         (setq sstoltze/help-temp-buffers (cdr sstoltze/help-temp-buffers)))
+         (set-window-dedicated-p (nth 2 (window-list)) t)
+         (sstoltze/setup-help-buffers))
 
        (when (not (string= (getenv "GDMSESSION") "awesome"))
          ;; Set initial frame size and position
