@@ -43,8 +43,8 @@ theme.fg_minimize   = darker(theme.fg_normal, 50)
 theme.bg_minimize   = darker(theme.bg_normal, 15)
 
 -- Notifications
-theme.notification_bg = theme.fg_focus
-theme.notification_fg = theme.bg_focus
+theme.notification_bg = darker(theme.fg_focus, 40)
+theme.notification_fg = theme.bg_normal
 
 -- Border
 theme.border_focus  = theme.fg_focus
