@@ -223,7 +223,7 @@ naughty.config.presets.notifications = {
    height = 50,
    -- width  = 300,
    -- Guessing the value, find a way to fit it to the proper size later
-   icon_size = 40
+   icon_size = 40,
 }
 
 table.insert(naughty.dbus.config.mapping, {{appname = "Spotify"}, naughty.config.presets.notifications})
@@ -800,7 +800,10 @@ awful.rules.rules = {
      properties = { tag = "Video" } },
    -- Math
    { rule = { class = "Mathematica" },
-     properties = { tag = "Math" } }
+     properties = { tag = "Math" } },
+   -- Prevent teams notifications from stealing focus
+   { rule = { name = "Microsoft Teams Notification" },
+     properties = { focusable = false } }
 }
 -- }}}
 
