@@ -42,6 +42,10 @@ theme.bg_systray    = theme.bg_normal
 theme.fg_minimize   = darker(theme.fg_normal, 50)
 theme.bg_minimize   = darker(theme.bg_normal, 15)
 
+-- Notifications
+theme.notification_bg = theme.fg_focus
+theme.notification_fg = theme.bg_focus
+
 -- Border
 theme.border_focus  = theme.fg_focus
 --theme.border_normal = xrdb.color0
