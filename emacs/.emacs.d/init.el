@@ -1470,9 +1470,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (haskell-process-auto-import-loaded-modules  t)
   (haskell-process-log                         t)
   (haskell-compile-cabal-build-command         "stack build")
-  :bind (("M-." . haskell-mode-jump-to-def)
-         (:map haskell-mode-map
-               ("C-c C-c" . haskell-compile))
+  :bind ((:map haskell-mode-map
+               ("C-c C-c" . haskell-compile)
+               ("M-."     . haskell-mode-jump-to-def)
+               ("C-c :"   . haskell-hoogle))
          (:map haskell-cabal-mode-map
                ("C-c C-c" . haskell-compile))))
 
