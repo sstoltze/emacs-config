@@ -802,9 +802,10 @@ awful.rules.rules = {
    -- Math
    { rule = { class = "Mathematica" },
      properties = { tag = "Math" } },
-   -- Prevent teams notifications from stealing focus
+   -- Prevent teams notifications from stealing focus and place in top right
    { rule = { name = "Microsoft Teams Notification" },
-     properties = { focusable = false } },
+     properties = { focusable = false,
+                    placement = awful.placement.top_right, } },
 }
 -- }}}
 
