@@ -753,7 +753,8 @@ awful.rules.rules = {
         role = {
            "AlarmWindow",  -- Thunderbird's calendar.
            "pop-up",       -- e.g. Google Chrome's (detached) Developer Tools.
-        }
+           "Dialog",       -- Firefox download dialog
+        },
    }, properties = { floating = true } },
    -- Maximized clients
    { rule_any = {
@@ -762,7 +763,6 @@ awful.rules.rules = {
         },
         class = {
            "Emacs",
-           "Firefox",
            "Conkeror",
            "Slack",
            "discord",
@@ -784,8 +784,9 @@ awful.rules.rules = {
         },
    }, properties = { fullscreen = true } },
    -- Net
-   { rule_any = { class = {"Firefox", "Conkeror"} },
-     properties = { tag = "Net" } },
+   { rule = { role = "browser" },
+     properties = { maximized = true,
+                    tag = "Net"} },
    -- Social
    { rule_any = { class = {"Slack", "discord", "Skype", "Microsoft Teams - Preview"} },
      properties = { tag = "Social" } },
@@ -803,7 +804,7 @@ awful.rules.rules = {
      properties = { tag = "Math" } },
    -- Prevent teams notifications from stealing focus
    { rule = { name = "Microsoft Teams Notification" },
-     properties = { focusable = false } }
+     properties = { focusable = false } },
 }
 -- }}}
 
