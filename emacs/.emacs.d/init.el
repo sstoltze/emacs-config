@@ -963,7 +963,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          (cider-repl-mode                  . turn-on-smartparens-strict-mode)
          (lisp-interaction-mode            . turn-on-smartparens-strict-mode)
          (slime-repl-mode                  . turn-on-smartparens-strict-mode)
-         (eval-expression-minibuffer-setup . turn-on-smartparens-strict-mode))
+         (eval-expression-minibuffer-setup . turn-on-smartparens-strict-mode)
+         (haskell-interactive-mode         . turn-on-smartparens-strict-mode))
   :bind ((:map smartparens-mode-map
                ("M-s"     . sp-splice-sexp)
                ("M-S"     . sp-split-sexp)
@@ -989,6 +990,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :custom
   (sp-highlight-pair-overlay nil)
   :config
+  ;; Make smartparens work with M-:
+  (setq sp-ignore-modes-list (delete 'minibuffer-inactive-mode sp-ignore-modes-list))
   ;; Ensure ' works in lisps and does other setup
   (require 'smartparens-config))
 
