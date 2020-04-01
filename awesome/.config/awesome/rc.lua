@@ -234,16 +234,26 @@ vol.media.next = function ()
 end
 
 -- Bluetooth
-vol.bluetooth_profiles = {"a2dp_sink", "off", "headset_head_unit"}
-vol.bluetooth_change_profile = function ()
-   awful.spawn.easy_async_with_shell("pactl list cards | grep 'Active Profile' | cut -d ' ' -f 3",
-                                     function (profile, stderr, reason, exit_code)
-                                        local new_profile = "a2dp_sink"
+vol.bluetooth = {}
+vol.bluetooth.command = [[pactl list cards | awk '
+BEGIN               { card = "no"; profile = "off"; }
+/^Card/             { gsub(/[^0-9]/, "", $2); card = $2; }
+/^[^a-zA-Z]Active/  { profile = $3; }
+END                 { print card " " profile }']]
+vol.bluetooth.change_profile = function ()
+   awful.spawn.easy_async_with_shell(vol.bluetooth.command,
+                                     function (output, stderr, reason, exit_code)
+                                        local profile, card, new_profile
+                                        -- Default to a2dp_sink
+                                        new_profile = "a2dp_sink"
+                                        card, profile = string.match(output, "(%d+) ([^%s]+)")
+                                        -- If already a2dp_sink, switch to headset
                                         if profile:gsub("%s+", "") == "a2dp_sink" then
                                            new_profile = "headset_head_unit"
                                         end
                                         naughty.notify({text = "Bluetooth: " .. new_profile})
-                                        awful.spawn.with_shell("pactl set-card-profile 0 off; pactl set-card-profile 0 " .. new_profile)
+                                        -- Switch to correct profile
+                                        awful.spawn.with_shell("pactl set-card-profile " .. card .. " " .. new_profile)
    end)
 end
 
@@ -579,7 +589,7 @@ local globalkeys = awful.util.table.join(
    awful.key({ }, "XF86AudioNext",        vol.media.next,               {description = "play next",                group = "audio"}),
    awful.key({ modkey }, "-",             vol.media.next,               {description = "play next",                group = "audio"}),
    awful.key({ modkey }, "/",             vol.media.next,               {description = "play next",                group = "audio"}),
-   awful.key({ modkey }, "+",             vol.bluetooth_change_profile, {description = "change bluetooth profile", group = "audio"}),
+   awful.key({ modkey }, "+",             vol.bluetooth.change_profile, {description = "change bluetooth profile", group = "audio"}),
 
    -- Brightness
    awful.key({ modkey }, "Down",          brightness.decrease, {description = "brightness down",   group = "screen"}),
