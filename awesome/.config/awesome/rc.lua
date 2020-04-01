@@ -211,6 +211,42 @@ vol.mute = function ()
    end)
 end
 
+-- Media controls
+vol.media = {}
+vol.media.playpause = function ()
+   awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause")
+end
+
+vol.media.play = function ()
+   awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Play")
+end
+
+vol.media.pause = function ()
+   awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Pause")
+end
+
+vol.media.prev = function ()
+   awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous")
+end
+
+vol.media.next = function ()
+   awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next")
+end
+
+-- Bluetooth
+vol.bluetooth_profiles = {"a2dp_sink", "off", "headset_head_unit"}
+vol.bluetooth_change_profile = function ()
+   awful.spawn.easy_async_with_shell("pactl list cards | grep 'Active Profile' | cut -d ' ' -f 3",
+                                     function (profile, stderr, reason, exit_code)
+                                        local new_profile = "a2dp_sink"
+                                        if profile:gsub("%s+", "") == "a2dp_sink" then
+                                           new_profile = "headset_head_unit"
+                                        end
+                                        naughty.notify({text = "Bluetooth: " .. new_profile})
+                                        awful.spawn.with_shell("pactl set-card-profile 0 off; pactl set-card-profile 0 " .. new_profile)
+   end)
+end
+
 -- Notifications
 -- Discord and Spotify
 naughty.config.presets.notifications = {
@@ -272,28 +308,6 @@ vicious.register(bat, vicious.widgets.bat,
                     bat_t:set_text( (args[1] == "-" and "Time left: " or ("Charging done in: ")) .. l)
                     return string.format("Bat: <span fgcolor='%s' bgcolor='%s'>%2d%s</span>", fg_colour, bg_colour, args[2], args[1] == "-" and "%" or "+")
                  end, 61, "BAT0")
-
--- Media controls
-vol.media = {}
-vol.media.playpause = function ()
-   awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause")
-end
-
-vol.media.play = function ()
-   awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Play")
-end
-
-vol.media.pause = function ()
-   awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Pause")
-end
-
-vol.media.prev = function ()
-   awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous")
-end
-
-vol.media.next = function ()
-   awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next")
-end
 
 local brightness = {}
 brightness.brightness = 0.6
@@ -548,23 +562,24 @@ local globalkeys = awful.util.table.join(
       {description = "change keyboard layout", group = "keyboard"}),
 
    -- Volume/media controls
-   awful.key({ }, "XF86AudioLowerVolume", vol.lower,           {description = "volume down",       group = "audio"}),
-   awful.key({ modkey }, "æ",             vol.lower,           {description = "volume down",       group = "audio"}),
-   awful.key({ modkey }, ";",             vol.lower,           {description = "volume down",       group = "audio"}),
-   awful.key({ }, "XF86AudioRaiseVolume", vol.raise,           {description = "volume up",         group = "audio"}),
-   awful.key({ modkey }, "ø",             vol.raise,           {description = "volume up",         group = "audio"}),
-   awful.key({ modkey }, "'",             vol.raise,           {description = "volume up",         group = "audio"}),
-   awful.key({ }, "XF86AudioMute",        vol.mute,            {description = "volume mute",       group = "audio"}),
-   awful.key({ modkey }, "å",             vol.mute,            {description = "volume mute",       group = "audio"}),
-   awful.key({ modkey }, "[",             vol.mute,            {description = "volume mute",       group = "audio"}),
-   awful.key({ }, "XF86AudioPause",       vol.media.pause,     {description = "pause media",       group = "audio"}),
-   awful.key({ }, "XF86AudioPlay",        vol.media.play,      {description = "play media",        group = "audio"}),
-   awful.key({ modkey }, ".",             vol.media.playpause, {description = "play/pause",        group = "audio"}),
-   awful.key({ }, "XF86AudioPrev",        vol.media.prev,      {description = "play previous",     group = "audio"}),
-   awful.key({ modkey }, ",",             vol.media.prev,      {description = "play previous",     group = "audio"}),
-   awful.key({ }, "XF86AudioNext",        vol.media.next,      {description = "play next",         group = "audio"}),
-   awful.key({ modkey }, "-",             vol.media.next,      {description = "play next",         group = "audio"}),
-   awful.key({ modkey }, "/",             vol.media.next,      {description = "play next",         group = "audio"}),
+   awful.key({ }, "XF86AudioLowerVolume", vol.lower,                    {description = "volume down",              group = "audio"}),
+   awful.key({ modkey }, "æ",             vol.lower,                    {description = "volume down",              group = "audio"}),
+   awful.key({ modkey }, ";",             vol.lower,                    {description = "volume down",              group = "audio"}),
+   awful.key({ }, "XF86AudioRaiseVolume", vol.raise,                    {description = "volume up",                group = "audio"}),
+   awful.key({ modkey }, "ø",             vol.raise,                    {description = "volume up",                group = "audio"}),
+   awful.key({ modkey }, "'",             vol.raise,                    {description = "volume up",                group = "audio"}),
+   awful.key({ }, "XF86AudioMute",        vol.mute,                     {description = "volume mute",              group = "audio"}),
+   awful.key({ modkey }, "å",             vol.mute,                     {description = "volume mute",              group = "audio"}),
+   awful.key({ modkey }, "[",             vol.mute,                     {description = "volume mute",              group = "audio"}),
+   awful.key({ }, "XF86AudioPause",       vol.media.pause,              {description = "pause media",              group = "audio"}),
+   awful.key({ }, "XF86AudioPlay",        vol.media.play,               {description = "play media",               group = "audio"}),
+   awful.key({ modkey }, ".",             vol.media.playpause,          {description = "play/pause",               group = "audio"}),
+   awful.key({ }, "XF86AudioPrev",        vol.media.prev,               {description = "play previous",            group = "audio"}),
+   awful.key({ modkey }, ",",             vol.media.prev,               {description = "play previous",            group = "audio"}),
+   awful.key({ }, "XF86AudioNext",        vol.media.next,               {description = "play next",                group = "audio"}),
+   awful.key({ modkey }, "-",             vol.media.next,               {description = "play next",                group = "audio"}),
+   awful.key({ modkey }, "/",             vol.media.next,               {description = "play next",                group = "audio"}),
+   awful.key({ modkey }, "+",             vol.bluetooth_change_profile, {description = "change bluetooth profile", group = "audio"}),
 
    -- Brightness
    awful.key({ modkey }, "Down",          brightness.decrease, {description = "brightness down",   group = "screen"}),
