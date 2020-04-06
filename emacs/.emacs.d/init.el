@@ -1462,6 +1462,16 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (csv-separators (list ";" "	")))
 
 ;;;; --- Haskell ---
+(defun haskell-window-setup ()
+  "Setup windows for Haskell development."
+  (interactive)
+  (split-window-right)
+  (other-window 1)
+  (split-window-below)
+  (haskell-interactive-switch)
+  (enlarge-window -15)
+  (other-window 1))
+
 (use-package haskell-mode
   :ensure t
   :defer t
@@ -1476,7 +1486,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :bind ((:map haskell-mode-map
                ("C-c C-c" . haskell-compile)
                ("M-."     . haskell-mode-jump-to-def)
-               ("C-c :"   . haskell-hoogle))
+               ("C-c :"   . haskell-hoogle)
+               ("C-c C-w" . haskell-window-setup))
          (:map haskell-cabal-mode-map
                ("C-c C-c" . haskell-compile))))
 
