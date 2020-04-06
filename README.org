@@ -7,3 +7,37 @@ cd emacs-config
 make install
 #+END_SRC
 on any system with git, make and stow (for Linux and Cygwin) installed.
+
+** Packages required
+Below is an incomplete list of packages to install
+
+*** General
+#+begin_src shell
+sudo apt-add-repository ppa:fish-shell/release-3
+sudo add-apt-repository ppa:bluetooth/bluez
+sudo add-apt-repository ppa:laurent-boulard/fonts
+sudo add-apt-repository ppa:ubuntu-elisp/ppa
+sudo add-apt-repository ppa:klaus-vormweg/awesome
+sudo apt install fish firefox bluez emacs-snapshot awesome awesome-extra xfonts-terminus fonts-iosevka fonts-iosevka-term feh i3lock sox imagemagick scrot
+curl -L https://sw.kovidgoyal.net/kitty/installer.sh | bash /dev/stdin
+#+end_src
+
+Update alternatives:
+#+begin_src shell
+sudo update-alternatives --config gnome-www-browser
+sudo update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator ~/.local/bin/kitty 50
+sudo update-alternatives --config x-terminal-emulator
+#+end_src
+
+*** Programming
+
+**** Haskell
+#+begin_src shell
+curl -sSL https://get.haskellstack.org/ | bash
+#+end_src
+
+**** Racket
+#+begin_src shell
+sudo add-apt-repository ppa:plt/racket
+sudo apt install racket
+#+end_src
