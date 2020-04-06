@@ -667,8 +667,8 @@ clientkeys = awful.util.table.join(
       { description = "increase useless_gap", group = "layout"}),
    awful.key({ modkey, "Shift" }, "d", decrease_gap,
       { description = "decrease useless_gap", group = "layout"}),
-   awful.key({ modkey,           }, "q", function () awful.spawn.with_shell("slock")  end,
-      { description = "slock", group = "awesome" })
+   awful.key({ modkey,         }, "q", function () awful.spawn.with_shell("screenlock")  end,
+      { description = "lock screen", group = "awesome" })
 )
 
 -- Bind all key numbers to tags.
