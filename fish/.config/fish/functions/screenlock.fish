@@ -5,6 +5,8 @@ function screenlock
     set -l pngfile "/tmp/screenlock.png"
     set -l bmpfile "/tmp/screenlock.bmp"
     set -l glitchedfile "/tmp/screenlock_g.bmp"
+    #set -l locktext (random choice "Xₘ≃Ω(SUₘ/T)" "P(A|B)=P(B|A)·P(A)⁄P(B)" "…→Hⁱ(X,A)→Hⁱ(X)→Hⁱ(A)→Hⁱ⁺¹(X,A)→…" "Hⁿ(X✕Y)≌⊕ᵢHⁱ(X)⊗Hⁿ⁻ⁱ(Y)")
+    set -l locktext (random choice "‽" "ϕ" "⊼" "⟂")
 
     scrot -z $pngfile
 
@@ -20,7 +22,7 @@ function screenlock
     convert $bmpfile -rotate -90 $bmpfile
 
     # Add lock icon, pixelate and convert back to png
-    convert $bmpfile -gravity center -font "Iosevka" -pointsize 200 -fill '#bf616a' -draw "text 0,0 '?" -channel RGBA $pngfile
+    convert $bmpfile -gravity center -font "Iosevka" -pointsize 100 -fill '#bf616a' -draw "text 0,0 '$locktext'" -channel RGBA $pngfile
 
     i3lock -e -u -i $pngfile
     #feh $pngfile
