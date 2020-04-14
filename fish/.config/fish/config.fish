@@ -33,9 +33,11 @@ set -x RUSTUP_HOME "$HOME/.local/rustup"
 
 # Guix
 set -x GUIX_LOCPATH "$HOME/.guix-profile/lib/locale"
+set -x GUIX_PROFILE "$HOME/.guix-profile"
 if test -d ~/.config/guix
     set -x PATH ~/.config/guix/current/bin $PATH
     set -x PATH ~/.guix-profile/bin $PATH
+    set -x PATH ~/.guix-profile/sbin $PATH
 end
 
 # At work?
