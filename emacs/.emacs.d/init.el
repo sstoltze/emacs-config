@@ -159,8 +159,11 @@
 
 ;; Do not use tabs
 (setq-default indent-tabs-mode              nil
+              show-trailing-whitespace      t
               tab-width                     4
               tab-always-indent             'complete)
+
+(set-face-background 'trailing-whitespace "IndianRed4")
 
 ;; Disable various modes
 (dolist (mode '(tool-bar-mode
