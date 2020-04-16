@@ -813,7 +813,7 @@ awful.rules.rules = {
      properties = { maximized = true,
                     tag = "Net"} },
    -- Social
-   { rule_any = { class = {"Slack", "discord", "Skype", "Microsoft Teams - Preview"} },
+   { rule_any = { class = {"Slack", "discord", "Skype", "Microsoft Teams - Preview", "Keybase"} },
      properties = { tag = "Social" } },
    -- Steam
    { rule = { class = "Steam" },
@@ -941,6 +941,9 @@ awful.spawn.easy_async_with_shell('echo -n "$USER"', function(user, stderr, reas
                                      elseif user == "w26164\n" then -- Work setup
                                         spawn_once_with_shell("solaar")
                                         spawn_once_with_shell("blueman-applet")
+                                        spawn_once_with_shell("emacs")
+                                        spawn_once_with_shell("firefox")
                                         spawn_once_with_shell("slack")
+                                        spawn_once_with_shell("teams")
                                      end
 end)
