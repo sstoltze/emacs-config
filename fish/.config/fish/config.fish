@@ -40,6 +40,11 @@ if test -d ~/.config/guix
     set -x PATH ~/.guix-profile/sbin $PATH
 end
 
+# Nix
+if test -d ~/.nix-profile
+    fenv source ~/.nix-profile/etc/profile.d/nix.sh
+end
+
 # At work?
 if test "$USER" = "w26164"
     direnv hook fish | source
