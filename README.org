@@ -18,7 +18,7 @@ sudo add-apt-repository ppa:bluetooth/bluez
 sudo add-apt-repository ppa:laurent-boulard/fonts
 sudo add-apt-repository ppa:ubuntu-elisp/ppa
 sudo add-apt-repository ppa:klaus-vormweg/awesome
-sudo apt install fish firefox bluez emacs-snapshot awesome awesome-extra xfonts-terminus fonts-iosevka fonts-iosevka-term feh i3lock sox imagemagick scrot
+sudo apt install fish firefox bluez emacs-snapshot awesome awesome-extra xfonts-terminus fonts-iosevka fonts-iosevka-term feh i3lock sox imagemagick scrot direnv
 curl -L https://sw.kovidgoyal.net/kitty/installer.sh | bash /dev/stdin
 #+end_src
 
