@@ -1568,6 +1568,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :ensure t
   :defer t)
 
+;;;; --- Nix ---
+(use-package nix-mode
+  :ensure t
+  :defer t)
+
 ;;;; --- ESS - Emacs Speaks Statistics ---
 (use-package ess
   :ensure t
