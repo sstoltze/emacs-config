@@ -1478,7 +1478,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package haskell-mode
   :ensure t
   :defer t
-  :hook ((haskell-mode . haskell-indentation-mode)
+  :hook ((haskell-mode . subword-mode)
+         (haskell-mode . haskell-indentation-mode)
          (haskell-mode . haskell-doc-mode)
          (haskell-mode . interactive-haskell-mode))
   :custom
