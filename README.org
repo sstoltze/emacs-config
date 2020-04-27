@@ -41,3 +41,13 @@ curl -sSL https://get.haskellstack.org/ | bash
 sudo add-apt-repository ppa:plt/racket
 sudo apt install racket
 #+end_src
+
+**** Nix
+#+begin_src shell
+curl https://nixos.org/nix/install | bash
+#+end_src
+Restart shell. Run:
+#+begin_src shell
+nix-env --install --file https://github.com/target/lorri/archive/master.tar.gz
+nix-env --install niv
+#+end_src
