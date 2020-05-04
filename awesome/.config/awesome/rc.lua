@@ -746,7 +746,8 @@ awful.rules.rules = {
      }
    },
    -- Remove titlebars from normal clients and dialogs
-   { rule_any = { type = { "normal", "dialog" } },
+   { rule_any = { type = { "normal",
+                           "dialog" } },
      properties = { titlebars_enabled = false} },
    -- Floating clients
    { rule_any = {
@@ -813,7 +814,11 @@ awful.rules.rules = {
      properties = { maximized = true,
                     tag = "Net"} },
    -- Social
-   { rule_any = { class = {"Slack", "discord", "Skype", "Microsoft Teams - Preview", "Keybase"} },
+   { rule_any = { class = { "Slack",
+                            "discord",
+                            "Skype",
+                            "Microsoft Teams - Preview",
+                            "Keybase", } },
      properties = { tag = "Social" } },
    -- Steam
    { rule = { class = "Steam" },
@@ -827,10 +832,14 @@ awful.rules.rules = {
    -- Math
    { rule = { class = "Mathematica" },
      properties = { tag = "Math" } },
-   -- Prevent teams notifications from stealing focus and place in top right
-   { rule = { name = "Microsoft Teams Notification" },
+   -- Prevent notifications from stealing focus and place in top right
+   { rule_any = { name = { "Microsoft Teams Notification",
+                           "Slack Call Minipanel" },
+                  type = { "notification" }, },
      properties = { focusable = false,
-                    placement = awful.placement.top_right, } },
+                    floating = true,
+                    ontop = true,
+                    placement = awful.placement.top_right } },
 }
 -- }}}
 
