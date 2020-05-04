@@ -434,6 +434,18 @@ point reaches the beginning or end of the buffer, stop there."
   (comment-or-uncomment-region (line-beginning-position) (line-end-position)))
 (global-set-key (kbd "C-;") 'toggle-comment-on-line)
 
+;;;; --- Whitespace ---
+;; This conflicts slightly with show-trailing-whitespace, but for now I'll keep both on
+(use-package whitespace-mode
+  :defer t
+  :hook ((prog-mode       . whitespace-mode)
+         (magit-diff-mode . whitespace-mode))
+  :custom
+  (whitespace-style '(face trailing tabs empty space-before-tab space-after-tab))
+  :config
+  (set-face-background 'whitespace-empty "IndianRed4")
+  (set-face-background 'whitespace-trailing "IndianRed4"))
+
 ;;;; --- Frame-setup ---
 (cond ((display-graphic-p) ;; Window system
        (load-theme 'deeper-blue t)
