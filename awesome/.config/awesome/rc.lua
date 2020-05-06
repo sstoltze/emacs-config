@@ -747,7 +747,7 @@ awful.rules.rules = {
    },
    -- Remove titlebars from normal clients and dialogs
    { rule_any = { type = { "normal",
-                           "dialog" } },
+                           "dialog", } },
      properties = { titlebars_enabled = false} },
    -- Floating clients
    { rule_any = {
@@ -775,11 +775,16 @@ awful.rules.rules = {
         },
         name = {
            "Event Tester",  -- xev.
+           "Microsoft Teams Notification",
+           "Slack Call Minipanel",
         },
         role = {
            "AlarmWindow",  -- Thunderbird's calendar.
            "pop-up",       -- e.g. Google Chrome's (detached) Developer Tools.
            "Dialog",       -- Firefox download dialog
+        },
+        type = {
+           "notification",
         },
    }, properties = { floating = true } },
    -- Maximized clients
@@ -809,17 +814,31 @@ awful.rules.rules = {
            "Mathematica",
         },
    }, properties = { fullscreen = true } },
+   -- Prevent notifications from stealing focus and place in top right
+   { rule_any = {
+        name = {
+           "Microsoft Teams Notification",
+           "Slack Call Minipanel",
+        },
+        type = {
+           "notification",
+        },
+   }, properties = { focusable = false,
+                    ontop = true,
+                    placement = awful.placement.top, } },
    -- Net
    { rule = { role = "browser" },
      properties = { maximized = true,
-                    tag = "Net"} },
+                    tag = "Net" } },
    -- Social
-   { rule_any = { class = { "Slack",
-                            "discord",
-                            "Skype",
-                            "Microsoft Teams - Preview",
-                            "Keybase", } },
-     properties = { tag = "Social" } },
+   { rule_any = {
+        class = {
+           "Slack",
+           "discord",
+           "Skype",
+           "Microsoft Teams - Preview",
+           "Keybase", },
+   }, properties = { tag = "Social" } },
    -- Steam
    { rule = { class = "Steam" },
      properties = { tag = "Steam" } },
@@ -832,14 +851,6 @@ awful.rules.rules = {
    -- Math
    { rule = { class = "Mathematica" },
      properties = { tag = "Math" } },
-   -- Prevent notifications from stealing focus and place in top right
-   { rule_any = { name = { "Microsoft Teams Notification",
-                           "Slack Call Minipanel" },
-                  type = { "notification" }, },
-     properties = { focusable = false,
-                    floating = true,
-                    ontop = true,
-                    placement = awful.placement.top_right } },
 }
 -- }}}
 
