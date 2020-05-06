@@ -1839,7 +1839,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                             (let ((browse-url-default-function 'browse-url-default-browser))
                               (mu4e-view-go-to-url))))))
       :custom
-      (mu4e-maildir                      "~/.mail")
+      (mu4e-maildir                      "~/.local/.mail")
       ;; gpg-agent is set to use pinentry-qt for a dialog box
       (mu4e-get-mail-command             "mbsync -a")
       ;; Show images in mails
@@ -1883,6 +1883,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                                     (smtpmail-default-smtp-server . "smtp.gmail.com")
                                     (smtpmail-smtp-server         . "smtp.gmail.com")
                                     (smtpmail-smtp-service        . 587)))))
+      ;; UNTRUE?
       ;; Authinfo - open in emacs and add lines for each context, e.g.
       ;; machine <smtp.foo.com> login <mail@address.com> password <secret> port <587>
       (add-to-list 'auth-sources
