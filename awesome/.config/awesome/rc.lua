@@ -825,7 +825,7 @@ awful.rules.rules = {
         },
    }, properties = { focusable = false,
                     ontop = true,
-                    placement = awful.placement.top, } },
+                    placement = awful.placement.top_right, } },
    -- Net
    { rule = { role = "browser" },
      properties = { maximized = true,
