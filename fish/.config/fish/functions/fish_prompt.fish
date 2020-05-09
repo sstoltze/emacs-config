@@ -4,8 +4,12 @@ function fish_prompt --description 'Write out the prompt'
 	set -l prompt_symbol ' >'
 
 	if test (math (string length $pwd+$prompt_symbol+(date +%R)+$USER) + 15) -gt $COLUMNS
-	    set pwd (prompt_pwd)
+        set pwd (prompt_pwd)
 	end
+
+    if test -n "$IN_NIX_SHELL"
+        set pwd "[nix-shell:$pwd]"
+    end
 
 	printf "%s%s %s%s%s %s%s%s%s%s " (set_color $fish_color_normal) (date +%R) (set_color -u $fish_color_user) $USER (set_color normal) (set_color $fish_color_cwd) $pwd (set_color normal) (__fish_vcs_prompt) $prompt_symbol
 end
