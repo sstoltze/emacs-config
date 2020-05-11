@@ -1,9 +1,9 @@
 function fish_greeting
-	 # echo $fish_greeting
+    # echo $fish_greeting
 end
 
 function sh
-	 fish $argv
+    fish $argv
 end
 
 set -x VISUAL "emacs "
@@ -59,6 +59,10 @@ end
 # Colours
 set pink      ff99ff
 set dark_pink cc99ff
+
+set orange    f2aa4c
+
+set fish_color_nix $orange
 
 # Git prompt
 set __fish_git_prompt_showdirtystate          'yes'
