@@ -1692,7 +1692,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :custom
   ;; (nrepl-log-messages t)
   (cider-use-overlays 'both)
-  (cider-repl-result-prefix ";; => ")
+  ;; (cider-repl-result-prefix ";; => ")
   (cider-repl-require-ns-on-set t))
 
 ;; C-c C-r - clojure-refactor-map
