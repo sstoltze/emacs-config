@@ -453,7 +453,7 @@ point reaches the beginning or end of the buffer, stop there."
                  (lambda ()
                    (set-face-attribute 'hl-line nil
                                        ;; Magit background color
-                                       :background "grey20")))
+                                       :background (face-background 'magit-section-highlight))))
 
        ;; Fonts
        ;; Iosevka - Better horizontal splits
