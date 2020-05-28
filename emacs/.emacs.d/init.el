@@ -443,18 +443,12 @@ point reaches the beginning or end of the buffer, stop there."
   :custom
   (whitespace-style '(face trailing tabs empty space-before-tab space-after-tab))
   :config
-  (set-face-background 'whitespace-empty "IndianRed4")
+  (set-face-background 'whitespace-empty    "IndianRed4")
   (set-face-background 'whitespace-trailing "IndianRed4"))
 
 ;;;; --- Frame-setup ---
 (cond ((display-graphic-p) ;; Window system
        (load-theme 'deeper-blue t)
-       (add-hook 'hl-line-mode-hook
-                 (lambda ()
-                   (set-face-attribute 'hl-line nil
-                                       ;; Magit background color
-                                       :background (face-background 'magit-section-highlight))))
-
        ;; Fonts
        ;; Iosevka - Better horizontal splits
        ;; sudo add-apt-repository ppa:laurent-boulard/fonts
@@ -1539,14 +1533,18 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; Magit turns on auto-revert so a file changed on disk is changed in Emacs
   ;; This could be an issue at some point.
   :diminish auto-revert-mode
-  :bind (("C-x g" . magit-status) ; Display the main magit popup
+  :bind (("C-x g" . magit-status)       ; Display the main magit popup
          ("C-c g" . magit-file-dispatch)) ; Run blame, etc. on a file
   :custom
   (magit-completing-read-function 'ivy-completing-read)
   ;; Remove the startup message about turning on auto-revert
   (magit-no-message (list "Turning on magit-auto-revert-mode..."))
   ;; Command prefix for merge conflicts. Alternatively use 'e' for ediff
-  (smerge-command-prefix "\C-cv"))
+  (smerge-command-prefix "\C-cv")
+  :config
+  (set-face-background 'hl-line
+                       ;; Magit background color
+                       (face-background 'magit-section-highlight)))
 
 (use-package git-timemachine
   :ensure t
