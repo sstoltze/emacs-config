@@ -300,22 +300,23 @@ local bat = wibox.widget.textbox() -- center
 local bat_t = awful.tooltip({ objects = { bat }, })
 vicious.register(bat, vicious.widgets.bat,
                  function (widgets, args)
-                    local f = io.popen("acpi -V | head -1 | cut -d ' ' -f 5")
-                    local l = "Error"
                     local fg_colour = theme.fg_normal
                     local bg_colour = theme.bg_normal
-                    if f ~= nil then
-                       l = f:read()
-                    end
-                    f:close()
-                    for h,m in string.gmatch(l,"(%d+):(%d+)") do
-                       -- If discharging battery and time is less than 30 minutes or 20% battery remaining, text is red
-                       if args[1] == "-" and (tonumber(h) == 0 and tonumber(m) < 30 or args[2] < 20) then
+                    -- If discharging battery and time is less than 30 minutes or 20% battery remaining, text is red
+                    if args[1] == "-" then
+                       if args[2] < 20 then
                           fg_colour = theme.fg_urgent
                           bg_colour = theme.bg_urgent
+                       else
+                          for h,m in string.gmatch(args[3],"(%d+):(%d+)") do
+                             if tonumber(h) == 0 and tonumber(m) < 30 then
+                                fg_colour = theme.fg_urgent
+                                bg_colour = theme.bg_urgent
+                             end
+                          end
                        end
                     end
-                    bat_t:set_text( (args[1] == "-" and "Time left: " or ("Charging done in: ")) .. l)
+                    bat_t:set_text( (args[1] == "-" and "Time left: " or ("Charging done in: ")) .. args[3])
                     return string.format("Bat: <span fgcolor='%s' bgcolor='%s'>%2d%s</span>", fg_colour, bg_colour, args[2], args[1] == "-" and "%" or "+")
                  end, 61, "BAT0")
 
