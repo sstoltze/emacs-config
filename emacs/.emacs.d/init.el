@@ -1695,14 +1695,14 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 
 ;; C-c C-r - clojure-refactor-map
 ;; C-c r   - clj-refactor-mode-map - see https://github.com/clojure-emacs/clj-refactor.el/wiki
-(use-package clj-refactor
-  :ensure t
-  :defer t
-  :hook ((clojure-mode . clj-refactor-mode))
-  :config
-  (cljr-add-keybindings-with-prefix (kbd "C-c r"))
-  (push '("s" . "clojure.spec.alpha")
-        cljr-magic-require-namespaces))
+;; (use-package clj-refactor
+;;   :ensure t
+;;   :defer t
+;;   :hook ((clojure-mode . clj-refactor-mode))
+;;   :config
+;;   (cljr-add-keybindings-with-prefix (kbd "C-c r"))
+;;   (push '("s" . "clojure.spec.alpha")
+;;         cljr-magic-require-namespaces))
 
 ;;;; --- Racket ---
 (use-package racket-mode
