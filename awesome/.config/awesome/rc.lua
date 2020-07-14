@@ -54,8 +54,7 @@ beautiful.init(theme_dir)
 local theme = beautiful.get()
 
 -- This is used later as the default terminal and editor to run.
---terminal = "x-terminal-emulator"
-local terminal = "kitty"
+local terminal = "kitty --single-instance"
 local editor = os.getenv("EDITOR") or "nano" or "emacs -nw"
 local editor_cmd = terminal .. " -e " .. editor
 
@@ -129,133 +128,28 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 menubar.menu_gen.lookup_category_icons = function() end
 -- }}}
 
--- Keyboard map indicator and switcher
-local kbdcfg = {}
-kbdcfg.layouts = { { "dk", "" }, { "us", "" } }
-kbdcfg.widget = awful.widget.keyboardlayout()
-kbdcfg.current_kb_layout = 0 -- Use first entry as default
-kbdcfg.change_layout = function ()
-   kbdcfg.current_kb_layout = kbdcfg.current_kb_layout % #(kbdcfg.layouts) + 1
-   local layout = kbdcfg.layouts[kbdcfg.current_kb_layout]
-   awful.spawn("setxkbmap " .. layout[1] .. " " .. layout[2])
-end
-kbdcfg.change_layout()
 
 -- {{{ Wibar
--- Create a textclock widget
-local mytextclock = wibox.widget.textclock()
-local calendar = awful.tooltip({ objects = { mytextclock }, })
 
-awful.spawn.easy_async("ncal -bM", function(stdout, stderr, reason, exit_code)
-                          local cal_text = stdout:gsub("%p%c(%d)",
-                                                       '<span underline="single" background="' .. theme.bg_widget
-                                                          .. '" foreground="' .. theme.fg_widget
-                                                          .. '">%1</span>') -- Erstat bold i terminalen med underline og baggrundsfarve
-                             :gsub("%p%c%s", " ") -- Fjern bold i terminal fra whitespace
-                             :gsub("[%c%s]+$", " ") -- Fjern alt overskydende whitespace og ekstra linier
-                          :gsub("%s%s%c", " \n ") -- Lidt dumt, men outputtet er for langt på nogle linier og tomme strenge har en grim baggrundsfarve
-                          calendar:set_markup('<tt><span background="' .. theme.bg_normal .. '"> ' -- Monospace og rigtig baggrundsfarve
-                                                 .. cal_text
-                                                 .. string.rep(" ", 58 + (select(2, cal_text:gsub('\n', '\n'))+1)*22 - cal_text:len()) -- Længde (7*22) + <spans> og lign. (58, åbenbart). Dette går nok hurtigt i stykker igen
-                                                 .. "</span></tt>")
-end)
+-- Widgets
+local kbdcfg = require("widgets.keyboard")
 
--- Volume
-local volume = {}
-volume.textbox = wibox.widget.textbox()
-volume.command = [[pactl list sinks | awk '
-BEGIN               { mute = "no"; running = 0; }
-/RUNNING/           { running = 1; }
-/^[^a-zA-Z]Mute/    { if ( running ) { mute = $2 } }
-/^[^a-zA-Z]*Volume/ { if ( running ) { if ( mute ~ /yes/ ) { gsub(/%/, "M", $5); }; print $5; } }
-/SUSPENDED/         { running = 0; }']]
+local make_clock = require("widgets.clock")
+local clock = make_clock(theme)
 
-volume.update = function ()
-      awful.spawn.easy_async_with_shell(volume.command, function(vol, stderr, reason, exit_code)
-                                        if vol == "" then
-                                           vol = "off"
-                                        end
-                                        volume.textbox:set_markup("Vol: " .. vol)
-   end)
-end
+local volume = require("widgets.volume")
 
-volume.update()
-volume.timer = timer({timeout = 13})
-volume.timer:connect_signal("timeout", volume.update)
-volume.timer:start()
+local cpuwidget = require("widgets.cpu")
 
-volume.get_sink = "pactl list short sinks | grep -i running | cut -f 1"
+local memwidget = require("widgets.memory")
 
-volume.async = function (stdout, stderr, reason, exit_code)
-   volume.update()
-end
+local divider = wibox.widget.textbox() -- center
+divider:set_text(" | ")
 
-volume.lower = function ()
-   awful.spawn.easy_async_with_shell(volume.get_sink,
-                                     function(sink, stderr, reason, exit_code)
-                                        awful.spawn.easy_async("pactl set-sink-volume " .. sink .. " -5%", volume.async)
-   end)
-end
+local make_battery = require("widgets.battery")
+local battery = make_battery(theme)
 
-volume.raise = function ()
-   awful.spawn.easy_async_with_shell(volume.get_sink,
-                                     function(sink, stderr, reason, exit_code)
-                                        awful.spawn.easy_async("pactl set-sink-volume " .. sink .. " +5%", volume.async)
-   end)
-end
-
-volume.mute = function ()
-   awful.spawn.easy_async_with_shell(volume.get_sink,
-                                     function(sink, stderr, reason, exit_code)
-                                        awful.spawn.easy_async("pactl set-sink-mute " .. sink .. " toggle", volume.async)
-   end)
-end
-
--- Media controls
-volume.media = {}
-volume.media.playpause = function ()
-   awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause")
-end
-
-volume.media.play = function ()
-   awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Play")
-end
-
-volume.media.pause = function ()
-   awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Pause")
-end
-
-volume.media.prev = function ()
-   awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous")
-end
-
-volume.media.next = function ()
-   awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next")
-end
-
--- Bluetooth
-volume.bluetooth = {}
-volume.bluetooth.command = [[pactl list cards | awk '
-BEGIN               { card = "no"; profile = "off"; }
-/^Card/             { gsub(/[^0-9]/, "", $2); card = $2; }
-/^[^a-zA-Z]Active/  { profile = $3; }
-END                 { print card " " profile }']]
-volume.bluetooth.change_profile = function ()
-   awful.spawn.easy_async_with_shell(volume.bluetooth.command,
-                                     function (output, stderr, reason, exit_code)
-                                        local profile, card, new_profile
-                                        -- Default to a2dp_sink
-                                        new_profile = "a2dp_sink"
-                                        card, profile = string.match(output, "(%d+) ([^%s]+)")
-                                        -- If already a2dp_sink, switch to headset
-                                        if profile:gsub("%s+", "") == "a2dp_sink" then
-                                           new_profile = "headset_head_unit"
-                                        end
-                                        naughty.notify({text = "Bluetooth: " .. new_profile})
-                                        -- Switch to correct profile
-                                        awful.spawn.with_shell("pactl set-card-profile " .. card .. " " .. new_profile)
-   end)
-end
+local brightness = require("widgets.brightness")
 
 -- Notifications
 -- Discord and Spotify
@@ -275,93 +169,6 @@ naughty.config.presets.notifications = {
 table.insert(naughty.dbus.config.mapping, {{appname = "Spotify"}, naughty.config.presets.notifications})
 table.insert(naughty.dbus.config.mapping, {{appname = "discord"}, naughty.config.presets.notifications})
 
--- CPU widget
--- Initialize widget
-local cpuwidget = wibox.widget.textbox()
--- Register widget
-vicious.register(cpuwidget, vicious.widgets.cpu, "CPU: $1%")
-
-cpuwidget:buttons(awful.util.table.join(
-                     awful.button({ }, 1,
-                        function ()
-                           awful.util.spawn(terminal .. " -e top")
-end)))
-
--- RAM usage widget
-local memwidget = wibox.widget.textbox()
-vicious.cache(vicious.widgets.mem)
-vicious.register(memwidget, vicious.widgets.mem, "RAM: $2/$3", 71)
---update every 71 seconds
-
-local divider = wibox.widget.textbox() -- center
-divider:set_text(" | ")
-
-local battery = {}
-battery.textbox = wibox.widget.textbox() -- center
-battery.low_level = false
-battery.notify = function (level)
-   if not battery.low_level and level < 20 then
-      battery.low_level = true
-      naughty.notify({preset = naughty.config.presets.critical,
-                      text = "Low battery"})
-   end
-   if level > 20 then
-      battery.low_level = false
-   end
-end
-battery.tooltip = awful.tooltip({ objects = { battery.textbox }, })
-vicious.register(battery.textbox, vicious.widgets.bat,
-                 function (widgets, args)
-                    local fg_colour = theme.fg_normal
-                    local bg_colour = theme.bg_normal
-                    -- If discharging battery and time is less than 30 minutes or 20% battery remaining, text is red
-                    if args[1] == "-" then
-                       if args[2] < 20 then
-                          fg_colour = theme.fg_urgent
-                          bg_colour = theme.bg_urgent
-                       else
-                          for h,m in string.gmatch(args[3],"(%d+):(%d+)") do
-                             if tonumber(h) == 0 and tonumber(m) < 30 then
-                                fg_colour = theme.fg_urgent
-                                bg_colour = theme.bg_urgent
-                             end
-                          end
-                       end
-                    end
-                    battery.tooltip:set_text( (args[1] == "-" and "Time left: " or ("Charging done in: ")) .. args[3])
-                    battery.notify(args[2])
-                    return string.format("Bat: <span fgcolor='%s' bgcolor='%s'>%2d%s</span>", fg_colour, bg_colour, args[2], args[1] == "-" and "%" or "+")
-                 end, 61, "BAT0")
-
-local brightness = {}
-brightness.brightness = 0.6
-brightness.set = function (b)
-   brightness.brightness = b
-   local out = xrandr.outputs()
-   for _, o in pairs(out) do
-      os.execute("xrandr --output " .. o .. " --brightness " .. b)
-   end
-end
-
-brightness.increase = function ()
-   local b = brightness.brightness
-   if b <= 0.9 then
-      b = b + 0.1
-   end
-   naughty.notify({text = "Brightness " .. b})
-   brightness.set(b)
-end
-
-brightness.decrease = function ()
-   local b = brightness.brightness
-   if b >= 0.1 then
-      b = b - 0.1
-   end
-   naughty.notify({text = "Brightness " .. b})
-   brightness.set(b)
-end
-
-brightness.set(brightness.brightness)
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = awful.util.table.join(
@@ -466,7 +273,7 @@ awful.screen.connect_for_each_screen(function(s)
             divider,
             memwidget,
             divider,
-            mytextclock,
+            clock,
             s.mylayoutbox,
          },
       }
