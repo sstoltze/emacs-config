@@ -55,16 +55,17 @@ end
 volume.media = {}
 
 volume.media.track_tooltip = awful.tooltip({ objects = { volume.textbox }, })
-volume.media.track_tooltip:set_text("N/A - N/A")
 
 volume.media.get_track_command = [[dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:org.mpris.MediaPlayer2.Player string:Metadata | awk '
-BEGIN                     { artist = ""; title = ""; }
+BEGIN                     { album = ""; artist = ""; title = ""; }
 titleSeen && !--titleSeen { split($0, words, "\""); title = words[2]; }
+albumSeen && !--albumSeen { split($0, words, "\""); album = words[2]; }
 artistSeen && /string/    { split($0, words, "\""); artist = artist ", " words[2]; }
-/xesam:title/             { titleSeen  = 1; }
-/xesam:artist/            { artistSeen = 1; }
+/"xesam:title"/           { titleSeen  = 1; }
+/"xesam:album"/           { albumSeen  = 1; }
+/"xesam:artist"/          { artistSeen = 1; }
 /]/                       { artistSeen = 0; }
-END                       { print title " - " substr(artist, 3); }']]
+END                       { print title " - " substr(artist, 3) " - " album; }']]
 
 volume.media.update_track = function ()
    awful.spawn.easy_async_with_shell(volume.media.get_track_command,
