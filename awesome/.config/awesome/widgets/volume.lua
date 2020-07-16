@@ -3,7 +3,9 @@ local wibox = require("wibox")
 local naughty = require("naughty")
 
 local volume = {}
+
 volume.textbox = wibox.widget.textbox()
+
 volume.command = [[pactl list sinks | awk '
 BEGIN               { mute = "no"; running = 0; }
 /RUNNING/           { running = 1; }
@@ -12,7 +14,7 @@ BEGIN               { mute = "no"; running = 0; }
 /SUSPENDED/         { running = 0; }']]
 
 volume.update = function ()
-      awful.spawn.easy_async_with_shell(volume.command, function(vol, stderr, reason, exit_code)
+   awful.spawn.easy_async_with_shell(volume.command, function(vol, stderr, reason, exit_code)
                                         if vol == "" then
                                            vol = "off"
                                         end
@@ -21,15 +23,12 @@ volume.update = function ()
 end
 
 volume.update()
-volume.timer = timer({timeout = 13})
-volume.timer:connect_signal("timeout", volume.update)
-volume.timer:start()
-
-volume.get_sink = "pactl list short sinks | grep -i running | cut -f 1"
 
 volume.async = function (stdout, stderr, reason, exit_code)
    volume.update()
 end
+
+volume.get_sink = "pactl list short sinks | grep -i running | cut -f 1"
 
 volume.lower = function ()
    awful.spawn.easy_async_with_shell(volume.get_sink,
@@ -54,6 +53,32 @@ end
 
 -- Media controls
 volume.media = {}
+
+volume.media.track_tooltip = awful.tooltip({ objects = { volume.textbox }, })
+volume.media.track_tooltip:set_text("N/A - N/A")
+
+volume.media.get_track_command = [[dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:org.mpris.MediaPlayer2.Player string:Metadata | awk '
+BEGIN                     { artist = ""; title = ""; }
+titleSeen && !--titleSeen { split($0, words, "\""); title = words[2]; }
+artistSeen && /string/    { split($0, words, "\""); artist = artist ", " words[2]; }
+/xesam:title/             { titleSeen  = 1; }
+/xesam:artist/            { artistSeen = 1; }
+/]/                       { artistSeen = 0; }
+END                       { print title " - " substr(artist, 3); }']]
+
+volume.media.update_track = function ()
+   awful.spawn.easy_async_with_shell(volume.media.get_track_command,
+                                     function (track, stderr, reason, exit_code)
+                                        volume.media.track_tooltip:set_text(track)
+   end)
+end
+
+volume.media.update_track()
+
+volume.media.update_track_async = function (stdout, stderr, reason, exit_code)
+   volume.media.update_track()
+end
+
 volume.media.playpause = function ()
    awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause")
 end
@@ -67,20 +92,20 @@ volume.media.pause = function ()
 end
 
 volume.media.prev = function ()
-   awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous")
+   awful.spawn.easy_async("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous", volume.media.update_track_async)
 end
 
 volume.media.next = function ()
-   awful.spawn.with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next")
+   awful.spawn.easy_async("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next", volume.media.update_track_async)
 end
 
 -- Bluetooth
 volume.bluetooth = {}
 volume.bluetooth.command = [[pactl list cards | awk '
-BEGIN               { card = "no"; profile = "off"; }
-/^Card/             { gsub(/[^0-9]/, "", $2); card = $2; }
-/^[^a-zA-Z]Active/  { profile = $3; }
-END                 { print card " " profile }']]
+BEGIN              { card = "no"; profile = "off"; }
+/^Card/            { gsub(/[^0-9]/, "", $2); card = $2; }
+/^[^a-zA-Z]Active/ { profile = $3; }
+END                { print card " " profile }']]
 volume.bluetooth.change_profile = function ()
    awful.spawn.easy_async_with_shell(volume.bluetooth.command,
                                      function (output, stderr, reason, exit_code)
@@ -97,5 +122,12 @@ volume.bluetooth.change_profile = function ()
                                         awful.spawn.with_shell("pactl set-card-profile " .. card .. " " .. new_profile)
    end)
 end
+
+volume.timer = timer({timeout = 13})
+volume.timer:connect_signal("timeout", function ()
+                               volume.update()
+                               volume.media.update_track()
+end)
+volume.timer:start()
 
 return volume
