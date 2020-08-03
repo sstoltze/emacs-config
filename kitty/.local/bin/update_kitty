@@ -1,0 +1,5 @@
+#!/usr/bin/fish
+
+set -l output (curl -L https://sw.kovidgoyal.net/kitty/installer.sh | bash /dev/stdin)
+
+echo $output
