@@ -703,6 +703,8 @@ If ARG is provided, move directly to option ARG."
   (dired-ls-F-marks-symlinks           t)
   ;; Auto refresh dired
   (global-auto-revert-non-file-buffers t)
+  ;; Make size listing human readable
+  (dired-listing-switches              "-alh")
   :config
   (put 'dired-find-alternate-file 'disabled nil))
 
