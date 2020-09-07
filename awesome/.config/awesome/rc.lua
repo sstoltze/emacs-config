@@ -263,11 +263,12 @@ awful.screen.connect_for_each_screen(function(s)
             divider,
             kbdcfg.widget,
             divider,
+            divider,
             wibox.widget.systray(),
             divider,
             volume.textbox,
             divider,
-            battery.textbox,
+            battery.widget,
             divider,
             cpuwidget,
             divider,
@@ -413,8 +414,8 @@ local globalkeys = awful.util.table.join(
    awful.key({ modkey }, "+",             volume.bluetooth.change_profile, {description = "change bluetooth profile", group = "audio"}),
 
    -- Brightness
-   awful.key({ modkey }, "Down",          brightness.decrease, {description = "brightness down",   group = "screen"}),
-   awful.key({ modkey }, "Up",            brightness.increase, {description = "brightness up",     group = "screen"})
+   awful.key({ modkey }, "Down",          brightness.decrease,             {description = "brightness down",   group = "screen"}),
+   awful.key({ modkey }, "Up",            brightness.increase,             {description = "brightness up",     group = "screen"})
 )
 
 local prev_gap = 10
