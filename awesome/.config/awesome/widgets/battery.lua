@@ -5,7 +5,7 @@ local vicious = require("vicious")
 
 function make_battery_widget(theme)
    local battery = {}
-   battery.textbox = wibox.widget.textbox()
+   battery.widget = wibox.widget.textbox()
    battery.low_level = false
    battery.notify = function (level)
       if not battery.low_level and level < 20 then
@@ -17,8 +17,8 @@ function make_battery_widget(theme)
          battery.low_level = false
       end
    end
-   battery.tooltip = awful.tooltip({ objects = { battery.textbox }, })
-   vicious.register(battery.textbox, vicious.widgets.bat,
+   battery.tooltip = awful.tooltip({ objects = { battery.widget}, })
+   vicious.register(battery.widget, vicious.widgets.bat,
                     function (widgets, args)
                        local fg_colour = theme.fg_normal
                        local bg_colour = theme.bg_normal
