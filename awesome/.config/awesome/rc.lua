@@ -770,7 +770,7 @@ end)
 local function spawn_once_with_shell(prg, prg_opts)
    prg_opts = prg_opts or ""
    spawn_opts = spawn_opts or {}
-   awful.spawn.with_shell("pgrep " .. prg .. " >/dev/null; or " .. prg .. " " .. prg_opts)
+   awful.spawn.with_shell("pgrep -f " .. prg .. " >/dev/null; or " .. prg .. " " .. prg_opts)
 end
 
 spawn_once_with_shell("nm-applet")
