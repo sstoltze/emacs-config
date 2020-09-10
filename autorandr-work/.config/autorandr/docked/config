@@ -9,16 +9,13 @@ off
 output DP-2-3
 off
 output eDP-1
-mode 1920x1080
-pos 0x0
-primary
-rate 60.01
+off
 output DP-2-1
 mode 2560x1440
-pos 1920x0
+pos 0x0
 rate 59.95
 output DP-2-2
 mode 2560x1440
-pos 4480x0
+pos 2560x0
 rate 59.95
 rotate right
