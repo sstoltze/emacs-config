@@ -767,10 +767,10 @@ client.connect_signal("unfocus", function(c)
 end)
 -- }}}
 
-local function spawn_once_with_shell(prg, prg_opts)
+local function spawn_once_with_shell(prg, prg_opts, grep_opts)
    prg_opts = prg_opts or ""
-   spawn_opts = spawn_opts or {}
-   awful.spawn.with_shell("pgrep -f " .. prg .. " >/dev/null; or " .. prg .. " " .. prg_opts)
+   grep_opts = grep_opts or ""
+   awful.spawn.with_shell("pgrep " .. grep_opts .. " " .. prg .. " >/dev/null; or " .. prg .. " " .. prg_opts)
 end
 
 spawn_once_with_shell("nm-applet")
@@ -784,7 +784,7 @@ awful.spawn.easy_async_with_shell('echo -n "$USER"', function(user, stderr, reas
                                         spawn_once_with_shell("solaar")
                                         spawn_once_with_shell("blueman-applet")
                                         spawn_once_with_shell("emacs")
-                                        spawn_once_with_shell("firefox")
+                                        spawn_once_with_shell("firefox", "", "-f")
                                         spawn_once_with_shell("slack")
                                         spawn_once_with_shell("teams")
                                      end
