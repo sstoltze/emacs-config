@@ -781,6 +781,7 @@ awful.spawn.easy_async_with_shell('echo -n "$USER"', function(user, stderr, reas
                                         spawn_once_with_shell("xfce4-power-manager", "--no-daemon")
                                         spawn_once_with_shell("dropbox", "start")
                                      elseif user == "w26164\n" then -- Work setup
+                                        awful.spawn.with_shell("xrandr --output DP-2-2 --rotate right")
                                         spawn_once_with_shell("solaar")
                                         spawn_once_with_shell("blueman-applet")
                                         spawn_once_with_shell("emacs")
