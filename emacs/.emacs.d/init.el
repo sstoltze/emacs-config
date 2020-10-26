@@ -1995,7 +1995,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (use-package direnv
     :ensure t
     :config
-    (direnv-mode)))
+    (direnv-mode))
+
+  (use-package adoc-mode
+    :ensure t))
 
 (provide 'init)
 ;;; init.el ends here
