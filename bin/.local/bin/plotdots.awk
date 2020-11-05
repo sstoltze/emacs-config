@@ -4,7 +4,6 @@
 # - Made by @thingskatedid, https://twitter.com/thingskatedid
 # - Gist: https://gist.github.com/katef/fb4cb6d47decd8052bd0e8d88c03a102
 # - I removed the alpha channels, since they made everything blue
-# - This plots lines instead of dots, which I feel is usually a better default
 
 # This program is a copy of guff, a plot device. https://github.com/silentbicycle/guff
 # My copy here is written in awk instead of C, has no compelling benefit.
@@ -154,8 +153,8 @@ function display() {
 	}
 
 	for (i = 1; i <= NF; i++) {
-		line(i)
-#		circles(i)
+#		line(i)
+		circles(i)
 	}
 
 	if (length(title)) {
