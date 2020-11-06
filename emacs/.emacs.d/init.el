@@ -513,6 +513,8 @@ point reaches the beginning or end of the buffer, stop there."
        (define-key input-decode-map [?\C-m] [C-m])
        (define-key input-decode-map [?\C-\M-m] [C-M-m])
 
+       (define-key input-decode-map [?\C-i] [C-i])
+
        (global-set-key (kbd "C-<tab>")
                        'other-window)
        (global-set-key (kbd "C-s-<tab>")
@@ -1353,6 +1355,56 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :config
   (ivy-posframe-mode 1))
 
+;;;; --- Magit ---
+(use-package magit
+  :ensure t
+  :defer t
+  ;; Magit turns on auto-revert so a file changed on disk is changed in Emacs
+  ;; This could be an issue at some point.
+  :diminish auto-revert-mode
+  :bind (("C-x g" . magit-status)       ; Display the main magit popup
+         ("C-c g" . magit-file-dispatch)) ; Run blame, etc. on a file
+  :custom
+  (magit-completing-read-function 'ivy-completing-read)
+  ;; Remove the startup message about turning on auto-revert
+  (magit-no-message (list "Turning on magit-auto-revert-mode..."))
+  ;; Command prefix for merge conflicts. Alternatively use 'e' for ediff
+  (smerge-command-prefix "\C-cv")
+  :config
+  (set-face-background 'hl-line
+                       ;; Magit background color
+                       (face-background 'magit-section-highlight)))
+
+(use-package git-timemachine
+  :ensure t
+  :defer t)
+
+(use-package git-link
+  :ensure t
+  :defer t)
+
+(use-package god-mode
+  :ensure t
+  :defer t
+  :hook ((god-mode-enabled  . sstoltze/god-mode-update-theme)
+         (god-mode-disabled . sstoltze/god-mode-update-theme))
+  :bind
+  (("<escape>" . god-mode-all)
+   ("C-x C-1" . delete-other-windows)
+   ("C-x C-2" . split-window-below)
+   ("C-x C-3" . split-window-right)
+   ("C-x C-0" . delete-window)
+   (:map god-local-mode-map
+         ("i" . god-mode-all)
+         ("." . repeat)))
+  :init
+  (defun sstoltze/god-mode-update-theme ()
+    "Toggle cursor type in god-mode."
+    (cond (god-local-mode (progn (setq cursor-type 'hbar)
+                                 (set-face-background 'mode-line "dark goldenrod")))
+          (t              (progn (setq cursor-type 't)
+                                 (set-face-background 'mode-line "gray70"))))))
+
 ;;;; --- Multiple cursors ---
 (use-package multiple-cursors
   :ensure t
@@ -1570,34 +1622,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;;;; --- Java ---
 (add-hook 'java-mode-hook
           'subword-mode)
-
-;;;; --- Magit ---
-(use-package magit
-  :ensure t
-  :defer t
-  ;; Magit turns on auto-revert so a file changed on disk is changed in Emacs
-  ;; This could be an issue at some point.
-  :diminish auto-revert-mode
-  :bind (("C-x g" . magit-status)       ; Display the main magit popup
-         ("C-c g" . magit-file-dispatch)) ; Run blame, etc. on a file
-  :custom
-  (magit-completing-read-function 'ivy-completing-read)
-  ;; Remove the startup message about turning on auto-revert
-  (magit-no-message (list "Turning on magit-auto-revert-mode..."))
-  ;; Command prefix for merge conflicts. Alternatively use 'e' for ediff
-  (smerge-command-prefix "\C-cv")
-  :config
-  (set-face-background 'hl-line
-                       ;; Magit background color
-                       (face-background 'magit-section-highlight)))
-
-(use-package git-timemachine
-  :ensure t
-  :defer t)
-
-(use-package git-link
-  :ensure t
-  :defer t)
 
 ;;;; --- Eww ---
 (use-package eww
