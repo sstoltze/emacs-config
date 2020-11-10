@@ -5,8 +5,7 @@ function screenlock
     set -l pngfile "/tmp/screenlock.png"
     set -l bmpfile "/tmp/screenlock.bmp"
     set -l glitchedfile "/tmp/screenlock_g.bmp"
-    #set -l locktext (random choice "Xₘ≃Ω(SUₘ/T)" "P(A|B)=P(B|A)·P(A)⁄P(B)" "…→Hⁱ(X,A)→Hⁱ(X)→Hⁱ(A)→Hⁱ⁺¹(X,A)→…" "Hⁿ(X✕Y)≌⊕ᵢHⁱ(X)⊗Hⁿ⁻ⁱ(Y)")
-    set -l locktext (random choice "‽" "ϕ" "⊼" "⟂")
+    set -l locktext (random choice "‽" "ϕ" "⊼" "⟂" "Xₘ≃Ω(SUₘ/T)" "P(A|B)=P(B|A)·P(A)⁄P(B)" "…→Hⁱ(X,A)→Hⁱ(X)→Hⁱ(A)→Hⁱ⁺¹(X,A)→…" "Hⁿ(X✕Y)≌⊕ᵢHⁱ(X)⊗Hⁿ⁻ⁱ(Y)")
 
     scrot -z $pngfile
 
