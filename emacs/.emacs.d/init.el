@@ -1866,6 +1866,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :ensure t
   :defer t)
 
+(use-package so-long
+  :ensure t
+  :defer t)
+
 (cond
  ;; --- Windows specific ---
  ((eq system-type 'windows-nt)
