@@ -773,6 +773,7 @@ local function spawn_once_with_shell(prg, prg_opts, grep_opts)
    awful.spawn.with_shell("pgrep " .. grep_opts .. " " .. prg .. " >/dev/null; or " .. prg .. " " .. prg_opts)
 end
 
+awful.spawn.with_shell("source ~/.xprofile")
 spawn_once_with_shell("nm-applet")
 
 -- Computer specific setup

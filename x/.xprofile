@@ -1,1 +1,3 @@
 xset r rate 280 40
+
+xmodmap ~/.xmodmap
