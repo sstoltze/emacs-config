@@ -188,20 +188,25 @@
 (add-hook 'prog-mode-hook 'hl-line-mode)
 
 ;; Delete extra lines and spaces when saving
-(add-hook 'before-save-hook
-          'delete-trailing-whitespace)
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; Unset suspend keys. Never used anyway
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-x C-z"))
 
 ;; Automatic indent on pressing RET
-(global-set-key (kbd "RET")
-                'newline-and-indent)
+(global-set-key (kbd "RET") 'newline-and-indent)
 
 ;; Do not ask to kill buffer every time
-(global-set-key (kbd "C-x k")
-                'kill-this-buffer)
+(global-set-key (kbd "C-x k") 'kill-this-buffer)
+
+;; Better behaviour for M-SPC
+(global-set-key (kbd "M-SPC") 'cycle-spacing)
+
+;; Better DWIM behaviour
+(global-set-key (kbd "M-c") 'capitalize-dwim)
+(global-set-key (kbd "M-u") 'upcase-dwim)
+(global-set-key (kbd "M-l") 'downcase-dwim)
 
 ;; Prettify symbols
 ;; C-x 8 RET to find and insert unicode char
@@ -488,6 +493,17 @@ point reaches the beginning or end of the buffer, stop there."
   :config
   (set-face-background 'whitespace-empty    "IndianRed4")
   (set-face-background 'whitespace-trailing "IndianRed4"))
+
+;; Borrowed from https://karthinks.com/software/batteries-included-with-emacs/
+(defun pulse-line (&rest _)
+  "Pulse the current line."
+  (pulse-momentary-highlight-one-line (point)))
+
+(dolist (command '(scroll-up-command
+                   scroll-down-command
+                   recenter-top-bottom
+                   cother-window))
+  (advice-add command :after #'pulse-line))
 
 ;;;; --- Frame-setup ---
 (cond ((display-graphic-p) ;; Window system
