@@ -1514,7 +1514,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package aggressive-indent
   :ensure t
   :defer t
-  :hook ((prog-mode . aggresive-indent-mode)))
+  :hook ((prog-mode . global-aggressive-indent-mode)))
 
 ;;;; --- Lisp ---
 (use-package slime
