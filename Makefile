@@ -1,8 +1,9 @@
 common_packages   = fish git
 common_no_folding = emacs stack leiningen ghc
-linux_packages    = $(common_packages) awesome mbsync gpg kitty x screen xdg sbcl bin
+linux_cygwin_common = mbsync gpg screen xdg sbcl bin ocaml
+linux_packages    = $(common_packages) $(linux_cygwin_common) awesome kitty x
 linux_no_folding  = $(common_no_folding)
-cygwin_packages   = $(common_packages)
+cygwin_packages   = $(common_packages) $(linux_cygwin_common)
 cygwin_no_folding = $(common_no_folding)
 
 ifeq ($(shell echo "check_quotes"),"check_quotes")
