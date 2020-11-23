@@ -1489,8 +1489,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (add-to-list 'semantic-default-submodes
                'global-semantic-idle-completions-mode)
   (add-to-list 'semantic-default-submodes
-               'global-semantic-idle-summary-mode)
-  (imenu-add-to-menubar "TAGS"))
+               'global-semantic-idle-summary-mode))
 
 (use-package semantic/ia
   :after semantic)
