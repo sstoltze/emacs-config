@@ -51,3 +51,22 @@ Restart shell. Run:
 nix-env --install --file https://github.com/target/lorri/archive/master.tar.gz
 nix-env --install niv
 #+end_src
+
+**** Ocaml/opam
+To get version 2:
+#+begin_src shell
+sudo add-apt-repository ppa:avsm/ppa
+sudo apt update
+sudo apt install opam
+opam init
+#+end_src
+
+To use a newer compiler
+#+begin_src shell
+opam switch create 4.10.0
+#+end_src
+
+A list of common packages (as defined by [[https://dev.realworldocaml.org/install.html][Real World OCaml]]):
+#+begin_src shell
+opam install base utop core async yojson core_extended core_bench cohttp-async async_graphics cryptokit menhir merlin tuareg ocp-indent user-setup ocamlformat dune
+#+end_src
