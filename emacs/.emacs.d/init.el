@@ -737,19 +737,26 @@ If ARG is provided, move directly to option ARG."
 (use-package visible-mark
   :ensure t
   :custom
-  (visible-mark-max 1)
+  (visible-mark-max 2)
   :init
   ;; Set face for mark
   ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Face-Attributes.html
-  (defface visible-mark-active
+  (defface visible-mark-face1
     '((((type graphic))        ;; Graphics support
        (:box t))               ;; (:underline (:color "green" :style wave))
       (t                       ;; No graphics support - no box
        (:inverse-video t)))    ;;
     "Style for visible mark"
     :group 'visible-mark-group)
-  (setq visible-mark-faces  '(visible-mark-active
-                              visible-mark-active))
+  (defface visible-mark-face2
+    '((((type graphic))        ;; Graphics support
+       (:overline t :underline (:style wave)))
+      (t                       ;; No graphics support - no box
+       (:inverse-video t)))
+    "Style for secondary mark"
+    :group 'visible-mark-group)
+  (setq visible-mark-faces  '(visible-mark-face1
+                              visible-mark-face2))
   (global-visible-mark-mode 1))
 
 ;;;; --- Dired ---
