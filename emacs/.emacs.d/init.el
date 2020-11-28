@@ -750,7 +750,7 @@ If ARG is provided, move directly to option ARG."
     :group 'visible-mark-group)
   (defface visible-mark-face2
     '((((type graphic))        ;; Graphics support
-       (:overline t :underline (:style wave)))
+       (:overline t :underline t))
       (t                       ;; No graphics support - no box
        (:inverse-video t)))
     "Style for secondary mark"
