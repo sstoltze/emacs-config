@@ -1757,6 +1757,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :ensure t
   :defer t
   :config
+  (define-key tuareg-mode-map (kbd "C-c C-h") nil) ; Normally bound to caml-help
   (with-eval-after-load 'smartparens
     (sp-with-modes '(tuareg-mode)
       (sp-local-pair "struct" "end"
@@ -1806,6 +1807,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :after merlin
   :bind ((:map tuareg-mode-map
                ("C-c C-z" . utop))
+         (:map merlin-mode-map
+               ("C-c C-l" . utop-eval-buffer))
          (:map utop-mode-map
                ("M-." . merlin-locate)
                ("M-," . merlin-pop-stack))))
