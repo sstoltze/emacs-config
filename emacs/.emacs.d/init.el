@@ -807,6 +807,13 @@ If ARG is provided, move directly to option ARG."
   (peep-dired-ignored-extensions
    '("mkv" "webm" "mp4" "mp3" "ogg" "iso")))
 
+;;;; Compile
+(use-package compile
+  :custom
+  (compilation-scroll-output 'first-error)
+  (compilation-always-kill t)
+  (next-error-hightlight t))
+
 ;;;; --- Proced ---
 ;; To highlight processes use highlight-lines-matching-regexp, M-s h l
 ;; Unhighlight by unhighlight-regexp, M-s h u
@@ -1748,12 +1755,60 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 
 (use-package tuareg
   :ensure t
-  :defer t)
+  :defer t
+  :config
+  (with-eval-after-load 'smartparens
+    (sp-with-modes '(tuareg-mode)
+      (sp-local-pair "struct" "end"
+                     :unless '(sp-in-comment-p sp-in-string-p)
+                     :post-handlers '(("||\n[i]" "RET") ("| " "SPC")))
+      (sp-local-pair "sig" "end"
+                     :unless '(sp-in-comment-p sp-in-string-p)
+                     :post-handlers '(("||\n[i]" "RET") ("| " "SPC")))
+      (sp-local-pair "if" "then"
+                     :unless '(sp-in-comment-p sp-in-string-p)
+                     :post-handlers '(("| " "SPC")))
+      (sp-local-pair "while" "done"
+                     :unless '(sp-in-comment-p sp-in-string-p)
+                     :post-handlers '(("| " "SPC")))
+      (sp-local-pair "for" "done"
+                     :unless '(sp-in-comment-p sp-in-string-p)
+                     :post-handlers '(("| " "SPC")))
+      (sp-local-pair "begin" "end"
+                     :unless '(sp-in-comment-p sp-in-string-p)
+                     :post-handlers '(("||\n[i]" "RET") ("| " "SPC")))
+      (sp-local-pair "object" "end"
+                     :unless '(sp-in-comment-p sp-in-string-p)
+                     :post-handlers '(("| " "SPC")))
+      (sp-local-pair "match" "with"
+                     :actions '(insert)
+                     :unless '(sp-in-comment-p sp-in-string-p)
+                     :post-handlers '(("| " "SPC")))
+      (sp-local-pair "try" "with"
+                     :actions '(insert)
+                     :unless '(sp-in-comment-p sp-in-string-p)
+                     :post-handlers '(("| " "SPC"))))))
 
 (use-package merlin
   :ensure t
   :after tuareg
-  :hook ((tuareg-mode . merlin-mode)))
+  :hook ((tuareg-mode . merlin-mode))
+  :bind ((:map merlin-mode-map
+               ("M-." . merlin-locate)
+               ("M-," . merlin-pop-stack))))
+
+(use-package merlin-eldoc
+  :ensure t
+  :after merlin
+  :hook ((reason-mode tuareg-mode caml-mode) . merlin-eldoc-setup))
+
+(use-package utop
+  :after merlin
+  :bind ((:map tuareg-mode-map
+               ("C-c C-z" . utop))
+         (:map utop-mode-map
+               ("M-." . merlin-locate)
+               ("M-," . merlin-pop-stack))))
 
 (use-package flycheck-ocaml
   :ensure t
