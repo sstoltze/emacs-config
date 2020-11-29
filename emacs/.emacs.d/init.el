@@ -1307,8 +1307,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          ("C-r"     . counsel-grep-or-swiper)
          ;; Find recent files
          ("C-x C-r" . counsel-recentf)
-         ;; Resume last ivy completion
-         ("C-c C-r" . ivy-resume)
+         ;; Resume last ivy completion - rarely used
+         ;; ("C-c C-r" . ivy-resume)
          ;; Help commands
          ("C-h a"   . counsel-apropos)
          ("C-h b"   . counsel-descbinds)
@@ -1756,8 +1756,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package tuareg
   :ensure t
   :defer t
+  :bind ((:map tuareg-mode-map
+               ;; Normally bound to caml-help
+               ("C-c C-h" . nil)))
   :config
-  (define-key tuareg-mode-map (kbd "C-c C-h") nil) ; Normally bound to caml-help
   (with-eval-after-load 'smartparens
     (sp-with-modes '(tuareg-mode)
       (sp-local-pair "struct" "end"
@@ -1808,10 +1810,14 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :bind ((:map tuareg-mode-map
                ("C-c C-z" . utop))
          (:map merlin-mode-map
-               ("C-c C-l" . utop-eval-buffer))
+               ("C-c C-l" . utop-eval-buffer)
+               ("C-c C-r" . utop-eval-region))
          (:map utop-mode-map
                ("M-." . merlin-locate)
-               ("M-," . merlin-pop-stack))))
+               ("M-," . merlin-pop-stack))
+         (:map utop-minor-mode-map
+               ("C-x C-r" . nil)
+               ("C-c C-q" . utop-exit))))
 
 (use-package flycheck-ocaml
   :ensure t
