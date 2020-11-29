@@ -731,7 +731,9 @@ If ARG is provided, move directly to option ARG."
 (use-package diminish
   :ensure t
   :config
-  (diminish 'eldoc-mode ""))
+  (diminish 'eldoc-mode "")
+  (diminish 'whitespace-mode "")
+  (diminish 'company-mode ""))
 
 ;;;; --- Visible mark ---
 (use-package visible-mark
