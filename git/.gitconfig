@@ -1,6 +1,7 @@
-[user]
-	name = sstoltze
-	email = sstoltze@gmail.com
+[includeIf "gitdir:~/work/"]
+    path = ~/work/.gitconfig
+[includeIf "gitdir:~/git/"]
+    path = ~/git/.gitconfig
 [core]
 	editor = emacs
     autocrlf = input

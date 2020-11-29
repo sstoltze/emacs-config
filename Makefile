@@ -1,5 +1,5 @@
-common_packages   = fish git
-common_no_folding = emacs stack leiningen ghc
+common_packages   = fish
+common_no_folding = emacs stack leiningen ghc git
 linux_cygwin_common = mbsync gpg screen xdg sbcl bin ocaml
 linux_packages    = $(common_packages) $(linux_cygwin_common) awesome kitty x
 linux_no_folding  = $(common_no_folding)
