@@ -62,10 +62,12 @@ cygwin-remove: windows-remove
 windows:
 ifeq ($(platform),CYGWIN)
 	cp emacs/.emacs.d/init.el /cygdrive/C/Users/$$USER/AppData/Roaming/.emacs.d/
-	cp git/.gitconfig /cygdrive/C/Users/$$USER/AppData/Roaming/
+    cp git/.gitconfig /cygdrive/C/Users/$$USER/AppData/Roaming/
+	cp git/git/.gitconfig /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig-windows
 else ifeq ($(platform),WINDOWS)
 	copy /Y "emacs\.emacs.d\init.el" "%USERPROFILE%\AppData\Roaming\.emacs.d"
 	copy /Y "git\.gitconfig"         "%USERPROFILE%"
+	copy /Y "git\windows\.gitconfig" "%USERPROFILE%\.gitconfig-windows"
 	copy /Y "ghc\.ghc\ghci.conf"     "%USERPROFILE%\AppData\Roaming\ghc"
 endif
 
@@ -73,9 +75,11 @@ windows-remove:
 ifeq ($(platform),CYGWIN)
 	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.emacs.d/init.el
 	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig
+	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig-windows
 else ifeq ($(platform),WINDOWS)
 	del "%USERPROFILE%\AppData\Roaming\.emacs.d\init.el"
 	del "%USERPROFILE%\.gitconfig"
+	del "%USERPROFILE%\.gitconfig-windows"
 	del "%USERPROFILE%\ghc\ghci.conf"
 endif
 
@@ -85,11 +89,11 @@ ifneq (,$(filter Linux CYGWIN,$(platform)))
 	stow              -S -t ~ git-work
 endif
 ifeq ($(platform),CYGWIN)
-	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig
-	cp git-work/.gitconfig /cygdrive/C/Users/$$USER/AppData/Roaming/
+	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig-windows
+	cp git/work/.gitconfig /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig-windows
 else ifeq ($(platform),WINDOWS)
-	del "%USERPROFILE%\.gitconfig"
-	copy /Y "git-work\.gitconfig" "%USERPROFILE%"
+	del "%USERPROFILE%\.gitconfig-windows"
+	copy /Y "git\work\.gitconfig" "%USERPROFILE%\.gitconfig-windows"
 else ifeq ($(platform),Linux)
 	stow              -S -t ~ autorandr-work
 endif
@@ -99,9 +103,9 @@ ifneq (,$(filter Linux CYGWIN,$(platform)))
 	stow              -D -t ~ git-work
 endif
 ifeq ($(platform),CYGWIN)
-	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig
+	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig-windows
 else ifeq ($(platform),WINDOWS)
-	del "%USERPROFILE%\.gitconfig"
+	del "%USERPROFILE%\.gitconfig-windows"
 endif
 
 work-update: work-remove update work
