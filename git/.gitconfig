@@ -2,6 +2,8 @@
     path = ~/work/.gitconfig
 [includeIf "gitdir:~/git/"]
     path = ~/git/.gitconfig
+[includeIf "gitdir/i:Desktop/"]
+    path = ~/.gitconfig-windows
 [core]
 	editor = emacs
     autocrlf = input
