@@ -1,9 +1,11 @@
-[includeIf "gitdir:~/work/"]
-    path = ~/work/.gitconfig
 [includeIf "gitdir:~/git/"]
-    path = ~/git/.gitconfig
-[includeIf "gitdir/i:Desktop/"]
-    path = ~/.gitconfig-windows
+    path = ~/.config/git/private.git
+[includeIf "gitdir:~/work/"]
+    path = ~/.config/git/work.git
+[includeIf "gitdir/i:Desktop/git"]
+    path = ~/.gitconfig-private
+[includeIf "gitdir/i:Desktop/work"]
+    path = ~/.gitconfig-work
 [core]
 	editor = emacs
     autocrlf = input

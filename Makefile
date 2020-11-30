@@ -1,5 +1,5 @@
-common_packages   = fish
-common_no_folding = emacs stack leiningen ghc git
+common_packages   = fish git
+common_no_folding = emacs stack leiningen ghc
 linux_cygwin_common = mbsync gpg screen xdg sbcl bin ocaml
 linux_packages    = $(common_packages) $(linux_cygwin_common) awesome kitty x
 linux_no_folding  = $(common_no_folding)
@@ -63,56 +63,28 @@ windows:
 ifeq ($(platform),CYGWIN)
 	cp emacs/.emacs.d/init.el /cygdrive/C/Users/$$USER/AppData/Roaming/.emacs.d/
     cp git/.gitconfig /cygdrive/C/Users/$$USER/AppData/Roaming/
-	cp git/git/.gitconfig /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig-windows
+	cp git/.config/git/private.git /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig-windows
 else ifeq ($(platform),WINDOWS)
-	copy /Y "emacs\.emacs.d\init.el" "%USERPROFILE%\AppData\Roaming\.emacs.d"
-	copy /Y "git\.gitconfig"         "%USERPROFILE%"
-	copy /Y "git\windows\.gitconfig" "%USERPROFILE%\.gitconfig-windows"
-	copy /Y "ghc\.ghc\ghci.conf"     "%USERPROFILE%\AppData\Roaming\ghc"
+	copy /Y "emacs\.emacs.d\init.el"      "%USERPROFILE%\AppData\Roaming\.emacs.d"
+	copy /Y "git\.gitconfig"              "%USERPROFILE%"
+	copy /Y "git\.config\git\private.git" "%USERPROFILE%\.gitconfig-private"
+	copy /Y "git\.config\git\work.git"    "%USERPROFILE%\.gitconfig-work"
+	copy /Y "ghc\.ghc\ghci.conf"          "%USERPROFILE%\AppData\Roaming\ghc"
 endif
 
 windows-remove:
 ifeq ($(platform),CYGWIN)
 	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.emacs.d/init.el
 	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig
-	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig-windows
+	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig-private
+	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig-work
 else ifeq ($(platform),WINDOWS)
 	del "%USERPROFILE%\AppData\Roaming\.emacs.d\init.el"
 	del "%USERPROFILE%\.gitconfig"
-	del "%USERPROFILE%\.gitconfig-windows"
+	del "%USERPROFILE%\.gitconfig-private"
+	del "%USERPROFILE%\.gitconfig-work"
 	del "%USERPROFILE%\ghc\ghci.conf"
 endif
-
-work:
-ifneq (,$(filter Linux CYGWIN,$(platform)))
-	stow              -D -t ~ git
-	stow              -S -t ~ git-work
-endif
-ifeq ($(platform),CYGWIN)
-	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig-windows
-	cp git/work/.gitconfig /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig-windows
-else ifeq ($(platform),WINDOWS)
-	del "%USERPROFILE%\.gitconfig-windows"
-	copy /Y "git\work\.gitconfig" "%USERPROFILE%\.gitconfig-windows"
-else ifeq ($(platform),Linux)
-	stow              -S -t ~ autorandr-work
-endif
-
-work-remove:
-ifneq (,$(filter Linux CYGWIN,$(platform)))
-	stow              -D -t ~ git-work
-endif
-ifeq ($(platform),CYGWIN)
-	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig-windows
-else ifeq ($(platform),WINDOWS)
-	del "%USERPROFILE%\.gitconfig-windows"
-endif
-
-work-update: work-remove update work
-
-remove-work: work-remove
-
-update-work: work-update
 
 new-comp: install
 ifneq (,$(filter Linux CYGWIN,$(platform)))
