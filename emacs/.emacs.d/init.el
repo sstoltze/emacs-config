@@ -1815,8 +1815,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                ("C-c C-l" . utop-eval-buffer)
                ("C-c C-r" . utop-eval-region))
          (:map utop-mode-map
-               ("M-." . merlin-locate)
-               ("M-," . merlin-pop-stack))
+               ("M-."      . merlin-locate)
+               ("M-,"      . merlin-pop-stack)
+               ("C-<up>"   . utop-history-goto-prev)
+               ("C-<down>" . utop-history-goto-next)
+               ("C-c C-q"  . utop-exit))
          (:map utop-minor-mode-map
                ("C-x C-r" . nil)
                ("C-c C-q" . utop-exit))))
