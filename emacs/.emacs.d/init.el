@@ -1761,6 +1761,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :bind ((:map tuareg-mode-map
                ;; Normally bound to caml-help
                ("C-c C-h" . nil)))
+  :custom
+  (tuareg-prettify-symbols-basic-alist nil)
+  (tuareg-prettify-symbols-extra-alist nil)
   :config
   (with-eval-after-load 'smartparens
     (sp-with-modes '(tuareg-mode)
