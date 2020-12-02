@@ -1808,7 +1808,13 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package merlin-eldoc
   :ensure t
   :after merlin
-  :hook ((reason-mode tuareg-mode caml-mode) . merlin-eldoc-setup))
+  :hook ((reason-mode tuareg-mode caml-mode) . merlin-eldoc-setup)
+  :custom
+  ;; Use multiple lines when necessary
+  (eldoc-echo-area-use-multiline-p t)
+  (merlin-eldoc-max-lines 8)
+  ;; Don't highlight occurences
+  (merlin-eldoc-occurrences nil))
 
 (use-package utop
   :after merlin
