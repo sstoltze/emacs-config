@@ -486,6 +486,7 @@ point reaches the beginning or end of the buffer, stop there."
 ;; This conflicts slightly with show-trailing-whitespace, but for now I'll keep both on
 (use-package whitespace-mode
   :defer t
+  :diminish whitespace-mode
   :hook ((prog-mode       . whitespace-mode)
          (magit-diff-mode . whitespace-mode))
   :custom
@@ -732,7 +733,6 @@ If ARG is provided, move directly to option ARG."
   :ensure t
   :config
   (diminish 'eldoc-mode "")
-  (diminish 'whitespace-mode "")
   (diminish 'company-mode ""))
 
 ;;;; --- Visible mark ---
