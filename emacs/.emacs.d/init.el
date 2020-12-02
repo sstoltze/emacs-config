@@ -739,7 +739,7 @@ If ARG is provided, move directly to option ARG."
 (use-package visible-mark
   :ensure t
   :custom
-  (visible-mark-max 2)
+  (visible-mark-max 1)
   :init
   ;; Set face for mark
   ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Face-Attributes.html
