@@ -2,10 +2,6 @@
     path = ~/.config/git/private.git
 [includeIf "gitdir/i:work/"]
     path = ~/.config/git/work.git
-[includeIf "gitdir/i:Desktop/git"]
-    path = ~/.gitconfig-private
-[includeIf "gitdir/i:Desktop/work"]
-    path = ~/.gitconfig-work
 [core]
 	editor = emacs
     autocrlf = input

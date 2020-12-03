@@ -62,28 +62,30 @@ cygwin-remove: windows-remove
 windows:
 ifeq ($(platform),CYGWIN)
 	cp emacs/.emacs.d/init.el /cygdrive/C/Users/$$USER/AppData/Roaming/.emacs.d/
-    cp git/.gitconfig /cygdrive/C/Users/$$USER/AppData/Roaming/
-	cp git/.config/git/private.git /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig-windows
+	cp git/.gitconfig /cygdrive/C/Users/$$USER/AppData/Roaming/
+	cp git/.config/git/private.git /cygdrive/C/Users/$$USER/.config/git/
+	cp git/.config/git/work.git /cygdrive/C/Users/$$USER/.config/git/
 else ifeq ($(platform),WINDOWS)
-	copy /Y "emacs\.emacs.d\init.el"      "%USERPROFILE%\AppData\Roaming\.emacs.d"
-	copy /Y "git\.gitconfig"              "%USERPROFILE%"
-	copy /Y "git\.config\git\private.git" "%USERPROFILE%\.gitconfig-private"
-	copy /Y "git\.config\git\work.git"    "%USERPROFILE%\.gitconfig-work"
-	copy /Y "ghc\.ghc\ghci.conf"          "%USERPROFILE%\AppData\Roaming\ghc"
+	copy /Y "emacs\.emacs.d\init.el"         "%APPDATA%\.emacs.d"
+	copy /Y "git\.gitconfig"                 "%USERPROFILE%"
+	if not exist "%USERPROFILE%\.config\git" (mkdir "%USERPROFILE%\.config\git")
+	copy /Y "git\.config\git\private.git"    "%USERPROFILE%\.config\git"
+	copy /Y "git\.config\git\work.git"       "%USERPROFILE%\.config\git"
+	copy /Y "ghc\.ghc\ghci.conf"             "%APPDATA%\ghc"
 endif
 
 windows-remove:
 ifeq ($(platform),CYGWIN)
 	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.emacs.d/init.el
-	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig
-	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig-private
-	rm /cygdrive/C/Users/$$USER/AppData/Roaming/.gitconfig-work
+	rm /cygdrive/C/Users/$$USER/.gitconfig
+	rm /cygdrive/C/Users/$$USER/.config/git/private.git
+	rm /cygdrive/C/Users/$$USER/.config/git/work.git
 else ifeq ($(platform),WINDOWS)
-	del "%USERPROFILE%\AppData\Roaming\.emacs.d\init.el"
+	del "%APPDATA%\.emacs.d\init.el"
 	del "%USERPROFILE%\.gitconfig"
-	del "%USERPROFILE%\.gitconfig-private"
-	del "%USERPROFILE%\.gitconfig-work"
-	del "%USERPROFILE%\ghc\ghci.conf"
+	del "%USERPROFILE%\.config\git\private.git"
+	del "%USERPROFILE%\.config\git\work.git"
+	del "%APPDATA%\ghc\ghci.conf"
 endif
 
 new-comp: install
