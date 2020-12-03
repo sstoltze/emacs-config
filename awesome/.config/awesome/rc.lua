@@ -449,6 +449,31 @@ function decrease_gap()
    awful.tag.incmwfact(-0.05)
 end
 
+-- https://thibaultmarin.github.io/blog/posts/2016-10-05-Awesome-wm_configuration.html
+-- {{{ Highlight current monitor
+screen_highlight_timer = timer({timeout = 0.2})
+screen_highlight_idx = 1
+screen_highlight_timer:connect_signal(
+   "timeout",
+   function ()
+      if awful.screen.focused() ~= screen_highlight_idx then
+         screen_highlight_idx = awful.screen.focused()
+         for s in screen do
+            if s == awful.screen.focused() then
+               col_bg = beautiful.screen_highlight_bg_active
+               col_fg = beautiful.screen_highlight_fg_active
+            else
+               col_bg = beautiful.screen_highlight_bg_inactive
+               col_fg = beautiful.screen_highlight_fg_inactive
+            end
+            s.mywibox:set_bg(col_bg)
+            s.mywibox:set_fg(col_fg)
+         end
+      end
+end)
+--screen_highlight_timer:start()
+-- }}}
+
 clientkeys = awful.util.table.join(
    awful.key({ modkey,           }, "f",
       function (c)
