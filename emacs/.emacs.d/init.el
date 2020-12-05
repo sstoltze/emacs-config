@@ -809,6 +809,11 @@ If ARG is provided, move directly to option ARG."
   (peep-dired-ignored-extensions
    '("mkv" "webm" "mp4" "mp3" "ogg" "iso")))
 
+(use-package dired-collapse
+  :ensure t
+  :after dired
+  :hook ((dired-mode . dired-collapse-mode)))
+
 ;;;; Compile
 (use-package compile
   :custom
