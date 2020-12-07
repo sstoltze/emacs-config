@@ -25,7 +25,10 @@ theme.font          = "terminus 8"
 
 -- Normal
 theme.bg_normal     = "#101820"
---theme.fg_normal     = xrdb.foreground
+theme.fg_normal     = "#aaaaaa"
+
+theme.bg_inactive   = darker(theme.bg_normal, 100)
+theme.fg_inactive   = darker(theme.fg_normal, 100)
 
 -- Focus
 theme.bg_focus      = darker(theme.bg_normal, -20)

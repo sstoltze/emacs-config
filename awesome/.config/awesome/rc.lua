@@ -460,18 +460,18 @@ screen_highlight_timer:connect_signal(
          screen_highlight_idx = awful.screen.focused()
          for s in screen do
             if s == awful.screen.focused() then
-               col_bg = beautiful.screen_highlight_bg_active
-               col_fg = beautiful.screen_highlight_fg_active
+               col_bg = beautiful.bg_normal
+               col_fg = beautiful.fg_normal
             else
-               col_bg = beautiful.screen_highlight_bg_inactive
-               col_fg = beautiful.screen_highlight_fg_inactive
+               col_bg = beautiful.bg_inactive
+               col_fg = beautiful.fg_inactive
             end
-            s.mywibox:set_bg(col_bg)
-            s.mywibox:set_fg(col_fg)
+            s.mywibox.bg = col_bg
+            s.mywibox.fg = col_fg
          end
       end
 end)
---screen_highlight_timer:start()
+screen_highlight_timer:start()
 -- }}}
 
 clientkeys = awful.util.table.join(
