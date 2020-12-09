@@ -15,7 +15,7 @@ platform = CYGWIN
 endif
 endif
 
-.PHONY: install uninstall update linux linux-remove cygwin cygwin-remove windows windows-remove work work-remove work-update new-comp mbsync-setup remove-work remove update-work
+.PHONY: install uninstall update linux linux-remove cygwin cygwin-remove windows windows-remove new-comp mbsync-setup remove
 
 .DEFAULT_GOAL:=update
 
@@ -96,13 +96,13 @@ endif
 # Add permission from
 mu4e-setup:
 	sudo apt install isync mu4e
-	mkdir ~/.mail/gmail
-	mkdir ~/.mail/work
+	mkdir -p ~/.local/.mail/gmail
+	mkdir -p ~/.local/.mail/work
 
 # Fonts used by terminal, emacs, awesomewm
 font-setup:
 	sudo add-apt-repository ppa:laurent-boulard/fonts
-	sudo apt install fonts-firacode xfonts-terminus fonts-iosevka fonts-iosevka-term
+	sudo apt install xfonts-terminus fonts-iosevka fonts-iosevka-term
 
 mbsync-setup:
 	$(shell test -s /home/$$USER/.gnupg/pubring.gpg || gpg2 --generate-key)
