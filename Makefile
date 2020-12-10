@@ -15,7 +15,7 @@ platform = CYGWIN
 endif
 endif
 
-.PHONY: install uninstall update linux linux-remove cygwin cygwin-remove windows windows-remove new-comp mbsync-setup remove
+.PHONY: install uninstall update linux linux-remove cygwin cygwin-remove windows windows-remove new-comp mbsync-setup remove ubuntu-setup
 
 .DEFAULT_GOAL:=update
 
@@ -88,21 +88,23 @@ else ifeq ($(platform),WINDOWS)
 	del "%APPDATA%\ghc\ghci.conf"
 endif
 
-new-comp: install
-ifneq (,$(filter Linux CYGWIN,$(platform)))
-	chsh -s /usr/bin/fish
-endif
-
 # Add permission from
 mu4e-setup:
 	sudo apt install isync mu4e
 	mkdir -p ~/.local/.mail/gmail
 	mkdir -p ~/.local/.mail/work
 
-# Fonts used by terminal, emacs, awesomewm
-font-setup:
+ubuntu-setup:
+	# Fonts used by terminal, emacs, awesomewm
 	sudo add-apt-repository ppa:laurent-boulard/fonts
-	sudo apt install xfonts-terminus fonts-iosevka fonts-iosevka-term
+	# Newest version of fish
+	sudo apt-add-repository ppa:fish-shell/release-3
+	# Newest version of emacs
+	sudo add-apt-repository ppa:ubuntu-elisp/ppa
+	sudo add-apt-repository ppa:plt/racket
+	sudo apt update
+	sudo apt install xfonts-terminus fonts-iosevka fonts-iosevka-term emacs-snapshot fish racket
+	chsh -s /usr/bin/fish
 
 mbsync-setup:
 	$(shell test -s /home/$$USER/.gnupg/pubring.gpg || gpg2 --generate-key)
