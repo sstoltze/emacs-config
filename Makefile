@@ -95,8 +95,8 @@ mu4e-setup:
 	mkdir -p ~/.local/.mail/work
 
 ubuntu-setup:
-	# Fonts used by terminal, emacs, awesomewm
-	sudo add-apt-repository ppa:laurent-boulard/fonts
+	# Fonts used by terminal, emacs, awesomewm - might be broken?
+	#	sudo add-apt-repository ppa:laurent-boulard/fonts
 	# Newest version of fish
 	sudo apt-add-repository ppa:fish-shell/release-3
 	# Newest version of emacs
@@ -104,6 +104,7 @@ ubuntu-setup:
 	sudo add-apt-repository ppa:plt/racket
 	sudo apt update
 	sudo apt install xfonts-terminus fonts-iosevka fonts-iosevka-term emacs-snapshot fish racket
+	sudo dpkg-reconfigure fontconfig
 	chsh -s /usr/bin/fish
 
 mbsync-setup:
