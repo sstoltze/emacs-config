@@ -103,7 +103,8 @@ ubuntu-setup:
 	sudo add-apt-repository ppa:ubuntu-elisp/ppa
 	sudo add-apt-repository ppa:plt/racket
 	sudo apt update
-	sudo apt install xfonts-terminus fonts-iosevka fonts-iosevka-term emacs-snapshot fish racket
+	sudo apt install fonts-terminus emacs-snapshot fish racket
+	#	sudo apt install  fonts-iosevka fonts-iosevka-term
 	sudo dpkg-reconfigure fontconfig
 	chsh -s /usr/bin/fish
 
