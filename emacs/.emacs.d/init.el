@@ -1823,6 +1823,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 
 (use-package utop
   :after merlin
+  :hook ((utop-mode . smartparens-mode)
+         (utop-mode . merlin-mode))
   :bind ((:map tuareg-mode-map
                ("C-c C-z" . utop))
          (:map merlin-mode-map
@@ -1833,9 +1835,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                ("M-,"      . merlin-pop-stack)
                ("C-<up>"   . utop-history-goto-prev)
                ("C-<down>" . utop-history-goto-next)
-               ("C-c C-q"  . utop-exit))
+               ("C-c C-q"  . utop-exit)
+               ("<tab>"    . complete-symbol))
          (:map utop-minor-mode-map
                ("C-x C-r" . nil)
+               ("C-c C-k" . nil)
                ("C-c C-q" . utop-exit))))
 
 (use-package flycheck-ocaml
