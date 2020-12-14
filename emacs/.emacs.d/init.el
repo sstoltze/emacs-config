@@ -1535,6 +1535,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package slime
   :ensure t
   :defer t
+  :hook (slime-repl-mode . (lambda ()
+                             (define-key slime-repl-mode-map (kbd "M-s") nil)))
   :custom
   (inferior-lisp-program "sbcl --dynamic-space-size 2560")
   (slime-default-lisp "sbcl")
