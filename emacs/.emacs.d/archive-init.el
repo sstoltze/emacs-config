@@ -610,3 +610,14 @@ Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
                                          ("<+>" . #Xe1cb)
                                          ("+>" . #Xe1cc)))))
 (setup-iosevka-ligatures)
+
+;; C-c C-r - clojure-refactor-map
+;; C-c r   - clj-refactor-mode-map - see https://github.com/clojure-emacs/clj-refactor.el/wiki
+;; (use-package clj-refactor
+;;   :ensure t
+;;   :defer t
+;;   :hook ((clojure-mode . clj-refactor-mode))
+;;   :config
+;;   (cljr-add-keybindings-with-prefix (kbd "C-c r"))
+;;   (push '("s" . "clojure.spec.alpha")
+;;         cljr-magic-require-namespaces))
