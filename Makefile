@@ -101,12 +101,22 @@ ubuntu-setup:
 	sudo apt-add-repository ppa:fish-shell/release-3
 	# Newest version of emacs
 	sudo add-apt-repository ppa:ubuntu-elisp/ppa
-	sudo add-apt-repository ppa:plt/racket
 	sudo apt update
-	sudo apt install fonts-terminus emacs-snapshot fish racket
+	sudo apt install awesome fonts-terminus emacs-snapshot fish i3lock scrot
 	#	sudo apt install  fonts-iosevka fonts-iosevka-term
 	sudo dpkg-reconfigure fontconfig
 	chsh -s /usr/bin/fish
+
+programming-setup:
+	sudo add-apt-repository ppa:plt/racket
+	sudo add-apt-repository ppa:avsm/ppa # Opam 2.0
+	sudo apt update
+	sudo apt install opam racket plotutils sbcl
+	curl -sSL https://get.haskellstack.org/ | bash
+	curl https://sh.rustup.rs -sSf | bash
+
+latex-setup:
+	sudo apt install texlive-omega
 
 mbsync-setup:
 	$(shell test -s /home/$$USER/.gnupg/pubring.gpg || gpg2 --generate-key)
