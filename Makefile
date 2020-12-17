@@ -109,9 +109,11 @@ ubuntu-setup:
 
 programming-setup:
 	sudo add-apt-repository ppa:plt/racket
-	sudo add-apt-repository ppa:avsm/ppa # Opam 2.0
+	#	sudo add-apt-repository ppa:avsm/ppa # Opam 2.0
 	sudo apt update
 	sudo apt install opam racket plotutils sbcl
+	opam install dune utop tuareg merlin ocamlformat user-setup
+	opam user-setup install
 	curl -sSL https://get.haskellstack.org/ | bash
 	curl https://sh.rustup.rs -sSf | bash
 

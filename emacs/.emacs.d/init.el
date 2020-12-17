@@ -1750,8 +1750,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (global-set-key (kbd "C-c C-x C-c") 'my-restart-python-console))
 
 ;;;; --- Ocaml ---
-
-
 ;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
 (when (file-exists-p "~/.emacs.d/opam-user-setup.el")
   (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el"))
@@ -1819,6 +1817,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (merlin-eldoc-occurrences nil))
 
 (use-package utop
+  :ensure t
   :after merlin
   :hook ((utop-mode . smartparens-mode)
          (utop-mode . merlin-mode))
