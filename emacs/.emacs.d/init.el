@@ -1877,7 +1877,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;;;; --- Racket ---
 (use-package racket-mode
   :ensure t
-  :defer t)
+  :defer t
+  :bind ((:map racket-mode-map
+               ("C-c SPC" . racket-align))))
 
 (use-package scribble-mode
   :ensure t
@@ -1896,7 +1898,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (when (eq system-type 'gnu/linux)
     (setenv "CARGO_HOME"  (concat (getenv "HOME") "/.local"))
     (setenv "RUSTUP_HOME" (concat (getenv "HOME") "/.local/rustup"))))
-
 
 ;; Cargo
 (use-package cargo
