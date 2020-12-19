@@ -102,7 +102,7 @@ ubuntu-setup:
 	# Newest version of emacs
 	sudo add-apt-repository ppa:ubuntu-elisp/ppa
 	sudo apt update
-	sudo apt install awesome fonts-terminus emacs-snapshot fish i3lock scrot
+	sudo apt install awesome fonts-terminus emacs-snapshot fish i3lock scrot sox
 	#	sudo apt install  fonts-iosevka fonts-iosevka-term
 	sudo dpkg-reconfigure fontconfig
 	chsh -s /usr/bin/fish
