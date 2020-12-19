@@ -1665,9 +1665,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package browse-url
   :after eww
   :custom
-  (browse-url-browser-function '((".*youtube.*" . browse-url-default-browser)
-                                 (".*github.*"  . browse-url-default-browser)
-                                 ("."           . eww-browse-url))))
+  (browse-url-handlers '((".*youtube.*"           . browse-url-default-browser)
+                         (".*github.*"            . browse-url-default-browser)
+                         (".*docs.racket-lang.*"  . browse-url-default-browser)
+                         ("."                     . eww-browse-url))))
 
 (use-package eww-lnum
   :ensure t
