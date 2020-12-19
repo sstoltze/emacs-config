@@ -1142,6 +1142,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;;;; --- Org ---
 ;; Use C-c C-, to replace <sTAB
 (use-package org
+  :ensure t
+  :pin org
   :hook ((org-mode . (lambda ()
                        (visual-line-mode 1)
                        (org-indent-mode  1)))
