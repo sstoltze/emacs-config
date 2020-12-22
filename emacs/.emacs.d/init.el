@@ -513,8 +513,8 @@ point reaches the beginning or end of the buffer, stop there."
        ;; Iosevka - Better horizontal splits
        ;; sudo add-apt-repository ppa:laurent-boulard/fonts
        ;; sudo apt install fonts-iosevka
-       (when (find-font (font-spec :name "Iosevka"))
-         (set-frame-font "Iosevka-10.5" nil t))
+       (cond ((find-font (font-spec :name "Iosevka Term")) (set-frame-font "Iosevka Term-10.5" nil t))
+             ((find-font (font-spec :name "Iosevka"))      (set-frame-font "Iosevka-10.5"      nil t)))
        ;; Fira Code - Better vertical splits - better modeline
        ;; sudo apt install fonts-firacode
        ;; (set-frame-font "Fira Code-10")
