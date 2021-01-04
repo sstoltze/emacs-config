@@ -621,3 +621,8 @@ Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
 ;;   (cljr-add-keybindings-with-prefix (kbd "C-c r"))
 ;;   (push '("s" . "clojure.spec.alpha")
 ;;         cljr-magic-require-namespaces))
+
+(use-package hc-zenburn-theme
+         :ensure t
+         :config
+         (load-theme 'hc-zenburn t))
