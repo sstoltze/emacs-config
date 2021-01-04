@@ -102,7 +102,7 @@ ubuntu-setup:
 	# Newest version of emacs
 	sudo add-apt-repository ppa:ubuntu-elisp/ppa
 	sudo apt update
-	sudo apt install awesome fonts-terminus emacs-snapshot fish i3lock scrot sox direnv
+	sudo apt install awesome fonts-terminus emacs-snapshot fish i3lock scrot sox direnv solaar imagemagick
 	# Froms http://phd-sid.ethz.ch/debian/fonts-iosevka/
 	sudo dpkg -i ./fonts/fonts-iosevka_4.2.0+ds-1_all.deb
 	sudo dpkg-reconfigure fontconfig
@@ -132,3 +132,5 @@ kitty-setup:
 	cp -r ~/.local/kitty.app/share/ ~/.local/
 	sudo update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator ~/.local/bin/kitty 50
 	sudo update-alternatives --config x-terminal-emulator
+
+setup: kitty-setup ubuntu-setup programming-setup
