@@ -508,7 +508,6 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;;;; --- Frame-setup ---
 (cond ((display-graphic-p) ;; Window system
-       (load-theme 'deeper-blue t)
        ;; Fonts
        ;; Iosevka - Better horizontal splits
        ;; sudo add-apt-repository ppa:laurent-boulard/fonts
@@ -718,11 +717,9 @@ If ARG is provided, move directly to option ARG."
          (global-set-key (kbd "M-<right>") '(lambda () (interactive) (toggle-window 4)))
          (global-set-key (kbd "M-<up>")    '(lambda () (interactive) (toggle-window 5)))
          (global-set-key (kbd "M-<down>")  '(lambda () (interactive) (toggle-window 6)))))
-      (t ;; Terminal
-       (use-package hc-zenburn-theme
-         :ensure t
-         :config
-         (load-theme 'hc-zenburn t))))
+      (t ;; Terminal - not used since deeper-blue seems to work well with kitty
+       nil))
+(load-theme 'deeper-blue t)
 (set-face-background 'cursor "burlywood")
 
 ;;; *** Packages ***
