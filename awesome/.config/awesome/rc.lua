@@ -619,6 +619,7 @@ awful.rules.rules = {
            "Gimp",
            "mpv",
            "Mathematica",
+           "zoom",
         },
         name = {
            "Event Tester",  -- xev.
@@ -684,7 +685,9 @@ awful.rules.rules = {
            "discord",
            "Skype",
            "Microsoft Teams - Preview",
-           "Keybase", },
+           "Keybase",
+           "zoom",
+        },
    }, properties = { tag = "Social" } },
    -- Steam
    { rule = { class = "Steam" },
