@@ -13,7 +13,7 @@ local function themed_clock(theme)
                                                              .. '">%1</span>') -- Erstat bold i terminalen med underline og baggrundsfarve
                                 :gsub("%p%c%s", " ") -- Fjern bold i terminal fra whitespace
                                 :gsub("[%c%s]+$", " ") -- Fjern alt overskydende whitespace og ekstra linier
-                             :gsub("%s%s%c", " \n ") -- Lidt dumt, men outputtet er for langt på nogle linier og tomme strenge har en grim baggrundsfarve
+                                :gsub("%s%s%c", " \n ") -- Lidt dumt, men outputtet er for langt på nogle linier og tomme strenge har en grim baggrundsfarve
                              calendar:set_markup('<tt><span background="' .. theme.bg_normal .. '"> ' -- Monospace og rigtig baggrundsfarve
                                                     .. cal_text
                                                     .. string.rep(" ", 58 + (select(2, cal_text:gsub('\n', '\n'))+1)*22 - cal_text:len()) -- Længde (7*22) + <spans> og lign. (58, åbenbart). Dette går nok hurtigt i stykker igen

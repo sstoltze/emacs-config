@@ -95,14 +95,12 @@ mu4e-setup:
 	mkdir -p ~/.local/.mail/work
 
 ubuntu-setup:
-	# Fonts used by terminal, emacs, awesomewm - might be broken?
-	#	sudo add-apt-repository ppa:laurent-boulard/fonts
 	# Newest version of fish
 	sudo apt-add-repository ppa:fish-shell/release-3
 	# Newest version of emacs
 	sudo add-apt-repository ppa:ubuntu-elisp/ppa
 	sudo apt update
-	sudo apt install awesome fonts-terminus emacs-snapshot fish i3lock scrot sox direnv solaar imagemagick
+	sudo apt install awesome fonts-terminus emacs-snapshot fish i3lock scrot sox direnv solaar imagemagick xautolock
 	# Froms http://phd-sid.ethz.ch/debian/fonts-iosevka/
 	sudo dpkg -i ./fonts/fonts-iosevka_4.2.0+ds-1_all.deb
 	sudo dpkg-reconfigure fontconfig
