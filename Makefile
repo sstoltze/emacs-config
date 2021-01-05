@@ -111,6 +111,9 @@ programming-setup:
 	#	sudo add-apt-repository ppa:avsm/ppa # Opam 2.0
 	sudo apt update
 	sudo apt install opam racket plotutils sbcl
+	# Anything earlier than 4.11.0 breaks man pages on fish
+	opam switch create 4.11.0
+	opam init
 	opam install dune utop tuareg merlin ocamlformat user-setup
 	opam user-setup install
 	curl -sSL https://get.haskellstack.org/ | bash
