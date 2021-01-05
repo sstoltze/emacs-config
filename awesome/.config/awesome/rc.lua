@@ -151,6 +151,8 @@ local battery = make_battery(theme)
 
 local brightness = require("widgets.brightness")
 
+local lock = require("widgets.lock")
+
 -- Notifications
 -- Discord and Spotify
 naughty.config.presets.notifications = {
@@ -266,6 +268,8 @@ awful.screen.connect_for_each_screen(function(s)
             divider,
             wibox.widget.systray(),
             divider,
+            lock.widget,
+            divider,
             volume.textbox,
             divider,
             battery.widget,
@@ -340,8 +344,9 @@ local globalkeys = awful.util.table.join(
       {description = "open a terminal", group = "launcher"}),
    awful.key({ modkey, "Control" }, "r", awesome.restart,
       {description = "reload awesome", group = "awesome"}),
-   awful.key({ modkey, "Shift"   }, "q", awesome.quit,
-      {description = "quit awesome", group = "awesome"}),
+   -- Never used, only leads to trouble
+   -- awful.key({ modkey, "Shift"   }, "q", awesome.quit,
+   --    {description = "quit awesome", group = "awesome"}),
 
    awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)          end,
       {description = "increase master width factor", group = "layout"}),
@@ -508,14 +513,16 @@ clientkeys = awful.util.table.join(
       {description = "maximize", group = "client"}),
    awful.key({ modkey, "Control", "Shift" }, "o", xrandr.xrandr,
       { description = "toggle xrandr options", group = "screen"}),
-   awful.key({ modkey, "Shift" }, "g", toggle_gap,
+   awful.key({ modkey, "Shift"   }, "g", toggle_gap,
       { description = "toggle useless_gap", group = "layout"}),
-   awful.key({ modkey, "Shift" }, "f", increase_gap,
+   awful.key({ modkey, "Shift"   }, "f", increase_gap,
       { description = "increase useless_gap", group = "layout"}),
-   awful.key({ modkey, "Shift" }, "d", decrease_gap,
+   awful.key({ modkey, "Shift"   }, "d", decrease_gap,
       { description = "decrease useless_gap", group = "layout"}),
-   awful.key({ modkey,         }, "q", function () awful.spawn.with_shell("screenlock")  end,
-      { description = "lock screen", group = "awesome" })
+   awful.key({ modkey,           }, "q", lock.lock_screen,
+      { description = "lock screen", group = "awesome" }),
+   awful.key({ modkey, "Control" }, "q", lock.toggle_automatic_lock,
+      { description = "toggle automatic lock screen", group = "awesome" })
 )
 
 -- Bind all key numbers to tags.
@@ -815,5 +822,6 @@ awful.spawn.easy_async_with_shell('echo -n "$USER"', function(user, stderr, reas
                                         spawn_once_with_shell("emacs")
                                         spawn_once_with_shell("firefox", "", "-f")
                                         spawn_once_with_shell("slack")
+                                        lock.enable_automatic_lock()
                                      end
 end)
