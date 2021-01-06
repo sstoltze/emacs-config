@@ -18,13 +18,6 @@ lock.update_widget = function ()
    end
 end
 
-awful.spawn.easy_async_with_shell("pgrep xautolock", function(stdout, stderr, reason, exit_code)
-                                     if exit_code == 0 then
-                                        lock.automatic = true
-                                     end
-                                     lock.update_widget()
-end)
-
 lock.start_autolock = function ()
    -- 'screenlock' is a fish function, so we need to get fish to evaluate it instead of the /bin/sh run by awful
    awful.spawn.with_shell("pgrep xautolock; or xautolock -time 10 -locker \"fish -c screenlock\" -nowlocker \"fish -c screenlock\"")
@@ -55,5 +48,18 @@ end
 lock.lock_screen = function ()
    awful.spawn.with_shell("pgrep xautolock; and xautolock -locknow; or screenlock")
 end
+
+awful.spawn.easy_async_with_shell("pgrep xautolock", function(stdout, stderr, reason, exit_code)
+                                     if exit_code == 0 then
+                                        -- If xautolock is running, we enable it to ensure the widget status is correct
+                                        lock.enable_automatic_lock()
+                                     end
+                                     lock.update_widget()
+end)
+
+-- Click the widget to toggle the lock
+lock.widget:connect_signal("button::press", function(lx, ly, button, mods, find_widgets_result)
+                              lock.toggle_automatic_lock()
+end)
 
 return lock
