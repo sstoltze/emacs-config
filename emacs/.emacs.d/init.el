@@ -1327,13 +1327,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          (:map swiper-map
                ("C-c s" . swiper-avy)))
   :custom
-  ;; Allow "M-x lis-pac" to match "M-x list-packages"
-  (ivy-re-builders-alist        '((swiper                . ivy--regex-plus)
-                                  (swiper-isearch        . ivy--regex-plus)
-                                  (counsel-rg            . ivy--regex-plus)
-                                  (counsel-projectile-rg . ivy--regex-plus)
-                                  (counsel-git-grep      . ivy--regex-plus)
-                                  (t                     . ivy--regex-fuzzy)))
   ;; Allows selecting the prompt with C-p (same as C-M-j)
   (ivy-use-selectable-prompt    t)
   ;; Use ivy while in minibuffer to e.g. insert variable names
@@ -1341,16 +1334,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (enable-recursive-minibuffers t)
   ;; Recentfs, views and bookmarks in ivy-switch-buffer
   (ivy-use-virtual-buffers      t)
-  ;; Special views in ivy-switch-buffer
-  ;; Use {} to easily find views in C-x b
-  (ivy-views (append `(("init.el {}"
-                        (file "~/.emacs.d/init.el"))
-                       ("gtd {}"
-                        (horz
-                         (file "~/.emacs.d/org-files/gtd/unsorted.org")
-                         (vert (file "~/.emacs.d/org-files/gtd/projects.org")
-                               (file "~/.emacs.d/org-files/journal.org")))))))
-  (ivy-flx-limit 5000)
   :config
   (ivy-mode 1)
   (counsel-mode 1)
@@ -1360,7 +1343,24 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (minibuffer-depth-indicate-mode 1)
   ;; Sort recentf by timestamp
   (add-to-list 'ivy-sort-functions-alist
-               '(counsel-recentf . file-newer-than-file-p)))
+               '(counsel-recentf . file-newer-than-file-p))
+  ;; Allow "M-x lis-pac" to match "M-x list-packages"
+  (setq ivy-re-builders-alist '((swiper                . ivy--regex-plus)
+                                (swiper-isearch        . ivy--regex-plus)
+                                (counsel-rg            . ivy--regex-plus)
+                                (counsel-projectile-rg . ivy--regex-plus)
+                                (counsel-git-grep      . ivy--regex-plus)
+                                (t                     . ivy--regex-fuzzy))
+        ivy-flx-limit         5000
+        ;; Special views in ivy-switch-buffer
+        ;; Use {} to easily find views in C-x b
+        ivy-views             (append `(("init.el {}"
+                                         (file "~/.emacs.d/init.el"))
+                                        ("gtd {}"
+                                         (horz
+                                          (file "~/.emacs.d/org-files/gtd/unsorted.org")
+                                          (vert (file "~/.emacs.d/org-files/gtd/projects.org")
+                                                (file "~/.emacs.d/org-files/journal.org"))))))))
 
 ;; Better fuzzy-matching
 (use-package flx
