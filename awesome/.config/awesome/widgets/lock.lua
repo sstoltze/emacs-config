@@ -1,6 +1,7 @@
 -- Lock screen handler
 local awful = require("awful")
 local wibox = require("wibox")
+local naughty = require("naughty")
 
 local lock = {}
 
@@ -20,7 +21,7 @@ end
 
 lock.start_autolock = function ()
    -- 'screenlock' is a fish function, so we need to get fish to evaluate it instead of the /bin/sh run by awful
-   awful.spawn.with_shell("pgrep xautolock; or xautolock -time 10 -locker \"fish -c screenlock\" -nowlocker \"fish -c screenlock\"")
+   awful.spawn.with_shell("pgrep xautolock; or xautolock -time 10 -locker \"fish -c screenlock\" -nowlocker \"fish -c screenlock\" -notify 30 -notifier \"notify-send -u normal 'The screen will lock in 30 seconds.'\"")
 end
 
 lock.enable_automatic_lock = function ()
@@ -40,8 +41,10 @@ end
 lock.toggle_automatic_lock = function ()
    if lock.automatic then
       lock.disable_automatic_lock()
+      naughty.notify({text = "Automatic screen lock disabled."})
    else
       lock.enable_automatic_lock()
+      naughty.notify({text = "Automatic screen lock enabled."})
    end
 end
 
