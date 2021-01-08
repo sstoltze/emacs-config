@@ -120,7 +120,7 @@ programming-setup:
 	curl https://sh.rustup.rs -sSf | bash
 
 latex-setup:
-	sudo apt install texlive-omega
+	sudo apt install texlive-full
 
 mbsync-setup:
 	$(shell test -s /home/$$USER/.gnupg/pubring.gpg || gpg2 --generate-key)
