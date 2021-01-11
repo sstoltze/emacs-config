@@ -15,7 +15,7 @@ platform = CYGWIN
 endif
 endif
 
-.PHONY: install uninstall update linux linux-remove cygwin cygwin-remove windows windows-remove new-comp mbsync-setup remove ubuntu-setup
+.PHONY: install uninstall remove update linux linux-remove cygwin cygwin-remove windows windows-remove mu4e-setup ubuntu-setup programming-setup latex-setup mbsync-setup kitty-setup setup
 
 .DEFAULT_GOAL:=update
 
@@ -88,29 +88,20 @@ else ifeq ($(platform),WINDOWS)
 	del "%APPDATA%\ghc\ghci.conf"
 endif
 
-# Add permission from
 mu4e-setup:
 	sudo apt install isync mu4e
 	mkdir -p ~/.local/.mail/gmail
 	mkdir -p ~/.local/.mail/work
 
-ubuntu-setup:
-	# Newest version of fish
-	sudo apt-add-repository ppa:fish-shell/release-3
-	# Newest version of emacs
-	sudo add-apt-repository ppa:ubuntu-elisp/ppa
-	sudo apt update
-	sudo apt install awesome fonts-terminus emacs-snapshot fish i3lock scrot sox direnv solaar imagemagick xautolock
+ubuntu-setup: .repository
+	sudo apt install awesome fonts-terminus emacs-snapshot fish i3lock scrot sox direnv solaar imagemagick xautolock librsvg2-bin
 	# Froms http://phd-sid.ethz.ch/debian/fonts-iosevka/
 	sudo dpkg -i ./fonts/fonts-iosevka_4.2.0+ds-1_all.deb
 	sudo dpkg-reconfigure fontconfig
 	chsh -s /usr/bin/fish
 
-programming-setup:
-	sudo add-apt-repository ppa:plt/racket
-	#	sudo add-apt-repository ppa:avsm/ppa # Opam 2.0
-	sudo apt update
-	sudo apt install opam racket plotutils sbcl
+programming-setup: .repository
+    sudo apt install opam racket plotutils sbcl
 	# Anything earlier than 4.11.0 breaks man pages on fish
 	opam switch create 4.11.0
 	opam init
@@ -134,4 +125,14 @@ kitty-setup:
 	sudo update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator ~/.local/bin/kitty 50
 	sudo update-alternatives --config x-terminal-emulator
 
-setup: kitty-setup ubuntu-setup programming-setup
+.repository:
+	# Newest version of fish
+	sudo apt-add-repository ppa:fish-shell/release-3
+	# Newest version of emacs
+	sudo add-apt-repository ppa:ubuntu-elisp/ppa
+	sudo add-apt-repository ppa:plt/racket
+	#	sudo add-apt-repository ppa:avsm/ppa # Opam 2.0, for ubuntu < 20.04
+	sudo apt update
+	touch .repository
+
+setup: kitty-setup ubuntu-setup programming-setup latex-setup
