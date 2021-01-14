@@ -1843,6 +1843,15 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :config
   (flycheck-ocaml-setup))
 
+;;;; --- Erlang / Elixir
+(use-package erlang
+  :ensure t
+  :defer t)
+
+(use-package elixir-mode
+  :ensure t
+  :defer t)
+
 ;;;; --- Clojure ---
 (use-package clojure-mode
   :ensure t
