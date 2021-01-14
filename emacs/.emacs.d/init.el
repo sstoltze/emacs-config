@@ -506,6 +506,11 @@ point reaches the beginning or end of the buffer, stop there."
                    cother-window))
   (advice-add command :after #'pulse-line))
 
+;; Handle long lines - currently disabled
+(use-package so-long
+  :ensure t
+  :defer t)
+
 ;;;; --- Frame-setup ---
 (cond ((display-graphic-p) ;; Window system
        ;; Fonts
@@ -1976,10 +1981,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :ensure t
   :defer t)
 
-(use-package so-long
-  :ensure t
-  :defer t)
-
 (cond
  ;; --- Windows specific ---
  ((eq system-type 'windows-nt)
@@ -2133,10 +2134,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (use-package direnv
     :ensure t
     :config
-    (direnv-mode))
-
-  (use-package adoc-mode
-    :ensure t))
+    (direnv-mode)))
 
 (provide 'init)
 ;;; init.el ends here

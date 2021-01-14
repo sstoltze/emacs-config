@@ -626,3 +626,6 @@ Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
          :ensure t
          :config
          (load-theme 'hc-zenburn t))
+
+(use-package adoc-mode
+    :ensure t)
