@@ -625,6 +625,7 @@ awful.rules.rules = {
            "mpv",
            "Mathematica",
            "zoom",
+           "DBeaver",
         },
         name = {
            "Event Tester",  -- xev.
@@ -677,8 +678,8 @@ awful.rules.rules = {
            "notification",
         },
    }, properties = { focusable = false,
-                    ontop = true,
-                    placement = awful.placement.top_right, } },
+                     ontop = true,
+                     placement = awful.placement.top_right, } },
    -- Net
    { rule = { role = "browser" },
      properties = { maximized = true,
