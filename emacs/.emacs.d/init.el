@@ -1095,6 +1095,16 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :defer t
   :hook ((prog-mode . rainbow-delimiters-mode)))
 
+;;;; --- Nix ---
+(defun in-nix-shell-p ()
+  "Check whether we are currently in a nix-shell."
+  (not (null (getenv "IN_NIX_SHELL"))))
+
+(defun env->load-path (env-key)
+  "If ENV-KEY is not set, return '.emacs.d/lisp' which is already in the path."
+  (or (getenv env-key)
+      "lisp"))
+
 ;;;; --- Flycheck ---
 ;; Next-error and prev-error are bound to M-g n and M-g p
 ;; Use C-c ! l to list all errors in a separate buffer
@@ -1755,9 +1765,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (global-set-key (kbd "C-c C-x C-c") 'my-restart-python-console))
 
 ;;;; --- Ocaml ---
+(defvar tuareg-load-path (env->load-path "TUAREG_SITE_LISP"))
 (use-package tuareg
   :ensure t
   :defer t
+  :load-path tuareg-load-path
   :bind ((:map tuareg-mode-map
                ;; Normally bound to caml-help
                ("C-c C-h" . nil)))
@@ -1801,9 +1813,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                      :unless '(sp-in-comment-p sp-in-string-p)
                      :post-handlers '(("| " "SPC"))))))
 
+(defvar merlin-load-path (env->load-path "MERLIN_SITE_LISP"))
 (use-package merlin
   :ensure t
   :after tuareg
+  :load-path merlin-load-path
   :hook ((tuareg-mode . merlin-mode))
   :bind ((:map merlin-mode-map
                ("M-." . merlin-locate)
@@ -1812,6 +1826,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package merlin-eldoc
   :ensure t
   :after merlin
+  :load-path merlin-load-path
   :hook ((reason-mode tuareg-mode caml-mode) . merlin-eldoc-setup)
   :custom
   ;; Use multiple lines when necessary
@@ -1820,8 +1835,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; Don't highlight occurences
   (merlin-eldoc-occurrences nil))
 
+(defvar utop-load-path (env->load-path "UTOP_SITE_LISP"))
 (use-package utop
   :ensure t
+  :load-path utop-load-path
   :after merlin
   :hook ((utop-mode . smartparens-mode)
          (utop-mode . merlin-mode))
