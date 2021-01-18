@@ -629,3 +629,13 @@ Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
 
 (use-package adoc-mode
     :ensure t)
+
+;;;; --- Twitter ---
+(use-package twittering-mode
+  :ensure t
+  :defer t
+  :custom
+  (twittering-use-master-password t)
+  (twittering-icon-mode           t)
+  :config
+  (sstoltze/setup-epa))
