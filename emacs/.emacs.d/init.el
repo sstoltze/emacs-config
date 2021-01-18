@@ -687,24 +687,24 @@ LEFT and TOP are window placements, WIDTH and HEIGHT are sizes."
               (when *fullscreen-set*
                 (toggle-frame-fullscreen)
                 (setq *fullscreen-set* nil))
-              (,func)))
+              (funcall ,func)))
          (defvar *fullscreen-set* nil)
          (defvar *window-status*  0)
          (defvar *window-options* (list
                                    (lambda ()
-                                     (handle-fullscreen-mode sstoltze/set-normal-frame))
+                                     (handle-fullscreen-mode #'sstoltze/set-normal-frame))
                                    (lambda ()
                                      (when (not *fullscreen-set*)
                                        (toggle-frame-fullscreen)
                                        (setq *fullscreen-set* t)))
                                    (lambda ()
-                                     (handle-fullscreen-mode sstoltze/set-left-small-frame))
+                                     (handle-fullscreen-mode #'sstoltze/set-left-small-frame))
                                    (lambda ()
-                                     (handle-fullscreen-mode sstoltze/set-right-small-frame))
+                                     (handle-fullscreen-mode #'sstoltze/set-right-small-frame))
                                    (lambda ()
-                                     (handle-fullscreen-mode sstoltze/set-top-small-frame))
+                                     (handle-fullscreen-mode #'sstoltze/set-top-small-frame))
                                    (lambda ()
-                                     (handle-fullscreen-mode sstoltze/set-bottom-small-frame))))
+                                     (handle-fullscreen-mode #'sstoltze/set-bottom-small-frame))))
          (defun toggle-window (arg)
            "Toggle the window state to the next *window-options*.
 If ARG is provided, move directly to option ARG."
@@ -1973,16 +1973,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     (epa-pinentry-mode 'loopback)
     :config
     (pinentry-start)))
-
-;;;; --- Twitter ---
-(use-package twittering-mode
-  :ensure t
-  :defer t
-  :custom
-  (twittering-use-master-password t)
-  (twittering-icon-mode           t)
-  :config
-  (sstoltze/setup-epa))
 
 ;;;; --- System specific setup ---
 (when (executable-find "fish")
