@@ -81,12 +81,6 @@ end
 set -x XDG_CONFIG_HOME "$HOME/.config"      # .dotfiles and configuration data
 set -x XDG_DATA_HOME   "$HOME/.local/share" # local data, important
 
-# Ocaml/opam
-set -x OPAMROOT $XDG_CONFIG_HOME/opam
-
-# OPAM configuration
-source $OPAMROOT/opam-init/init.fish > /dev/null 2> /dev/null or true
-
 # Colours
 set pink      ff99ff
 set dark_pink cc99ff
@@ -129,3 +123,6 @@ if test "$system" = "Linux"
         end
     end
 end
+
+# opam configuration
+source /home/sst/.config/opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
