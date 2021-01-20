@@ -101,7 +101,7 @@ ubuntu-setup: .repository
 	chsh -s /usr/bin/fish
 
 programming-setup: .repository
-    sudo apt install opam racket plotutils sbcl
+	sudo apt install opam racket plotutils sbcl
 	# Anything earlier than 4.11.0 breaks man pages on fish
 	opam switch create 4.11.0
 	opam init
