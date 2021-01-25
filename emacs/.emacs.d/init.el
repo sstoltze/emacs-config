@@ -846,15 +846,11 @@ If ARG is provided, move directly to option ARG."
                             (eshell/alias "emacs" "find-file $1")
                             (eshell/alias "magit" "magit-status")
                             (eshell/alias "less"  "cat $1")
-                            (cond ((or (eq system-type 'gnu/linux)
-                                       (eq system-type 'cygwin))
-                                   (eshell/alias "python" "python3 $*")
-                                   (eshell/alias "pip"    "pip3 $*"))
-                                  ((eq system-type 'windows-nt)
-                                   (eshell/alias "desktop"
-                                                 (concat "C:/Users/"
-                                                         (user-login-name)
-                                                         "/Desktop/")))))
+                            (when (eq system-type 'windows-nt)
+                              (eshell/alias "desktop"
+                                            (concat "C:/Users/"
+                                                    (user-login-name)
+                                                    "/Desktop/"))))
                           (local-set-key (kbd "C-c h")
                                          (lambda ()
                                            "Ivy interface to eshell history."
@@ -1716,25 +1712,31 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :after stan-mode)
 
 ;;;; --- Python ---
+
+(use-package pyenv-mode
+  :ensure t
+  :defer t
+  :init
+  (add-to-list 'exec-path "~/.pyenv/bin")
+  (add-to-list 'exec-path "~/.pyenv/shims"))
+
 ;; python -m pip install --upgrade jedi rope black flake8 yapf autopep8 elpy
 (use-package elpy
   :ensure t
   :pin elpy
   :defer t
-  :hook ((python-mode . (lambda ()
-                          (when (eq system-type 'windows-nt)
-                            (add-to-list 'python-shell-completion-native-disabled-interpreters
-                                         "python"))
-                          (when (eq system-type 'gnu/linux)
-                            (add-to-list 'python-shell-completion-native-disabled-interpreters
-                                         "python3"))
-                          (elpy-mode t)))
+  :hook ((python-mode . elpy-mode)
+         ;; (lambda ()
+         ;;   (when (eq system-type 'windows-nt)
+         ;;     (add-to-list 'python-shell-completion-native-disabled-interpreters
+         ;;                  "python"))
+         ;;   (when (eq system-type 'gnu/linux)
+         ;;     (add-to-list 'python-shell-completion-native-disabled-interpreters
+         ;;                  "python3")))
          (inferior-python-mode . (lambda ()
                                    (python-shell-switch-to-shell))))
-  :custom
-  (python-indent-guess-indent-offset-verbose nil)
-  (elpy-shell-use-project-root nil)
-  (elpy-rpc-backend "jedi")
+  ;; :custom
+  ;; (elpy-shell-use-project-root nil)
   ;; Tell Python debugger (pdb) to use the current virtual environment
   ;; https://emacs.stackexchange.com/questions/17808/enable-python-pdb-on-emacs-with-virtualenv
   ;;(gud-pdb-command-name "python -m pdb ")
@@ -1750,8 +1752,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          (get-buffer-process (current-buffer))
          nil "_"))))
   :config
-  (when (eq system-type 'gnu/linux)
-    (setq python-shell-interpreter "python3"))
   (elpy-enable)
   ;; Enable pyvenv, which manages Python virtual environments
   (pyvenv-mode 1)
