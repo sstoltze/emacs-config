@@ -109,6 +109,7 @@ programming-setup: .repository
 	opam user-setup install
 	curl -sSL https://get.haskellstack.org/ | bash
 	curl https://sh.rustup.rs -sSf | bash
+	curl -L https://nixos.org/nix/install | bash
 
 latex-setup:
 	sudo apt install texlive-full
