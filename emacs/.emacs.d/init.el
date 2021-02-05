@@ -1726,20 +1726,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :pin elpy
   :defer t
   :hook ((python-mode . elpy-mode)
-         ;; (lambda ()
-         ;;   (when (eq system-type 'windows-nt)
-         ;;     (add-to-list 'python-shell-completion-native-disabled-interpreters
-         ;;                  "python"))
-         ;;   (when (eq system-type 'gnu/linux)
-         ;;     (add-to-list 'python-shell-completion-native-disabled-interpreters
-         ;;                  "python3")))
+         (python-mode . (lambda ()
+                          (prettify-symbols-mode -1)))
          (inferior-python-mode . (lambda ()
                                    (python-shell-switch-to-shell))))
-  ;; :custom
-  ;; (elpy-shell-use-project-root nil)
-  ;; Tell Python debugger (pdb) to use the current virtual environment
-  ;; https://emacs.stackexchange.com/questions/17808/enable-python-pdb-on-emacs-with-virtualenv
-  ;;(gud-pdb-command-name "python -m pdb ")
   :init
   ;; Silence warning when guessing indent, default is 4 spaces
   (with-eval-after-load 'python
