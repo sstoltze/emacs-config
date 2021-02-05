@@ -2071,12 +2071,27 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                                     (mu4e-sent-messages-behavior  . delete)
                                     (smtpmail-default-smtp-server . "smtp.gmail.com")
                                     (smtpmail-smtp-server         . "smtp.gmail.com")
+                                    (smtpmail-smtp-service        . 587)))
+                           (make-mu4e-context
+                            :name "work"
+                            :match-func (lambda (msg)
+                                          (when msg
+                                            (string-prefix-p "/work" (mu4e-message-field msg :maildir))))
+                            :vars '((user-mail-address            . "sst@issuu.com")
+                                    (mu4e-trash-folder            . "/work/[Gmail].Trash")
+                                    (mu4e-refile-folder           . "/work/[Gmail].Archive")
+                                    ;; Gmail handles sent messages for us
+                                    (mu4e-sent-messages-behavior  . delete)
+                                    (smtpmail-default-smtp-server . "smtp.gmail.com")
+                                    (smtpmail-smtp-server         . "smtp.gmail.com")
                                     (smtpmail-smtp-service        . 587)))))
       ;; UNTRUE?
       ;; Authinfo - open in emacs and add lines for each context, e.g.
       ;; machine <smtp.foo.com> login <mail@address.com> password <secret> port <587>
-      (add-to-list 'auth-sources
-                   "~/.mail/.mailpass.gpg")
+      ;; (add-to-list 'auth-sources
+      ;;              "~/.local/.mail/.gmail.gpg")
+      ;; (add-to-list 'auth-sources
+      ;;              "~/.local/.mail/.work.gpg")
       ;; Include a bookmark to open all of my inboxes
       (add-to-list 'mu4e-bookmarks
                    (make-mu4e-bookmark
@@ -2088,6 +2103,12 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                     :name "Gmail"
                     :query "maildir:/gmail/Inbox"
                     :key ?g)
+                   t)
+      (add-to-list 'mu4e-bookmarks
+                   (make-mu4e-bookmark
+                    :name "Work"
+                    :query "maildir:/work/Inbox"
+                    :key ?s)
                    t)
       ;; Headers to see which account a mail is stored in
       (add-to-list 'mu4e-header-info-custom
