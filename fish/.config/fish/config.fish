@@ -93,6 +93,7 @@ set dark_pink cc99ff
 set orange    f2aa4c
 
 set fish_color_nix $orange
+set fish_color_kubernetes $dark_pink
 
 # Git prompt
 set __fish_git_prompt_showdirtystate          'yes'
