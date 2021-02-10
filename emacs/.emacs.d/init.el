@@ -1760,12 +1760,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :ensure t
   :defer t
   :load-path tuareg-load-path
+  :hook ((tuareg-mode . (lambda ()
+                          (prettify-symbols-mode -1))))
   :bind ((:map tuareg-mode-map
                ;; Normally bound to caml-help
                ("C-c C-h" . nil)))
-  :custom
-  (tuareg-prettify-symbols-basic-alist nil)
-  (tuareg-prettify-symbols-extra-alist nil)
   :config
   ;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
   (when (file-exists-p "~/.emacs.d/opam-user-setup.el")
