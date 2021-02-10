@@ -26,7 +26,14 @@ function fish_prompt --description 'Write out the prompt'
 
     # Include k8s context when enabled by 'kubeon'
     if test -n "$K8S_FISH_PROMPT"
-        set wd (printf "%s[k8s:%s]%s $wd" (set_color $fish_color_kubernetes) (kubectl config current-context) (set_color normal))
+        set -l kubernetes "k8s"
+        if test -x (which kubectl)
+            set kubernetes (printf "$kubernetes:%s" (kubectl config current-context))
+        end
+        if test -x (which kubens)
+            set kubernetes (printf "$kubernetes:%s" (kubens -c))
+        end
+        set wd (printf "%s[$kubernetes]%s $wd" (set_color $fish_color_kubernetes) (set_color normal))
     end
 
     # The space before the '>' is needed due to aggresive ligatures
