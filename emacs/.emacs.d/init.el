@@ -1248,16 +1248,16 @@ length of PATH (sans directory slashes) down to MAX-LEN."
              "* %i%?\nCREATED: %U\nSCHEDULED: %^{Enter date}t"
              :empty-lines-after 1))
           org-default-notes-file journal-org-file
-          org-agenda-files (list default-org-file
-                                 project-org-file
-                                 schedule-org-file
-                                 journal-org-file)
-          org-archive-location (concat archive-org-file "::datetree/* %s")
+          org-agenda-files       (list default-org-file
+                                       project-org-file
+                                       schedule-org-file
+                                       journal-org-file)
+          org-archive-location   (concat archive-org-file "::datetree/* %s")
           ;; Possibly change levels here
-          org-refile-targets `((,project-org-file  :maxlevel . 3)
-                               (,schedule-org-file :level    . 1)
-                               (,archive-org-file  :maxlevel . 2)
-                               (,journal-org-file  :maxlevel . 3)))
+          org-refile-targets     `((,project-org-file  :maxlevel . 3)
+                                   (,schedule-org-file :level    . 1)
+                                   (,archive-org-file  :maxlevel . 2)
+                                   (,journal-org-file  :maxlevel . 3)))
     (set-register ?u (cons 'file default-org-file))
     (set-register ?a (cons 'file archive-org-file))
     (set-register ?p (cons 'file project-org-file))
@@ -1371,7 +1371,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                                          (horz
                                           (file "~/.emacs.d/org-files/gtd/unsorted.org")
                                           (vert (file "~/.emacs.d/org-files/gtd/projects.org")
-                                                (file "~/.emacs.d/org-files/journal.org"))))))))
+                                                (file "~/.emacs.d/org-files/gtd/archive.org"))))))))
 
 ;; Better fuzzy-matching
 (use-package flx
