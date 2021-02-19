@@ -1697,6 +1697,24 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :ensure t
   :defer t)
 
+;;;; --- yaml ---
+(use-package yaml-mode
+  :ensure t
+  :defer t)
+
+;;;; --- typescript ---
+(use-package typescript-mode
+  :ensure t
+  :defer t
+  :mode "\\.tsx")
+
+(use-package tide
+  :ensure t
+  :defer t
+  :hook ((typescript-mode . tide-setup)
+         (typescript-mode . tide-hl-identifier-mode)
+         (before-save     . tide-format-before-save)))
+
 ;;;; --- ESS - Emacs Speaks Statistics ---
 (use-package ess
   :ensure t
@@ -1712,7 +1730,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :after stan-mode)
 
 ;;;; --- Python ---
-
 (use-package pyenv-mode
   :ensure t
   :defer t
