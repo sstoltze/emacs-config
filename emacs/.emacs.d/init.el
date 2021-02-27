@@ -249,6 +249,8 @@
 
 ;; Press 'C-x r j e' to go to init.el
 (set-register ?e '(file . "~/.emacs.d/init.el"))
+(set-register ?g '(file . "~/git"))
+(set-register ?w '(file . "~/work"))
 
 ;;;; --- Modeline ---
 
