@@ -45,6 +45,10 @@ if test -d ~/.nix-profile
     fenv source ~/.nix-profile/etc/profile.d/nix.sh
 end
 
+if test -d ~/.config/nvm
+    bass source ~/.config/nvm/nvm.sh
+end
+
 # AWS
 if test -x (which aws_completer)
     complete --command aws --no-files --arguments '(begin; set --local --export COMP_SHELL fish; set --local --export COMP_LINE (commandline); aws_completer | sed \'s/ $//\'; end)'
