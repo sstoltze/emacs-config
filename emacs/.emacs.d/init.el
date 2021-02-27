@@ -1950,10 +1950,18 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package racer
   :ensure t
   :defer t
-  :hook ((rust-mode . racer-mode)
+  :hook ((rust-mode  . racer-mode)
          (racer-mode . eldoc-mode))
   :bind ((:map rust-mode-map
-               ("C-c C-d" . racer-describe))))
+               ("C-c C-d" . racer-describe)))
+  :config
+  (setq racer-rust-src-path
+        (let* ((sysroot (string-trim
+                         (shell-command-to-string "rustc --print sysroot")))
+               (lib-path (concat sysroot "/lib/rustlib/src/rust/library"))
+               (src-path (concat sysroot "/lib/rustlib/src/rust/src")))
+          (or (when (file-exists-p lib-path) lib-path)
+              (when (file-exists-p src-path) src-path)))))
 
 (use-package flycheck-rust
   :ensure t
