@@ -35,9 +35,10 @@ set -x RUSTUP_HOME "$HOME/.local/rustup"
 set -x GUIX_LOCPATH "$HOME/.guix-profile/lib/locale"
 set -x GUIX_PROFILE "$HOME/.guix-profile"
 if test -d ~/.config/guix
-    set -x PATH ~/.config/guix/current/bin $PATH
-    set -x PATH ~/.guix-profile/bin $PATH
-    set -x PATH ~/.guix-profile/sbin $PATH
+    set -x PATH "$HOME/.config/guix/current/bin" $PATH
+    set -x PATH "$GUIX_PROFILE/bin" $PATH
+    set -x PATH ~"$GUIX_PROFILE/sbin" $PATH
+    fenv source "$GUIX_PROFILE/etc/profile"
 end
 
 # Nix
@@ -46,7 +47,7 @@ if test -d ~/.nix-profile
 end
 
 if test -d ~/.config/nvm
-    bass source ~/.config/nvm/nvm.sh
+    fenv source ~/.config/nvm/nvm.sh
 end
 
 # AWS
