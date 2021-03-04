@@ -2174,6 +2174,15 @@ length of PATH (sans directory slashes) down to MAX-LEN."
       :custom
       (sage-command "/usr/lib/sagemath/sage")))))
 
+(when (file-directory-p "~/.guix-profile")
+  (add-to-list 'load-path "~/.guix-profile/share/emacs/site-lisp")
+   (use-package geiser
+     :defer t
+     :load-path "~/.guix-profile/share/emacs/site-lisp")
+   (use-package guix
+     :defer t
+     :load-path "~/.guix-profile/share/emacs/site-lisp"))
+
 (when at-work-p
   (use-package direnv
     :ensure t
