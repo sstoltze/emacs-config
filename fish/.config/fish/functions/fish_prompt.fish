@@ -22,6 +22,11 @@ function fish_prompt --description 'Write out the prompt'
         set wd (printf "%s[nix-shell:$wd]%s" (set_color $fish_color_nix) (set_color normal))
     end
 
+    # Include guix shell when appropriate
+    if test -n "$GUIX_ENVIRONMENT"
+        set wd (printf "%s[guix:$wd]%s" (set_color $fish_color_nix) (set_color normal))
+    end
+
     set wd (printf "%s$wd%s%s" (set_color $fish_color_cwd) (set_color normal) (__fish_vcs_prompt))
 
     # Include k8s context when enabled by 'kubeon'
