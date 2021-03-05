@@ -519,6 +519,8 @@ point reaches the beginning or end of the buffer, stop there."
        ;; Iosevka - Better horizontal splits
        ;; sudo add-apt-repository ppa:laurent-boulard/fonts
        ;; sudo apt install fonts-iosevka
+       ;; Or
+       ;; guix package -i font-iosevka font-iosevka-term emacs guile emacs-geiser emacs-guix
        (cond ;;((find-font (font-spec :name "Iosevka Term")) (set-frame-font "Iosevka Term-10.5" nil t))
              ((find-font (font-spec :name "Iosevka"))      (set-frame-font "Iosevka-10.5"      nil t)))
        ;; Fira Code - Better vertical splits - better modeline
@@ -2183,11 +2185,14 @@ length of PATH (sans directory slashes) down to MAX-LEN."
      :defer t
      :load-path "~/.guix-profile/share/emacs/site-lisp"))
 
-(when at-work-p
-  (use-package direnv
+(use-package direnv
     :ensure t
     :config
-    (direnv-mode)))
+    (direnv-mode))
+
+(when at-work-p
+  (use-package dockerfile-mode
+    :ensure t))
 
 (provide 'init)
 ;;; init.el ends here
