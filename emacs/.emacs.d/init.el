@@ -1704,7 +1704,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;;;; --- yaml ---
 (use-package yaml-mode
   :ensure t
-  :defer t)
+  :defer t
+  :mode "\\.yml\\.tpl")
 
 ;;;; --- typescript ---
 (use-package typescript-mode
