@@ -1,3 +1,14 @@
+;; Guix - the geiser package destroys racket-mode
+(when (file-directory-p "~/.guix-profile")
+  ;; guix package -i font-iosevka font-iosevka-term emacs guile emacs-geiser emacs-guix
+  (use-package guix
+    :defer t
+    :load-path "~/.guix-profile/share/emacs/site-lisp")
+  (add-to-list 'load-path "~/.guix-profile/share/emacs/site-lisp")
+  (use-package geiser
+    :defer t
+    :load-path "~/.guix-profile/share/emacs/site-lisp"))
+
 ;; Ivy-posframe display for swiper-isearch
 :preface
   (defun ivy-display-function-window (text)
