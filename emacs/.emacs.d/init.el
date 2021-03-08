@@ -520,7 +520,7 @@ point reaches the beginning or end of the buffer, stop there."
        ;; sudo add-apt-repository ppa:laurent-boulard/fonts
        ;; sudo apt install fonts-iosevka
        ;; Or
-       ;; guix package -i font-iosevka font-iosevka-term emacs guile emacs-geiser emacs-guix
+       ;; guix package -i font-iosevka font-iosevka-term
        (cond ;;((find-font (font-spec :name "Iosevka Term")) (set-frame-font "Iosevka Term-10.5" nil t))
              ((find-font (font-spec :name "Iosevka"))      (set-frame-font "Iosevka-10.5"      nil t)))
        ;; Fira Code - Better vertical splits - better modeline
@@ -1915,6 +1915,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; (cider-repl-result-prefix ";; => ")
   (cider-repl-require-ns-on-set t))
 
+(use-package clj-refactor
+  :ensure t
+  :defer t)
+
 ;;;; --- Racket ---
 (use-package racket-mode
   :ensure t
@@ -2176,15 +2180,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
       :load-path "/usr/lib/sagemath/local/share/emacs"
       :custom
       (sage-command "/usr/lib/sagemath/sage")))))
-
-(when (file-directory-p "~/.guix-profile")
-  (add-to-list 'load-path "~/.guix-profile/share/emacs/site-lisp")
-   (use-package geiser
-     :defer t
-     :load-path "~/.guix-profile/share/emacs/site-lisp")
-   (use-package guix
-     :defer t
-     :load-path "~/.guix-profile/share/emacs/site-lisp"))
 
 (use-package direnv
     :ensure t
