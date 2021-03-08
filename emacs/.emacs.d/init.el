@@ -2181,10 +2181,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
       :custom
       (sage-command "/usr/lib/sagemath/sage")))))
 
-(use-package direnv
+(when (executable-find "direnv")
+  (use-package direnv
     :ensure t
     :config
-    (direnv-mode))
+    (direnv-mode)))
 
 (when at-work-p
   (use-package dockerfile-mode
