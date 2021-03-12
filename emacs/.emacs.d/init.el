@@ -1123,7 +1123,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package flycheck-posframe
   :ensure t
   :defer t
-  :hook ((flycheck-mode . flycheck-posframe-mode))
+  :hook ((flycheck-mode . flycheck-posframe-mode)
+         ;; This might be removable a some point? https://github.com/alexmurray/flycheck-posframe/issues/27
+         (post-command  . flycheck-posframe-hide-posframe))
   :custom
   (flycheck-posframe-border-width 1)
   :custom-face
