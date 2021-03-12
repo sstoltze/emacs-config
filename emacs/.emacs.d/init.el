@@ -2189,7 +2189,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 
 (when at-work-p
   (use-package dockerfile-mode
-    :ensure t))
+    :ensure t)
+  (use-package kotlin-mode
+    :ensure t
+    :defer t))
 
 (provide 'init)
 ;;; init.el ends here
