@@ -1291,7 +1291,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
      (latex      . t)
      (shell      . t)
      (sql        . t)
-     (stan       . t)))
+     (stan       . t)
+     (http       . t)))
   (setq org-confirm-babel-evaluate nil
         org-src-fontify-natively   t)
   (when (eq system-type 'gnu/linux)
@@ -1606,6 +1607,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 
 ;;;; --- HTML/CSS ---
 (use-package restclient
+  :ensure t
+  :defer t)
+
+;; Allows running restclient-queries in org-babel blocks
+(use-package ob-http
   :ensure t
   :defer t)
 
