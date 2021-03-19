@@ -1123,9 +1123,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package flycheck-posframe
   :ensure t
   :defer t
-  :hook ((flycheck-mode . flycheck-posframe-mode)
-         ;; This might be removable a some point? https://github.com/alexmurray/flycheck-posframe/issues/27
-         (post-command  . flycheck-posframe-hide-posframe))
+  :hook ((flycheck-mode . flycheck-posframe-mode))
   :custom
   (flycheck-posframe-border-width 1)
   :custom-face
@@ -1947,6 +1945,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                ("C-c C-b"   . rust-run)))
   :custom
   (rust-format-on-save t)
+  (rust-format-show-buffer nil)
   :init
   (when (eq system-type 'gnu/linux)
     (setenv "CARGO_HOME"  (concat (getenv "HOME") "/.local"))
@@ -1982,16 +1981,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :ensure t
   :defer t
   :hook ((rust-mode . flycheck-rust-setup)))
-
-(use-package rustic
-  :ensure t
-  :defer t
-  :custom
-  (rustic-lsp-client nil)
-  :config
-  (when (eq system-type 'gnu/linux)
-    (setenv "CARGO_HOME"  (concat (getenv "HOME") "/.local"))
-    (setenv "RUSTUP_HOME" (concat (getenv "HOME") "/.local/rustup"))))
 
 ;;;; --- EPA ---
 (defun sstoltze/setup-epa ()
