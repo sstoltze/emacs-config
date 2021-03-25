@@ -46,8 +46,9 @@ if test -d ~/.nix-profile
     fenv source ~/.nix-profile/etc/profile.d/nix.sh
 end
 
-if test -d ~/.config/nvm
-    fenv source ~/.config/nvm/nvm.sh
+# fnm - cargo install fnm
+if test -x (which fnm)
+    fnm env --shell=fish | source
 end
 
 # AWS
