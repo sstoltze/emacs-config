@@ -1889,7 +1889,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 
 (use-package elixir-mode
   :ensure t
-  :defer t)
+  :defer t
+  :hook ((before-save-hook . elixir-format)))
 
 ;;;; --- Clojure ---
 (use-package clojure-mode
