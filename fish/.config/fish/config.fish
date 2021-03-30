@@ -37,7 +37,7 @@ set -x GUIX_PROFILE "$HOME/.guix-profile"
 if test -d ~/.config/guix
     set -x PATH "$HOME/.config/guix/current/bin" $PATH
     set -x PATH "$GUIX_PROFILE/bin" $PATH
-    set -x PATH ~"$GUIX_PROFILE/sbin" $PATH
+    set -x PATH "$GUIX_PROFILE/sbin" $PATH
     fenv source "$GUIX_PROFILE/etc/profile"
 end
 
