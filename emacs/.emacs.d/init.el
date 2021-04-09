@@ -2190,6 +2190,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     :ensure t)
   (use-package kotlin-mode
     :ensure t
+    :defer t)
+  (use-package protobuf-mode
+    :ensure t
     :defer t))
 
 (provide 'init)
