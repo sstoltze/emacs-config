@@ -770,6 +770,8 @@ If ARG is provided, move directly to option ARG."
 ;;;; --- Dired ---
 (use-package dired
   :hook ((dired-mode . hl-line-mode))
+  :bind ((:map dired-mode-map
+               ("b" . dired-up-directory)))
   :custom
   (ls-lisp-dirs-first                  t)
   (dired-recursive-copies              'always)
