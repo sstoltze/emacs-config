@@ -1645,6 +1645,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (haskell-process-auto-import-loaded-modules  t)
   (haskell-process-log                         t)
   (haskell-compile-cabal-build-command         "stack build")
+  ;; 'stack install hasktags'
+  (haskell-tags-on-save                        (if (executable-find "hasktags")
+                                                   t
+                                                 nil))
   :bind ((:map haskell-mode-map
                ("C-c C-c" . haskell-compile)
                ("M-."     . haskell-mode-jump-to-def)
