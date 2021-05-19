@@ -1937,6 +1937,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package racket-mode
   :ensure t
   :defer t
+  :hook ((racket-mode . racket-xp-mode))
   :bind ((:map racket-mode-map
                ("C-c SPC" . racket-align))))
 
