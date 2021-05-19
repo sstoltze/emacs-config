@@ -1164,7 +1164,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          (org-babel-after-execute . org-display-inline-images)
          (org-clock-in . (lambda ()
                            ;; Start timer, use default value, replace any running timer
-                           (org-timer-set-timer '(16)))))
+                           (org-timer-set-timer '(16))))
+         (after-init . (lambda ()
+                         (org-agenda nil "a"))))
   :diminish org-indent-mode
   :diminish visual-line-mode
   :bind (("C-c l" . org-store-link)
