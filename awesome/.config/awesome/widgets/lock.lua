@@ -8,8 +8,8 @@ local lock = {}
 lock.automatic = false
 
 lock.widget = wibox.widget.textbox()
-lock.enabled_icon = "🔐"
-lock.disabled_icon = "🔓"
+lock.enabled_icon = "🔐" -- lock
+lock.disabled_icon = "🔓" -- unlocked lock
 
 lock.update_widget = function ()
    if lock.automatic then

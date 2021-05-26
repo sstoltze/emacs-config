@@ -1,7 +1,8 @@
 --- Separating Multiple Monitor functions as a separeted module (taken from awesome wiki)
 
-local awful     = require("awful")
-local naughty   = require("naughty")
+local gears   = require("gears")
+local awful   = require("awful")
+local naughty = require("naughty")
 
 -- A path to a fancy icon
 local icon_path = ""
@@ -37,12 +38,12 @@ local function arrange(out)
       local new = {}
       for _, p in pairs(previous) do
          for _, o in pairs(out) do
-            if not awful.util.table.hasitem(p, o) then
-               new[#new + 1] = awful.util.table.join(p, {o})
+            if not gears.table.hasitem(p, o) then
+               new[#new + 1] = gears.table.join(p, {o})
             end
          end
       end
-      choices = awful.util.table.join(choices, new)
+      choices = gears.table.join(choices, new)
       previous = new
    end
 
@@ -66,7 +67,7 @@ local function menu()
       end
       -- Disabled outputs
       for _, o in pairs(out) do
-         if not awful.util.table.hasitem(choice, o) then
+         if not gears.table.hasitem(choice, o) then
             cmd = cmd .. " --output " .. o .. " --off"
          end
       end
