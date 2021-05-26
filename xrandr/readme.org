@@ -1,0 +1,5 @@
+#+AUTHOR: Simon Stoltze
+#+EMAIL: sstoltze@gmail.com
+#+DATE: 2021-05-26
+#+OPTIONS: toc:nil title:nil author:nil email:nil date:nil creator:nil
+Copy the file to =/etc/X11/Xsession.d/.= to get xrandr to set things up during startup
