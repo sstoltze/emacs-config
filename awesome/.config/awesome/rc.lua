@@ -831,7 +831,7 @@ awful.spawn.easy_async_with_shell('echo -n "$USER"', function(user, stderr, reas
                                         spawn_once_with_shell("xfce4-power-manager", "--no-daemon")
                                         spawn_once_with_shell("dropbox", "start")
                                      elseif user == "sst\n" then -- Work setup
-                                        spawn_once_with_shell("xrdb", "-merge ~/.Xresources-docked") -- Set dpi for the most common setup
+                                        awful.spawn.with_shell("xrdb -merge ~/.Xresources-docked") -- Set dpi for the most common setup
                                         spawn_once_with_shell("solaar")
                                         spawn_once_with_shell("blueman-applet")
                                         spawn_once_with_shell("emacs")
