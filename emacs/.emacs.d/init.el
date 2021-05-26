@@ -1430,6 +1430,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                        ;; Magit background color
                        (face-background 'magit-section-highlight)))
 
+(use-package forge
+  :ensure t
+  :after magit)
+
 (use-package git-timemachine
   :ensure t
   :defer t)
