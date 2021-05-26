@@ -154,6 +154,8 @@ local lock = require("widgets.lock")
 
 -- Notifications
 -- Discord and Spotify
+naughty.config.defaults.position = "top_left"
+
 naughty.config.presets.notifications = {
    -- if you want to disable Spotify notifications completely, return false
    callback = function(args)
@@ -708,7 +710,7 @@ awful.rules.rules = {
         },
    }, properties = { focusable = false,
                      ontop = true,
-                     placement = awful.placement.top_right, } },
+                     placement = awful.placement.top_left, } },
    -- Net
    { rule = { role = "browser" },
      properties = { maximized = true,
