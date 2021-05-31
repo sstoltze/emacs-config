@@ -180,7 +180,9 @@
                 ;; Prettify symbols
                 global-prettify-symbols-mode
                 ;; Column in modeline
-                column-number-mode))
+                column-number-mode
+                ;; Automatically reload changed files
+                auto-revert-mode))
   (when (fboundp mode)
     (funcall mode 1)))
 
@@ -738,7 +740,8 @@ If ARG is provided, move directly to option ARG."
   :ensure t
   :config
   (diminish 'eldoc-mode "")
-  (diminish 'company-mode ""))
+  (diminish 'company-mode "")
+  (diminish 'auto-revert-mode ""))
 
 ;;;; --- Visible mark ---
 (use-package visible-mark
@@ -1414,9 +1417,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package magit
   :ensure t
   :defer t
-  ;; Magit turns on auto-revert so a file changed on disk is changed in Emacs
-  ;; This could be an issue at some point.
-  :diminish auto-revert-mode
   :bind (("C-x g" . magit-status)       ; Display the main magit popup
          ("C-c g" . magit-file-dispatch)) ; Run blame, etc. on a file
   :custom
