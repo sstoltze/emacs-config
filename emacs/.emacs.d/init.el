@@ -858,18 +858,7 @@ If ARG is provided, move directly to option ARG."
                               (eshell/alias "desktop"
                                             (concat "C:/Users/"
                                                     (user-login-name)
-                                                    "/Desktop/"))))
-                          (local-set-key (kbd "C-c h")
-                                         (lambda ()
-                                           "Ivy interface to eshell history."
-                                           (interactive) ;; Maybe insert move-to-end-of-buffer here
-                                           (insert
-                                            (ivy-completing-read "History: "
-                                                                 (delete-dups
-                                                                  (ring-elements eshell-history-ring))))))
-                          (local-set-key (kbd "C-c C-h") 'eshell-list-history)
-                          ;; Use ivy for completion instead of pcomplete
-                          (local-set-key (kbd "<tab>")   'completion-at-point)))
+                                                    "/Desktop/"))))))
          ;; Send message when command finishes and buffer is not active
          ;; Alternatively, look at package 'alert'
          (eshell-kill . (lambda (process status)
@@ -884,6 +873,15 @@ If ARG is provided, move directly to option ARG."
                                          ;; Replace final newline with nothing
                                          (replace-regexp-in-string "\n\\'" ""
                                                                    status)))))))
+  :bind ((:map eshell-mode-map
+               ("C-c h"   . (lambda ()
+                              "Ivy interface to eshell history."
+                              (interactive) ;; Maybe insert move-to-end-of-buffer here
+                              (insert
+                               (ivy-completing-read "History: "
+                                                    (delete-dups
+                                                     (ring-elements eshell-history-ring))))))
+               ("C-c C-h" . eshell-list-history)))
   :custom
   (eshell-ls-use-colors                    t)
   ;; History
@@ -1557,8 +1555,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package slime
   :ensure t
   :defer t
-  :hook (slime-repl-mode . (lambda ()
-                             (define-key slime-repl-mode-map (kbd "M-s") nil)))
+  :bind ((:map slime-repl-mode-map
+               ("M-s" . nil)))
   :custom
   (inferior-lisp-program "sbcl --dynamic-space-size 2560")
   (slime-default-lisp "sbcl")
