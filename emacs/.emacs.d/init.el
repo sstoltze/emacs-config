@@ -1666,8 +1666,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (defun common-c-hook ()
   "Hook for C/C++."
   (c-set-style "bsd")
-  (setq c-basic-offset 2
-        tab-width 2)
+  (setq-default c-basic-offset 2)
+  (setq tab-width 2)
   (use-package semantic/bovine/gcc
     :after semantic))
 
