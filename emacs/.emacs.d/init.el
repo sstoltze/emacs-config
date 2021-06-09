@@ -880,8 +880,7 @@ If ARG is provided, move directly to option ARG."
                               (insert
                                (ivy-completing-read "History: "
                                                     (delete-dups
-                                                     (ring-elements eshell-history-ring))))))
-               ("C-c C-h" . eshell-list-history)))
+                                                     (ring-elements eshell-history-ring))))))))
   :custom
   (eshell-ls-use-colors                    t)
   ;; History
