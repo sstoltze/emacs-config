@@ -7,11 +7,12 @@ local volume = {}
 volume.textbox = wibox.widget.textbox()
 
 volume.command = [[pactl list sinks | awk '
-BEGIN               { mute = "no"; running = 0; }
+BEGIN               { mute = "no"; running = 0; volume = 0; }
 /RUNNING/           { running = 1; }
 /^[^a-zA-Z]Mute/    { if ( running ) { mute = $2 } }
-/^[^a-zA-Z]*Volume/ { if ( running ) { if ( mute ~ /yes/ ) { gsub(/%/, "M", $5); }; print $5; } }
-/SUSPENDED/         { running = 0; }']]
+/^[^a-zA-Z]*Volume/ { if ( running ) { if ( mute ~ /yes/ ) { gsub(/%/, "M", $5); }; volume = $5; } }
+/SUSPENDED/         { running = 0; }
+END                 { print volume; } ']]
 
 volume.update = function ()
    awful.spawn.easy_async_with_shell(volume.command, function(vol, stderr, reason, exit_code)
@@ -28,7 +29,7 @@ volume.async = function (stdout, stderr, reason, exit_code)
    volume.update()
 end
 
-volume.get_sink = "pactl list short sinks | grep -i running | cut -f 1"
+volume.get_sink = "pactl list short sinks | awk 'BEGIN { s = 0; }; /RUNNING/ { s = $1; }; END { print s; }'"
 
 volume.lower = function ()
    awful.spawn.easy_async_with_shell(volume.get_sink,
