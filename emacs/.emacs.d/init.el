@@ -1312,6 +1312,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :config
   (avy-setup-default))
 
+;;;; --- wgrep ---
+(use-package wgrep
+  :ensure t
+  :defer t)
+
 ;;;; --- Counsel / Swiper / Ivy ---
 ;;;;; Counsel pulls in ivy and swiper
 ;;;;; Doing C-x C-f, C-M-j will create currently entered text as file-name
