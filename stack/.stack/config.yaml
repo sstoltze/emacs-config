@@ -8,7 +8,7 @@
 # See https://docs.haskellstack.org/en/stable/yaml_configuration/#templates
 templates:
   params:
-    author-name: Simon Stoltze
+    author-name: Sarah Stoltze
     author-email: sstoltze@gmail.com
 #   copyright:
     github-username: sstoltze
