@@ -712,7 +712,14 @@ awful.rules.rules = {
                      ontop = true,
                      placement = awful.placement.top_left, } },
    -- Net
-   { rule = { role = "browser" },
+   { rule_any = {
+        role = {
+           "browser",
+        },
+        class = {
+           "Firefox",
+        },
+   },
      properties = { maximized = true,
                     tag = "Net" } },
    -- Social
