@@ -1,3 +1,5 @@
-xset r rate 280 40
+setxkbmap -option keypad:pointerkeys
+
+xset r rate 280 40 ma 65 30 20 30 -200
 
 xmodmap ~/.xmodmap
