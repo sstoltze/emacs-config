@@ -1466,6 +1466,14 @@ length of PATH (sans directory slashes) down to MAX-LEN."
           (t              (progn (setq cursor-type 't)
                                  (set-face-background 'mode-line "gray70"))))))
 
+;;;; --- lsp ---
+(use-package lsp-mode
+  :ensure t)
+(use-package lsp-ui
+  :ensure t)
+(use-package lsp-ivy
+  :ensure t)
+
 ;;;; --- Multiple cursors ---
 (use-package multiple-cursors
   :ensure t
@@ -1955,6 +1963,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package rust-mode
   :ensure t
   :defer t
+  ;; rustup component add rls
+  :hook ((rust-mode . lsp))
   :bind ((:map rust-mode-map
                ("C-c <tab>" . rust-format-buffer)
                ("C-c C-b"   . rust-run)))
