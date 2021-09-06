@@ -126,7 +126,7 @@
       gc-cons-threshold                     (* 100 1024 1024) ;; 100 mb
 
       ;; Personal info
-      user-full-name                        "Simon Stoltze"
+      user-full-name                        "Sarah Stoltze"
       user-mail-address                     (cond (at-work-p "sst@issuu.com")
                                                   (t         "sstoltze@gmail.com"))
 
@@ -2037,8 +2037,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
  ;; --- Windows specific ---
  ((eq system-type 'windows-nt)
   ;; Default directory
-  (let ((desktop-dir (concat "C:/Users/"
-                             (user-login-name)
+  (let ((desktop-dir (concat (getenv "USERPROFILE")
                              "/Desktop/")))
     (setq default-directory desktop-dir)
     (set-register ?d (cons 'file desktop-dir)))
