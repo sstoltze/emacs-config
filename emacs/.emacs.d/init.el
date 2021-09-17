@@ -1470,9 +1470,24 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 
 ;;;; --- lsp ---
 (use-package lsp-mode
-  :ensure t)
+  :ensure t
+  :hook ((lsp-mode . yas-minor-mode))
+  :bind (("M-?" . lsp-find-references))
+  :custom
+  (lsp-keymap-prefix "C-c l")
+  (lsp-eldoc-render-all t)
+  (lsp-idle-delay 0.6))
+
+;; Flashy, maybe remove
 (use-package lsp-ui
-  :ensure t)
+  :ensure t
+  :hook ((lsp-mode lsp-ui-mode))
+  :bind ((("M-j" . lsp-ui-imenu)))
+  :custom
+  (lsp-ui-peek-always-show t)
+  (lsp-ui-sideline-show-hover t)
+  (lsp-ui-doc-enable nil))
+
 (use-package lsp-ivy
   :ensure t)
 
@@ -1749,7 +1764,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :defer t
   :hook ((typescript-mode . tide-setup)
          (typescript-mode . tide-hl-identifier-mode)
-         (before-save     . tide-format-before-save)))
+         (typescript-mode . (lambda ()
+                              (add-hook 'before-save-hook 'tide-format-before-save 0 t)))))
 
 ;;;; --- ESS - Emacs Speaks Statistics ---
 (use-package ess
@@ -1915,7 +1931,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package elixir-mode
   :ensure t
   :defer t
-  :hook ((before-save-hook . elixir-format)))
+  :hook ((elixir-mode . (lambda ()
+                          (add-hook 'before-save-hook 'elixir-format 0 t)))))
 
 ;;;; --- Clojure ---
 (use-package clojure-mode
@@ -1968,7 +1985,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :ensure t
   :defer t
   ;; rustup component add rls
-  :hook ((rust-mode . lsp))
+  :hook ((rust-mode . lsp-mode))
   :bind ((:map rust-mode-map
                ("C-c <tab>" . rust-format-buffer)
                ("C-c C-b"   . rust-run)))
