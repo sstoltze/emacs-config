@@ -1658,10 +1658,12 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          (haskell-mode . haskell-doc-mode)
          (haskell-mode . interactive-haskell-mode))
   :custom
-  (haskell-process-suggest-remove-import-lines t)
+  (haskell-compile-cabal-build-command         "stack build")
   (haskell-process-auto-import-loaded-modules  t)
   (haskell-process-log                         t)
-  (haskell-compile-cabal-build-command         "stack build")
+  (haskell-process-suggest-add-package         t)
+  (haskell-process-suggest-remove-import-lines t)
+  (haskell-stylish-on-save                     t)
   ;; 'stack install hasktags'
   (haskell-tags-on-save                        (if (executable-find "hasktags")
                                                    t
