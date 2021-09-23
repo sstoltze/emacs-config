@@ -1116,12 +1116,17 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :defer t
   ;; Always enabled, do not show in mode-line
   :diminish flycheck-mode
-  :hook ((prog-mode . flycheck-mode)
-         (text-mode . flycheck-mode))
+  :hook ((prog-mode . #'sstoltze/flycheck-if-not-remote)
+         (text-mode . #'sstoltze/flycheck-if-not-remote))
   :custom
   (flycheck-check-syntax-automatically '(save idle-change mode-enable idle-buffer-switch))
   (flycheck-idle-change-delay          2)
-  (flycheck-idle-buffer-switch-delay   2))
+  (flycheck-idle-buffer-switch-delay   2)
+  :init
+  (defun sstoltze/flycheck-if-not-remote ()
+    (if (file-remote-p default-directory)
+        (flycheck-mode 1)
+      (flycheck-mode -1))))
 
 (use-package flycheck-posframe
   :ensure t
