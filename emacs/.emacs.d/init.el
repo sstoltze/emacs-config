@@ -1116,17 +1116,20 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :defer t
   ;; Always enabled, do not show in mode-line
   :diminish flycheck-mode
-  :hook ((prog-mode . #'sstoltze/flycheck-if-not-remote)
-         (text-mode . #'sstoltze/flycheck-if-not-remote))
+  :hook ((prog-mode . sstoltze/flycheck-if-not-remote)
+         (text-mode . sstoltze/flycheck-if-not-remote))
   :custom
   (flycheck-check-syntax-automatically '(save idle-change mode-enable idle-buffer-switch))
   (flycheck-idle-change-delay          2)
   (flycheck-idle-buffer-switch-delay   2)
   :init
+  ;; Disable flycheck for some modes on remote hosts, due to slowdowns when checking files
   (defun sstoltze/flycheck-if-not-remote ()
-    (if (file-remote-p default-directory)
-        (flycheck-mode 1)
-      (flycheck-mode -1))))
+    "Do not start flycheck over TRAMP."
+    (if (and (file-remote-p default-directory)
+             (member major-mode (list 'python-mode)))
+        (flycheck-mode -1)
+      (flycheck-mode 1))))
 
 (use-package flycheck-posframe
   :ensure t
