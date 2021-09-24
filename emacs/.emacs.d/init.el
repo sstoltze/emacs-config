@@ -1480,20 +1480,27 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (use-package lsp-mode
   :ensure t
   :hook ((lsp-mode . yas-minor-mode))
-  :bind (("M-?" . lsp-find-references))
+  :bind (("M-?" . lsp-find-references)
+         (:map lsp-mode-map
+               ("C-c l s" . lsp)))
   :custom
   (lsp-keymap-prefix "C-c l")
-  (lsp-eldoc-render-all t)
+  ;; (lsp-eldoc-render-all t)
   (lsp-idle-delay 0.6))
 
 ;; Flashy, maybe remove
 (use-package lsp-ui
   :ensure t
-  :hook ((lsp-mode lsp-ui-mode))
-  :bind ((("M-j" . lsp-ui-imenu)))
+  :hook ((lsp-mode . lsp-ui-mode))
+  :bind ((:map lsp-mode-map
+               ("M-j" . lsp-ui-imenu)
+               ("C-c l d" . lsp-ui-doc-mode))
+         (:map lsp-ui-imenu-mode-map
+               ("C-j" . lsp-ui-imenu--view)))
   :custom
-  (lsp-ui-peek-always-show t)
-  (lsp-ui-sideline-show-hover t)
+  (lsp-ui-doc-position 'at-point)
+  ;; (lsp-ui-peek-always-show t)
+  ;; (lsp-ui-sideline-show-hover t)
   (lsp-ui-doc-enable nil))
 
 (use-package lsp-ivy
