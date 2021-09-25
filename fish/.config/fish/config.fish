@@ -39,6 +39,7 @@ if test -d ~/.config/guix
     set -x PATH "$GUIX_PROFILE/bin" $PATH
     set -x PATH "$GUIX_PROFILE/sbin" $PATH
     fenv source "$GUIX_PROFILE/etc/profile"
+    fenv source "$HOME/.config/guix/current/etc/profile"
 end
 
 # Nix
