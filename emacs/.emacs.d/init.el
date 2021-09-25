@@ -797,9 +797,6 @@ If ARG is provided, move directly to option ARG."
 (use-package dired-aux
   :after dired)
 
-(use-package dired-async
-  :after dired)
-
 (use-package dired-sidebar
   :ensure t
   :bind (("C-c j" . dired-sidebar-toggle-sidebar))
@@ -1176,7 +1173,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                            ;; Start timer, use default value, replace any running timer
                            (org-timer-set-timer '(16))))
          (after-init . (lambda ()
-                         (org-agenda nil "a"))))
+                         (when (not (eq system-type 'windows-nt))
+                           (org-agenda nil "a"))
+                         )))
   :diminish org-indent-mode
   :diminish visual-line-mode
   :bind (("C-c l" . org-store-link)
@@ -1491,6 +1490,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;; Flashy, maybe remove
 (use-package lsp-ui
   :ensure t
+  :after lsp-mode
   :hook ((lsp-mode . lsp-ui-mode))
   :bind ((:map lsp-mode-map
                ("M-j" . lsp-ui-imenu)
@@ -1504,7 +1504,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (lsp-ui-doc-enable nil))
 
 (use-package lsp-ivy
-  :ensure t)
+  :ensure t
+  :after lsp-mode)
 
 ;;;; --- Multiple cursors ---
 (use-package multiple-cursors
@@ -2093,6 +2094,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 
  ;; --- Linux specific ---
  ((eq system-type 'gnu/linux)
+  ;; Should probably be removed
+  (use-package dired-async
+    :after dired)
   ;; --- Tramp - Linux ---
   (setq tramp-default-method "ssh")
 
