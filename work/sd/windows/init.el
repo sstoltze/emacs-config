@@ -124,7 +124,7 @@
       gc-cons-threshold                     (* 100 1024 1024) ;; 100 mb
 
       ;; Personal info
-      user-full-name                        "Simon Stoltze"
+      user-full-name                        "S. Stoltze"
       user-mail-address                     (cond (at-work "sisto@sd.dk" )
                                                   (t       "sstoltze@gmail.com"))
 
@@ -777,7 +777,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
              "* TODO %?\nCREATED: %U\n"
              :empty-lines-before 1)
             ("m" "Meeting"   entry (file+headline ,default-org-file "Meetings")
-             "* %? - %u :meeting:\n:ATTENDEES:\nSimon Stoltze\n:END:\n"
+             "* %? - %u :meeting:\n:ATTENDEES:\S. Stoltze\n:END:\n"
              :empty-lines-before 1)
             ("n" "Next"      entry (file+headline ,default-org-file "Unsorted")
              "* NEXT %?\nCREATED: %U\n"
@@ -1439,7 +1439,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                                     (mu4e-compose-signature       . (concat "\n"
                                                                             "Venlig hilsen\n"
                                                                             "\n"
-                                                                            "Simon Stoltze\n"
+                                                                            "S. Stoltze\n"
                                                                             "Developer\n"
                                                                             "Silkeborg Data A/S"))))))
       ;; Authinfo - open in emacs and add lines for each context, e.g.

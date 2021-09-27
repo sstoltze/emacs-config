@@ -1255,7 +1255,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
              "* TODO %?\nCREATED: %U\n"
              :empty-lines-after 1)
             ("m" "Meeting"   entry (file+headline ,default-org-file "Meetings")
-             "* %? - %u :meeting:\n:ATTENDEES:\nSimon Stoltze\n:END:\n"
+             "* %? - %u :meeting:\n:ATTENDEES:\nS. Stoltze\n:END:\n"
              :empty-lines-after 1)
             ("n" "Next"      entry (file+headline ,default-org-file "Unsorted")
              "* NEXT %?\nCREATED: %U\n"

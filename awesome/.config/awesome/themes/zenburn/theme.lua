@@ -8,7 +8,7 @@
 
 -- {{{ Main
 theme = {}
-local wallpaper_folder  = "/home/simon/Pictures/Wallpapers/Torment/"
+local wallpaper_folder  = "~/Pictures/Wallpapers/Torment/"
 local wallpaper_command = "awsetbg -r " .. wallpaper_folder
 theme.wallpaper_cmd = { wallpaper_command }
 -- }}}
