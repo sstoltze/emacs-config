@@ -15,9 +15,9 @@
 ;;; Code:
 ;;; *** General setup ***
 ;;;; --- Encoding ---
-(prefer-coding-system        'utf-8)
-(set-default-coding-systems  'utf-8)
-(set-language-environment    'utf-8)
+(prefer-coding-system       'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-language-environment   'utf-8)
 (if (eq system-type 'windows-nt)
     ;; Fixes pasting character codes instead of symbols and danish letters
     (set-selection-coding-system 'utf-16-le)
@@ -499,10 +499,10 @@ point reaches the beginning or end of the buffer, stop there."
   "Pulse the current line."
   (pulse-momentary-highlight-one-line (point)))
 
-(dolist (command '(scroll-up-command
-                   scroll-down-command
-                   recenter-top-bottom
-                   cother-window))
+(dolist (command (list #'scroll-up-command
+                       #'scroll-down-command
+                       #'recenter-top-bottom
+                       #'other-window))
   (advice-add command :after #'pulse-line))
 
 ;; Handle long lines - currently disabled
@@ -518,7 +518,8 @@ point reaches the beginning or end of the buffer, stop there."
        ;; sudo apt install fonts-iosevka
        ;; Or
        ;; guix package -i font-iosevka font-iosevka-term
-       (cond ((find-font (font-spec :name "Iosevka"))      (set-frame-font "Iosevka-10.5"      nil t)))
+       (cond ((find-font (font-spec :name "Iosevka"))
+              (set-frame-font "Iosevka-10.5" nil t)))
        ;; Fira Code - Better vertical splits - better modeline
        ;; sudo apt install fonts-firacode
        ;; (set-frame-font "Fira Code-10")
@@ -2088,9 +2089,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 
  ;; --- Linux specific ---
  ((eq system-type 'gnu/linux)
-  ;; Should probably be removed
-  (use-package dired-async
-    :after dired)
   ;; --- Tramp - Linux ---
   (setq tramp-default-method "ssh")
 

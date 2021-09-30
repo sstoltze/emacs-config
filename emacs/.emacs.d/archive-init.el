@@ -1,3 +1,5 @@
+(use-package dired-async
+  :after dired)
 (add-to-list 'package-archives
              '("org" . "https://orgmode.org/elpa/"))
 (when (< emacs-major-version 24)
