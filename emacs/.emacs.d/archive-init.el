@@ -1,3 +1,9 @@
+(add-to-list 'package-archives
+             '("org" . "https://orgmode.org/elpa/"))
+(when (< emacs-major-version 24)
+  (add-to-list 'package-archives
+               '("gnu" . "http://elpa.gnu.org/packages/")))
+
 ;; Guix - the geiser package destroys racket-mode
 (when (file-directory-p "~/.guix-profile")
   ;; guix package -i font-iosevka font-iosevka-term emacs guile emacs-geiser emacs-guix
@@ -11,34 +17,34 @@
 
 ;; Ivy-posframe display for swiper-isearch
 :preface
-  (defun ivy-display-function-window (text)
-    (let ((buffer (get-buffer-create "*ivy-candidate-window*"))
-          (str (with-current-buffer (get-buffer-create " *Minibuf-1*")
-                 (let ((point (point))
-                       (string (concat (buffer-string) "  " text)))
-                   (add-text-properties (- point 1) point '(face cursor) string)
-                   string))))
-      (with-current-buffer buffer
-        (let ((inhibit-read-only t))
-          (erase-buffer)
-          (insert str)))
-      (with-ivy-window
-        (display-buffer
-         buffer
-         `((display-buffer-reuse-window
-            display-buffer-below-selected)
-           (window-height . ,(ivy--height (ivy-state-caller ivy-last))))))))
+(defun ivy-display-function-window (text)
+  (let ((buffer (get-buffer-create "*ivy-candidate-window*"))
+        (str (with-current-buffer (get-buffer-create " *Minibuf-1*")
+               (let ((point (point))
+                     (string (concat (buffer-string) "  " text)))
+                 (add-text-properties (- point 1) point '(face cursor) string)
+                 string))))
+    (with-current-buffer buffer
+      (let ((inhibit-read-only t))
+        (erase-buffer)
+        (insert str)))
+    (with-ivy-window
+      (display-buffer
+       buffer
+       `((display-buffer-reuse-window
+          display-buffer-below-selected)
+         (window-height . ,(ivy--height (ivy-state-caller ivy-last))))))))
 
 ;; Flycheck
 ;; Configure the appearance of C-c ! l (flycheck-list-errors)
-  ;; :config
-  ;; (add-to-list 'display-buffer-alist
-  ;;              `(,(rx bos "*Flycheck errors*" eos)
-  ;;                (display-buffer-reuse-window
-  ;;                 display-buffer-in-side-window)
-  ;;                (side            . bottom)
-  ;;                (reusable-frames . visible)
-  ;;                (window-height   . 0.3)))
+;; :config
+;; (add-to-list 'display-buffer-alist
+;;              `(,(rx bos "*Flycheck errors*" eos)
+;;                (display-buffer-reuse-window
+;;                 display-buffer-in-side-window)
+;;                (side            . bottom)
+;;                (reusable-frames . visible)
+;;                (window-height   . 0.3)))
 ;; Enable if flycheck is slow
 ;;(flycheck-highlighting-mode 'lines)
 
@@ -268,12 +274,12 @@ _d_: subtree
 ;; org
 ("C-c b" . org-iswitchb)
 ;; At work
-  (when (and at-work
-             (file-exists-p "C:/Progra~2/LibreOffice/program/soffice.exe"))
-    (with-eval-after-load 'ox-odt
-      ;; Export to .docx
-      (setq org-odt-preferred-output-format "docx"
-            org-odt-convert-processes '(("LibreOffice" "C:/Progra~2/LibreOffice/program/soffice.exe --headless --convert-to %f%x --outdir %d %i")))))
+(when (and at-work
+           (file-exists-p "C:/Progra~2/LibreOffice/program/soffice.exe"))
+  (with-eval-after-load 'ox-odt
+    ;; Export to .docx
+    (setq org-odt-preferred-output-format "docx"
+          org-odt-convert-processes '(("LibreOffice" "C:/Progra~2/LibreOffice/program/soffice.exe --headless --convert-to %f%x --outdir %d %i")))))
 
 ;; org-tempo is untested
 (require 'org-tempo)
@@ -323,50 +329,50 @@ Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
     (advice-add #'ido-find-file :after #'help/ido-find-file)))
 
 ;;;;; --- Work specific ---
-  (when at-work
-    (use-package cobol-mode
-      :ensure t
-      :defer t
-      :mode "\\.cbl\\'"
-      :mode "\\.cob\\'"))
+(when at-work
+  (use-package cobol-mode
+    :ensure t
+    :defer t
+    :mode "\\.cbl\\'"
+    :mode "\\.cob\\'"))
 
 (make-mu4e-context
-                            :name "work"
-                            :match-func (lambda (msg) (when msg
-                                                   (string-prefix-p "/work" (mu4e-message-field msg :maildir))))
-                            :vars '((user-mail-address            . "sisto@sd.dk")
-                                    (mu4e-trash-folder            . "/work/Deleted Items")
-                                    (mu4e-refile-folder           . "/work/Archive")
-                                    ;; Exchange does not handle sent messages for us
-                                    (mu4e-sent-messages-behavior  . sent)
-                                    (smtpmail-default-smtp-server . "smtp.office365.com")
-                                    (smtpmail-smtp-server         . "smtp.office365.com")
-                                    (smtpmail-smtp-service        . 587)
-                                    (mu4e-compose-signature       . (concat "\n"
-                                                                            "Venlig hilsen\n"
-                                                                            "\n"
-                                                                            "Simon Stoltze\n"
-                                                                            "Developer\n"
-                                                                            "Silkeborg Data A/S"))))
+ :name "work"
+ :match-func (lambda (msg) (when msg
+                             (string-prefix-p "/work" (mu4e-message-field msg :maildir))))
+ :vars '((user-mail-address            . "sisto@sd.dk")
+         (mu4e-trash-folder            . "/work/Deleted Items")
+         (mu4e-refile-folder           . "/work/Archive")
+         ;; Exchange does not handle sent messages for us
+         (mu4e-sent-messages-behavior  . sent)
+         (smtpmail-default-smtp-server . "smtp.office365.com")
+         (smtpmail-smtp-server         . "smtp.office365.com")
+         (smtpmail-smtp-service        . 587)
+         (mu4e-compose-signature       . (concat "\n"
+                                                 "Venlig hilsen\n"
+                                                 "\n"
+                                                 "Simon Stoltze\n"
+                                                 "Developer\n"
+                                                 "Silkeborg Data A/S"))))
 (add-to-list 'mu4e-bookmarks
-                   (make-mu4e-bookmark
-                    :name "Work"
-                    :query "maildir:/work/Inbox"
-                    :key ?e)
-                   t)
+             (make-mu4e-bookmark
+              :name "Work"
+              :query "maildir:/work/Inbox"
+              :key ?e)
+             t)
 
 
 ;; Ivy
 ;; Work specific views
-                     (when at-work
-                       (list '("sas {}"
-                               (horz
-                                (file "C:/Users/sisto/Desktop/noter/dw/sas/noter.org")
-                                (vert
-                                 (file "C:/Users/sisto/Desktop/noter/dw/sas/servere.org")
-                                 (file "C:/Users/sisto/Desktop/noter/dw/sas/scripts.org"))))
-                             '("noter {}"
-                               (file "C:/Users/sisto/Desktop/noter/"))))
+(when at-work
+  (list '("sas {}"
+          (horz
+           (file "C:/Users/sisto/Desktop/noter/dw/sas/noter.org")
+           (vert
+            (file "C:/Users/sisto/Desktop/noter/dw/sas/servere.org")
+            (file "C:/Users/sisto/Desktop/noter/dw/sas/scripts.org"))))
+        '("noter {}"
+          (file "C:/Users/sisto/Desktop/noter/"))))
 
 (use-package excorporate
   :ensure t
@@ -380,14 +386,14 @@ Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
 ("<-"     . (?\s (Br . Bl) ?\s
                  (Bl . Bl )?<  (Bc . Bc) ?-  (Br . Br) ?-))
 ("lambda" . (?·  (Br . Bl) ?\s (Br . Bl) ?\s
-                      (Br . Bl) ?\s (Br . Bl) ?\s
-                      (Br . Bl) ?·  (Bc . Bc) ?λ))
-     ("<="     . (?·  (Br . Bl) ?≤))
-     (">="     . (?·  (Br . Bl) ?≥))
-     ("!="     . (?·  (Br . Bl) ?≠))
-     ("/="     . (?·  (Br . Bl) ?≠))
+                 (Br . Bl) ?\s (Br . Bl) ?\s
+                 (Br . Bl) ?·  (Bc . Bc) ?λ))
+("<="     . (?·  (Br . Bl) ?≤))
+(">="     . (?·  (Br . Bl) ?≥))
+("!="     . (?·  (Br . Bl) ?≠))
+("/="     . (?·  (Br . Bl) ?≠))
 ("=>"     . (?·  (Br . Bl) ?⇒))
-     ("..."    . (?…  (Br . Bl) ?\s (Br . Bl) ?\s))
+("..."    . (?…  (Br . Bl) ?\s (Br . Bl) ?\s))
 
 ;; Iosevka
 (defun setup-iosevka-ligatures ()
@@ -634,12 +640,12 @@ Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
 ;;         cljr-magic-require-namespaces))
 
 (use-package hc-zenburn-theme
-         :ensure t
-         :config
-         (load-theme 'hc-zenburn t))
+  :ensure t
+  :config
+  (load-theme 'hc-zenburn t))
 
 (use-package adoc-mode
-    :ensure t)
+  :ensure t)
 
 ;;;; --- Twitter ---
 (use-package twittering-mode

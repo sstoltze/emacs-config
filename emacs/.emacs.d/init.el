@@ -30,11 +30,6 @@
              '("melpa" . "https://melpa.org/packages/"))
 (add-to-list 'package-archives
              '("elpy" . "https://jorgenschaefer.github.io/packages/"))
-(add-to-list 'package-archives
-             '("org" . "https://orgmode.org/elpa/"))
-(when (< emacs-major-version 24)
-  (add-to-list 'package-archives
-               '("gnu" . "http://elpa.gnu.org/packages/")))
 (package-initialize)
 
 ;; Bootstrap `use-package'
@@ -1163,7 +1158,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;; Use C-c C-, to replace <sTAB
 (use-package org
   :ensure t
-  :pin org
   :hook ((org-mode . (lambda ()
                        (visual-line-mode 1)
                        (org-indent-mode  1)))
