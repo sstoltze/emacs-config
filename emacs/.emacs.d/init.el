@@ -1478,7 +1478,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;;;; --- lsp ---
 (use-package lsp-mode
   :ensure t
-  :hook ((lsp-mode . yas-minor-mode))
+  :hook ((lsp-mode  . yas-minor-mode)
+         (rust-mode . lsp-mode))
   :bind (("M-?" . lsp-find-references)
          (:map lsp-mode-map
                ("C-c l s" . lsp)))
@@ -2001,7 +2002,6 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :ensure t
   :defer t
   ;; rustup component add rls
-  :hook ((rust-mode . lsp-mode))
   :bind ((:map rust-mode-map
                ("C-c <tab>" . rust-format-buffer)
                ("C-c C-b"   . rust-run)))
