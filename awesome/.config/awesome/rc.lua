@@ -154,7 +154,7 @@ local lock = require("widgets.lock")
 
 -- Notifications
 -- Discord and Spotify
-naughty.config.defaults.position = "top_left"
+naughty.config.defaults.position = "top_middle"
 
 naughty.config.presets.notifications = {
    -- if you want to disable Spotify notifications completely, return false
@@ -163,10 +163,9 @@ naughty.config.presets.notifications = {
    end,
 
    -- Adjust the size of the notification
-   height = 50,
+   -- height = 100,
    -- width  = 300,
-   -- Guessing the value, find a way to fit it to the proper size later
-   icon_size = 40,
+   icon_size = 100,
 }
 
 table.insert(naughty.dbus.config.mapping, {{appname = "Spotify"}, naughty.config.presets.notifications})
