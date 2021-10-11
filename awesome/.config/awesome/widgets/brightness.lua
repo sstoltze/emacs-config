@@ -1,5 +1,5 @@
 local naughty = require("naughty")
-local xrandr = require("xrandr")
+local xrandr = require("widgets.xrandr")
 
 local brightness = {}
 brightness.brightness = 0.6

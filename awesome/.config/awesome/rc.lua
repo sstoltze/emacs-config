@@ -11,8 +11,6 @@ local naughty = require("naughty")
 local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
 
-local xrandr = require("xrandr")
-
 -- Load Debian menu entries
 local debian = require("debian.menu")
 
@@ -131,6 +129,8 @@ menubar.menu_gen.lookup_category_icons = function() end
 -- {{{ Wibar
 
 -- Widgets
+local xrandr = require("widgets.xrandr")
+
 local kbdcfg = require("widgets.keyboard")
 
 local make_clock = require("widgets.clock")
