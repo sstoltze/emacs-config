@@ -1056,8 +1056,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          (eval-expression-minibuffer-setup . turn-on-smartparens-strict-mode)
          (haskell-interactive-mode         . turn-on-smartparens-strict-mode)
          (yaml-mode                        . turn-on-smartparens-strict-mode)
-         (conf-mode                        . turn-on-smartparens-strict-mode)
-         (org-mode                         . turn-on-smartparens-strict-mode))
+         (conf-mode                        . turn-on-smartparens-strict-mode))
   :bind ((:map smartparens-mode-map
                ("M-s"     . sp-splice-sexp)
                ("M-S"     . sp-split-sexp)
