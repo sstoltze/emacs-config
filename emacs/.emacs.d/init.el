@@ -1482,7 +1482,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :custom
   (lsp-keymap-prefix "C-c l")
   ;; (lsp-eldoc-render-all t)
-  (lsp-idle-delay 0.6))
+  (lsp-idle-delay 0.6)
+  (lsp-rust-analyzer-call-info-full nil))
 
 ;; Flashy, maybe remove
 (use-package lsp-ui
