@@ -655,7 +655,6 @@ awful.rules.rules = {
            "mpv",
            "Mathematica",
            "zoom",
-           "DBeaver",
         },
         name = {
            "Event Tester",  -- xev.
@@ -686,6 +685,7 @@ awful.rules.rules = {
            "Dwarf_Fortress",
            "[Ss]potify",
            "Totem",
+           "DBeaver",
         },
    }, properties = { maximized = true } },
    -- Fullscreen clients
