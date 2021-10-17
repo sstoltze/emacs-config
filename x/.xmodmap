@@ -3,3 +3,5 @@ keysym Caps_Lock = Escape
 
 ! Make < on a nordic keyboard behave as '\' / '|'.
 !keycode 94 = backslash bar
+
+keysym Print = Multi_key

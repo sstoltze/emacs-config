@@ -1,0 +1,69 @@
+# A lot of this is taken from https://gist.github.com/sarahzrf/e5ad57f20249886e251765070fc94cea
+include "%L"
+
+### Equals
+<Multi_key> <asciitilde> <equal>      : "≈" # ALMOST EQUAL TO
+<Multi_key> <dead_tilde> <equal>      : "≈" # ALMOST EQUAL TO
+<Multi_key> <exclam> <equal>          : "≠" # NOT EQUAL TO
+<Multi_key> <asciitilde> <asciitilde> : "≅"
+<Multi_key> <dead_tilde> <dead_tilde> : "≅"
+<Multi_key> <asciitilde> <minus>      : "≃"
+<Multi_key> <dead_tilde> <minus>      : "≃"
+<Multi_key> <asciitilde> <underscore> : "≃"
+<Multi_key> <dead_tilde> <underscore> : "≃"
+
+### Arrows
+<Multi_key> <bar> <minus> <greater>              : "↦" # RIGHT ARROW FROM BAR
+<Multi_key> <minus> <less>                       : "←" # LEFT ARROW
+<Multi_key> <less> <minus>                       : "←" # LEFT ARROW
+<Multi_key> <minus> <asciicircum>                : "↑" # UP ARROW
+<Multi_key> <minus> <dead_circumflex>            : "↑" # UP ARROW
+<Multi_key> <bar> <minus> <asciicircum>          : "↥" # UP ARROW FROM BAR
+<Multi_key> <bar> <minus> <dead_circumflex>      : "↥" # UP ARROW FROM BAR
+<Multi_key> <minus> <v>                          : "↓" # DOWN ARROW
+<Multi_key> <bar> <minus> <v>                    : "↧" # DOWN ARROW FROM BAR
+<Multi_key> <Multi_key> <less> <minus> <greater> : "↔" # # LEFT RIGHT ARROW
+
+### Implications
+<Multi_key> <equal> <greater>                    : "⇒" # RIGHT DOUBLE ARROW
+<Multi_key> <equal> <less>                       : "⇐" # LEFT DOUBLE ARROW
+<Multi_key> <Multi_key> <less> <equal> <greater> : "⇔" # LEFT RIGHT DOUBLE ARROW
+
+### Sets
+<Multi_key> <e> <e>          : "∈"
+<Multi_key> <slash> <e> <e>  : "∉"
+<Multi_key> <underscore> <C> : "⊆" U2286
+<Multi_key> <C> <underscore> : "⊆" U2286
+<Multi_key> <slash> <C>      : "⊈"
+<Multi_key> <A> <A>          : "∀"
+<Multi_key> <E> <E>          : "∃"
+<Multi_key> <o> <x>          : "⊗"
+<Multi_key> <o> <plus>       : "⊕"
+
+### Other maths
+<Multi_key> <o> <o>             : "∘" # \circ
+<Multi_key> <slash> <backslash> : "∧"
+<Multi_key> <backslash> <slash> : "∨"
+
+### Sub/superscript
+<Multi_key> <underscore> <n>      : "ₙ"
+<Multi_key> <underscore> <m>      : "ₘ"
+<Multi_key> <underscore> <i>      : "ᵢ"
+<Multi_key> <underscore> <j>      : "ⱼ"
+<Multi_key> <underscore> <k>      : "ₖ"
+<Multi_key> <asciicircum> <n>     : "ⁿ"
+<Multi_key> <asciicircum> <m>     : "ᵐ"
+<Multi_key> <asciicircum> <i>     : "ⁱ"
+<Multi_key> <asciicircum> <j>     : "ʲ"
+<Multi_key> <asciicircum> <k>     : "ᵏ"
+<Multi_key> <dead_circumflex> <n> : "ⁿ"
+<Multi_key> <dead_circumflex> <m> : "ᵐ"
+<Multi_key> <dead_circumflex> <i> : "ⁱ"
+<Multi_key> <dead_circumflex> <j> : "ʲ"
+<Multi_key> <dead_circumflex> <k> : "ᵏ"
+
+### Shapes
+<Multi_key> <less> <greater>                  : "◊"
+<Multi_key> <bracketleft> <bracketright>      : "□"
+<Multi_key> <bar> <greater>                   : "▷"
+<Multi_key> <Multi_key> <bar> <greater>       : "▶"
