@@ -1160,9 +1160,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;; Use C-c C-, to replace <sTAB
 (use-package org
   :ensure t
-  :hook ((org-mode . (lambda ()
-                       (visual-line-mode 1)
-                       (org-indent-mode  1)))
+  :hook ((org-mode . visual-line-mode)
+         (org-mode . org-indent-mode)
          (org-agenda-mode . hl-line-mode)
          (org-babel-after-execute . org-display-inline-images)
          (org-clock-in . (lambda ()
@@ -1170,8 +1169,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                            (org-timer-set-timer '(16))))
          (after-init . (lambda ()
                          (when (not (eq system-type 'windows-nt))
-                           (org-agenda nil "a"))
-                         )))
+                           (org-agenda nil "a")))))
   :diminish org-indent-mode
   :diminish visual-line-mode
   :bind (("C-c l" . org-store-link)
@@ -1222,6 +1220,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   ;; Check in with C-c C-x C-i (or I on heading)
   ;; Check out with C-c C-x C-o (or O on heading)
   (org-timer-default-timer                25)
+  ;; I'm not sure I like this
+  ;; (org-hide-emphasis-markers              t)
   :init
   ;; Most GTD setup is taken from https://emacs.cafe/emacs/orgmode/gtd/2017/06/30/orgmode-gtd.html
   (let ((default-org-file  "~/.emacs.d/org-files/gtd/unsorted.org") ;; Unsorted items
