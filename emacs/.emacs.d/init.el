@@ -511,6 +511,17 @@ point reaches the beginning or end of the buffer, stop there."
   :ensure t
   :defer t)
 
+;;;; --- Unicode ---
+;; This took a long time starting up the first time - disable if it gets annoying
+(use-package unicode-fonts
+  :ensure t
+  :config
+  (unicode-fonts-setup))
+
+;; This should be enough for emojis
+(set-fontset-font t 'symbol "Noto Color Emoji")
+(set-fontset-font t 'symbol "Symbola" nil 'append)
+
 ;;;; --- Frame-setup ---
 (cond ((display-graphic-p) ;; Window system
        ;; Fonts

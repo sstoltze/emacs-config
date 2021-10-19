@@ -22,7 +22,7 @@ include "%L"
 <Multi_key> <bar> <minus> <dead_circumflex>      : "↥" # UP ARROW FROM BAR
 <Multi_key> <minus> <v>                          : "↓" # DOWN ARROW
 <Multi_key> <bar> <minus> <v>                    : "↧" # DOWN ARROW FROM BAR
-<Multi_key> <Multi_key> <less> <minus> <greater> : "↔" # # LEFT RIGHT ARROW
+<Multi_key> <Multi_key> <less> <minus> <greater> : "↔" # LEFT RIGHT ARROW
 
 ### Implications
 <Multi_key> <equal> <greater>                    : "⇒" # RIGHT DOUBLE ARROW
@@ -63,7 +63,15 @@ include "%L"
 <Multi_key> <dead_circumflex> <k> : "ᵏ"
 
 ### Shapes
-<Multi_key> <less> <greater>                  : "◊"
-<Multi_key> <bracketleft> <bracketright>      : "□"
-<Multi_key> <bar> <greater>                   : "▷"
-<Multi_key> <Multi_key> <bar> <greater>       : "▶"
+<Multi_key> <less> <greater> : "◊"
+<Multi_key> <bracketleft> <bracketright> : "□"
+<Multi_key> <bar> <greater> : "▷"
+<Multi_key> <Multi_key> <bar> <greater> : "▶"
+
+### Emojis
+<Multi_key> <Multi_key> <colon> <D>                   : "😃"
+<Multi_key> <Multi_key> <greater> <less>              : "👉👈"
+<Multi_key> <Multi_key> <colon> <parenright>          : "🙂"
+<Multi_key> <Multi_key> <less> <less>                 : "👀"
+<Multi_key> <Multi_key> <greater> <colon> <parenleft> : "😠"
+<Multi_key> <Multi_key> <o> <period> <o>              : "🥺"
