@@ -843,10 +843,8 @@ If ARG is provided, move directly to option ARG."
   :bind (("C-c t" . proced))
   :hook ((proced-mode . hl-line-mode)
          ;; Update every 5 seconds
-         (proced-mode . sstoltze/proced-settings))
-  :init
-  (defun sstoltze/proced-settings ()
-    (proced-toggle-auto-update 1)))
+         (proced-mode . (lambda ()
+                          (proced-toggle-auto-update 1)))))
 
 ;;;; --- Eshell ---
 (use-package eshell
@@ -1485,8 +1483,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;;;; --- lsp ---
 (use-package lsp-mode
   :ensure t
-  :hook ((lsp-mode  . yas-minor-mode)
-         (rust-mode . lsp-mode))
+  :hook ((lsp-mode        . yas-minor-mode)
+         (rust-mode       . lsp)
+         (typescript-mode . lsp))
   :bind (("M-?" . lsp-find-references)
          (:map lsp-mode-map
                ("C-c l s" . lsp)))
