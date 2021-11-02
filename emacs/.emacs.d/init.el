@@ -1486,7 +1486,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :hook ((lsp-mode        . yas-minor-mode)
          (rust-mode       . lsp)
          (typescript-mode . lsp))
-  :bind (("M-?" . lsp-find-references)
+  :bind (("M-+" . lsp-find-references)
          (:map lsp-mode-map
                ("C-c l s" . lsp)))
   :custom
