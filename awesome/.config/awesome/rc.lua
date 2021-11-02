@@ -847,7 +847,7 @@ awful.spawn.easy_async_with_shell('echo -n "$USER"', function(user, stderr, reas
                                         spawn_once_with_shell("solaar")
                                         spawn_once_with_shell("blueman-applet")
                                         spawn_once_with_shell("emacs")
-                                        spawn_once_with_shell("firefox", "-f")
+                                        spawn_once_with_shell("firefox", "", "-f")
                                         spawn_once_with_shell("slack")
                                         spawn_once_with_shell("zoom")
                                         lock.enable_automatic_lock()
