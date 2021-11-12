@@ -2140,9 +2140,13 @@ length of PATH (sans directory slashes) down to MAX-LEN."
       (message-send-mail-function        'smtpmail-send-it)
       (smtpmail-stream-type              'starttls)
       (mu4e-use-fancy-chars              t)
+      ;; Speed up indexing a bit
+      (mu4e-index-cleanup                nil) ;; don't do a full cleanup check
+      (mu4e-index-lazy-check             t) ;; don't consider up-to-date dirs
       ;; The standard face is a bit bright in the modeline, look for other options
-      ;; :custom-face
-      ;; (mu4e-title-face ((t (:foreground "CadetBlue2"))))
+      :custom-face
+      (mu4e-title-face ((t (:foreground "burlywood4"))))
+      ;; (mu4e-unread-face ((t (:foreground "burlywood4"))))
       :init
       (sstoltze/setup-epa)
       :config
