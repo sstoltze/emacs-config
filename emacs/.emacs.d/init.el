@@ -1716,6 +1716,14 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          (:map haskell-cabal-mode-map
                ("C-c C-c" . haskell-compile))))
 
+(use-package ormolu
+  :ensure t
+  :defer t
+  :hook (haskell-mode . ormolu-format-on-save-mode)
+  :bind
+  (:map haskell-mode-map
+        ("C-c <tab>" . ormolu-format-buffer)))
+
 ;;;; --- C/C++ ---
 (defun common-c-hook ()
   "Hook for C/C++."
