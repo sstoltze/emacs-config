@@ -1050,6 +1050,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 (defun sstoltze/mark-sexp-up ()
   "Move point one level up and mark the following sexp."
   (interactive)
+  (sp-backward-sexp 1)
   (sp-up-sexp -1)
   (sp-mark-sexp))
 
