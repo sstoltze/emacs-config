@@ -73,6 +73,13 @@
   (when (file-exists-p local-init-file)
     (load-file local-init-file)))
 
+;; This fixes the issue with dead keys that pops up once in a while
+(define-key key-translation-map [dead-grave] "`")
+(define-key key-translation-map [dead-acute] "'")
+(define-key key-translation-map [dead-circumflex] "^")
+(define-key key-translation-map [dead-diaeresis] "\"")
+(define-key key-translation-map [dead-tilde] "~")
+
 ;; At work?
 (defvar at-work-p (string= user-login-name
                            "sst"))
