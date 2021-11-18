@@ -1148,6 +1148,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :hook ((flycheck-mode . flycheck-posframe-mode))
   :custom
   (flycheck-posframe-border-width 1)
+  (flycheck-posframe-position 'window-bottom-right-corner)
   :custom-face
   ;; This does not take effect immediately for some reason...
   (flycheck-posframe-border-face ((t (:foreground "goldenrod"))))
@@ -1500,10 +1501,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :custom
   (lsp-keymap-prefix "C-c l")
   ;; (lsp-eldoc-render-all t)
-  (lsp-idle-delay 0.6)
-  (lsp-rust-analyzer-call-info-full nil)
-  (lsp-rust-analyzer-cargo-load-out-dirs-from-check t)
-  (lsp-rust-analyzer-proc-macro-enable t))
+  (lsp-idle-delay 0.6))
 
 ;; Flashy, maybe remove
 (use-package lsp-ui
@@ -2033,6 +2031,10 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :custom
   (rust-format-on-save t)
   (rust-format-show-buffer nil)
+  (lsp-rust-analyzer-call-info-full nil)
+  (lsp-rust-analyzer-cargo-load-out-dirs-from-check t)
+  (lsp-rust-analyzer-proc-macro-enable t)
+  (lsp-rust-analyzer-cargo-watch-command "clippy")
   :init
   (when (eq system-type 'gnu/linux)
     (setenv "CARGO_HOME"  (concat (getenv "HOME") "/.local"))
