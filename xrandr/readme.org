@@ -2,4 +2,6 @@
 #+EMAIL: sstoltze@gmail.com
 #+DATE: 2021-05-26
 #+OPTIONS: toc:nil title:nil author:nil email:nil date:nil creator:nil
-Copy the file to =/etc/X11/Xsession.d/.= to get xrandr to set things up during startup
+Copy =45-xrandr-autostart= to =/etc/X11/Xsession.d/.= to get xrandr to set things up during startup, and =40-monitor-hotplug.rules= to =/lib/udev/rules.d/.=
+
+For =systemd=, copy =~/.nix-profile/lib/systemd/system/autorandr.service= to =/etc/systemd/system/.=

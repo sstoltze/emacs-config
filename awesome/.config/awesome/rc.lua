@@ -535,6 +535,12 @@ clientkeys = gears.table.join(
       {description = "(un)maximize horizontally", group = "client"}),
    awful.key({ modkey, "Control", "Shift" }, "o", xrandr.xrandr,
       { description = "toggle xrandr options", group = "screen"}),
+   awful.key({ modkey, "Control", "Shift" }, "d", xrandr.set_dpi,
+      { description = "set dpi", group = "screen"}),
+   awful.key({ modkey, "Control", "Shift" }, "a", xrandr.autorandr,
+      { description = "run autorandr", group = "screen"}),
+   awful.key({ modkey, "Control" }, "a", xrandr.autorandr,
+      { description = "run autorandr", group = "screen"}),
    awful.key({ modkey, "Shift"   }, "g", toggle_gap,
       { description = "toggle useless_gap", group = "layout"}),
    awful.key({ modkey, "Shift"   }, "f", increase_gap,
@@ -843,12 +849,16 @@ spawn_once_with_shell("nm-applet")
 -- Computer specific setup
 awful.spawn.easy_async_with_shell('echo -n "$USER"', function(user, stderr, reason, exit_code)
                                      if user == "sst\n" then -- Work setup
-                                        awful.spawn.with_shell("xrdb -merge ~/.Xresources-docked") -- Set dpi for the most common setup
                                         spawn_once_with_shell("solaar")
                                         spawn_once_with_shell("blueman-applet")
                                         spawn_once_with_shell("emacs")
                                         spawn_once_with_shell("firefox", "", "-f")
-                                        spawn_once_with_shell("slack")
+                                        if #xrandr.outputs() > 1 then
+                                           spawn_once_with_shell("slack", " --force-device-scale-factor=2")
+                                        else
+                                           spawn_once_with_shell("slack")
+                                        end
+
                                         spawn_once_with_shell("zoom")
                                         lock.enable_automatic_lock()
                                      end

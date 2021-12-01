@@ -17,7 +17,7 @@ local function outputs()
          local output = line:match("^([%w-]+) connected ")
          if output then
             outputs[#outputs + 1] = output
-                                   end
+         end
       end
       xrandr:close()
    end
@@ -92,14 +92,29 @@ end
 local state = { cid = nil }
 
 local function naughty_destroy_callback(reason)
-  if reason == naughty.notificationClosedReason.expired or
-     reason == naughty.notificationClosedReason.dismissedByUser then
-    local action = state.index and state.menu[state.index - 1][2]
-    if action then
-      awful.util.spawn(action, false)
-      state.index = nil
-    end
-  end
+   if reason == naughty.notificationClosedReason.expired or
+      reason == naughty.notificationClosedReason.dismissedByUser then
+      local action = state.index and state.menu[state.index - 1][2]
+      if action then
+         awful.util.spawn(action, false)
+         state.index = nil
+         set_dpi()
+      end
+   end
+end
+
+local function set_dpi()
+   local out = outputs()
+   local script = "xrdb -merge ~/.Xresources-undocked"
+   if #out > 1 then
+      script = "xrdb -merge ~/.Xresources-docked"
+   end
+   awful.spawn.with_shell(script)
+end
+
+local function autorandr()
+   awful.spawn.with_shell("autorandr --change")
+   set_dpi()
 end
 
 local function xrandr()
@@ -132,5 +147,7 @@ return {
    outputs = outputs,
    arrange = arrange,
    menu = menu,
-   xrandr = xrandr
+   xrandr = xrandr,
+   set_dpi = set_dpi,
+   autorandr = autorandr
 }
