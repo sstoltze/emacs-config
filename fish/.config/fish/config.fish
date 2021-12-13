@@ -47,6 +47,9 @@ if test -d ~/.nix-profile
     fenv source ~/.nix-profile/etc/profile.d/nix.sh
 end
 
+# Docker
+set -x DOCKER_BUILDKIT 1
+
 # fnm - cargo install fnm
 if test -x (which fnm)
     fnm env --shell=fish | source
