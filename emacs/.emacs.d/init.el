@@ -2038,7 +2038,25 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :init
   (when (eq system-type 'gnu/linux)
     (setenv "CARGO_HOME"  (concat (getenv "HOME") "/.local"))
-    (setenv "RUSTUP_HOME" (concat (getenv "HOME") "/.local/rustup"))))
+    (setenv "RUSTUP_HOME" (concat (getenv "HOME") "/.local/rustup")))
+  (with-eval-after-load "lsp-rust"
+    (lsp-register-client
+     (make-lsp-client
+      :new-connection (lsp-tramp-connection
+                       (executable-find (car lsp-rust-analyzer-server-command)))
+      :major-modes '(rust-mode)
+      :priority (if (eq lsp-rust-server 'rust-analyzer) 1 -1)
+      :remote? t
+      :initialization-options 'lsp-rust-analyzer--make-init-options
+      :notification-handlers (ht<-alist lsp-rust-notification-handlers)
+      :action-handlers (ht<-alist lsp-rust-action-handlers)
+      :library-folders-fn (lambda (_workspace) lsp-rust-library-directories)
+      :ignore-messages nil
+      :server-id 'rust-analyzer-remote
+      :environment-fn (lambda () (list (cons "CARGO_HOME"  (concat (getenv "HOME") "/.cargo"))
+                                       (cons "RUSTUP_HOME" (concat (getenv "HOME") "/.cargo/rustup"))))
+      )))
+  )
 
 ;; Cargo
 (use-package cargo
