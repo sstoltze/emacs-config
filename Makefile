@@ -1,6 +1,6 @@
 common_packages   = fish git
 common_no_folding = emacs stack leiningen ghc
-linux_cygwin_common = mbsync gpg screen xdg sbcl bin ocaml direnv
+linux_cygwin_common = mbsync screen xdg sbcl bin ocaml direnv
 linux_packages    = $(common_packages) $(linux_cygwin_common) awesome kitty x nix
 linux_no_folding  = $(common_no_folding)
 cygwin_packages   = $(common_packages) $(linux_cygwin_common)
