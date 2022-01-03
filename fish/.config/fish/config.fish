@@ -63,33 +63,37 @@ end
 # At work?
 if test "$USER" = "sst"
     # pyenv setup
-    set -x PATH /home/sst/.pyenv/bin $PATH
-    set -gx PATH '/home/sst/.pyenv/shims' $PATH
-    set -gx PYENV_SHELL fish
-    source '/home/sst/.pyenv/libexec/../completions/pyenv.fish'
-    command pyenv rehash 2>/dev/null
-    function pyenv
-        set command $argv[1]
-        set -e argv[1]
-        switch "$command"
-            case activate deactivate rehash shell
-                source (pyenv "sh-$command" $argv|psub)
-            case '*'
-                command pyenv "$command" $argv
+    if test -d ~/.pyenv
+        set -x PATH /home/sst/.pyenv/bin $PATH
+        set -gx PATH '/home/sst/.pyenv/shims' $PATH
+        set -gx PYENV_SHELL fish
+        source '/home/sst/.pyenv/libexec/../completions/pyenv.fish'
+        command pyenv rehash 2>/dev/null
+        function pyenv
+            set command $argv[1]
+            set -e argv[1]
+            switch "$command"
+                case activate deactivate rehash shell
+                    source (pyenv "sh-$command" $argv|psub)
+                case '*'
+                    command pyenv "$command" $argv
+            end
+        end
+        set -gx PATH '/home/sst/.pyenv/plugins/pyenv-virtualenv/shims' $PATH;
+        set -gx PYENV_VIRTUALENV_INIT 1;
+        function _pyenv_virtualenv_hook --on-event fish_prompt;
+            set -l ret $status
+            if [ -n "$VIRTUAL_ENV" ]
+                pyenv activate --quiet; or pyenv deactivate --quiet; or true
+            else
+                pyenv activate --quiet; or true
+            end
+            return $ret
         end
     end
-    set -gx PATH '/home/sst/.pyenv/plugins/pyenv-virtualenv/shims' $PATH;
-    set -gx PYENV_VIRTUALENV_INIT 1;
-    function _pyenv_virtualenv_hook --on-event fish_prompt;
-        set -l ret $status
-        if [ -n "$VIRTUAL_ENV" ]
-            pyenv activate --quiet; or pyenv deactivate --quiet; or true
-        else
-            pyenv activate --quiet; or true
-        end
-        return $ret
+    if test -x (which direnv)
+        direnv hook fish | source
     end
-    direnv hook fish | source
 end
 
 # XDG setup
