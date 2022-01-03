@@ -1,5 +1,8 @@
 ## Start with a couple of windows
 
+# use fish by default
+shell fish
+
 # set TERM
 term screen-256color
 defutf8 on
