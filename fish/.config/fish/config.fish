@@ -51,12 +51,12 @@ end
 set -x DOCKER_BUILDKIT 1
 
 # fnm - cargo install fnm
-if command -v fnm
+if command -v fnm >/dev/null
     fnm env --shell=fish | source
 end
 
 # AWS
-if command -v aws_completer
+if command -v aws_completer >/dev/null
     complete --command aws --no-files --arguments '(begin; set --local --export COMP_SHELL fish; set --local --export COMP_LINE (commandline); aws_completer | sed \'s/ $//\'; end)'
 end
 
@@ -91,7 +91,7 @@ if test "$USER" = "sst"
             return $ret
         end
     end
-    if command -v direnv
+    if command -v direnv >/dev/null
         direnv hook fish | source
     end
 end
