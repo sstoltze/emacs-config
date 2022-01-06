@@ -849,6 +849,8 @@ spawn_once_with_shell("nm-applet")
 -- Computer specific setup
 awful.spawn.easy_async_with_shell('echo -n "$USER"', function(user, stderr, reason, exit_code)
                                      if user == "sst\n" then -- Work setup
+                                        xrandr.set_dpi()
+                                        lock.enable_automatic_lock()
                                         spawn_once_with_shell("solaar")
                                         spawn_once_with_shell("blueman-applet")
                                         spawn_once_with_shell("emacs")
@@ -858,8 +860,6 @@ awful.spawn.easy_async_with_shell('echo -n "$USER"', function(user, stderr, reas
                                         else
                                            spawn_once_with_shell("slack")
                                         end
-
                                         spawn_once_with_shell("zoom")
-                                        lock.enable_automatic_lock()
                                      end
 end)
