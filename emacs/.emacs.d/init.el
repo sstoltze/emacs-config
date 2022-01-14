@@ -230,12 +230,19 @@
 (defun sstoltze/prettify-symbols-setup ()
   "Setup prettify-symbols with common expressions."
   (sstoltze/remove-prettify-symbol "lambda")
+  (sstoltze/remove-prettify-symbol "&&")
+  (sstoltze/remove-prettify-symbol "||")
+  (sstoltze/remove-prettify-symbol "<=")
+  (sstoltze/remove-prettify-symbol ">=")
+  (sstoltze/remove-prettify-symbol "!=")
+  (sstoltze/remove-prettify-symbol "INFINITY")
   (sstoltze/prettify-symbol-list
-   '(("->"  . (?-  (Br . Bc) ?-  (Br . Bc) ?>))
+   '(("->"  . 8594)
+     ("=>"  . 8658)
      ("->>" . (?\s (Br . Bl) ?\s (Br . Bl) ?\s
                    (Bl . Bl) ?-  (Bc . Br) ?- (Bc . Bc) ?>
                    (Bc . Bl) ?-  (Br . Br) ?>))
-     ("<-"  . (?<  (Br . Bc) ?-  (Br . Bc) ?-)))))
+     ("<-"  . 8592))))
 (add-hook 'prog-mode-hook 'sstoltze/prettify-symbols-setup)
 
 (defun sstoltze/prettify-clojure ()
