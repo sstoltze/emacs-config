@@ -1148,7 +1148,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :hook ((flycheck-mode . flycheck-posframe-mode))
   :custom
   (flycheck-posframe-border-width 1)
-  (flycheck-posframe-position 'window-bottom-right-corner)
+  (flycheck-posframe-position 'point-window-center)
   :custom-face
   ;; This does not take effect immediately for some reason...
   (flycheck-posframe-border-face ((t (:foreground "goldenrod"))))
