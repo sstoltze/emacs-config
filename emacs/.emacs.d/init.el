@@ -128,8 +128,7 @@
       gc-cons-threshold                     (* 100 1024 1024) ;; 100 mb
 
       ;; Personal info
-      user-full-name                        (cond (at-work-p "S. Stoltze")
-                                                  (t         "Sarah Stoltze"))
+      user-full-name                        "Sarah Stoltze"
       user-mail-address                     (cond (at-work-p "sst@issuu.com")
                                                   (t         "sstoltze@gmail.com"))
 
