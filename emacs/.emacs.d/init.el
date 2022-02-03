@@ -1857,6 +1857,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          (get-buffer-process (current-buffer))
          nil "_"))))
   :config
+  (setq elpy-modules (delete 'elpy-module-flymake elpy-modules))
   (elpy-enable)
   ;; Enable pyvenv, which manages Python virtual environments
   (pyvenv-mode 1)
