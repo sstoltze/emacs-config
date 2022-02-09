@@ -353,7 +353,7 @@ Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
          (mu4e-compose-signature       . (concat "\n"
                                                  "Venlig hilsen\n"
                                                  "\n"
-                                                 "Simon Stoltze\n"
+                                                 "Sarah Stoltze\n"
                                                  "Developer\n"
                                                  "Silkeborg Data A/S"))))
 (add-to-list 'mu4e-bookmarks
@@ -375,12 +375,6 @@ Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
             (file "C:/Users/sisto/Desktop/noter/dw/sas/scripts.org"))))
         '("noter {}"
           (file "C:/Users/sisto/Desktop/noter/"))))
-
-(use-package excorporate
-  :ensure t
-  :defer t
-  :custom
-  (excorporate-configuration '("Simon.Stoltze@ufst.dk" . "https://outlook.office365.com/EWS/Exchange.asmx")))
 
 ;; prettify-symbols
 ("->"     . (?\s (Br . Bl) ?\s
