@@ -664,6 +664,7 @@ awful.rules.rules = {
            "mpv",
            "Mathematica",
            "zoom",
+           "1password",
         },
         name = {
            "Event Tester",  -- xev.
@@ -671,9 +672,10 @@ awful.rules.rules = {
            "Slack Call Minipanel",
         },
         role = {
-           "AlarmWindow",  -- Thunderbird's calendar.
-           "pop-up",       -- e.g. Google Chrome's (detached) Developer Tools.
-           "Dialog",       -- Firefox download dialog
+           "AlarmWindow",    -- Thunderbird's calendar.
+           "pop-up",         -- e.g. Google Chrome's (detached) Developer Tools.
+           "Dialog",         -- Firefox download dialog
+           "browser-window", -- 1Password popup
         },
         type = {
            "notification",
@@ -707,7 +709,7 @@ awful.rules.rules = {
            "Mathematica",
         },
    }, properties = { fullscreen = true } },
-   -- Prevent notifications from stealing focus and place in top right
+   -- Prevent notifications from stealing focus and place in top left
    { rule_any = {
         name = {
            "Microsoft Teams Notification",
@@ -856,7 +858,7 @@ awful.spawn.easy_async_with_shell('echo -n "$USER"', function(user, stderr, reas
                                         spawn_once_with_shell("emacs")
                                         spawn_once_with_shell("firefox", "", "-f")
                                         if #xrandr.outputs() > 1 then
-                                           spawn_once_with_shell("slack", " --force-device-scale-factor=2")
+                                           spawn_once_with_shell("slack", " --force-device-scale-factor=1.5")
                                         else
                                            spawn_once_with_shell("slack")
                                         end
