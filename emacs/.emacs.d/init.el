@@ -2309,6 +2309,9 @@ length of PATH (sans directory slashes) down to MAX-LEN."
     :defer t)
   (use-package protobuf-mode
     :ensure t
+    :defer t)
+  (use-package jenkinsfile-mode
+    :ensure t
     :defer t))
 
 (provide 'init)
