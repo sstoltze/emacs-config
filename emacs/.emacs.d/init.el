@@ -1523,7 +1523,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (lsp-ui-doc-position 'at-point)
   ;; (lsp-ui-peek-always-show t)
   ;; (lsp-ui-sideline-show-hover t)
-  (lsp-ui-doc-enable nil))
+  (lsp-ui-doc-enable nil)
+  (lsp-ui-doc-show-with-cursor t))
 
 (use-package lsp-ivy
   :ensure t
