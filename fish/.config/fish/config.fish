@@ -7,7 +7,7 @@ function sh
 end
 
 set -x VISUAL "emacs "
-set -x EDITOR "emacs -nw "
+set -x EDITOR "nano "
 
 # Env
 set -l system (uname)
