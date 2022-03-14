@@ -1516,14 +1516,16 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :hook ((lsp-mode . lsp-ui-mode))
   :bind ((:map lsp-mode-map
                ("M-j" . lsp-ui-imenu)
-               ("C-c l d" . lsp-ui-doc-mode))
+               ("C-c l d" . lsp-ui-doc-mode)
+               ("C-c l f" . lsp-ui-doc-focus-frame))
          (:map lsp-ui-imenu-mode-map
                ("C-j" . lsp-ui-imenu--view)))
   :custom
   (lsp-ui-doc-position 'at-point)
+  (lsp-ui-doc-alignment 'window)
   ;; (lsp-ui-peek-always-show t)
   ;; (lsp-ui-sideline-show-hover t)
-  (lsp-ui-doc-enable nil)
+  ;; (lsp-ui-doc-enable nil)
   (lsp-ui-doc-show-with-cursor t))
 
 (use-package lsp-ivy
