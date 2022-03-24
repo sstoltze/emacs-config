@@ -2125,6 +2125,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :ensure t
   :defer t)
 
+;; --- Open Street Map ---
+(use-package osm
+  :ensure t
+  :defer t)
+
 (cond
  ;; --- Windows specific ---
  ((eq system-type 'windows-nt)
