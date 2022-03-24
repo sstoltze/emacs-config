@@ -104,12 +104,21 @@ local function naughty_destroy_callback(reason)
 end
 
 local function set_dpi()
+   local x_resources = "~/.Xresources"
+
    local out = outputs()
-   local script = "xrdb -merge ~/.Xresources-undocked"
+
    if #out > 1 then
-      script = "xrdb -merge ~/.Xresources-docked"
+      if gears.filesystem.file_readable("~/.Xresources-docked") then
+         x_resources = "~/.Xresouces-docked"
+      end
+   else
+      if gears.filesystem.file_readable("~/.Xresources-undocked") then
+         x_resources = "~/.Xresouces-undocked"
+      end
    end
-   awful.spawn.with_shell(script)
+
+   awful.spawn.with_shell("xrdb -merge " .. x_resources)
 end
 
 local function autorandr()

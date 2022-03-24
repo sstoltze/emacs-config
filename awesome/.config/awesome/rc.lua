@@ -839,24 +839,26 @@ client.connect_signal("focus", function(c) c.border_color = beautiful.border_foc
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
 
+awful.spawn.with_shell("source ~/.xprofile")
+
+xrandr.set_dpi()
+lock.enable_automatic_lock()
+
 local function spawn_once_with_shell(prg, prg_opts, grep_opts)
    prg_opts = prg_opts or ""
    grep_opts = grep_opts or ""
    awful.spawn.with_shell("pgrep " .. grep_opts .. " " .. prg .. " >/dev/null; or " .. prg .. " " .. prg_opts)
 end
 
-awful.spawn.with_shell("source ~/.xprofile")
 spawn_once_with_shell("nm-applet")
+spawn_once_with_shell("emacs")
+spawn_once_with_shell("firefox", "", "-f")
+spawn_once_with_shell("blueman-applet")
 
 -- Computer specific setup
 awful.spawn.easy_async_with_shell('echo -n "$USER"', function(user, stderr, reason, exit_code)
                                      if user == "sst\n" then -- Work setup
-                                        xrandr.set_dpi()
-                                        lock.enable_automatic_lock()
                                         spawn_once_with_shell("solaar")
-                                        spawn_once_with_shell("blueman-applet")
-                                        spawn_once_with_shell("emacs")
-                                        spawn_once_with_shell("firefox", "", "-f")
                                         if #xrandr.outputs() > 1 then
                                            spawn_once_with_shell("slack", " --force-device-scale-factor=1.5")
                                         else
