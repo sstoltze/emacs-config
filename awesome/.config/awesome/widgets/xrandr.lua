@@ -104,21 +104,15 @@ local function naughty_destroy_callback(reason)
 end
 
 local function set_dpi()
-   local x_resources = "~/.Xresources"
-
    local out = outputs()
 
    if #out > 1 then
-      if gears.filesystem.file_readable("~/.Xresources-docked") then
-         x_resources = "~/.Xresouces-docked"
-      end
+      naughty.notify({text = "Docked"})
+      awful.spawn.with_shell("xrdb -merge ~/.Xresources-docked")
    else
-      if gears.filesystem.file_readable("~/.Xresources-undocked") then
-         x_resources = "~/.Xresouces-undocked"
-      end
+      naughty.notify({text = "Undocked"})
+      awful.spawn.with_shell("xrdb -merge ~/.Xresources-undocked")
    end
-
-   awful.spawn.with_shell("xrdb -merge " .. x_resources)
 end
 
 local function autorandr()
