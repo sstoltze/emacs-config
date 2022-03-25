@@ -1340,6 +1340,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :bind (("C-c s"   . avy-goto-char-timer)
          ;; This behaves as goto-line if a number is entered
          ("M-g g"   . avy-goto-line)
+         ("M-g M-g" . avy-goto-line)
          ("C-c C-j" . avy-resume))
   :custom
   (avy-all-windows nil)
