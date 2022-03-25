@@ -1328,6 +1328,11 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (when (eq system-type 'gnu/linux)
     (setq org-babel-python-command "python3")))
 
+;;;; Easy slides/presentations in org-mode docs
+(use-package org-tree-slide
+  :ensure t
+  :after org-mode)
+
 ;;;; --- Avy ---
 (use-package avy
   :ensure t
