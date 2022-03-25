@@ -1352,6 +1352,18 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   :ensure t
   :defer t)
 
+(defun swiper-isearch-other-window (prefix)
+  "Function to swiper-isearch in 'other-window'.
+Use PREFIX to go backwards.
+Stolen from https://karthinks.com/software/avy-can-do-anything/"
+  (interactive "P")
+  (unless (one-window-p)
+    (save-excursion
+      (let ((next (if prefix -1 1)))
+        (other-window next)
+        (swiper-isearch)
+        (other-window (- next))))))
+
 ;;;; --- Counsel / Swiper / Ivy ---
 ;;;;; Counsel pulls in ivy and swiper
 ;;;;; Doing C-x C-f, C-M-j will create currently entered text as file-name
@@ -1368,6 +1380,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
          ("C-x b"   . ivy-switch-buffer)
          ("C-x C-f" . counsel-find-file)
          ("C-s"     . swiper-isearch)
+         ("C-M-s"   . swiper-isearch-other-window)
          ;; counsel-grep-or-swiper should be faster on large buffers
          ("C-r"     . counsel-grep-or-swiper)
          ;; Find recent files
