@@ -1331,7 +1331,16 @@ length of PATH (sans directory slashes) down to MAX-LEN."
 ;;;; Easy slides/presentations in org-mode docs
 (use-package org-tree-slide
   :ensure t
-  :after org-mode)
+  :defer t
+  ;; :hook ((org-tree-slide-mode . (lambda ()
+  ;;                                 (setq org-tree-slide-slide-in-effect nil))))
+  :bind (("C-c i" . org-tree-slide-mode))
+  :custom
+  (org-tree-slide-slide-in-effect nil))
+
+(use-package moom
+  :ensure t
+  :defer t)
 
 ;;;; --- Avy ---
 (use-package avy
