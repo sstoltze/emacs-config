@@ -865,5 +865,8 @@ awful.spawn.easy_async_with_shell('echo -n "$USER"', function(user, stderr, reas
                                            spawn_once_with_shell("slack")
                                         end
                                         spawn_once_with_shell("zoom")
+                                        -- set berightness before starting redshift
+                                        brightness.set(1)
+                                        spawn_once_with_shell("redshift", "-P -o")
                                      end
 end)
