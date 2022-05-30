@@ -748,7 +748,14 @@ awful.rules.rules = {
         },
    }, properties = { tag = "Social" } },
    -- Steam
-   { rule = { class = "Steam" },
+   { rule_any = {
+        class = {
+           "Steam",
+        },
+        name = {
+           "Steam",
+        },
+   },
      properties = { tag = "Steam" } },
    -- Music
    { rule = { class = "[Ss]potify" },
