@@ -148,3 +148,6 @@ if test "$system" = "Linux"
         end
     end
 end
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/home/sst/Documents/google-cloud-sdk/path.fish.inc' ]; . '/home/sst/Documents/google-cloud-sdk/path.fish.inc'; end
