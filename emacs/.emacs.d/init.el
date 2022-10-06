@@ -184,7 +184,7 @@
                 ;; Column in modeline
                 column-number-mode
                 ;; Automatically reload changed files
-                auto-revert-mode))
+                global-auto-revert-mode))
   (when (fboundp mode)
     (funcall mode 1)))
 
