@@ -1530,8 +1530,9 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
   :hook ((lsp-mode        . yas-minor-mode)
          (rust-mode       . lsp)
          (typescript-mode . lsp))
-  :bind (("M-+" . lsp-find-references)
-         (:map lsp-mode-map
+  :bind ((:map lsp-mode-map
+               ("M-+"     . lsp-find-references)
+               ("M-."     . lsp-find-definition)
                ("C-c l s" . lsp)))
   :custom
   (lsp-keymap-prefix "C-c l")
