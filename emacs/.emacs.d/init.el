@@ -1312,6 +1312,7 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((clojure    . t)
+     (dot        . t)
      (lisp       . t)
      (emacs-lisp . t)
      (haskell    . t)
@@ -1547,7 +1548,8 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
   :bind ((:map lsp-mode-map
                ("M-j" . lsp-ui-imenu)
                ("C-c l d" . lsp-ui-doc-mode)
-               ("C-c l f" . lsp-ui-doc-focus-frame))
+               ("C-c l f" . lsp-ui-doc-focus-frame)
+               ("C-c l !" . lsp-ui-flycheck-list))
          (:map lsp-ui-imenu-mode-map
                ("C-j" . lsp-ui-imenu--view)))
   :custom
