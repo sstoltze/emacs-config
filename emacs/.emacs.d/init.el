@@ -2070,7 +2070,8 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
   ;; rustup component add rls
   :bind ((:map rust-mode-map
                ("C-c <tab>" . rust-format-buffer)
-               ("C-c C-b"   . rust-run)))
+               ("C-c C-b"   . rust-run)
+               ("C-c d"     . rust-dbg-wrap-or-unwrap)))
   :custom
   (rust-format-on-save t)
   (rust-format-show-buffer nil)
@@ -2098,8 +2099,7 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
       :server-id 'rust-analyzer-remote
       :environment-fn (lambda () (list (cons "CARGO_HOME"  (concat (getenv "HOME") "/.cargo"))
                                        (cons "RUSTUP_HOME" (concat (getenv "HOME") "/.cargo/rustup"))))
-      )))
-  )
+      ))))
 
 ;; Cargo
 (use-package cargo
