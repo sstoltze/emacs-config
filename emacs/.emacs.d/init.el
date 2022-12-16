@@ -2350,7 +2350,9 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
     :defer t)
   (use-package protobuf-mode
     :ensure t
-    :defer t)
+    :defer t
+    :custom
+    (c-basic-offset 4))
   (use-package jenkinsfile-mode
     :ensure t
     :defer t))
