@@ -1066,6 +1066,30 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (sp-backward-sexp 1)
   (sp-up-sexp -1)
   (sp-mark-sexp))
+(defconst sstoltze/racket--paren-shapes
+  '( (?\( ?\[ ?\] )
+     (?\[ ?\{ ?\} )
+     (?\{ ?\( ?\) ))
+  "This is not user-configurable because we expect them have to
+  have actual ?\( and ?\) char syntax.")
+
+(defun sstoltze/racket-cycle-paren-shapes ()
+  "In an s-expression, move to the opening, and cycle the shape among () [] {}.
+Stolen from racket-mode because I miss it."
+  (interactive)
+  (save-excursion
+    (unless (eq ?\( (char-syntax (char-after)))
+      (backward-up-list))
+    (pcase (assq (char-after) sstoltze/racket--paren-shapes)
+      (`(,_ ,open ,close)
+       (delete-char 1)
+       (insert open)
+       (backward-char 1)
+       (forward-sexp 1)
+       (backward-delete-char 1)
+       (insert close))
+      (_
+       (user-error "Don't know that paren shape")))))
 
 (use-package smartparens
   :ensure t
@@ -1102,7 +1126,8 @@ length of PATH (sans directory slashes) down to MAX-LEN."
                ("C-M-n"   . sp-up-sexp)
                ("C-M-d"   . sp-down-sexp)
                ("C-M-p"   . sp-backward-down-sexp)
-               ("C-x n s" . sp-narrow-to-sexp)))
+               ("C-x n s" . sp-narrow-to-sexp)
+               ("C-c C-p" . sstoltze/racket-cycle-paren-shapes)))
   :custom
   (sp-highlight-pair-overlay nil)
   :config
