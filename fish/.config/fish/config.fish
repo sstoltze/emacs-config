@@ -34,12 +34,14 @@ set -x RUSTUP_HOME "$HOME/.local/rustup"
 # Guix
 set -x GUIX_LOCPATH "$HOME/.guix-profile/lib/locale"
 set -x GUIX_PROFILE "$HOME/.guix-profile"
+set -x PATH "$GUIX_PROFILE/bin" $PATH
+set -x PATH "$GUIX_PROFILE/sbin" $PATH
+fenv source "$GUIX_PROFILE/etc/profile"
 if test -d ~/.config/guix
-    set -x PATH "$HOME/.config/guix/current/bin" $PATH
-    set -x PATH "$GUIX_PROFILE/bin" $PATH
-    set -x PATH "$GUIX_PROFILE/sbin" $PATH
-    fenv source "$GUIX_PROFILE/etc/profile"
+    # The order here is important, as the most recent guix is in "$HOME/.config/guix/current/bin"
+    # So this needs to be run as the last update of path
     fenv source "$HOME/.config/guix/current/etc/profile"
+    set -x PATH "$HOME/.config/guix/current/bin" $PATH
 end
 
 # Nix
