@@ -133,6 +133,8 @@ kitty-setup:
 	sudo add-apt-repository ppa:ubuntu-elisp/ppa
 	sudo add-apt-repository ppa:plt/racket
 	#	sudo add-apt-repository ppa:avsm/ppa # Opam 2.0, for ubuntu < 20.04
+	# Newest version of git
+	sudo add-apt-repository ppa:git-core/ppa
 	sudo apt update
 	touch .repository
 
