@@ -1500,6 +1500,10 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
   (ivy-posframe-mode 1))
 
 ;;;; --- Magit ---
+(use-package sqlite3
+  :ensure t
+  :defer t)
+
 (use-package magit
   :ensure t
   :defer t
