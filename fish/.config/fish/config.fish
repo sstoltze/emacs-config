@@ -32,8 +32,8 @@ set -x CARGO_HOME  "$HOME/.local"
 set -x RUSTUP_HOME "$HOME/.local/rustup"
 
 # Guix
-set -x GUIX_LOCPATH "$HOME/.guix-profile/lib/locale"
 set -x GUIX_PROFILE "$HOME/.guix-profile"
+set -x GUIX_LOCPATH "$GUIX_PROFILE/lib/locale"
 set -x PATH "$GUIX_PROFILE/bin" $PATH
 set -x PATH "$GUIX_PROFILE/sbin" $PATH
 if test -d "$GUIX_PROFILE/etc/profile"
