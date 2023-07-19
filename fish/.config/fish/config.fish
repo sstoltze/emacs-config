@@ -36,7 +36,9 @@ set -x GUIX_LOCPATH "$HOME/.guix-profile/lib/locale"
 set -x GUIX_PROFILE "$HOME/.guix-profile"
 set -x PATH "$GUIX_PROFILE/bin" $PATH
 set -x PATH "$GUIX_PROFILE/sbin" $PATH
-fenv source "$GUIX_PROFILE/etc/profile"
+if test -d "$GUIX_PROFILE/etc/profile"
+    fenv source "$GUIX_PROFILE/etc/profile"
+end
 if test -d ~/.config/guix
     # The order here is important, as the most recent guix is in "$HOME/.config/guix/current/bin"
     # So this needs to be run as the last update of path
