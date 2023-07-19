@@ -1499,6 +1499,12 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
   :config
   (ivy-posframe-mode 1))
 
+(use-package xref
+  :ensure t)
+(use-package ivy-xref
+  :ensure t
+  :after ivy)
+
 ;;;; --- Magit ---
 (use-package sqlite3
   :ensure t
@@ -2381,7 +2387,7 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
     :ensure t
     :defer t
     :custom
-    (c-basic-offset 4))
+    (c-basic-offset 2))
   (use-package jenkinsfile-mode
     :ensure t
     :defer t))
