@@ -1348,7 +1348,7 @@ Stolen from racket-mode because I miss it."
      (latex      . t)
      (shell      . t)
      (sql        . t)
-     (stan       . t)
+     ;; (stan       . t)
      (http       . t)))
   (setq org-confirm-babel-evaluate nil
         org-src-fontify-natively   t)
