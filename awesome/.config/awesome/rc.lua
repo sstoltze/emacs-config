@@ -1,3 +1,7 @@
+-- If LuaRocks is installed, make sure that packages installed through it are
+-- found (e.g. lgi). If LuaRocks is not installed, do nothing.
+pcall(require, "luarocks.loader")
+
 -- Standard awesome library
 local gears = require("gears")
 local awful = require("awful")
@@ -15,7 +19,7 @@ local hotkeys_popup = require("awful.hotkeys_popup")
 require("awful.hotkeys_popup.keys")
 
 -- Load Debian menu entries
-local debian = require("debian.menu")
+-- local debian = require("debian.menu")
 
 -- Theme
 local theme_name = "orange" -- "orange" "ww" "xresources"
@@ -113,7 +117,7 @@ end
 
 local mymainmenu = awful.menu({ items = {
                                    { "awesome", myawesomemenu, beautiful.awesome_icon },
-                                   { "Debian", debian.menu.Debian_menu.Debian },
+                                   -- { "Debian", debian.menu.Debian_menu.Debian },
                                    { "open terminal", terminal },
                                    { "shutdown", shutdown_fn }
                              } })
