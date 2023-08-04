@@ -15,7 +15,7 @@ platform = CYGWIN
 endif
 endif
 
-.PHONY: install uninstall remove update linux linux-remove cygwin cygwin-remove windows windows-remove mu4e-setup ubuntu-setup programming-setup latex-setup mbsync-setup kitty-setup setup
+.PHONY: install uninstall remove update linux linux-remove cygwin cygwin-remove windows windows-remove mu4e-setup ubuntu-setup programming-setup latex-setup mbsync-setup kitty-setup setup nixos
 
 .DEFAULT_GOAL:=update
 
@@ -42,6 +42,9 @@ remove: uninstall
 update:
 	git pull
 	make install
+
+nixos:
+	sudo stow --no-folding -S -t / nixos
 
 linux:
 	stow              -S -t ~ $(linux_packages)

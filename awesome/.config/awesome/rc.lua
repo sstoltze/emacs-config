@@ -869,15 +869,15 @@ spawn_once_with_shell("blueman-applet")
 -- Computer specific setup
 awful.spawn.easy_async_with_shell('echo -n "$USER"', function(user, stderr, reason, exit_code)
                                      if user == "sst\n" then -- Work setup
-                                        spawn_once_with_shell("solaar")
+                                        -- spawn_once_with_shell("solaar")
                                         if #xrandr.outputs() > 1 then
                                            spawn_once_with_shell("slack", " --force-device-scale-factor=1.5")
                                         else
                                            spawn_once_with_shell("slack")
                                         end
-                                        spawn_once_with_shell("zoom")
+                                        -- spawn_once_with_shell("zoom")
                                         -- set berightness before starting redshift
                                         brightness.set(1)
-                                        spawn_once_with_shell("redshift", "-P -o")
+                                        -- spawn_once_with_shell("redshift", "-P -o")
                                      end
 end)
