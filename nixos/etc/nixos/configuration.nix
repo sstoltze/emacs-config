@@ -14,6 +14,9 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  # Enable sound?
+  boot.kernelPackages = pkgs.linuxPackagesFor pkgs.linux_latest;
+
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
@@ -113,6 +116,7 @@
     gnumake
     # fprintd
     xorg.xmodmap
+    alsa-firmware
     pulseaudioFull
   ];
 
@@ -132,6 +136,8 @@
 
   # Bluetooth
   hardware = {
+    enableAllFirmware = true;
+
     bluetooth = {
       enable = true;
       settings = {
@@ -143,6 +149,9 @@
     pulseaudio = {
       enable = true;
       package = pkgs.pulseaudioFull;
+      extraConfig = "
+        load-module module-switch-on-connect
+";
     };
   };
   services.blueman.enable = true;
