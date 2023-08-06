@@ -117,7 +117,7 @@ volume.bluetooth.change_profile = function ()
                                         card, profile = string.match(output, "(%d+) ([^%s]+)")
                                         -- If already a2dp_sink, switch to headset
                                         if profile:gsub("%s+", "") == "a2dp_sink" then
-                                           new_profile = "headset_head_unit"
+                                           new_profile = "handsfree_head_unit"
                                         end
                                         naughty.notify({text = "Bluetooth: " .. new_profile})
                                         -- Switch to correct profile

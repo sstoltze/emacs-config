@@ -73,28 +73,36 @@
   users.users.sst = {
     isNormalUser = true;
     description = "Sarah Ella Stoltze";
-    extraGroups = [ "networkmanager" "wheel" "input" ];
+    extraGroups = [ "networkmanager" "wheel" "input" "audio" ];
     shell = pkgs.fish;
     packages = with pkgs; [
-      kitty
-      emacs29-gtk3
-      firefox
-      ripgrep
-      feh
-      sqlite
+      blueman
       discord
+      dropbox
+      emacs29-gtk3
+      evince
+      feh
+      firefox
+      htop
+      kitty
+      networkmanager
+      ripgrep
       slack
       spotify
+      sqlite
       steam
-      networkmanager
-      blueman
-      dropbox
-      evince
+      zoom-us
     ];
   };
 
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
+
+  nixpkgs.config = {
+    # Allow unfree packages
+    allowUnfree = true;
+
+    nixpkgs.config.pulseaudio = true;
+  };
+
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -105,6 +113,7 @@
     gnumake
     # fprintd
     xorg.xmodmap
+    pulseaudioFull
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -123,8 +132,18 @@
 
   # Bluetooth
   hardware = {
-    bluetooth.enable = true;
-    pulseaudio.enable = true;
+    bluetooth = {
+      enable = true;
+      settings = {
+        General = {
+          Enable = "Source,Sink,Media,Socket";
+        };
+      };
+    };
+    pulseaudio = {
+      enable = true;
+      package = pkgs.pulseaudioFull;
+    };
   };
   services.blueman.enable = true;
 
