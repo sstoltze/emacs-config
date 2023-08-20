@@ -865,6 +865,7 @@ spawn_once_with_shell("emacs")
 spawn_once_with_shell("firefox")
 spawn_once_with_shell("blueman-applet")
 spawn_once_with_shell("spotify")
+spawn_once_with_shell("dropbox start")
 
 -- Computer specific setup
 awful.spawn.easy_async_with_shell('echo -n "$USER"', function(user, stderr, reason, exit_code)
