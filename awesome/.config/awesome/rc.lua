@@ -137,6 +137,7 @@ menubar.menu_gen.lookup_category_icons = function() end
 
 -- Widgets
 local xrandr = require("widgets.xrandr")
+xrandr.set_dpi()
 
 local kbdcfg = require("widgets.keyboard")
 
@@ -850,9 +851,6 @@ client.connect_signal("focus", function(c) c.border_color = beautiful.border_foc
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
 
-awful.spawn.with_shell("source ~/.xprofile")
-
-xrandr.set_dpi()
 lock.enable_automatic_lock()
 
 local function spawn_once_with_shell(prg, prg_opts, grep_opts)
@@ -861,10 +859,12 @@ local function spawn_once_with_shell(prg, prg_opts, grep_opts)
    awful.spawn.with_shell("pgrep " .. grep_opts .. " " .. prg .. " >/dev/null; or " .. prg .. " " .. prg_opts)
 end
 
+awful.spawn.with_shell("source ~/.xprofile")
 spawn_once_with_shell("nm-applet")
 spawn_once_with_shell("emacs")
-spawn_once_with_shell("firefox", "", "-f")
+spawn_once_with_shell("firefox")
 spawn_once_with_shell("blueman-applet")
+spawn_once_with_shell("spotify")
 
 -- Computer specific setup
 awful.spawn.easy_async_with_shell('echo -n "$USER"', function(user, stderr, reason, exit_code)
@@ -876,7 +876,7 @@ awful.spawn.easy_async_with_shell('echo -n "$USER"', function(user, stderr, reas
                                            spawn_once_with_shell("slack")
                                         end
                                         -- spawn_once_with_shell("zoom")
-                                        -- set berightness before starting redshift
+                                        -- set brightness before starting redshift
                                         brightness.set(1)
                                         -- spawn_once_with_shell("redshift", "-P -o")
                                      end
