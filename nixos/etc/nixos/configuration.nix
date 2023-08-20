@@ -17,56 +17,91 @@
   # Enable sound?
   boot.kernelPackages = pkgs.linuxPackagesFor pkgs.linux_latest;
 
-  networking.hostName = "nixos"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  networking = {
+    hostName = "nixos"; # Define your hostname.
 
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+    # Enable networking
+    networkmanager.enable = true;
 
-  # Enable networking
-  networking.networkmanager.enable = true;
+    # Configure network proxy if necessary
+    # proxy.default = "http://user:password@proxy:port/";
+    # proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
-  # Set your time zone.
-  time.timeZone = "Europe/Copenhagen";
+    # wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
-  # Select internationalisation properties.
-  i18n.defaultLocale = "en_GB.UTF-8";
+    # Open ports in the firewall.
+    # firewall.allowedTCPPorts = [ ... ];
+    # firewall.allowedUDPPorts = [ ... ];
+    # Or disable the firewall altogether.
+    # firewall.enable = false;
+  };
 
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "da_DK.UTF-8";
-    LC_IDENTIFICATION = "da_DK.UTF-8";
-    LC_MEASUREMENT = "da_DK.UTF-8";
-    LC_MONETARY = "da_DK.UTF-8";
-    LC_NAME = "da_DK.UTF-8";
-    LC_NUMERIC = "da_DK.UTF-8";
-    LC_PAPER = "da_DK.UTF-8";
-    LC_TELEPHONE = "da_DK.UTF-8";
-    LC_TIME = "da_DK.UTF-8";
+  # Bluetooth
+  hardware = {
+    enableAllFirmware = true;
+
+    bluetooth = {
+      enable = true;
+      settings = {
+        General = {
+          Enable = "Source,Sink,Media,Socket";
+        };
+      };
+    };
+    pulseaudio = {
+      enable = true;
+      package = pkgs.pulseaudioFull;
+      extraConfig = "
+        load-module module-switch-on-connect
+";
+    };
+  };
+
+  nixpkgs.config = {
+    # Allow unfree packages
+    allowUnfree = true;
+
+    nixpkgs.config.pulseaudio = true;
   };
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  services.xserver = {
-    enable = true;
-
-    # Configure keymap in X11
-    layout = "dk";
-    xkbVariant = "nodeadkeys";
-
-    displayManager = {
-      lightdm.enable = true;
-      defaultSession = "none+awesome";
-    };
-
-    windowManager.awesome = {
+  services = {
+    xserver = {
       enable = true;
-      luaModules = with pkgs.luaPackages; [
-        luarocks
-        luadbi-mysql
-        vicious
-      ];
+
+      # Configure keymap in X11
+      layout = "dk";
+      xkbVariant = "nodeadkeys";
+
+      displayManager = {
+        lightdm.enable = true;
+        defaultSession = "none+awesome";
+      };
+
+      windowManager.awesome = {
+        enable = true;
+        luaModules = with pkgs.luaPackages; [
+          luarocks
+          luadbi-mysql
+          vicious
+        ];
+      };
     };
+
+    blueman.enable = true;
+
+    # Fingerprint reader
+    # fprintd = {
+    #   enable = true;
+    #   tod = {
+    #     enable = true;
+    #     driver = pkgs.libfprint-2-tod1-goodix-550a;
+    #   };
+    # };
+
+    # Enable the OpenSSH daemon.
+  # openssh.enable = true;
   };
 
   # Configure console keymap
@@ -98,15 +133,6 @@
     ];
   };
 
-
-  nixpkgs.config = {
-    # Allow unfree packages
-    allowUnfree = true;
-
-    nixpkgs.config.pulseaudio = true;
-  };
-
-
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
@@ -114,7 +140,7 @@
     stow
     coreutils-full
     gnumake
-    # fprintd
+    # fprintd # Fingerprint reader
     xorg.xmodmap
     alsa-firmware
     pulseaudioFull
@@ -129,47 +155,24 @@
   # };
   programs.fish.enable = true;
 
-  # List services that you want to enable:
 
-  # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
+  # Set your time zone.
+  time.timeZone = "Europe/Copenhagen";
 
-  # Bluetooth
-  hardware = {
-    enableAllFirmware = true;
+  # Select internationalisation properties.
+  i18n.defaultLocale = "en_GB.UTF-8";
 
-    bluetooth = {
-      enable = true;
-      settings = {
-        General = {
-          Enable = "Source,Sink,Media,Socket";
-        };
-      };
-    };
-    pulseaudio = {
-      enable = true;
-      package = pkgs.pulseaudioFull;
-      extraConfig = "
-        load-module module-switch-on-connect
-";
-    };
+  i18n.extraLocaleSettings = {
+    LC_ADDRESS = "da_DK.UTF-8";
+    LC_IDENTIFICATION = "da_DK.UTF-8";
+    LC_MEASUREMENT = "da_DK.UTF-8";
+    LC_MONETARY = "da_DK.UTF-8";
+    LC_NAME = "da_DK.UTF-8";
+    LC_NUMERIC = "da_DK.UTF-8";
+    LC_PAPER = "da_DK.UTF-8";
+    LC_TELEPHONE = "da_DK.UTF-8";
+    LC_TIME = "da_DK.UTF-8";
   };
-  services.blueman.enable = true;
-
-  # Fingerprint reader
-  # services.fprintd = {
-  #   enable = true;
-  #   tod = {
-  #     enable = true;
-  #     driver = pkgs.libfprint-2-tod1-goodix-550a;
-  #   };
-  # };
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
