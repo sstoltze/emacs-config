@@ -157,6 +157,7 @@ local make_battery = require("widgets.battery")
 local battery = make_battery(theme)
 
 local brightness = require("widgets.brightness")
+brightness.set(1)
 
 local lock = require("widgets.lock")
 
@@ -865,20 +866,16 @@ spawn_once_with_shell("emacs")
 spawn_once_with_shell("firefox")
 spawn_once_with_shell("blueman-applet")
 spawn_once_with_shell("spotify")
-spawn_once_with_shell("dropbox start")
+spawn_once_with_shell("dropbox")
+spawn_once_with_shell("discord")
+spawn_once_with_shell("slack")
 
 -- Computer specific setup
 awful.spawn.easy_async_with_shell('echo -n "$USER"', function(user, stderr, reason, exit_code)
                                      if user == "sst\n" then -- Work setup
                                         -- spawn_once_with_shell("solaar")
-                                        if #xrandr.outputs() > 1 then
-                                           spawn_once_with_shell("slack", " --force-device-scale-factor=1.5")
-                                        else
-                                           spawn_once_with_shell("slack")
-                                        end
                                         -- spawn_once_with_shell("zoom")
                                         -- set brightness before starting redshift
-                                        brightness.set(1)
                                         -- spawn_once_with_shell("redshift", "-P -o")
                                      end
 end)
