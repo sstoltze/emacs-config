@@ -852,8 +852,6 @@ client.connect_signal("focus", function(c) c.border_color = beautiful.border_foc
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
 
-lock.enable_automatic_lock()
-
 local function spawn_once_with_shell(prg, prg_opts, grep_opts)
    prg_opts = prg_opts or ""
    grep_opts = grep_opts or ""
@@ -873,6 +871,7 @@ spawn_once_with_shell("slack")
 -- Computer specific setup
 awful.spawn.easy_async_with_shell('echo -n "$USER"', function(user, stderr, reason, exit_code)
                                      if user == "sst\n" then -- Work setup
+                                        -- lock.enable_automatic_lock()
                                         -- spawn_once_with_shell("solaar")
                                         -- spawn_once_with_shell("zoom")
                                         -- set brightness before starting redshift
