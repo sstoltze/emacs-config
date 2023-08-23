@@ -10,12 +10,16 @@
       /etc/nixos/hardware-configuration.nix
     ];
 
-  # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  # Bootloader
+  boot = {
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+    };
 
-  # Enable sound?
-  boot.kernelPackages = pkgs.linuxPackagesFor pkgs.linux_latest;
+    # Enable sound?
+    kernelPackages = pkgs.linuxPackagesFor pkgs.linux_latest;
+  };
 
   networking = {
     hostName = "nixos"; # Define your hostname.
@@ -48,6 +52,7 @@
         };
       };
     };
+
     pulseaudio = {
       enable = true;
       package = pkgs.pulseaudioFull;
@@ -101,7 +106,7 @@
     # };
 
     # Enable the OpenSSH daemon.
-  # openssh.enable = true;
+    # openssh.enable = true;
   };
 
   # Configure console keymap
@@ -153,8 +158,16 @@
   #   enable = true;
   #   enableSSHSupport = true;
   # };
-  programs.fish.enable = true;
-
+  programs = {
+    fish = {
+      enable = true;
+    };
+    steam = {
+      enable = true;
+      remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+      dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+    };
+  };
 
   # Set your time zone.
   time.timeZone = "Europe/Copenhagen";
