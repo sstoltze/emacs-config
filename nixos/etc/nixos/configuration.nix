@@ -66,7 +66,7 @@
     # Allow unfree packages
     allowUnfree = true;
 
-    nixpkgs.config.pulseaudio = true;
+    pulseaudio = true;
   };
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
