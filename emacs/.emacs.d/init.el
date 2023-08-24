@@ -1565,7 +1565,9 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
   :ensure t
   :hook ((lsp-mode        . yas-minor-mode)
          (rust-mode       . lsp)
-         (typescript-mode . lsp))
+         (typescript-mode . lsp)
+         ;; Make sure elixir-ls version (of elixir) matches installed/running elixir version
+         (elixir-mode     . lsp))
   :bind ((:map lsp-mode-map
                ("M-+"     . lsp-find-references)
                ("M-."     . lsp-find-definition)
