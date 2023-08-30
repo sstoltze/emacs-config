@@ -120,7 +120,7 @@
     shell = pkgs.fish;
     packages = with pkgs; [
       blueman
-      discord
+      direnv
       dropbox
       emacs29-gtk3
       evince
@@ -130,11 +130,21 @@
       kitty
       networkmanager
       ripgrep
-      slack
       spotify
       sqlite
+      # social
+      discord
+      slack
       steam
       zoom-us
+      # haskell
+      ghc
+      stack
+      # elixir
+      elixir
+      elixir-ls
+      # racket
+      racket
     ];
   };
 
