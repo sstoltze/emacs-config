@@ -1583,7 +1583,7 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
   :after lsp-mode
   :hook ((lsp-mode . lsp-ui-mode))
   :bind ((:map lsp-mode-map
-               ("M-j" . lsp-ui-imenu)
+               ("M-j"     . lsp-ui-imenu)
                ("C-c l d" . lsp-ui-doc-mode)
                ("C-c l f" . lsp-ui-doc-focus-frame)
                ("C-c l !" . lsp-ui-flycheck-list))
