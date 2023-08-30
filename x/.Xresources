@@ -5,5 +5,7 @@
 ! #include ".config/x/random.theme"
 ! #include ".config/x/adventuretime.theme"
 
+! default dpi (undocked)
+Xft.dpi: 140
 
 ! #include ".config/x/urxvt.Xresouces"
