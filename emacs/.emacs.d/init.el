@@ -82,7 +82,7 @@
 
 ;; At work?
 (defvar at-work-p (string= user-login-name
-                           "sst"))
+                           "sarah.stoltze"))
 
 ;; General variables
 (setq inhibit-startup-screen                t
@@ -129,7 +129,7 @@
 
       ;; Personal info
       user-full-name                        "Sarah Stoltze"
-      user-mail-address                     (cond (at-work-p "sst@issuu.com")
+      user-mail-address                     (cond (at-work-p "sarah.stoltze@maersk.com")
                                                   (t         "sstoltze@gmail.com"))
 
       ;; Disable the bell
@@ -2282,19 +2282,6 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
                             :vars '((user-mail-address            . "sstoltze@gmail.com")
                                     (mu4e-trash-folder            . "/gmail/[Gmail].Trash")
                                     (mu4e-refile-folder           . "/gmail/[Gmail].Archive")
-                                    ;; Gmail handles sent messages for us
-                                    (mu4e-sent-messages-behavior  . delete)
-                                    (smtpmail-default-smtp-server . "smtp.gmail.com")
-                                    (smtpmail-smtp-server         . "smtp.gmail.com")
-                                    (smtpmail-smtp-service        . 587)))
-                           (make-mu4e-context
-                            :name "work"
-                            :match-func (lambda (msg)
-                                          (when msg
-                                            (string-prefix-p "/work" (mu4e-message-field msg :maildir))))
-                            :vars '((user-mail-address            . "sst@issuu.com")
-                                    (mu4e-trash-folder            . "/work/[Gmail].Trash")
-                                    (mu4e-refile-folder           . "/work/[Gmail].Archive")
                                     ;; Gmail handles sent messages for us
                                     (mu4e-sent-messages-behavior  . delete)
                                     (smtpmail-default-smtp-server . "smtp.gmail.com")
