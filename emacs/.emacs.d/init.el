@@ -1154,6 +1154,8 @@ Stolen from racket-mode because I miss it."
   (or (getenv env-key)
       "lisp"))
 
+(add-to-list 'exec-path "~/.nix-profile/bin")
+
 ;;;; --- Flycheck ---
 ;; Next-error and prev-error are bound to M-g n and M-g p
 ;; Use C-c ! l to list all errors in a separate buffer

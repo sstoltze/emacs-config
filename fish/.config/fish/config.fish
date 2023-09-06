@@ -47,8 +47,10 @@ if test -d ~/.config/guix
 end
 
 # Nix
-if test -d ~/.nix-profile
+if test -d ~/.nix-profile -a -e ~/.nix-profile/etc/profile.d/nix.sh
     fenv source ~/.nix-profile/etc/profile.d/nix.sh
+else if test -e /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish
+    source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish
 end
 
 # Docker
@@ -155,3 +157,5 @@ end
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/home/sst/Documents/google-cloud-sdk/path.fish.inc' ]; . '/home/sst/Documents/google-cloud-sdk/path.fish.inc'; end
+
+set -x GIT_MOB_COAUTHORS "$HOME/.git_coauthors.json"
