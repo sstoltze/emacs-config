@@ -544,7 +544,10 @@ point reaches the beginning or end of the buffer, stop there."
        ;; Or
        ;; guix package -i font-iosevka font-iosevka-term
        (cond ((find-font (font-spec :name "Iosevka"))
-              (set-frame-font "Iosevka-10.5" nil t)))
+              (cond ((eq system-type 'darwin)
+                     (set-frame-font "Iosevka-14" nil t))
+                    (t
+                     (set-frame-font "Iosevka-10.5" nil t)))))
        ;; Fira Code - Better vertical splits - better modeline
        ;; sudo apt install fonts-firacode
        ;; (set-frame-font "Fira Code-10")
