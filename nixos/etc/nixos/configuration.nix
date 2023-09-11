@@ -114,6 +114,7 @@
   fonts = {
     fonts = with pkgs; [
       iosevka
+      iosevka-bin
     ];
   };
 
