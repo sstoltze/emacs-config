@@ -628,7 +628,9 @@ Also stolen from 'https://www.simplify.ba/articles/2016/01/25/display-buffer-ali
          (set-window-dedicated-p (nth 2 (window-list)) t)
          (sstoltze/setup-help-buffers))
 
-       (when (not (string= (getenv "GDMSESSION") "awesome"))
+       (when (not (or (string= (getenv "GDMSESSION") "awesome")
+                      (string= (getenv "GDMSESSION") "none+awesome")))
+
          ;; Set initial frame size and position
          (defvar *sstoltze/position-factor*    0.40)
          (defvar *sstoltze/width-factor*       0.90)
