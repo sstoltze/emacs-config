@@ -111,6 +111,11 @@
 
   # Configure console keymap
   console.keyMap = "dk-latin1";
+  fonts = {
+    fonts = with pkgs; [
+      iosevka
+    ];
+  };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.sst = {

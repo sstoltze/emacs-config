@@ -547,7 +547,7 @@ point reaches the beginning or end of the buffer, stop there."
               (cond ((eq system-type 'darwin)
                      (set-frame-font "Iosevka-14" nil t))
                     (t
-                     (set-frame-font "Iosevka-10.5" nil t)))))
+                     (set-frame-font "Iosevka-11" nil t)))))
        ;; Fira Code - Better vertical splits - better modeline
        ;; sudo apt install fonts-firacode
        ;; (set-frame-font "Fira Code-10")
