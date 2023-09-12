@@ -97,17 +97,25 @@ if test "$USER" = "sst"
             return $ret
         end
     end
-    if command -v direnv >/dev/null
-        direnv hook fish | source
+
+    # opam configuration
+    if test -f /home/sst/.config/opam/opam-init/init.fish
+        source /home/sst/.config/opam/opam-init/init.fish > /dev/null 2> /dev/null
     end
+
+    # The next line updates PATH for the Google Cloud SDK.
+    if test -f '/home/sst/Documents/google-cloud-sdk/path.fish.inc'
+        . '/home/sst/Documents/google-cloud-sdk/path.fish.inc'
+    end
+end
+
+if command -v direnv >/dev/null
+    direnv hook fish | source
 end
 
 # XDG setup
 set -x XDG_CONFIG_HOME "$HOME/.config"      # .dotfiles and configuration data
 set -x XDG_DATA_HOME   "$HOME/.local/share" # local data, important
-
-# opam configuration
-source /home/sst/.config/opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
 
 # XCompose
 set -x XCOMPOSEFILE "$HOME/.config/.XCompose"
@@ -155,7 +163,13 @@ if test "$system" = "Linux"
     end
 end
 
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/home/sst/Documents/google-cloud-sdk/path.fish.inc' ]; . '/home/sst/Documents/google-cloud-sdk/path.fish.inc'; end
-
 set -x GIT_MOB_COAUTHORS "$HOME/.git_coauthors.json"
+
+if command -v brew >/dev/null
+    set -gx HOMEBREW_PREFIX "/opt/homebrew";
+    set -gx HOMEBREW_CELLAR "/opt/homebrew/Cellar";
+    set -gx HOMEBREW_REPOSITORY "/opt/homebrew";
+    set -q PATH; or set PATH ''; set -gx PATH "/opt/homebrew/bin" "/opt/homebrew/sbin" $PATH;
+    set -q MANPATH; or set MANPATH ''; set -gx MANPATH "/opt/homebrew/share/man" $MANPATH;
+    set -q INFOPATH; or set INFOPATH ''; set -gx INFOPATH "/opt/homebrew/share/info" $INFOPATH;
+end
