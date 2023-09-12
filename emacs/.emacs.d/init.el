@@ -2059,7 +2059,9 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
   :ensure t
   :defer t
   :hook ((elixir-mode . (lambda ()
-                          (add-hook 'before-save-hook 'elixir-format 0 t)))))
+                          (add-hook 'before-save-hook 'elixir-format 0 t))))
+  :custom
+  (lsp-elixir-ls-version "v0.16.0"))
 
 ;;;; --- Clojure ---
 (use-package clojure-mode
