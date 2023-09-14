@@ -1603,7 +1603,7 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
   (lsp-ui-sideline-show-code-actions t)
   ;; (lsp-ui-peek-always-show t)
   ;; (lsp-ui-sideline-show-hover t)
-  ;; (lsp-ui-doc-enable nil)
+  (lsp-ui-doc-enable nil)
   (lsp-ui-doc-show-with-cursor t))
 
 (use-package lsp-ivy
