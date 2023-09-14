@@ -1680,10 +1680,20 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
   :after semantic)
 
 ;;;; --- Projectile ---
+(defun counsel-projectile-rg-no-ignore (rg-options)
+  "Run rg with --no-ignore, or --no-ignore --hidden if RG-OPTIONS is set."
+  (interactive
+   (list (if (consp current-prefix-arg)
+             "-uu"
+           "-u")))
+  (counsel-projectile-rg rg-options))
+
 (use-package projectile
   :ensure t
   :defer t
   :bind-keymap (("C-c p" . projectile-command-map))
+  :bind ((:map projectile-command-map
+               ("s i" . counsel-projectile-rg-no-ignore)))
   :custom
   (projectile-completion-system 'ivy)
   (projectile-use-git-grep      t)
