@@ -2386,20 +2386,8 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
     :config
     (direnv-mode)))
 
-(when at-work-p
-  (use-package dockerfile-mode
-    :ensure t)
-  (use-package kotlin-mode
-    :ensure t
-    :defer t)
-  (use-package protobuf-mode
-    :ensure t
-    :defer t
-    :custom
-    (c-basic-offset 2))
-  (use-package jenkinsfile-mode
-    :ensure t
-    :defer t))
+(use-package dockerfile-mode
+  :ensure t)
 
 (provide 'init)
 ;;; init.el ends here

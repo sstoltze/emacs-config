@@ -652,3 +652,17 @@ Attribution: URL `http://emacsredux.com/blog/2013/04/21/edit-files-as-root/'"
   (twittering-icon-mode           t)
   :config
   (sstoltze/setup-epa))
+(when at-work-p
+  (use-package dockerfile-mode
+    :ensure t)
+  (use-package kotlin-mode
+    :ensure t
+    :defer t)
+  (use-package protobuf-mode
+    :ensure t
+    :defer t
+    :custom
+    (c-basic-offset 2))
+  (use-package jenkinsfile-mode
+    :ensure t
+    :defer t))
