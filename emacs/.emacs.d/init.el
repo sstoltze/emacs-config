@@ -2071,8 +2071,13 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
   :defer t
   :hook ((elixir-mode . (lambda ()
                           (add-hook 'before-save-hook 'elixir-format 0 t))))
-  :custom
-  (lsp-elixir-ls-version "v0.16.0"))
+  :init
+  ;; at-work-p?
+  (if (file-exists-p "~/elixir-ls-release")
+       (setq lsp-elixir-local-server-command "~/elixir-ls-release/language_server.sh"))
+  ;; :custom
+  ;; (lsp-elixir-ls-version "v0.16.0")
+  )
 
 ;;;; --- Clojure ---
 (use-package clojure-mode
