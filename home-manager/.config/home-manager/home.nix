@@ -31,6 +31,7 @@ in
     pkgs.jq
     pkgs.git
     pkgs.direnv
+    pkgs.kitty
 
     # Kubie
     pkgs.kubie
@@ -48,6 +49,7 @@ in
     ".gitconfig".source = ../../../git/.gitconfig;
     ".config/git".source = ../../../git/.config/git;
     ".config/fish".source = ../../../fish/.config/fish;
+    ".config/kitty".source = ../../../kitty/.config/kitty;
     # # Building this configuration will create a copy of 'dotfiles/screenrc' in
     # # the Nix store. Activating the configuration will then make '~/.screenrc' a
     # # symlink to the Nix store copy.
