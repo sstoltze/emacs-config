@@ -143,6 +143,7 @@
       slack
       steam
       zoom-us
+      skypeforlinux
       # haskell
       ghc
       stack
