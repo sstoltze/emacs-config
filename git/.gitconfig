@@ -1,5 +1,7 @@
 [includeIf "gitdir/i:git/"]
     path = ~/.config/git/private.git
+[includeIf "gitdir/i:.config/"]
+    path = ~/.config/git/private.git
 [includeIf "gitdir/i:work/"]
     path = ~/.config/git/work.git
 [core]
