@@ -3,7 +3,7 @@
 let beamPackages =
         with pkgs.beam_minimal;
         packagesWith interpreters.erlangR26;
-    elixir = beamPackages.elixir_1_15;
+    elixir_1_15 = beamPackages.elixir_1_15;
 in
 
 {
@@ -23,23 +23,25 @@ in
 
   # The home.packages option allows you to install Nix packages into your
   # environment.
-  home.packages = [
-    pkgs.fish
-    pkgs.iosevka
-    pkgs.iosevka-bin
-    pkgs.emacs29
-    pkgs.jq
-    pkgs.git
-    pkgs.direnv
-    pkgs.kitty
+  home.packages = with pkgs; [
+    fish
+    iosevka
+    iosevka-bin
+    emacs29
+    jq
+    git
+    direnv
+    kitty
+    dbeaver
+    skype
 
     # Kubie
-    pkgs.kubie
-    pkgs.kubelogin
+    kubie
+    kubelogin
 
     # Elixir
-    elixir
-    (pkgs.elixir-ls.override { elixir = elixir; })
+    elixir_1_15
+    (pkgs.elixir-ls.override { elixir = elixir_1_15; })
   ];
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
