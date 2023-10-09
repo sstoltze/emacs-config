@@ -33,7 +33,6 @@ in
     direnv
     kitty
     dbeaver
-    skype
 
     # Kubie
     kubie
