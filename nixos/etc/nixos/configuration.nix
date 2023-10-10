@@ -166,6 +166,8 @@
     xorg.xmodmap
     alsa-firmware
     pulseaudioFull
+    zip
+    unzip
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
