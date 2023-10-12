@@ -1585,7 +1585,15 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
   :custom
   (lsp-keymap-prefix "C-c l")
   ;; (lsp-eldoc-render-all t)
-  (lsp-idle-delay 0.6))
+  (lsp-idle-delay 0.6)
+  ;; Recommended for lsp as the replies can get rather large and slow things down - 1 mb
+  (read-process-output-max (* 1024 1024)))
+
+;; Trying some things out to speed up LSP/emacs
+(with-eval-after-load 'lsp-mode
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\deps\\'")
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\priv/static\\'"))
+
 
 ;; Flashy, maybe remove
 (use-package lsp-ui
