@@ -2404,5 +2404,21 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
 (use-package dockerfile-mode
   :ensure t)
 
+(defun sstoltze/related-files ()
+  "Try and do some work with related files"
+  (interactive)
+  (let* ((base-buffer (or (buffer-base-buffer)
+                          (buffer-name)))
+         (contents
+          (with-current-buffer base-buffer
+            (save-restriction
+              (widen)
+              (buffer-substring-no-properties (point-min) (point-max)))))
+         (lines (string-split contents "\n"))
+         (related-lines (seq-filter #'(lambda (l) (string-match "@related" l)) lines))
+         ;; Find out how to match markdown links, [name](file-link)
+         )
+    (princ (car related-lines))))
+
 (provide 'init)
 ;;; init.el ends here
