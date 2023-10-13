@@ -2404,6 +2404,21 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
 (use-package dockerfile-mode
   :ensure t)
 
+(defun sstoltze/line-end-respecting-backslash ()
+  "Find the number to send to line-end-positon to get a line not ending in a backslash."
+  (let ((lb (line-beginning-position))
+        (le 1))
+    (while (and
+            (< (line-end-position le)
+               (point-max))
+            (string-suffix-p "\\"
+                             (string-trim-right
+                              (buffer-substring-no-properties
+                               lb
+                               (line-end-position le)))))
+      (setq le (1+ le)))
+    le))
+
 (defun sstoltze/related-files ()
   "Try and do some work with related files."
   (interactive)
@@ -2418,25 +2433,27 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
           (widen)
           (goto-char (point-min))
           (while (not (eobp))
-            (let ((line (buffer-substring-no-properties (line-beginning-position)
-                                                        (line-end-position))))
+            (let* ((le (sstoltze/line-end-respecting-backslash))
+                   (line (buffer-substring-no-properties (line-beginning-position)
+                                                         (line-end-position le)))
+                   (start-char 0))
               (when (string-match-p "@related" line)
-                (let ((start-char 0))
-                  (while (string-match "\\[\\(.*?\\)\\](\\(.*?\\))" line start-char)
-                    (let* ((name (match-string 1 line))
-                           (file-link (match-string 2 line))
-                           (qualified-file-link (cond ((string= (substring file-link 0 1)
-                                                                ".")
-                                                       (concat (expand-file-name file-link)))
-                                                      ((string= (substring file-link 0 1)
-                                                                "/")
-                                                       (concat root-dir (substring file-link 1)))
-                                                      (t (concat root-dir file-link)))))
-                      (setq related-files (cons (cons (propertize name 'display (concat name " -> " file-link))
-                                                      qualified-file-link)
-                                                related-files))
-                      (setq start-char (match-end 0))))))
-              (forward-line 1))))))
+                (while (string-match "\\[\\(.*?\\)\\](\\(.*?\\))" line start-char)
+                  (let* ((name      (match-string 1 line))
+                         (file-link (match-string 2 line))
+                         (qualified-file-link (cond ((string= (substring file-link 0 1)
+                                                              ".")
+                                                     (concat (expand-file-name file-link)))
+                                                    ((string= (substring file-link 0 1)
+                                                              "/")
+                                                     (concat root-dir (substring file-link 1)))
+                                                    (t
+                                                     (concat root-dir file-link)))))
+                    (setq related-files (cons (cons (propertize name 'display (concat name " -> " file-link))
+                                                    qualified-file-link)
+                                              related-files))
+                    (setq start-char (match-end 0)))))
+              (forward-line le))))))
     related-files))
 
 (defun sstoltze/find-related-file ()
