@@ -2451,8 +2451,8 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
                                                      (concat root-dir file-link)))))
                     (setq related-files (cons (cons (propertize name 'display (concat name " -> " file-link))
                                                     qualified-file-link)
-                                              related-files))
-                    (setq start-char (match-end 0)))))
+                                              related-files)
+                          start-char (match-end 0)))))
               (forward-line le))))))
     related-files))
 
