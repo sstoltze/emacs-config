@@ -2084,7 +2084,7 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
   :init
   ;; at-work-p?
   (if (file-exists-p "~/elixir-ls-release")
-       (setq lsp-elixir-local-server-command "~/elixir-ls-release/language_server.sh"))
+      (setq lsp-elixir-local-server-command "~/elixir-ls-release/language_server.sh"))
   ;; :custom
   ;; (lsp-elixir-ls-version "v0.16.0")
   )
@@ -2405,7 +2405,7 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
   :ensure t)
 
 (defun sstoltze/related-files ()
-  "Try and do some work with related files"
+  "Try and do some work with related files."
   (interactive)
   (let* ((base-buffer (or (buffer-base-buffer)
                           (buffer-name)))
@@ -2415,10 +2415,37 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
               (widen)
               (buffer-substring-no-properties (point-min) (point-max)))))
          (lines (string-split contents "\n"))
-         (related-lines (seq-filter #'(lambda (l) (string-match "@related" l)) lines))
-         ;; Find out how to match markdown links, [name](file-link)
-         )
-    (princ (car related-lines))))
+         (related-lines (seq-filter #'(lambda (l) (string-match-p "@related" l)) lines))
+         (root-dir (cond ((fboundp 'projectile-project-root) (projectile-project-root))
+                         ((fboundp 'vc-root-dir) (vc-root-dir))))
+         (related-files (list)))
+    (dolist (line related-lines)
+      (let ((start-char 0))
+        (while (string-match "\\[\\(.*?\\)\\](\\(.*?\\))" line start-char)
+          (let* ((name (match-string 1 line))
+                 (file-link (match-string 2 line))
+                 (qualified-file-link (cond ((string= (substring file-link 0 1)
+                                                      ".")
+                                             (concat (expand-file-name file-link)))
+                                            ((string= (substring file-link 0 1)
+                                                      "/")
+                                             (concat root-dir (substring file-link 1)))
+                                            (t (concat root-dir file-link)))))
+            (setq related-files (cons (cons (propertize name 'display (concat name " -> " file-link))
+                                            qualified-file-link)
+                                      related-files))
+            (setq start-char (match-end 0))))))
+    related-files))
+
+(defun sstoltze/find-related-file ()
+  "Let's try this thing out."
+  (interactive)
+  (let* ((related-files (sstoltze/related-files))
+         (chosen-file (completing-read "Related files: " related-files nil nil)))
+    (when chosen-file
+      (let ((file-name (cdr (assoc chosen-file related-files))))
+        (find-file file-name)))))
+(global-set-key (kbd "C-c r") 'sstoltze/find-related-file)
 
 (provide 'init)
 ;;; init.el ends here
