@@ -2406,9 +2406,8 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
 
 ;; Run M-x package-vc-install-from-checkout and provide the correct
 ;; path to the project directory.
-(use-package related-files)
-
-(global-set-key (kbd "C-c r") 'sstoltze/find-related-file)
+(use-package related-files
+  :bind (("C-c r" . related-files-find-related-file)))
 
 (provide 'init)
 ;;; init.el ends here
