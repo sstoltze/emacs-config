@@ -2404,66 +2404,9 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
 (use-package dockerfile-mode
   :ensure t)
 
-(defun sstoltze/line-end-respecting-backslash ()
-  "Find the number to send to line-end-positon to get a line not ending in a backslash."
-  (let ((lb (line-beginning-position))
-        (le 1))
-    (while (and
-            (< (line-end-position le)
-               (point-max))
-            (string-suffix-p "\\"
-                             (string-trim-right
-                              (buffer-substring-no-properties
-                               lb
-                               (line-end-position le)))))
-      (setq le (1+ le)))
-    le))
-
-(defun sstoltze/related-files ()
-  "Try and do some work with related files."
-  (interactive)
-  (let* ((base-buffer (or (buffer-base-buffer)
-                          (buffer-name)))
-         (root-dir (cond ((fboundp 'projectile-project-root) (projectile-project-root))
-                         ((fboundp 'vc-root-dir) (vc-root-dir))))
-         (related-files (list)))
-    (with-current-buffer base-buffer
-      (save-excursion
-        (save-restriction
-          (widen)
-          (goto-char (point-min))
-          (while (not (eobp))
-            (let* ((le (sstoltze/line-end-respecting-backslash))
-                   (line (buffer-substring-no-properties (line-beginning-position)
-                                                         (line-end-position le)))
-                   (start-char 0))
-              (when (string-match-p "@related" line)
-                (while (string-match "\\[\\(.*?\\)\\](\\(.*?\\))" line start-char)
-                  (let* ((name      (match-string 1 line))
-                         (file-link (match-string 2 line))
-                         (qualified-file-link (cond ((string= (substring file-link 0 1)
-                                                              ".")
-                                                     (concat (expand-file-name file-link)))
-                                                    ((string= (substring file-link 0 1)
-                                                              "/")
-                                                     (concat root-dir (substring file-link 1)))
-                                                    (t
-                                                     (concat root-dir file-link)))))
-                    (setq related-files (cons (cons (propertize name 'display (concat name " -> " file-link))
-                                                    qualified-file-link)
-                                              related-files)
-                          start-char (match-end 0)))))
-              (forward-line le))))))
-    related-files))
-
-(defun sstoltze/find-related-file ()
-  "Let's try this thing out."
-  (interactive)
-  (let* ((related-files (sstoltze/related-files))
-         (chosen-file (completing-read "Related files: " related-files nil nil)))
-    (when chosen-file
-      (let ((file-name (cdr (assoc chosen-file related-files))))
-        (find-file file-name)))))
+;; Run M-x package-vc-install-from-checkout and provide the correct
+;; path to the project directory.
+(use-package related-files)
 
 (global-set-key (kbd "C-c r") 'sstoltze/find-related-file)
 
