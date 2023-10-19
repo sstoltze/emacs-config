@@ -1875,7 +1875,8 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
   (browse-url-handlers '((".*youtube.*"           . browse-url-default-browser)
                          (".*github.*"            . browse-url-default-browser)
                          (".*docs.racket-lang.*"  . browse-url-default-browser)
-                         ("."                     . eww-browse-url))))
+                         ;; ("."                     . eww-browse-url)
+                         ("."                     . browse-url-default-browser))))
 
 (use-package eww-lnum
   :ensure t
