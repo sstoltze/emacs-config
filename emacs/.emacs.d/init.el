@@ -2394,7 +2394,9 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
       :defer t
       :load-path "/usr/lib/sagemath/local/share/emacs"
       :custom
-      (sage-command "/usr/lib/sagemath/sage")))))
+      (sage-command "/usr/lib/sagemath/sage"))))
+ ((eq system-type 'darwin)
+  (setq mac-command-modifier 'none)))
 
 (when (executable-find "direnv")
   (use-package direnv
