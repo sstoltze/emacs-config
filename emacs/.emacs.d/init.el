@@ -857,6 +857,12 @@ If ARG is provided, move directly to option ARG."
   (compilation-always-kill t)
   (next-error-hightlight t))
 
+;; Native compilation
+(use-package comp
+  :custom
+  ;; Silence all the warnings from compiling things in the background
+  (native-comp-async-report-warnings-errors 'silent))
+
 ;;;; --- Proced ---
 ;; To highlight processes use highlight-lines-matching-regexp, M-s h l
 ;; Unhighlight by unhighlight-regexp, M-s h u
