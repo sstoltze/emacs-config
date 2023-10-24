@@ -26,6 +26,8 @@ else ifeq ($(platform),CYGWIN)
 	make cygwin
 else ifeq ($(platform),WINDOWS)
 	make windows
+else ifeq ($(platform),Darwin)
+	make darwin
 endif
 
 uninstall:
@@ -90,6 +92,10 @@ else ifeq ($(platform),WINDOWS)
 	del "%USERPROFILE%\.config\git\work.git"
 	del "%APPDATA%\ghc\ghci.conf"
 endif
+
+darwin:
+	stow -S -t ~ home-manager
+	make linux
 
 mu4e-setup:
 	sudo apt install isync mu4e
