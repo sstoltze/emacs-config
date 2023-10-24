@@ -96,6 +96,7 @@ endif
 darwin:
 	stow -S -t ~ home-manager
 	make linux
+	stow -D -t ~ direnv # Messes with the home-manager config
 
 mu4e-setup:
 	sudo apt install isync mu4e
