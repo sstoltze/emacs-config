@@ -5,10 +5,9 @@
 { config, pkgs, ... }:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      /etc/nixos/hardware-configuration.nix
-    ];
+  imports = [ # Include the results of the hardware scan.
+    /etc/nixos/hardware-configuration.nix
+  ];
 
   # Bootloader
   boot = {
@@ -46,19 +45,13 @@
 
     bluetooth = {
       enable = true;
-      settings = {
-        General = {
-          Enable = "Source,Sink,Media,Socket";
-        };
-      };
+      settings = { General = { Enable = "Source,Sink,Media,Socket"; }; };
     };
 
     pulseaudio = {
       enable = true;
       package = pkgs.pulseaudioFull;
-      extraConfig = "
-        load-module module-switch-on-connect
-";
+      extraConfig = "load-module module-switch-on-connect";
     };
   };
 
@@ -86,11 +79,7 @@
 
       windowManager.awesome = {
         enable = true;
-        luaModules = with pkgs.luaPackages; [
-          luarocks
-          luadbi-mysql
-          vicious
-        ];
+        luaModules = with pkgs.luaPackages; [ luarocks luadbi-mysql vicious ];
       };
     };
 
@@ -111,12 +100,7 @@
 
   # Configure console keymap
   console.keyMap = "dk-latin1";
-  fonts = {
-    fonts = with pkgs; [
-      iosevka
-      iosevka-bin
-    ];
-  };
+  fonts = { fonts = with pkgs; [ iosevka iosevka-bin ]; };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.sst = {
@@ -152,6 +136,7 @@
       elixir-ls
       # racket
       racket
+      nixfmt
     ];
   };
 
@@ -178,13 +163,13 @@
   #   enableSSHSupport = true;
   # };
   programs = {
-    fish = {
-      enable = true;
-    };
+    fish = { enable = true; };
     steam = {
       enable = true;
-      remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
-      dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+      # Open ports in the firewall for Steam Remote Play
+      remotePlay.openFirewall = true;
+      # Open ports in the firewall for Source Dedicated Server
+      dedicatedServer.openFirewall = true;
     };
   };
 
@@ -192,18 +177,20 @@
   time.timeZone = "Europe/Copenhagen";
 
   # Select internationalisation properties.
-  i18n.defaultLocale = "en_GB.UTF-8";
+  i18n = {
+    defaultLocale = "en_GB.UTF-8";
 
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "da_DK.UTF-8";
-    LC_IDENTIFICATION = "da_DK.UTF-8";
-    LC_MEASUREMENT = "da_DK.UTF-8";
-    LC_MONETARY = "da_DK.UTF-8";
-    LC_NAME = "da_DK.UTF-8";
-    LC_NUMERIC = "da_DK.UTF-8";
-    LC_PAPER = "da_DK.UTF-8";
-    LC_TELEPHONE = "da_DK.UTF-8";
-    LC_TIME = "da_DK.UTF-8";
+    extraLocaleSettings = {
+      LC_ADDRESS = "da_DK.UTF-8";
+      LC_IDENTIFICATION = "da_DK.UTF-8";
+      LC_MEASUREMENT = "da_DK.UTF-8";
+      LC_MONETARY = "da_DK.UTF-8";
+      LC_NAME = "da_DK.UTF-8";
+      LC_NUMERIC = "da_DK.UTF-8";
+      LC_PAPER = "da_DK.UTF-8";
+      LC_TELEPHONE = "da_DK.UTF-8";
+      LC_TIME = "da_DK.UTF-8";
+    };
   };
 
   # This value determines the NixOS release from which the default

@@ -1167,6 +1167,11 @@ Stolen from racket-mode because I miss it."
 
 (add-to-list 'exec-path "~/.nix-profile/bin")
 
+(use-package nix-mode
+  :ensure t
+  :defer t
+  :hook ((before-save . nix-format-before-save)))
+
 ;;;; --- Flycheck ---
 ;; Next-error and prev-error are bound to M-g n and M-g p
 ;; Use C-c ! l to list all errors in a separate buffer
@@ -1893,11 +1898,6 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
 
 ;;;; --- Fish ---
 (use-package fish-mode
-  :ensure t
-  :defer t)
-
-;;;; --- Nix ---
-(use-package nix-mode
   :ensure t
   :defer t)
 
