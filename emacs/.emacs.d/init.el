@@ -1585,10 +1585,10 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
 (use-package lsp-mode
   :ensure t
   :hook ((lsp-mode        . yas-minor-mode)
-         (rust-mode       . lsp)
-         (typescript-mode . lsp)
+         (rust-mode       . lsp-deferred)
+         (typescript-mode . lsp-deferred)
          ;; Make sure elixir-ls version (of elixir) matches installed/running elixir version
-         (elixir-mode     . lsp))
+         (elixir-mode     . lsp-deferred))
   :bind ((:map lsp-mode-map
                ("M-+"     . lsp-find-references)
                ("M-."     . lsp-find-definition)
@@ -1604,7 +1604,6 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
 (with-eval-after-load 'lsp-mode
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\deps\\'")
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\priv/static\\'"))
-
 
 ;; Flashy, maybe remove
 (use-package lsp-ui
