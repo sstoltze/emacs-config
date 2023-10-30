@@ -32,6 +32,7 @@ in {
       direnv
       kitty
       dbeaver
+      ripgrep
 
       # Kubie
       kubie
