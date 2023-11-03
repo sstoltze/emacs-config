@@ -2091,9 +2091,8 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
   ;; at-work-p?
   (if (file-exists-p "~/elixir-ls-release")
       (setq lsp-elixir-local-server-command "~/elixir-ls-release/language_server.sh"))
-  ;; :custom
-  ;; (lsp-elixir-ls-version "v0.16.0")
-  )
+  :custom
+  (lsp-elixir-suggest-specs nil))
 
 ;;;; --- Clojure ---
 (use-package clojure-mode
