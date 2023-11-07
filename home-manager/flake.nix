@@ -2,7 +2,7 @@
   description = "A very basic flake";
 
   outputs = { self, ... }: {
-    homeManagerConfig = { pkgs }:
+    homeManagerConfig = { pkgs, ... }:
       let
         beamPackages = with pkgs.beam_minimal;
           packagesWith interpreters.erlangR26;
