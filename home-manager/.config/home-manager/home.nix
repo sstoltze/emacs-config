@@ -33,6 +33,7 @@ in {
       kitty
       dbeaver
       ripgrep
+      nixfmt
 
       # Kubie
       kubie
