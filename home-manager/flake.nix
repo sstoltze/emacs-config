@@ -6,7 +6,6 @@
       let
         beamPackages = with pkgs.beam_minimal;
           packagesWith interpreters.erlangR26;
-        elixir_1_15 = beamPackages.elixir_1_15;
       in {
         home = {
           # Home Manager needs a bit of information about you and the paths it should
@@ -44,8 +43,8 @@
             kubelogin
 
             # Elixir
-            elixir_1_15
-            (pkgs.elixir-ls.override { elixir = elixir_1_15; })
+            beamPackages.elixir
+            (pkgs.elixir-ls.override { elixir = beamPackages.elixir; })
           ];
 
           # Home Manager is pretty good at managing dotfiles. The primary way to manage
