@@ -25,3 +25,6 @@
 	user = sstoltze
 [init]
 	defaultBranch = main
+# Replace ssh with https in URLs - stored for potential future use
+# [url "https://github.com/"]
+#   insteadOf = ssh://git@github.com/
