@@ -1,3 +1,6 @@
+#+AUTHOR: Sarah Stoltze
+#+EMAIL: sstoltze@gmail.com
+#+OPTIONS: toc:nil title:nil author:nil email:nil date:nil creator:nil
 * emacs-config
 
 This repository was set up to allow me to synchronise my setup across multiple computers using various platforms (Linux, Windows, Windows with Cygwin). It contains a makefile with rules for what to install on the different platforms, so everything can be set up by running
