@@ -159,7 +159,10 @@
       ;; Scrolling forward and then back preserves point position
       scroll-preserve-screen-position       t
 
-      show-paren-delay                      0)
+      show-paren-delay                      0
+
+      ;; Add final newline when saving a file - set to 'visit to do it on visit but not save
+      require-final-newline                 t)
 
 ;; Do not use tabs
 (setq-default indent-tabs-mode              nil
