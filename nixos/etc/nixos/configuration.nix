@@ -4,7 +4,19 @@
 
 { config, pkgs, ... }:
 
+# # This, with the nixpkgs.config below, provies pkgs.unstable.<pkg-name>
+# # for a single unstable package installation
+# let
+#   unstableTarball = fetchTarball
+#     "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
+# in
 {
+
+  # nixpkgs.config = {
+  #   packageOverrides = pkgs: {
+  #     unstable = import unstableTarball { config = config.nixpkgs.config; };
+  #   };
+  # };
   imports = [ # Include the results of the hardware scan.
     /etc/nixos/hardware-configuration.nix
   ];
