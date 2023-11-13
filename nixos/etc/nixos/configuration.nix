@@ -51,32 +51,39 @@
     # firewall.enable = false;
   };
 
-  # Bluetooth
   hardware = {
     enableAllFirmware = true;
 
+    # Bluetooth
     bluetooth = {
       enable = true;
-      settings = { General = { Enable = "Source,Sink,Media,Socket"; }; };
+      powerOnBoot = true; # powers up the default Bluetooth controller on boot
+      # settings = { General = { Enable = "Source,Sink,Media,Socket"; }; };
     };
 
     pulseaudio = {
       enable = true;
       package = pkgs.pulseaudioFull;
       extraConfig = "load-module module-switch-on-connect";
+      # support32Bit = true;
     };
   };
+
+  sound.enable = true;
 
   nixpkgs.config = {
     # Allow unfree packages
     allowUnfree = true;
-
     pulseaudio = true;
   };
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix = {
+    settings.experimental-features = [ "nix-command" "flakes" ];
+    optimise.automatic = true;
+  };
 
   services = {
+
     xserver = {
       enable = true;
 
@@ -149,6 +156,7 @@
       # racket
       racket
       nixfmt
+      lsof
     ];
   };
 
@@ -165,6 +173,7 @@
     pulseaudioFull
     zip
     unzip
+    sof-firmware
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
