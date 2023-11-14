@@ -756,7 +756,7 @@ awful.rules.rules = {
    -- Steam
    { rule_any = {
         class = {
-           "Steam",
+           "[Ss]team",
         },
         name = {
            "Steam",
