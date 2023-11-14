@@ -865,7 +865,7 @@ spawn_once_with_shell("firefox")
 spawn_once_with_shell("blueman-applet")
 spawn_once_with_shell("spotify")
 spawn_once_with_shell("dropbox")
-spawn_once_with_shell("discord")
+spawn_once_with_shell("discord", "", "-i")
 spawn_once_with_shell("slack")
 
 -- Computer specific setup
