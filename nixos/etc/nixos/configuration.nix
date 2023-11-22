@@ -58,7 +58,7 @@
     bluetooth = {
       enable = true;
       powerOnBoot = true; # powers up the default Bluetooth controller on boot
-      # settings = { General = { Enable = "Source,Sink,Media,Socket"; }; };
+      settings = { General = { Enable = "Source,Sink,Media,Socket"; }; };
     };
 
     pulseaudio = {
@@ -113,13 +113,14 @@
     #   };
     # };
 
+    # emacs.defaultEditor = true;
     # Enable the OpenSSH daemon.
     # openssh.enable = true;
   };
 
   # Configure console keymap
   console.keyMap = "dk-latin1";
-  fonts = { fonts = with pkgs; [ iosevka iosevka-bin ]; };
+  fonts = { packages = with pkgs; [ iosevka iosevka-bin ]; };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.sst = {
