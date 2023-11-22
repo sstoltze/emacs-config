@@ -62,14 +62,13 @@
             enable = true;
             powerOnBoot =
               true; # powers up the default Bluetooth controller on boot
-            settings = { General = { Enable = "Source,Sink,Media,Socket"; }; };
           };
 
           pulseaudio = {
             enable = true;
             package = pkgs.pulseaudioFull;
+            # Automatically switch to bluetooth speaker on connect
             extraConfig = "load-module module-switch-on-connect";
-            # support32Bit = true;
           };
         };
 
