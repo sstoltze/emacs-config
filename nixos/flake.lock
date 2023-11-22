@@ -1,21 +1,20 @@
 {
   "nodes": {
     "emacsConfig": {
-      "flake": false,
       "locked": {
-        "dir": "nixos/etc/nixos/configuration.nix",
-        "lastModified": 1699948498,
-        "narHash": "sha256-6HbXZ2a5Gb3uKSud8ii6Noqx/DoLLxn6FbEcwAkavJs=",
+        "dir": "nixos/etc/nixos/",
+        "lastModified": 1700647398,
+        "narHash": "sha256-6CxJCQsa0H1MISTeH0YbVXEQaS7TkcOEfPOTrXHjfTc=",
         "ref": "refs/heads/master",
-        "rev": "093f77e0e7156a3f92b48ebd1778c8ff27199758",
-        "revCount": 1017,
+        "rev": "63342c27ab08a3d9d3a4e9bc0be860ef82f95166",
+        "revCount": 1018,
         "type": "git",
-        "url": "https://github.com/sstoltze/emacs-config?dir=nixos%2fetc%2fnixos%2fconfiguration.nix"
+        "url": "https://github.com/sstoltze/emacs-config?dir=nixos%2fetc%2fnixos%2f"
       },
       "original": {
-        "dir": "nixos/etc/nixos/configuration.nix",
+        "dir": "nixos/etc/nixos/",
         "type": "git",
-        "url": "https://github.com/sstoltze/emacs-config?dir=nixos%2fetc%2fnixos%2fconfiguration.nix"
+        "url": "https://github.com/sstoltze/emacs-config?dir=nixos%2fetc%2fnixos%2f"
       }
     },
     "nixpkgs": {
