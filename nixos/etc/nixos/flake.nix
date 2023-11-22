@@ -1,3 +1,5 @@
+# In theory, replacing the /etc/nixos/configuration.nix symlink with this file should be enough.
+# But the dependency on hardware-configuration.nix unfortunately does not work without --impure
 {
   description = "A very basic flake";
 
@@ -21,8 +23,9 @@
         #     unstable = import unstableTarball { config = config.nixpkgs.config; };
         #   };
         # };
-        imports = [ # Include the results of the hardware scan.
-          /etc/nixos/hardware-configuration.nix
+
+        imports = [
+          # Include the results of the hardware scan.
         ];
 
         # Bootloader
