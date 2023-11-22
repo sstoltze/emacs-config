@@ -1,5 +1,5 @@
-# In theory, replacing the /etc/nixos/configuration.nix symlink with this file should be enough.
-# But the dependency on hardware-configuration.nix unfortunately does not work without --impure
+# A copy of the ./configuration.nix file, with the hardware import moved to belong to the
+# flake.nix in the /nixos root
 {
   description = "A very basic flake";
 
@@ -23,10 +23,6 @@
         #     unstable = import unstableTarball { config = config.nixpkgs.config; };
         #   };
         # };
-
-        # imports = [
-        #   # Include the results of the hardware scan.
-        # ];
 
         # Bootloader
         boot = {
@@ -132,7 +128,7 @@
 
         # Configure console keymap
         console.keyMap = "dk-latin1";
-        fonts = { fonts = with pkgs; [ iosevka iosevka-bin ]; };
+        fonts = { packages = with pkgs; [ iosevka iosevka-bin ]; };
 
         # Define a user account. Don't forget to set a password with ‘passwd’.
         users.users.sst = {
