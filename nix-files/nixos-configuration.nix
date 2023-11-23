@@ -1,7 +1,8 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-
+{ packages, fontPackages, systemPackages, kernelPackages, luaPackages, shell
+, pulseAudio }:
 { config, pkgs, ... }:
 
 # # This, with the nixpkgs.config below, provies pkgs.unstable.<pkg-name>
@@ -26,7 +27,7 @@
     };
 
     # Enable sound?
-    kernelPackages = pkgs.linuxPackagesFor pkgs.linux_latest;
+    kernelPackages = kernelPackages pkgs;
   };
 
   networking = {
@@ -59,7 +60,7 @@
 
     pulseaudio = {
       enable = true;
-      package = pkgs.pulseaudioFull;
+      package = pulseAudio pkgs;
       # Automatically switch to bluetooth speaker on connect
       extraConfig = "load-module module-switch-on-connect";
     };
@@ -94,7 +95,7 @@
 
       windowManager.awesome = {
         enable = true;
-        luaModules = with pkgs.luaPackages; [ luarocks luadbi-mysql vicious ];
+        luaModules = luaPackages pkgs;
       };
     };
 
@@ -116,62 +117,20 @@
 
   # Configure console keymap
   console.keyMap = "dk-latin1";
-  fonts = { packages = with pkgs; [ iosevka iosevka-bin ]; };
+  fonts = { packages = fontPackages pkgs; };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.sst = {
     isNormalUser = true;
     description = "Sarah Ella Stoltze";
     extraGroups = [ "networkmanager" "wheel" "input" "audio" ];
-    shell = pkgs.fish;
-    packages = with pkgs; [
-      blueman
-      direnv
-      dropbox
-      emacs29-gtk3
-      evince
-      feh
-      firefox
-      htop
-      kitty
-      networkmanager
-      ripgrep
-      spotify
-      sqlite
-      # social
-      discord
-      slack
-      steam
-      zoom-us
-      skypeforlinux
-      # haskell
-      ghc
-      stack
-      # elixir
-      elixir
-      elixir-ls
-      # racket
-      racket
-      nixfmt
-      lsof
-    ];
+    shell = shell pkgs;
+    packages = packages pkgs;
   };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [
-    git
-    stow
-    coreutils-full
-    gnumake
-    # fprintd # Fingerprint reader
-    xorg.xmodmap
-    alsa-firmware
-    pulseaudioFull
-    zip
-    unzip
-    sof-firmware
-  ];
+  environment.systemPackages = systemPackages pkgs;
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
