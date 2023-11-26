@@ -1,17 +1,17 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{ packages, fontPackages, systemPackages, kernelPackages, luaPackages, shell
-, pulseAudio }:
+{ emacsConfigPackages }:
 { config, pkgs, ... }:
-
-# # This, with the nixpkgs.config below, provies pkgs.unstable.<pkg-name>
-# # for a single unstable package installation
-# let
-#   unstableTarball = fetchTarball
-#     "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
-# in
-{
+let
+  packages = emacsConfigPackages pkgs;
+  # # This, with the nixpkgs.config below, provies pkgs.unstable.<pkg-name>
+  # # for a single unstable package installation
+  # let
+  #   unstableTarball = fetchTarball
+  #     "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
+  # in
+in {
 
   # nixpkgs.config = {
   #   packageOverrides = pkgs: {
@@ -27,7 +27,7 @@
     };
 
     # Enable sound?
-    kernelPackages = kernelPackages pkgs;
+    kernelPackages = packages.kernelPackages;
   };
 
   networking = {
@@ -60,7 +60,7 @@
 
     pulseaudio = {
       enable = true;
-      package = pulseAudio pkgs;
+      package = packages.pulseaudioPackages;
       # Automatically switch to bluetooth speaker on connect
       extraConfig = "load-module module-switch-on-connect";
     };
@@ -95,7 +95,7 @@
 
       windowManager.awesome = {
         enable = true;
-        luaModules = luaPackages pkgs;
+        luaModules = packages.luaPackages;
       };
     };
 
@@ -117,20 +117,20 @@
 
   # Configure console keymap
   console.keyMap = "dk-latin1";
-  fonts = { packages = fontPackages pkgs; };
+  fonts = { packages = packages.fontPackages; };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.sst = {
     isNormalUser = true;
     description = "Sarah Ella Stoltze";
     extraGroups = [ "networkmanager" "wheel" "input" "audio" ];
-    shell = shell pkgs;
-    packages = packages pkgs;
+    shell = packages.shellPackages;
+    packages = packages.commonPackages ++ packages.nixosPackages;
   };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = systemPackages pkgs;
+  environment.systemPackages = packages.systemPackages;
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
