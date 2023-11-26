@@ -19,7 +19,7 @@ in {
 
     # The home.packages option allows you to install Nix packages into your
     # environment.
-    packages = packages.commonPackages ++ [packages.shellPackages]
+    packages = packages.commonPackages ++ [ packages.shellPackage ]
       ++ packages.fontPackages ++ packages.homeManagerPackages;
 
     # if you don't want to manage your shell through Home Manager.

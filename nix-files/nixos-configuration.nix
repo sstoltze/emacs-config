@@ -60,7 +60,7 @@ in {
 
     pulseaudio = {
       enable = true;
-      package = packages.pulseaudioPackages;
+      package = packages.pulseaudioPackage;
       # Automatically switch to bluetooth speaker on connect
       extraConfig = "load-module module-switch-on-connect";
     };
@@ -124,7 +124,7 @@ in {
     isNormalUser = true;
     description = "Sarah Ella Stoltze";
     extraGroups = [ "networkmanager" "wheel" "input" "audio" ];
-    shell = packages.shellPackages;
+    shell = packages.shellPackage;
     packages = packages.commonPackages ++ packages.nixosPackages;
   };
 
@@ -141,6 +141,7 @@ in {
   #   enableSSHSupport = true;
   # };
   programs = {
+    dconf = { enable = true; };
     fish = { enable = true; };
     steam = {
       enable = true;

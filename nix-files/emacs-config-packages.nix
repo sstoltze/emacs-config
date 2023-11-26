@@ -56,8 +56,8 @@
     unzip
     sof-firmware
   ];
-  pulseaudioPackages = pkgs.pulseaudioFull;
+  pulseaudioPackage = pkgs.pulseaudioFull;
   kernelPackages = pkgs.linuxPackagesFor pkgs.linux_latest;
   luaPackages = with pkgs.luaPackages; [ luarocks luadbi-mysql vicious ];
-  shellPackages = pkgs.fish;
+  shellPackage = pkgs.fish;
 }
