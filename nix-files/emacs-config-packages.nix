@@ -45,13 +45,13 @@
     lsof
   ];
   systemPackages = with pkgs; [
+    stow
     git
     coreutils-full
     gnumake
     # fprintd # Fingerprint reader
     xorg.xmodmap
     alsa-firmware
-    pulseaudioFull
     zip
     unzip
     sof-firmware

@@ -130,6 +130,7 @@ in {
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
+  # These packages are available to users system-wide
   environment.systemPackages = packages.systemPackages;
 
   # Some programs need SUID wrappers, can be configured further or are
