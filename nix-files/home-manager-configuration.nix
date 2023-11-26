@@ -32,7 +32,14 @@ in {
   fonts.fontconfig.enable = true;
 
   # Let Home Manager install and manage itself.
-  programs.home-manager.enable = true;
+  programs = {
+    home-manager.enable = true;
+    # Maybe?
+    # emacs = { enable = true; packages = pkgs.emacs29 }
+    # fish.enable = true;
+    # kitty.enable = true;
+    # ripgrep.enable = true;
+  };
 
   # Disable the "unread news" count when running home-manager switch
   news.display = "silent";
