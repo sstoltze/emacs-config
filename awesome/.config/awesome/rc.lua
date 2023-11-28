@@ -867,6 +867,7 @@ spawn_once_with_shell("spotify")
 spawn_once_with_shell("dropbox")
 spawn_once_with_shell("discord", "", "-i")
 spawn_once_with_shell("slack")
+spawn_once_with_shell("steam")
 
 -- Computer specific setup
 awful.spawn.easy_async_with_shell('echo -n "$USER"', function(user, stderr, reason, exit_code)
