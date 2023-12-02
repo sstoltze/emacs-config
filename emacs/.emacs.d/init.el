@@ -2098,6 +2098,12 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
   :custom
   (lsp-elixir-suggest-specs nil))
 
+(use-package inf-elixir
+  :ensure t
+  :after elixir-mode
+  :bind ((:map elixir-mode-map
+               ("C-c C-z" . #'inf-elixir-project))))
+
 ;;;; --- Clojure ---
 (use-package clojure-mode
   :ensure t
