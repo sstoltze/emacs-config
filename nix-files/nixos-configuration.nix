@@ -1,10 +1,9 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{ emacsConfigPackages }:
 { config, pkgs, ... }:
 let
-  packages = emacsConfigPackages pkgs;
+  packages = pkgs.callPackage ./emacs-config-packages.nix { };
   # # This, with the nixpkgs.config below, provies pkgs.unstable.<pkg-name>
   # # for a single unstable package installation
   # let
@@ -27,7 +26,7 @@ in {
     };
 
     # Enable sound?
-    kernelPackages = packages.kernelPackages;
+    kernelPackages = packages.nixosConfig.kernelPackages;
   };
 
   networking = {
@@ -60,7 +59,7 @@ in {
 
     pulseaudio = {
       enable = true;
-      package = packages.pulseaudioPackage;
+      package = packages.nixosConfig.pulseaudioPackage;
       # Automatically switch to bluetooth speaker on connect
       extraConfig = "load-module module-switch-on-connect";
     };
@@ -95,7 +94,7 @@ in {
 
       windowManager.awesome = {
         enable = true;
-        luaModules = packages.luaPackages;
+        luaModules = packages.nixosConfig.luaPackages;
       };
     };
 
@@ -134,14 +133,14 @@ in {
     isNormalUser = true;
     description = "Sarah Ella Stoltze";
     extraGroups = [ "networkmanager" "wheel" "input" "audio" ];
-    shell = packages.shellPackage;
+    shell = packages.nixosConfig.shellPackage;
     packages = packages.commonPackages ++ packages.nixosPackages;
   };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   # These packages are available to users system-wide
-  environment.systemPackages = packages.systemPackages;
+  environment.systemPackages = packages.nixosConfig.systemPackages;
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
