@@ -21,6 +21,8 @@
   ];
   homeManagerPackages = [ pkgs.emacs29 ];
   nixosPackages = with pkgs; [
+    gnome.gnome-keyring
+    redshift
     blueman
     dropbox
     emacs29-gtk3
