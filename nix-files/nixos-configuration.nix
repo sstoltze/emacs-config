@@ -97,9 +97,13 @@ in {
         enable = true;
         luaModules = packages.luaPackages;
       };
+
     };
 
     blueman.enable = true;
+
+    # Needed for skype, otherwise complains about missing secret
+    gnome.gnome-keyring = { enable = true; };
 
     # Fingerprint reader
     # fprintd = {
