@@ -97,7 +97,12 @@ in {
         enable = true;
         luaModules = packages.luaPackages;
       };
+    };
 
+    redshift.enable = true;
+    geoclue2 = {
+      enable = true;
+      appConfig.redshift.isAllowed = true;
     };
 
     blueman.enable = true;
@@ -118,6 +123,7 @@ in {
     # Enable the OpenSSH daemon.
     # openssh.enable = true;
   };
+  location.provider = "geoclue2";
 
   # Configure console keymap
   console.keyMap = "dk-latin1";

@@ -23,6 +23,7 @@
   nixosPackages = with pkgs; [
     gnome.gnome-keyring
     redshift
+    geoclue2
     blueman
     dropbox
     emacs29-gtk3
