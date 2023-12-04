@@ -90,6 +90,12 @@ in {
       displayManager = {
         lightdm.enable = true;
         defaultSession = "none+awesome";
+        sessionCommands = ''
+          ${pkgs.xorg.xrdb}/bin/xrdb -merge <<EOF
+            Xcursor.theme: Adwaita
+            Xcursor.size: 32
+          EOF
+        '';
       };
 
       windowManager.awesome = {
