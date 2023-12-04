@@ -98,11 +98,23 @@ in {
       };
     };
 
-    redshift.enable = true;
-    geoclue2 = {
+    redshift = {
       enable = true;
-      appConfig.redshift.isAllowed = true;
+      # A basic copy of @related [redshift.conf](redshift/.config/redshift/redshift.conf)
+      brightness = {
+        day = "0.9";
+        night = "0.9";
+      };
+      temperature = {
+        day = 5000;
+        night = 4200;
+      };
+
+      extraOptions = [
+        "-r" # No fading
+      ];
     };
+    geoclue2 = { enable = true; };
 
     blueman.enable = true;
 
