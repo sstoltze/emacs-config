@@ -108,12 +108,12 @@ in {
       enable = true;
       # A basic copy of @related [redshift.conf](redshift/.config/redshift/redshift.conf)
       brightness = {
-        day = "0.9";
-        night = "0.9";
+        day = "0.8";
+        night = "0.8";
       };
       temperature = {
-        day = 5000;
-        night = 4200;
+        day = 4200;
+        night = 3800;
       };
 
       extraOptions = [
