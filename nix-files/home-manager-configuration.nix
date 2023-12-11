@@ -1,5 +1,5 @@
 { pkgs, ... }:
-let packages = pkgs.callPacakage ./emacs-config-packages.nix { };
+let packages = pkgs.callPackage ./emacs-config-packages.nix { };
 in {
   home = {
     # Home Manager needs a bit of information about you and the paths it should
