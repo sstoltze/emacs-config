@@ -1,6 +1,10 @@
 {
   inputs = {
-    emacsConfig = { url = "git+https://github.com/sstoltze/emacs-config"; };
+    # nixpkgs = { url = "github:NixOS/nixpkgs"; };
+    emacsConfig = {
+      url = "/home/sst/git/emacs-config";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, nixpkgs, emacsConfig }: {
