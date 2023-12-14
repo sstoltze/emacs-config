@@ -8,10 +8,13 @@
 
     # Basic setup for an elixir flake
     elixirSetup = flake-utils.lib.eachDefaultSystem (system:
-      let pkgs = import nixpkgs { inherit system; };
+      let
+        pkgs = import nixpkgs { inherit system; };
+        systemPackages =
+          if system == "aarch64-darwin" then [ ] else [ pkgs.inotify-tools ];
       in {
         devShell = pkgs.mkShell {
-          packages = with pkgs; [ elixir elixir_ls sqlite inotify-tools ];
+          packages = with pkgs; [ elixir elixir_ls sqlite ] ++ systemPackages;
         };
       });
   };
