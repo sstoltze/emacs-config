@@ -152,6 +152,13 @@ set __fish_git_prompt_char_stashstate      '↩'
 switch $system
     case CYGWIN_NT-10.0
         set -x PATH /usr/bin/ $PATH
+    case Darwin
+        # M-b
+        bind \u222B backward-bigword
+        # M-f
+        bind \u0192 forward-bigword
+        # M-d
+        bind \u2202 kill-bigword
 end
 
 # Start X at login
