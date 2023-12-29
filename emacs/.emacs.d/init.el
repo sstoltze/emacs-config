@@ -1168,8 +1168,6 @@ Stolen from racket-mode because I miss it."
   (or (getenv env-key)
       "lisp"))
 
-(add-to-list 'exec-path "~/.nix-profile/bin")
-
 (use-package nix-mode
   :ensure t
   :defer t
@@ -2109,13 +2107,14 @@ the file name."
                                       (list "--dot-formatter"
                                             (concat (locate-dominating-file buffer-file-name ".formatter.exs") ".formatter.exs")))
                               (setq elixir-format-arguments nil)))))
-
   :init
-  ;; at-work-p?
-  (if (file-exists-p "~/elixir-ls-release")
-      (setq lsp-elixir-local-server-command "~/elixir-ls-release/language_server.sh"))
+  (setq lsp-elixir-server-command '("elixir-ls"))
   :custom
-  (lsp-elixir-suggest-specs nil))
+  (lsp-elixir-suggest-specs nil)
+  (lsp-credo-version "0.1.3"))
+
+;; (lsp-install-server), and possibly chmod +x it afterwards for some reason
+(add-to-list 'exec-path "~/.emacs.d/.cache/lsp/credo-language-server")
 
 (use-package inf-elixir
   :ensure t
