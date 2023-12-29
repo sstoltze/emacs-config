@@ -1704,7 +1704,7 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
   :after semantic)
 
 ;;;; --- Projectile ---
-(defun counsel-projectile-rg-no-ignore (rg-options)
+(defun sstoltze/counsel-projectile-rg-no-ignore (rg-options)
   "Run rg with --no-ignore, or --no-ignore --hidden if RG-OPTIONS is set."
   (interactive
    (list (if (consp current-prefix-arg)
@@ -1712,12 +1712,24 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
            "-u")))
   (counsel-projectile-rg rg-options))
 
+(defun sstoltze/projectile-file-relative-name (line-number)
+  "Return the current buffer file name, relative to the project root.
+If prefix argument LINE-NUMBER is given, append the line at point to
+the file name."
+  (interactive (list (if (consp current-prefix-arg)
+                         (format ":%d" (line-number-at-pos nil t))
+                       "")))
+  (kill-new (format "%s%s"
+                    (file-relative-name (buffer-file-name) (projectile-project-root))
+                    line-number)))
+
 (use-package projectile
   :ensure t
   :defer t
   :bind-keymap (("C-c p" . projectile-command-map))
   :bind ((:map projectile-command-map
-               ("s i" . counsel-projectile-rg-no-ignore)))
+               ("s i" . sstoltze/counsel-projectile-rg-no-ignore)
+               ("y"   . sstoltze/projectile-file-relative-name)))
   :custom
   (projectile-completion-system 'ivy)
   (projectile-use-git-grep      t)
@@ -2090,7 +2102,14 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
   :ensure t
   :defer t
   :hook ((elixir-mode . (lambda ()
-                          (add-hook 'before-save-hook 'elixir-format 0 t))))
+                          (add-hook 'before-save-hook 'elixir-format 0 t)))
+         (elixir-format . (lambda ()
+                            (if (projectile-project-p)
+                                (setq elixir-format-arguments
+                                      (list "--dot-formatter"
+                                            (concat (locate-dominating-file buffer-file-name ".formatter.exs") ".formatter.exs")))
+                              (setq elixir-format-arguments nil)))))
+
   :init
   ;; at-work-p?
   (if (file-exists-p "~/elixir-ls-release")
