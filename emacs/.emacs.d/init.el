@@ -1171,7 +1171,10 @@ Stolen from racket-mode because I miss it."
 (use-package nix-mode
   :ensure t
   :defer t
-  :hook ((before-save . nix-format-before-save)))
+  :hook ((before-save . nix-format-before-save))
+  :custom
+  (nix-nixfmt-bin "nixpkgs-fmt"))
+
 
 ;;;; --- Flycheck ---
 ;; Next-error and prev-error are bound to M-g n and M-g p

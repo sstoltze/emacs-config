@@ -12,7 +12,8 @@
         pkgs = import nixpkgs { inherit system; };
         credoLanguageServer =
           pkgs.callPackage ./nix-files/credo-language-server.nix { };
-      in {
+      in
+      {
         inherit credoLanguageServer;
         devShell = pkgs.mkShell {
           packages = with pkgs;

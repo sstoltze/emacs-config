@@ -17,7 +17,8 @@
   #     unstable = import unstableTarball { config = config.nixpkgs.config; };
   #   };
   # };
-  imports = [ # Include the results of the hardware scan.
+  imports = [
+    # Include the results of the hardware scan.
     /etc/nixos/hardware-configuration.nix
   ];
 
