@@ -1190,6 +1190,7 @@ Stolen from racket-mode because I miss it."
   (flycheck-check-syntax-automatically '(save idle-change mode-enable idle-buffer-switch))
   (flycheck-idle-change-delay          2)
   (flycheck-idle-buffer-switch-delay   2)
+  (flycheck-elixir-credo-strict        t)
   :init
   ;; Disable flycheck for some modes on remote hosts, due to slowdowns when checking files
   (defun sstoltze/flycheck-if-not-remote ()
