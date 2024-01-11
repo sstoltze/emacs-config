@@ -10,11 +10,20 @@
     elixirSetup = flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs { inherit system; };
+        beamPackages = with pkgs.beam_minimal; packagesWith interpreters.erlangR26;
         credoLanguageServer =
           pkgs.callPackage ./nix-files/credo-language-server.nix { };
+        elixir = beamPackages.elixir_1_16;
       in
       {
         inherit credoLanguageServer;
+        beamPackages = beamPackages // {
+          buildMix = beamPackages.buildMix.override {
+            inherit elixir;
+            erlang = beamPackages.erlang;
+            hex = beamPackages.hex.override { inherit elixir; };
+          };
+        };
         devShell = pkgs.mkShell {
           packages = with pkgs;
             [ elixir elixir_ls sqlite credoLanguageServer ]
@@ -22,6 +31,31 @@
             ++ pkgs.lib.optional stdenv.isDarwin terminal-notifier;
         };
       });
+    racketSetup = flake-utils.lib.eachDefaultSystem (system:
+      let
+        pkgs = import nixpkgs {
+          inherit system;
+        };
+      in
+      {
+        devShell = pkgs.mkShell
+          {
+            packages = [ pkgs.racket ];
+          };
+      }
+    );
+    haskellSetup = flake-utils.lib.eachDefaultSystem (system:
+      let
+        pkgs = import nixpkgs {
+          inherit system;
+        };
+      in
+      {
+        devShell = pkgs.mkShell
+          {
+            packages = [ pkgs.stack pkgs.ghc ];
+          };
+      }
+    );
   };
-
 }

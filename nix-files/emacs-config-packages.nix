@@ -1,6 +1,4 @@
 { alsa-firmware
-, beamPackages
-, beam_minimal
 , blueman
 , callPackage
 , coreutils-full
@@ -8,7 +6,6 @@
 , direnv
 , discord
 , dropbox
-, elixir-ls
 , emacs29
 , emacs29-gtk3
 , evince
@@ -16,7 +13,6 @@
 , firefox
 , fish
 , geoclue2
-, ghc
 , git
 , gnome
 , gnumake
@@ -36,7 +32,6 @@
 , nix-tree
 , nixpkgs-fmt
 , pulseaudioFull
-, racket
 , redshift
 , ripgrep
 , skypeforlinux
@@ -44,7 +39,6 @@
 , sof-firmware
 , spotify
 , sqlite
-, stack
 , steam
 , stow
 , unzip
@@ -56,10 +50,6 @@
   fontPackages = [ iosevka iosevka-bin ];
   # Used by both nixos and home-manager
   commonPackages =
-    let
-      beamPackages = with beam_minimal; packagesWith interpreters.erlangR26;
-      credoLanguageServer = callPackage ./credo-language-server.nix { };
-    in
     [
       stow
       jq
@@ -71,9 +61,6 @@
       nixpkgs-fmt
       kubie
       kubelogin
-      beamPackages.elixir
-      (elixir-ls.override { elixir = beamPackages.elixir; })
-      credoLanguageServer
       graphviz
       fish
       nix-tree
@@ -101,9 +88,6 @@
     steam
     zoom-us
     skypeforlinux
-    ghc
-    stack
-    racket
     lsof
   ];
 
