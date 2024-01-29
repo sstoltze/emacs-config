@@ -2448,5 +2448,9 @@ the file name."
 (use-package related-files
   :bind (("C-c r" . related-files-find-related-file)))
 
+(use-package terraform-mode
+  :ensure t
+  :hook ((before-save . terraform-format-buffer)))
+
 (provide 'init)
 ;;; init.el ends here
