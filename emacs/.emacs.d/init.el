@@ -1716,22 +1716,38 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
 
 (defun sstoltze/projectile-file-relative-name (line-number)
   "Return the current buffer file name, relative to the project root.
+If LINE-NUMBER is given, append the line at point to the file name."
+  (format "%s%s"
+          (file-relative-name (buffer-file-name) (projectile-project-root))
+          line-number))
+
+(defun sstoltze/projectile-yank-relative-name (line-number)
+  "Yank the current buffer file name, relative to the project root.
 If prefix argument LINE-NUMBER is given, append the line at point to
 the file name."
   (interactive (list (if (consp current-prefix-arg)
                          (format ":%d" (line-number-at-pos nil t))
                        "")))
-  (kill-new (format "%s%s"
-                    (file-relative-name (buffer-file-name) (projectile-project-root))
-                    line-number)))
+  (kill-new (sstoltze/projectile-file-relative-name line-number)))
+
+(defun sstoltze/projectile-run-mix-test (test)
+  "Run mix test in the project.
+
+Prefix argument TEST specifies which test to run."
+  (interactive (list (cond ((and (consp current-prefix-arg) (>= (car current-prefix-arg) 16))
+                            (sstoltze/projectile-file-relative-name (format ":%d" (line-number-at-pos nil t))))
+                           ((consp current-prefix-arg) (sstoltze/projectile-file-relative-name ""))
+                           (t ""))))
+  (let ((test-command (format "mix test --no-color %s" test)))
+    (projectile-run-async-shell-command-in-root test-command "*Mix test*")))
 
 (use-package projectile
   :ensure t
   :defer t
   :bind-keymap (("C-c p" . projectile-command-map))
   :bind ((:map projectile-command-map
-               ("s i" . sstoltze/counsel-projectile-rg-no-ignore)
-               ("y"   . sstoltze/projectile-file-relative-name)))
+               ("s i" . #'sstoltze/counsel-projectile-rg-no-ignore)
+               ("y"   . #'sstoltze/projectile-yank-relative-name)))
   :custom
   (projectile-completion-system 'ivy)
   (projectile-use-git-grep      t)
@@ -2111,6 +2127,7 @@ the file name."
                                       (list "--dot-formatter"
                                             (concat (locate-dominating-file buffer-file-name ".formatter.exs") ".formatter.exs")))
                               (setq elixir-format-arguments nil)))))
+  :bind ((:map elixir-mode-map ("C-c t" . #'sstoltze/projectile-run-mix-test)))
   :init
   (setq lsp-elixir-server-command '("elixir-ls"))
   :custom
