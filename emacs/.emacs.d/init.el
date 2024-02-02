@@ -2443,14 +2443,17 @@ the file name."
 (use-package dockerfile-mode
   :ensure t)
 
+(use-package terraform-mode
+  :ensure t
+  :hook ((before-save . terraform-format-buffer)))
+
 ;; Run M-x package-vc-install-from-checkout and provide the correct
 ;; path to the project directory.
 (use-package related-files
   :bind (("C-c r" . related-files-find-related-file)))
 
-(use-package terraform-mode
-  :ensure t
-  :hook ((before-save . terraform-format-buffer)))
+(use-package document-sections
+  :bind (("C-c d" . document-sections-find-section)))
 
 (provide 'init)
 ;;; init.el ends here
