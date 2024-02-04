@@ -85,8 +85,10 @@ in
       enable = true;
 
       # Configure keymap in X11
-      layout = "dk";
-      xkbVariant = "nodeadkeys";
+      xkb = {
+        variant = "nodeadkeys";
+        layout = "dk";
+      };
 
       displayManager = {
         lightdm.enable = true;
