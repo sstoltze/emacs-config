@@ -1171,7 +1171,8 @@ Stolen from racket-mode because I miss it."
 (use-package nix-mode
   :ensure t
   :defer t
-  :hook ((before-save . nix-format-before-save))
+  :hook ((nix-mode . (lambda ()
+                       (add-hook 'before-save-hook 'nix-format-before-save 0 t))))
   :custom
   (nix-nixfmt-bin "nixpkgs-fmt"))
 
@@ -2465,7 +2466,8 @@ Prefix argument TEST specifies which test to run."
 
 (use-package terraform-mode
   :ensure t
-  :hook ((before-save . terraform-format-buffer)))
+  :defer t
+  :hook ((terraform-mode . terraform-format-on-save)))
 
 ;; Run M-x package-vc-install-from-checkout and provide the correct
 ;; path to the project directory.
