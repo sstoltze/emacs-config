@@ -1603,6 +1603,9 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
   (lsp-keymap-prefix "C-c l")
   ;; (lsp-eldoc-render-all t)
   (lsp-idle-delay 0.6)
+  ;; Show error diagnostics in the modeline
+  (lsp-modeline-diagnostics-enable t)
+  (lsp-log-max 10000)
   ;; Recommended for lsp as the replies can get rather large and slow things down - 1 mb
   (read-process-output-max (* 1024 1024)))
 
