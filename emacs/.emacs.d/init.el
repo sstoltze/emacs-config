@@ -1737,11 +1737,12 @@ the file name."
 (defun sstoltze/projectile-run-mix-test (test)
   "Run mix test in the project.
 
-Prefix argument TEST specifies which test to run."
+Prefix argument TEST specifies which test to run.
+No prefix to run test at point, C-u to run file, C-u C-u to run all tests."
   (interactive (list (cond ((and (consp current-prefix-arg) (>= (car current-prefix-arg) 16))
-                            (sstoltze/projectile-file-relative-name (format ":%d" (line-number-at-pos nil t))))
+                            "")
                            ((consp current-prefix-arg) (sstoltze/projectile-file-relative-name ""))
-                           (t ""))))
+                           (t (sstoltze/projectile-file-relative-name (format ":%d" (line-number-at-pos nil t)))))))
   (let ((test-command (format "mix test --no-color %s" test)))
     (projectile-run-async-shell-command-in-root test-command "*Mix test*")))
 
