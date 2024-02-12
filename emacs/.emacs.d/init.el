@@ -1594,7 +1594,7 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
          (typescript-mode . lsp-deferred)
          ;; Make sure elixir-ls version (of elixir) matches installed/running elixir version
          (elixir-mode     . lsp-deferred)
-         ;; (lsp-mode        . yas-minor-mode)
+         (lsp-mode        . yas-minor-mode)
          (lsp-mode        . projectile-mode))
   :bind ((:map lsp-mode-map
                ("M-+"     . lsp-find-references)
