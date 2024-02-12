@@ -25,10 +25,12 @@
           };
         };
         devShell = pkgs.mkShell {
+          buildInputs = with pkgs; lib.optional stdenv.isDarwin darwin.apple_sdk.frameworks.CoreServices;
           packages = with pkgs;
             [ elixir elixir_ls sqlite credoLanguageServer ]
-            ++ pkgs.lib.optional stdenv.isLinux inotify-tools
-            ++ pkgs.lib.optional stdenv.isDarwin terminal-notifier;
+            ++ lib.optional stdenv.isLinux inotify-tools
+            ++ lib.optional stdenv.isDarwin terminal-notifier
+            ++ lib.optional stdenv.isDarwin fswatch;
         };
       });
     racketSetup = flake-utils.lib.eachDefaultSystem (system:
