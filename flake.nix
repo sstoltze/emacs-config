@@ -10,20 +10,11 @@
     elixirSetup = flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs { inherit system; };
-        beamPackages = with pkgs.beam_minimal; packagesWith interpreters.erlangR26;
         credoLanguageServer =
           pkgs.callPackage ./nix-files/credo-language-server.nix { };
-        elixir = beamPackages.elixir_1_16;
       in
       {
         inherit credoLanguageServer;
-        beamPackages = beamPackages // {
-          buildMix = beamPackages.buildMix.override {
-            inherit elixir;
-            erlang = beamPackages.erlang;
-            hex = beamPackages.hex.override { inherit elixir; };
-          };
-        };
         devShell = pkgs.mkShell {
           buildInputs = with pkgs; lib.optional stdenv.isDarwin darwin.apple_sdk.frameworks.CoreServices;
           packages = with pkgs;
