@@ -24,6 +24,7 @@
 , kitty
 , kubelogin
 , kubie
+, lib
 , linuxPackagesFor
 , linux_latest
 , lsof
@@ -41,11 +42,13 @@
 , sqlite
 , steam
 , stow
+, tree-sitter
 , unzip
 , xorg
 , zip
 , zoom-us
-}: {
+}:
+{
   # Fonts
   fontPackages = [ iosevka iosevka-bin ];
   # Used by both nixos and home-manager
@@ -64,6 +67,8 @@
       graphviz
       fish
       nix-tree
+      tree-sitter
+      (tree-sitter.withPlugins (p: builtins.attrNames p))
     ];
 
   # Unique to home-manager
