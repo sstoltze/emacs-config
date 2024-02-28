@@ -2124,8 +2124,11 @@ No prefix to run test at point, C-u to run file, C-u C-u to run all tests."
 (use-package elixir-mode
   :ensure t
   :defer t
-  :hook ((elixir-mode . (lambda ()
-                          (add-hook 'before-save-hook 'elixir-format 0 t)))
+  :hook (
+         ;; (elixir-mode . (lambda ()
+         ;;                  (add-hook 'before-save-hook 'elixir-format 0 t)))
+         (elixir-mode . (lambda ()
+                          (add-hook 'before-save-hook 'lsp-format-buffer 0 t)))
          (elixir-format . (lambda ()
                             (if (projectile-project-p)
                                 (setq elixir-format-arguments
