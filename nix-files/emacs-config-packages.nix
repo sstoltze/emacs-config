@@ -1,4 +1,5 @@
 { alsa-firmware
+, awesome
 , blueman
 , callPackage
 , coreutils-full
@@ -113,7 +114,7 @@
     ];
     pulseaudioPackage = pulseaudioFull;
     kernelPackages = linuxPackagesFor linux_latest;
-    luaPackages = with luaPackages; [ luarocks luadbi-mysql vicious ];
+    luaPackages = with luaPackages; [ vicious ];
     shellPackage = fish;
   };
 
