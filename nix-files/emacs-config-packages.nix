@@ -99,6 +99,7 @@
   # Various nixos required setup
   nixosConfig = {
     systemPackages = [
+      awesome
       stow
       git
       coreutils-full
