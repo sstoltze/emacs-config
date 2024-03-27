@@ -1608,7 +1608,8 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
   (lsp-modeline-diagnostics-enable t)
   (lsp-log-max 10000)
   ;; Recommended for lsp as the replies can get rather large and slow things down - 1 mb
-  (read-process-output-max (* 1024 1024)))
+  (read-process-output-max (* 1024 1024))
+  (lsp-file-watch-threshold 2000))
 
 ;; Trying some things out to speed up LSP/emacs
 (with-eval-after-load 'lsp-mode
@@ -2471,7 +2472,7 @@ No prefix to run test at point, C-u to run file, C-u C-u to run all tests."
 (use-package terraform-mode
   :ensure t
   :defer t
-  :hook ((terraform-mode . terraform-format-on-save)))
+  :hook ((terraform-mode . terraform-format-on-save-mode)))
 
 ;; (use-package tree-sitter
 ;;   :ensure t
