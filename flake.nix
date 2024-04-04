@@ -1,6 +1,9 @@
 {
   description = "Gathering various flakes and nix/nixos configs";
-  inputs = { flake-utils = { url = "github:numtide/flake-utils"; }; };
+  inputs = {
+    flake-utils = { url = "github:numtide/flake-utils"; };
+    nixpkgs = { url = "github:nixos/nixpkgs/nixpkgs-unstable"; };
+  };
   outputs = { self, flake-utils, nixpkgs, ... }: {
     nixosConfig = import ./nix-files/nixos-configuration.nix;
 
