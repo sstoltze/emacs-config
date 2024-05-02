@@ -1083,12 +1083,12 @@ length of PATH (sans directory slashes) down to MAX-LEN."
   (sp-backward-sexp 1)
   (sp-up-sexp -1)
   (sp-mark-sexp))
+
 (defconst sstoltze/racket--paren-shapes
   '( (?\( ?\[ ?\] )
      (?\[ ?\{ ?\} )
      (?\{ ?\( ?\) ))
-  "This is not user-configurable because we expect them have to
-  have actual ?\( and ?\) char syntax.")
+  "This is not user-configurable because we expect them have to have actual ?\( and ?\) char syntax.")
 
 (defun sstoltze/racket-cycle-paren-shapes ()
   "In an s-expression, move to the opening, and cycle the shape among () [] {}.
