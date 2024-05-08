@@ -81,6 +81,9 @@ in
 
   services = {
 
+    displayManager = {
+      defaultSession = "none+awesome";
+    };
     xserver = {
       enable = true;
 
@@ -92,7 +95,7 @@ in
 
       displayManager = {
         lightdm.enable = true;
-        defaultSession = "none+awesome";
+
         sessionCommands = ''
           ${pkgs.xorg.xrdb}/bin/xrdb -merge <<EOF
             Xcursor.theme: Adwaita
