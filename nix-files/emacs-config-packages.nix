@@ -3,7 +3,7 @@
 , blueman
 , callPackage
 , coreutils-full
-, dbeaver
+, dbeaver-bin
 , direnv
 , discord
 , dropbox
@@ -60,7 +60,7 @@
       git
       direnv
       kitty
-      dbeaver
+      dbeaver-bin
       ripgrep
       nixpkgs-fmt
       kubie
