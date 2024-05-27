@@ -30,3 +30,7 @@
 #   insteadOf = ssh://git@github.com/
 [merge]
     conflictStyle = zdiff3
+[push]
+    autoSetupRemote = true
+[diff]
+    algorithm = histogram
