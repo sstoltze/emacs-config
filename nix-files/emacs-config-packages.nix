@@ -1,105 +1,55 @@
-{ alsa-firmware
-, awesome
-, blueman
-, callPackage
-, coreutils-full
-, dbeaver-bin
-, direnv
-, discord
-, dropbox
-, emacs29
-, emacs29-gtk3
-, evince
-, feh
-, firefox
-, fish
-, geoclue2
-, git
-, gnome
-, gnumake
-, graphviz
-, htop
-, iosevka
-, iosevka-bin
-, jq
-, kitty
-, kubelogin
-, kubie
-, lib
-, linuxPackagesFor
-, linux_latest
-, lsof
-, luaPackages
-, networkmanager
-, nix-tree
-, nixpkgs-fmt
-, pulseaudioFull
-, redshift
-, ripgrep
-, skypeforlinux
-, slack
-, sof-firmware
-, spotify
-, sqlite
-, steam
-, stow
-, tree-sitter
-, unzip
-, xorg
-, zip
-, zoom-us
-}:
+{ pkgs }:
 {
   # Fonts
-  fontPackages = [ iosevka iosevka-bin ];
+  fontPackages = with pkgs; [ iosevka iosevka-bin ];
   # Used by both nixos and home-manager
   commonPackages =
-    [
-      stow
-      jq
-      git
+    with pkgs; [
       direnv
-      kitty
-      dbeaver-bin
-      ripgrep
-      nixpkgs-fmt
-      kubie
-      kubelogin
-      graphviz
       fish
+      git
+      graphviz
+      jq
+      kitty
+      kubelogin
+      kubie
       nix-tree
+      nixpkgs-fmt
+      ripgrep
+      stow
       tree-sitter
       (tree-sitter.withPlugins (p: builtins.attrNames p))
     ];
 
   # Unique to home-manager
-  homeManagerPackages = [ emacs29 ];
+  homeManagerPackages = with pkgs; [ dbeaver emacs29 ];
   # Unique to nixos
-  nixosPackages = [
-    gnome.gnome-keyring
-    redshift
-    geoclue2
+  nixosPackages = with pkgs; [
     blueman
+    dbeaver-bin
+    discord
     dropbox
     emacs29-gtk3
     evince
     feh
     firefox
+    geoclue2
+    gnome.gnome-keyring
     htop
+    lsof
     networkmanager
+    redshift
+    skypeforlinux
+    slack
     spotify
     sqlite
-    discord
-    slack
     steam
     zoom-us
-    skypeforlinux
-    lsof
   ];
 
   # Various nixos required setup
   nixosConfig = {
-    systemPackages = [
+    systemPackages = with pkgs; [
       awesome
       stow
       git
@@ -112,10 +62,10 @@
       unzip
       sof-firmware
     ];
-    pulseaudioPackage = pulseaudioFull;
-    kernelPackages = linuxPackagesFor linux_latest;
-    luaPackages = with luaPackages; [ vicious ];
-    shellPackage = fish;
+    pulseaudioPackage = pkgs.pulseaudioFull;
+    kernelPackages = pkgs.linuxPackagesFor pkgs.linux_latest;
+    luaPackages = with pkgs.luaPackages; [ vicious ];
+    shellPackage = pkgs.fish;
   };
 
 }
