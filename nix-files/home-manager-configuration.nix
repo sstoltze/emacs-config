@@ -38,6 +38,18 @@ in {
     # fish.enable = true;
     # kitty.enable = true;
     # ripgrep.enable = true;
+    git.extraConfig = {
+      core.pager = "${pkgs.delta}/bin/delta";
+      diff.colorMoved = "default";
+      interactive.diffFilter = "${pkgs.delta}/bin/delta --color-only";
+
+      delta = {
+        hyperlinks = true;
+        navigate = true;
+        side-by-side = true;
+        syntax-theme = "zenburn";
+      };
+    };
   };
 
   # Disable the "unread news" count when running home-manager switch
