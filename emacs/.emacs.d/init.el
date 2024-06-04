@@ -2477,27 +2477,34 @@ No prefix to run test at point, C-u to run file, C-u C-u to run all tests."
 (use-package jq-mode
   :ensure t)
 
-;; (use-package tree-sitter
-;;   :ensure t
-;;   :defer t
-;;   :custom
-;;   (treesit-language-source-alist
-;;    '((bash "https://github.com/tree-sitter/tree-sitter-bash")
-;;      (cmake "https://github.com/uyha/tree-sitter-cmake")
-;;      (css "https://github.com/tree-sitter/tree-sitter-css")
-;;      (elisp "https://github.com/Wilfred/tree-sitter-elisp")
-;;      (elixir "https://github.com/elixir-lang/tree-sitter-elixir")
-;;      (go "https://github.com/tree-sitter/tree-sitter-go")
-;;      (html "https://github.com/tree-sitter/tree-sitter-html")
-;;      (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
-;;      (json "https://github.com/tree-sitter/tree-sitter-json")
-;;      (make "https://github.com/alemuller/tree-sitter-make")
-;;      (markdown "https://github.com/ikatyang/tree-sitter-markdown")
-;;      (python "https://github.com/tree-sitter/tree-sitter-python")
-;;      (toml "https://github.com/tree-sitter/tree-sitter-toml")
-;;      (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
-;;      (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
-;;      (yaml "https://github.com/ikatyang/tree-sitter-yaml"))))
+(use-package tree-sitter
+  :ensure t
+  :defer t
+  :custom
+  (treesit-language-source-alist
+   '((elixir "https://github.com/elixir-lang/tree-sitter-elixir")
+     (heex "https://github.com/phoenixframework/tree-sitter-heex")
+     ;; (bash "https://github.com/tree-sitter/tree-sitter-bash")
+     ;; (cmake "https://github.com/uyha/tree-sitter-cmake")
+     ;; (css "https://github.com/tree-sitter/tree-sitter-css")
+     ;; (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+     ;; (go "https://github.com/tree-sitter/tree-sitter-go")
+     ;; (html "https://github.com/tree-sitter/tree-sitter-html")
+     ;; (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+     ;; (json "https://github.com/tree-sitter/tree-sitter-json")
+     ;; (make "https://github.com/alemuller/tree-sitter-make")
+     ;; (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+     ;; (python "https://github.com/tree-sitter/tree-sitter-python")
+     ;; (toml "https://github.com/tree-sitter/tree-sitter-toml")
+     ;; (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
+     ;; (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
+     ;; (yaml "https://github.com/ikatyang/tree-sitter-yaml")
+     )))
+
+(use-package elixir-ts-mode
+  :ensure t)
+(use-package heex-ts-mode
+  :ensure t)
 
 ;; Run M-x package-vc-install-from-checkout and provide the correct
 ;; path to the project directory.
