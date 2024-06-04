@@ -22,7 +22,7 @@
     ];
 
   # Unique to home-manager
-  homeManagerPackages = with pkgs; [ dbeaver delta emacs29 ];
+  homeManagerPackages = with pkgs; [ delta emacs29 ];
   # Unique to nixos
   nixosPackages = with pkgs; [
     blueman
