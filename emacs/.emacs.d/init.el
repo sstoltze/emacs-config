@@ -2474,6 +2474,9 @@ No prefix to run test at point, C-u to run file, C-u C-u to run all tests."
   :defer t
   :hook ((terraform-mode . terraform-format-on-save-mode)))
 
+(use-package jq-mode
+  :ensure t)
+
 ;; (use-package tree-sitter
 ;;   :ensure t
 ;;   :defer t
