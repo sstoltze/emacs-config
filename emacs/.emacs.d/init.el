@@ -167,7 +167,7 @@
 ;; Do not use tabs
 (setq-default indent-tabs-mode              nil
               show-trailing-whitespace      t
-              tab-width                     2
+              tab-width                     4
               tab-always-indent             'complete)
 
 (set-face-background 'trailing-whitespace "IndianRed4")
