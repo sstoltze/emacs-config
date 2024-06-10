@@ -66,49 +66,6 @@ if command -v aws_completer >/dev/null
     complete --command aws --no-files --arguments '(begin; set --local --export COMP_SHELL fish; set --local --export COMP_LINE (commandline); aws_completer | sed \'s/ $//\'; end)'
 end
 
-# At work?
-if test "$USER" = "sst"
-    # pyenv setup
-    if test -d ~/.pyenv
-        set -x PATH /home/sst/.pyenv/bin $PATH
-        set -gx PATH '/home/sst/.pyenv/shims' $PATH
-        set -gx PYENV_SHELL fish
-        source '/home/sst/.pyenv/libexec/../completions/pyenv.fish'
-        command pyenv rehash 2>/dev/null
-        function pyenv
-            set command $argv[1]
-            set -e argv[1]
-            switch "$command"
-                case activate deactivate rehash shell
-                    source (pyenv "sh-$command" $argv|psub)
-                case '*'
-                    command pyenv "$command" $argv
-            end
-        end
-        set -gx PATH '/home/sst/.pyenv/plugins/pyenv-virtualenv/shims' $PATH;
-        set -gx PYENV_VIRTUALENV_INIT 1;
-        function _pyenv_virtualenv_hook --on-event fish_prompt;
-            set -l ret $status
-            if [ -n "$VIRTUAL_ENV" ]
-                pyenv activate --quiet; or pyenv deactivate --quiet; or true
-            else
-                pyenv activate --quiet; or true
-            end
-            return $ret
-        end
-    end
-
-    # opam configuration
-    if test -f /home/sst/.config/opam/opam-init/init.fish
-        source /home/sst/.config/opam/opam-init/init.fish > /dev/null 2> /dev/null
-    end
-
-    # The next line updates PATH for the Google Cloud SDK.
-    if test -f '/home/sst/Documents/google-cloud-sdk/path.fish.inc'
-        . '/home/sst/Documents/google-cloud-sdk/path.fish.inc'
-    end
-end
-
 if command -v direnv >/dev/null
     direnv hook fish | source
 end
@@ -179,4 +136,9 @@ if command -v brew >/dev/null
     set -q PATH; or set PATH ''; set -gx PATH "/opt/homebrew/bin" "/opt/homebrew/sbin" $PATH;
     set -q MANPATH; or set MANPATH ''; set -gx MANPATH "/opt/homebrew/share/man" $MANPATH;
     set -q INFOPATH; or set INFOPATH ''; set -gx INFOPATH "/opt/homebrew/share/info" $INFOPATH;
+end
+
+# At work?
+if test "$USER" = "sarah.stoltze"
+    set -gx fish_complete_path ~/workspace/nrg/nrg-commands/completions $fish_complete_path
 end
