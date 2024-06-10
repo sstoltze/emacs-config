@@ -268,6 +268,12 @@
 (set-register ?g '(file . "~/git"))
 (set-register ?w '(file . "~/work"))
 
+(add-hook 'after-init-hook #'(lambda ()
+                               (cond (at-work-p
+                                      (magit-status "~/work/nrg"))
+                                     ((not (eq system-type 'windows-nt))
+                                      (org-agenda nil "a")))))
+
 ;;;; --- Modeline ---
 
 ;; Time in modeline
@@ -1243,10 +1249,7 @@ Stolen from racket-mode because I miss it."
          (org-babel-after-execute . org-display-inline-images)
          (org-clock-in . (lambda ()
                            ;; Start timer, use default value, replace any running timer
-                           (org-timer-set-timer '(16))))
-         (after-init . (lambda ()
-                         (when (not (eq system-type 'windows-nt))
-                           (org-agenda nil "a")))))
+                           (org-timer-set-timer '(16)))))
   :diminish org-indent-mode
   :diminish visual-line-mode
   :bind (("C-c l" . org-store-link)
@@ -1542,6 +1545,8 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
   :defer t
   :bind (("C-x g" . magit-status)       ; Display the main magit popup
          ("C-c g" . magit-file-dispatch)) ; Run blame, etc. on a file
+  :after hl-line-mode
+  :hook ((magit-mode-hook . hl-line-mode))
   :custom
   (magit-completing-read-function 'ivy-completing-read)
   ;; Remove the startup message about turning on auto-revert
