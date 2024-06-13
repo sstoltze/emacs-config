@@ -34,3 +34,5 @@
     autoSetupRemote = true
 [diff]
     algorithm = histogram
+[pull]
+    rebase = true
