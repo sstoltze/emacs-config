@@ -167,8 +167,12 @@
 ;; Do not use tabs
 (setq-default indent-tabs-mode              nil
               show-trailing-whitespace      t
-              tab-width                     4
+              tab-width                     2
               tab-always-indent             'complete)
+
+;; Random indentation
+(setq-default sh-basic-offset               2
+              fish-indent-offset            2)
 
 (set-face-background 'trailing-whitespace "IndianRed4")
 
