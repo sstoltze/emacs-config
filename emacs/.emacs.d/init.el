@@ -2138,8 +2138,6 @@ No prefix to run test at point, C-u to run file, C-u C-u to run all tests."
   :hook (
          ;; (elixir-mode . (lambda ()
          ;;                  (add-hook 'before-save-hook 'elixir-format 0 t)))
-         (elixir-ts-mode . (lambda ()
-                          (add-hook 'before-save-hook 'lsp-format-buffer 0 t)))
          (elixir-mode . (lambda ()
                           (add-hook 'before-save-hook 'lsp-format-buffer 0 t)))
          (elixir-format . (lambda ()
@@ -2519,6 +2517,13 @@ No prefix to run test at point, C-u to run file, C-u C-u to run all tests."
 
 (use-package elixir-ts-mode
   :ensure t
+  :hook ((elixir-ts-mode . (lambda ()
+                          (add-hook 'before-save-hook 'lsp-format-buffer 0 t))))
+  :init
+  (setq lsp-elixir-server-command '("elixir-ls"))
+  :custom
+  (lsp-elixir-suggest-specs nil)
+  (lsp-credo-version "0.1.3")
   :config
   (add-to-list 'major-mode-remap-alist '(elixir-mode . elixir-ts-mode)))
 
