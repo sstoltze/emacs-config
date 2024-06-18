@@ -1603,6 +1603,7 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
          (typescript-mode . lsp-deferred)
          ;; Make sure elixir-ls version (of elixir) matches installed/running elixir version
          (elixir-mode     . lsp-deferred)
+         (elixir-ts-mode  . lsp-deferred)
          (lsp-mode        . yas-minor-mode)
          (lsp-mode        . projectile-mode))
   :bind ((:map lsp-mode-map
@@ -2137,6 +2138,8 @@ No prefix to run test at point, C-u to run file, C-u C-u to run all tests."
   :hook (
          ;; (elixir-mode . (lambda ()
          ;;                  (add-hook 'before-save-hook 'elixir-format 0 t)))
+         (elixir-ts-mode . (lambda ()
+                          (add-hook 'before-save-hook 'lsp-format-buffer 0 t)))
          (elixir-mode . (lambda ()
                           (add-hook 'before-save-hook 'lsp-format-buffer 0 t)))
          (elixir-format . (lambda ()
@@ -2508,10 +2511,17 @@ No prefix to run test at point, C-u to run file, C-u C-u to run all tests."
      ;; (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
      ;; (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
      ;; (yaml "https://github.com/ikatyang/tree-sitter-yaml")
-     )))
+     ))
+  :config
+  (dolist (language-source treesit-language-source-alist)
+    (unless (treesit-language-available-p (car language-source))
+      (treesit-install-language-grammar (car language-source)))))
 
 (use-package elixir-ts-mode
-  :ensure t)
+  :ensure t
+  :config
+  (add-to-list 'major-mode-remap-alist '(elixir-mode . elixir-ts-mode)))
+
 (use-package heex-ts-mode
   :ensure t)
 
