@@ -1545,7 +1545,6 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
   :defer t
   :bind (("C-x g" . magit-status)       ; Display the main magit popup
          ("C-c g" . magit-file-dispatch)) ; Run blame, etc. on a file
-  :after hl-line-mode
   :hook ((magit-mode-hook . hl-line-mode))
   :custom
   (magit-completing-read-function 'ivy-completing-read)
@@ -1554,9 +1553,10 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
   ;; Command prefix for merge conflicts. Alternatively use 'e' for ediff
   (smerge-command-prefix "\C-cv")
   :config
-  (set-face-background 'hl-line
+  (with-eval-after-load 'hl-line-mode
+    (set-face-background 'hl-line
                        ;; Magit background color
-                       (face-background 'magit-section-highlight)))
+                       (face-background 'magit-section-highlight))))
 
 (use-package forge
   :ensure t
