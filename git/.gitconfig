@@ -1,26 +1,26 @@
 [includeIf "gitdir/i:git/"]
-    path = ~/.config/git/private.git
+  path = ~/.config/git/private.git
 [includeIf "gitdir/i:.config/"]
-    path = ~/.config/git/private.git
+  path = ~/.config/git/private.git
 [includeIf "gitdir/i:work/"]
-    path = ~/.config/git/work.git
+  path = ~/.config/git/work.git
 [core]
-	editor = emacs
-    autocrlf = input
+  editor = emacs
+  autocrlf = input
 [credential]
-    helper = store
+  helper = store
 [alias]
-        lg           = !"git lg2"
-        lg-sim       = !"git lg --simplify-by-decoration"
-        lg1          = !"git lg1-specific --all"
-        lg2          = !"git lg2-specific --all"
-        lg3          = !"git lg3-specific --all"
+  lg           = !"git lg2"
+  lg-sim       = !"git lg --simplify-by-decoration"
+  lg1          = !"git lg1-specific --all"
+  lg2          = !"git lg2-specific --all"
+  lg3          = !"git lg3-specific --all"
 
-        lg1-specific = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)'
+  lg1-specific = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)'
 
-        lg2-specific = log --graph --abbrev-commit --decorate --date=local --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%ad%C(reset) %C(bold green)(%ar)%C(reset)%C(auto)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)'
+  lg2-specific = log --graph --abbrev-commit --decorate --date=local --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%ad%C(reset) %C(bold green)(%ar)%C(reset)%C(auto)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)'
 
-        lg3-specific = log --graph --abbrev-commit --decorate --date=local --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%ad%C(reset) %C(bold green)(%ar)%C(reset) %C(bold cyan)(committed: %cD)%C(reset) %C(auto)%d%C(reset)%n''          %C(white)%s%C(reset)%n''          %C(dim white)- %an <%ae> %C(reset) %C(dim white)(committer: %cn <%ce>)%C(reset)'
+  lg3-specific = log --graph --abbrev-commit --decorate --date=local --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%ad%C(reset) %C(bold green)(%ar)%C(reset) %C(bold cyan)(committed: %cD)%C(reset) %C(auto)%d%C(reset)%n''          %C(white)%s%C(reset)%n''          %C(dim white)- %an <%ae> %C(reset) %C(dim white)(committer: %cn <%ce>)%C(reset)'
 [github]
 	user = sstoltze
 [init]
@@ -29,10 +29,10 @@
 # [url "https://github.com/"]
 #   insteadOf = ssh://git@github.com/
 [merge]
-    conflictStyle = zdiff3
+  conflictStyle = zdiff3
 [push]
-    autoSetupRemote = true
+  autoSetupRemote = true
 [diff]
-    algorithm = histogram
+  algorithm = histogram
 [pull]
-    rebase = true
+  rebase = true
