@@ -183,6 +183,20 @@ in
       # Open ports in the firewall for Source Dedicated Server
       dedicatedServer.openFirewall = true;
     };
+    git = {
+      enable = true;
+      config = {
+        core.pager = "${pkgs.delta}/bin/delta";
+        diff.colorMoved = "default";
+        interactive.diffFilter = "${pkgs.delta}/bin/delta --color-only";
+        delta = {
+          hyperlinks = true;
+          navigate = true;
+          side-by-side = true;
+          syntax-theme = "zenburn";
+        };
+      };
+    };
   };
 
   # Set your time zone.
