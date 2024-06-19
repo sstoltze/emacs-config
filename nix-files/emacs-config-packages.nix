@@ -13,6 +13,7 @@
       kitty
       kubelogin
       kubie
+      nil
       nix-tree
       nixpkgs-fmt
       ripgrep
