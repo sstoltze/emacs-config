@@ -4,7 +4,7 @@
     flake-utils = { url = "github:numtide/flake-utils"; };
     nixpkgs = { url = "github:nixos/nixpkgs/nixpkgs-unstable"; };
   };
-  outputs = { self, flake-utils, nixpkgs, ... }:
+  outputs = { flake-utils, nixpkgs, ... }:
     {
       nixosModules = {
         default = import ./nix-files/nixos-configuration.nix;
