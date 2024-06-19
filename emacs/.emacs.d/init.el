@@ -1559,8 +1559,8 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
   :config
   (with-eval-after-load 'hl-line-mode
     (set-face-background 'hl-line
-                       ;; Magit background color
-                       (face-background 'magit-section-highlight))))
+                         ;; Magit background color
+                         (face-background 'magit-section-highlight))))
 
 (use-package forge
   :ensure t
@@ -2519,7 +2519,7 @@ No prefix to run test at point, C-u to run file, C-u C-u to run all tests."
 (use-package elixir-ts-mode
   :ensure t
   :hook ((elixir-ts-mode . (lambda ()
-                          (add-hook 'before-save-hook 'lsp-format-buffer 0 t))))
+                             (add-hook 'before-save-hook 'lsp-format-buffer 0 t))))
   :init
   (setq lsp-elixir-server-command '("elixir-ls"))
   :custom
