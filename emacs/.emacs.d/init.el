@@ -1693,8 +1693,8 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
   :ensure t
   :defer t
   :diminish symbol-overlay-mode
-  :hook ((prog-mode . symbol-overlay-mode))
-  :bind-keymap (("C-c o" . symbol-overlay-map)))
+  ;; :bind-keymap (("C-c o" . symbol-overlay-map))
+  :hook ((prog-mode . symbol-overlay-mode)))
 
 ;;;; --- Semantic ---
 (use-package semantic
@@ -2530,6 +2530,30 @@ No prefix to run test at point, C-u to run file, C-u C-u to run all tests."
 
 (use-package heex-ts-mode
   :ensure t)
+
+(when (file-exists-p "~/git/combobulate")
+  (use-package combobulate
+    :preface
+    ;; You can customize Combobulate's key prefix here.
+    ;; Note that you may have to restart Emacs for this to take effect!
+    (setq combobulate-key-prefix "C-c o")
+
+    ;; Optional, but recommended.
+    ;;
+    ;; You can manually enable Combobulate with `M-x
+    ;; combobulate-mode'.
+    :hook
+    ((python-ts-mode . combobulate-mode)
+     (js-ts-mode . combobulate-mode)
+     (html-ts-mode . combobulate-mode)
+     (css-ts-mode . combobulate-mode)
+     (yaml-ts-mode . combobulate-mode)
+     (typescript-ts-mode . combobulate-mode)
+     (json-ts-mode . combobulate-mode)
+     (tsx-ts-mode . combobulate-mode))
+    ;; Amend this to the directory where you keep Combobulate's source
+    ;; code.
+    :load-path ("~/git/combobulate")))
 
 ;; Run M-x package-vc-install-from-checkout and provide the correct
 ;; path to the project directory.
