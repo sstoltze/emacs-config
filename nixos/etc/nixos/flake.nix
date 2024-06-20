@@ -1,10 +1,7 @@
 {
   inputs = {
     nixpkgs = { url = "github:nixos/nixpkgs/nixos-unstable"; };
-    emacsConfig = {
-      url = "/home/sst/git/emacs-config";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    emacsConfig = { url = "/home/sst/git/emacs-config"; };
   };
 
   outputs = { self, nixpkgs, emacsConfig }: {
