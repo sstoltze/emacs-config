@@ -2140,22 +2140,19 @@ double prefix runs all tests."
 (use-package elixir-mode
   :ensure t
   :defer t
-  :hook (
-         ;; (elixir-mode . (lambda ()
-         ;;                  (add-hook 'before-save-hook 'elixir-format 0 t)))
-         (elixir-mode . (lambda ()
+  :hook ((elixir-mode . (lambda ()
                           (add-hook 'before-save-hook 'lsp-format-buffer 0 t)))
          (elixir-format . (lambda ()
-                            (if (projectile-project-p)
+                            (if (and (fboundp 'projectile-project-p)
+                                     (projectile-project-p))
                                 (setq elixir-format-arguments
                                       (list "--dot-formatter"
                                             (concat (locate-dominating-file buffer-file-name ".formatter.exs") ".formatter.exs")))
                               (setq elixir-format-arguments nil)))))
   :bind ((:map elixir-mode-map ("C-c t" . #'sstoltze/projectile-run-mix-test)))
-  :init
-  (setq lsp-elixir-server-command '("elixir-ls"))
   :custom
   (lsp-elixir-suggest-specs nil)
+  (lsp-elixir-server-command '("elixir-ls"))
   (lsp-credo-version "0.1.3"))
 
 ;; (lsp-install-server), and possibly chmod +x it afterwards for some reason
@@ -2525,9 +2522,8 @@ double prefix runs all tests."
   :hook ((elixir-ts-mode . (lambda ()
                              (add-hook 'before-save-hook 'lsp-format-buffer 0 t))))
   :bind ((:map elixir-ts-mode-map ("C-c t" . #'sstoltze/projectile-run-mix-test)))
-  :init
-  (setq lsp-elixir-server-command '("elixir-ls"))
   :custom
+  (lsp-elixir-server-command '("elixir-ls"))
   (lsp-elixir-suggest-specs nil)
   (lsp-credo-version "0.1.3")
   :config
