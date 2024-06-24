@@ -1733,9 +1733,10 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
 (defun sstoltze/projectile-file-relative-name (line-number)
   "Return the current buffer file name, relative to the project root.
 If LINE-NUMBER is given, append the line at point to the file name."
-  (format "%s%s"
+  (if (fboundp 'projectile-project-root)
+      (format "%s%s"
           (file-relative-name (buffer-file-name) (projectile-project-root))
-          line-number))
+          line-number)))
 
 (defun sstoltze/projectile-yank-relative-name (line-number)
   "Yank the current buffer file name, relative to the project root.
