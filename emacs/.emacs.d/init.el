@@ -1760,7 +1760,7 @@ double prefix runs all tests."
                             (sstoltze/projectile-file-relative-name ""))
                            (t
                             (sstoltze/projectile-file-relative-name (format ":%d" (line-number-at-pos nil t)))))))
-  (let ((test-command (format "mix test --no-color %s" test)))
+  (let ((test-command (format "mix test %s" test)))
     (projectile-run-async-shell-command-in-root test-command "*Mix test*")))
 
 (use-package projectile
