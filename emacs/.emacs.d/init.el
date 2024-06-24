@@ -1752,10 +1752,13 @@ the file name."
 
 Prefix argument TEST specifies which test to run.
 No prefix to run test at point, C-u to run file, C-u C-u to run all tests."
-  (interactive (list (cond ((and (consp current-prefix-arg) (>= (car current-prefix-arg) 16))
+  (interactive (list (cond ((and (consp current-prefix-arg)
+                                 (>= (car current-prefix-arg) 16))
                             "")
-                           ((consp current-prefix-arg) (sstoltze/projectile-file-relative-name ""))
-                           (t (sstoltze/projectile-file-relative-name (format ":%d" (line-number-at-pos nil t)))))))
+                           ((consp current-prefix-arg)
+                            (sstoltze/projectile-file-relative-name ""))
+                           (t
+                            (sstoltze/projectile-file-relative-name (format ":%d" (line-number-at-pos nil t)))))))
   (let ((test-command (format "mix test --no-color %s" test)))
     (projectile-run-async-shell-command-in-root test-command "*Mix test*")))
 
@@ -2521,6 +2524,7 @@ No prefix to run test at point, C-u to run file, C-u C-u to run all tests."
   :ensure t
   :hook ((elixir-ts-mode . (lambda ()
                              (add-hook 'before-save-hook 'lsp-format-buffer 0 t))))
+  :bind ((:map elixir-ts-mode-map ("C-c t" . #'sstoltze/projectile-run-mix-test)))
   :init
   (setq lsp-elixir-server-command '("elixir-ls"))
   :custom
