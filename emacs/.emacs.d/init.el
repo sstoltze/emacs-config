@@ -1735,8 +1735,8 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
 If LINE-NUMBER is given, append the line at point to the file name."
   (if (fboundp 'projectile-project-root)
       (format "%s%s"
-          (file-relative-name (buffer-file-name) (projectile-project-root))
-          line-number)))
+              (file-relative-name (buffer-file-name) (projectile-project-root))
+              line-number)))
 
 (defun sstoltze/projectile-yank-relative-name (line-number)
   "Yank the current buffer file name, relative to the project root.
@@ -1751,7 +1751,8 @@ the file name."
   "Run mix test in the project.
 
 Prefix argument TEST specifies which test to run.
-No prefix to run test at point, C-u to run file, C-u C-u to run all tests."
+No prefix runs test at point, single prefix runs current file,
+double prefix runs all tests."
   (interactive (list (cond ((and (consp current-prefix-arg)
                                  (>= (car current-prefix-arg) 16))
                             "")
@@ -1796,15 +1797,14 @@ No prefix to run test at point, C-u to run file, C-u C-u to run all tests."
   (slime-contribs '(slime-fancy))
   :config
   (when (eq system-type 'cygwin)
-    (defun cyg-slime-to-lisp-translation (filename)
-      (replace-regexp-in-string "\n" ""
-                                (shell-command-to-string
-                                 (format "cygpath.exe --windows %s" filename))))
-    (defun cyg-slime-from-lisp-translation (filename)
-      (replace-regexp-in-string "\n" "" (shell-command-to-string
-                                         (format "cygpath.exe --unix %s" filename))))
-    (setq slime-to-lisp-filename-function   #'cyg-slime-to-lisp-translation
-          slime-from-lisp-filename-function #'cyg-slime-from-lisp-translation)))
+    (setq slime-to-lisp-filename-function #'(lambda (filename)
+                                              (replace-regexp-in-string "\n" ""
+                                                                        (shell-command-to-string
+                                                                         (format "cygpath.exe --windows %s" filename))))
+          slime-from-lisp-filename-function #'(lambda (filename)
+                                                (replace-regexp-in-string "\n" ""
+                                                                          (shell-command-to-string
+                                                                           (format "cygpath.exe --unix %s" filename)))))))
 
 ;;;; --- LaTeX ---
 (use-package tex
