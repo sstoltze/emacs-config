@@ -1574,28 +1574,6 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
   :ensure t
   :defer t)
 
-(use-package god-mode
-  :ensure t
-  :defer t
-  :hook ((god-mode-enabled  . sstoltze/god-mode-update-theme)
-         (god-mode-disabled . sstoltze/god-mode-update-theme))
-  :bind
-  (("<escape>" . god-mode-all)
-   ("C-x C-1" . delete-other-windows)
-   ("C-x C-2" . split-window-below)
-   ("C-x C-3" . split-window-right)
-   ("C-x C-0" . delete-window)
-   (:map god-local-mode-map
-         ("i" . god-mode-all)
-         ("." . repeat)))
-  :init
-  (defun sstoltze/god-mode-update-theme ()
-    "Toggle cursor type in god-mode."
-    (cond (god-local-mode (progn (setq cursor-type 'hbar)
-                                 (set-face-background 'mode-line "dark goldenrod")))
-          (t              (progn (setq cursor-type 't)
-                                 (set-face-background 'mode-line "gray70"))))))
-
 ;;;; --- lsp ---
 (use-package lsp-mode
   :ensure t
