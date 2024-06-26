@@ -186,8 +186,21 @@ in
     git = {
       enable = true;
       config = {
-        core.pager = "${pkgs.delta}/bin/delta";
-        diff.colorMoved = "default";
+        core = {
+          autocrlf = "input";
+          editor = "emacs";
+          pager = "${pkgs.delta}/bin/delta";
+        };
+        credential.helper = "store";
+        diff = {
+          algorithm = "histogram";
+          colorMoved = "default";
+          defaultBranch = "main";
+        };
+        github.user = "sstoltze";
+        merge.conflictStyle = "zdiff3";
+        pull.rebase = "true";
+        push.autoSetupRemote = "true";
         interactive.diffFilter = "${pkgs.delta}/bin/delta --color-only";
         delta = {
           hyperlinks = true;
