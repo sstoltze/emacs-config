@@ -19,7 +19,6 @@
             pkgs.callPackage ./nix-files/credo-language-server.nix { };
         in
         {
-          inherit credoLanguageServer;
           devShell = pkgs.mkShell {
             buildInputs = with pkgs; lib.optional stdenv.isDarwin darwin.apple_sdk.frameworks.CoreServices;
             packages = with pkgs;
