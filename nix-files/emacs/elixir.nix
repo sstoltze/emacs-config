@@ -4,7 +4,6 @@
 {
   programs.emacs.extraConfig = ''
     (use-package tree-sitter
-      :ensure t
       :defer t
       :custom
       (treesit-language-source-alist
@@ -16,11 +15,9 @@
           (treesit-install-language-grammar (car language-source)))))
 
     (use-package erlang
-      :ensure t
       :defer t)
 
     (use-package elixir-ts-mode
-      :ensure t
       :hook ((elixir-ts-mode . (lambda ()
                                  (add-hook 'before-save-hook 'lsp-format-buffer 0 t))))
       :custom
@@ -31,8 +28,6 @@
       :config
       (add-to-list 'major-mode-remap-alist '(elixir-mode . elixir-ts-mode)))
 
-     (use-package heex-ts-mode
-      :ensure t)
-
+     (use-package heex-ts-mode)
   '';
 }

@@ -100,5 +100,11 @@
       :config
       (ivy-posframe-mode 1))
 
+    (use-package xref
+      :ensure t)
+
+    (use-package ivy-xref
+      :ensure t
+      :after ivy)
   '';
 }
