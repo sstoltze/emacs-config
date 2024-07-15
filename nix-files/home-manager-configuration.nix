@@ -1,7 +1,7 @@
 { pkgs, ... }:
 let
   packages = pkgs.callPackage ./emacs-config-packages.nix { };
-  credoLanguageServer = pkgs.callPackage ./credo-language-server.nix { };
+
 in
 {
   home = {
@@ -22,7 +22,7 @@ in
     # The home.packages option allows you to install Nix packages into your
     # environment.
     packages = packages.commonPackages ++ packages.fontPackages
-      ++ packages.homeManagerPackages ++ [ credoLanguageServer ];
+      ++ packages.homeManagerPackages;
 
     # if you don't want to manage your shell through Home Manager.
     sessionVariables = {
@@ -31,13 +31,14 @@ in
 
   };
 
+  imports = [ ./emacs ];
+
   fonts.fontconfig.enable = true;
 
   # Let Home Manager install and manage itself.
   programs = {
     home-manager.enable = true;
-    # Maybe?
-    # emacs = { enable = true; packages = pkgs.emacs29 }
+
     # fish.enable = true;
     # kitty.enable = true;
     # ripgrep.enable = true;
