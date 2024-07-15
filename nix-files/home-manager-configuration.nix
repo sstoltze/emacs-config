@@ -1,6 +1,9 @@
 { pkgs, ... }:
-let packages = pkgs.callPackage ./emacs-config-packages.nix { };
-in {
+let
+  packages = pkgs.callPackage ./emacs-config-packages.nix { };
+  credoLanguageServer = pkgs.callPackage ./credo-language-server.nix { };
+in
+{
   home = {
     # Home Manager needs a bit of information about you and the paths it should
     # manage.
@@ -19,7 +22,7 @@ in {
     # The home.packages option allows you to install Nix packages into your
     # environment.
     packages = packages.commonPackages ++ packages.fontPackages
-      ++ packages.homeManagerPackages;
+      ++ packages.homeManagerPackages ++ [ credoLanguageServer ];
 
     # if you don't want to manage your shell through Home Manager.
     sessionVariables = {

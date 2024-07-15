@@ -1603,6 +1603,7 @@ Stolen from https://karthinks.com/software/avy-can-do-anything/"
 ;; Trying some things out to speed up LSP/emacs
 (with-eval-after-load 'lsp-mode
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\deps\\'")
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\assets/vendor\\'")
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\priv/static\\'"))
 
 ;; Flashy, maybe remove
@@ -2115,32 +2116,21 @@ double prefix runs all tests."
   :ensure t
   :defer t)
 
-(use-package elixir-mode
+(use-package elixir-ts-mode
   :ensure t
-  :defer t
-  :hook ((elixir-mode . (lambda ()
-                          (add-hook 'before-save-hook 'lsp-format-buffer 0 t)))
-         (elixir-format . (lambda ()
-                            (if (and (fboundp 'projectile-project-p)
-                                     (projectile-project-p))
-                                (setq elixir-format-arguments
-                                      (list "--dot-formatter"
-                                            (concat (locate-dominating-file buffer-file-name ".formatter.exs") ".formatter.exs")))
-                              (setq elixir-format-arguments nil)))))
-  :bind ((:map elixir-mode-map ("C-c t" . #'sstoltze/projectile-run-mix-test)))
+  :hook ((elixir-ts-mode . (lambda ()
+                             (add-hook 'before-save-hook 'lsp-format-buffer 0 t))))
+  :bind ((:map elixir-ts-mode-map ("C-c t" . #'sstoltze/projectile-run-mix-test)))
   :custom
-  (lsp-elixir-suggest-specs nil)
   (lsp-elixir-server-command '("elixir-ls"))
-  (lsp-credo-version "0.1.3"))
+  (lsp-elixir-suggest-specs nil)
+  (lsp-credo-version "0.3.0")
+  (lsp-credo-command '("credo-language-server" "--stdio=true"))
+  :config
+  (add-to-list 'major-mode-remap-alist '(elixir-mode . elixir-ts-mode)))
 
-;; (lsp-install-server), and possibly chmod +x it afterwards for some reason
-(add-to-list 'exec-path "~/.emacs.d/.cache/lsp/credo-language-server")
-
-(use-package inf-elixir
-  :ensure t
-  :after elixir-mode
-  :bind ((:map elixir-mode-map
-               ("C-c C-z" . #'inf-elixir-project))))
+(use-package heex-ts-mode
+  :ensure t)
 
 ;;;; --- Clojure ---
 (use-package clojure-mode
@@ -2494,21 +2484,6 @@ double prefix runs all tests."
   (dolist (language-source treesit-language-source-alist)
     (unless (treesit-language-available-p (car language-source))
       (treesit-install-language-grammar (car language-source)))))
-
-(use-package elixir-ts-mode
-  :ensure t
-  :hook ((elixir-ts-mode . (lambda ()
-                             (add-hook 'before-save-hook 'lsp-format-buffer 0 t))))
-  :bind ((:map elixir-ts-mode-map ("C-c t" . #'sstoltze/projectile-run-mix-test)))
-  :custom
-  (lsp-elixir-server-command '("elixir-ls"))
-  (lsp-elixir-suggest-specs nil)
-  (lsp-credo-version "0.1.3")
-  :config
-  (add-to-list 'major-mode-remap-alist '(elixir-mode . elixir-ts-mode)))
-
-(use-package heex-ts-mode
-  :ensure t)
 
 (when (file-exists-p "~/git/combobulate")
   (use-package combobulate
