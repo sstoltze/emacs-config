@@ -31,8 +31,6 @@ in
 
   };
 
-  imports = [ ./emacs ];
-
   fonts.fontconfig.enable = true;
 
   # Let Home Manager install and manage itself.
