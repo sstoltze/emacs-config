@@ -1,4 +1,4 @@
-{ credoLanguageServer, ... }:
+{ credoLanguageServer, elixir_ls, ... }:
 { ... }:
 
 {
@@ -24,7 +24,7 @@
       :hook ((elixir-ts-mode . (lambda ()
                                  (add-hook 'before-save-hook 'lsp-format-buffer 0 t))))
       :custom
-      (lsp-elixir-server-command '("elixir-ls"))
+      (lsp-elixir-server-command '("${elixir_ls}/bin/elixir-ls"))
       (lsp-elixir-suggest-specs nil)
       (lsp-credo-version "0.3.0")
       (lsp-credo-command '("${credoLanguageServer}/bin/credo-language-server" "--stdio=true"))
