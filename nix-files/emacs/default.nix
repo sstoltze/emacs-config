@@ -4,6 +4,7 @@ let
 in
 {
   imports = [
+    ./custom-packages.nix
     (import ./elixir.nix { inherit credoLanguageServer; inherit (pkgs) elixir_ls; })
     ./emacs-options.nix
     ./flycheck.nix
