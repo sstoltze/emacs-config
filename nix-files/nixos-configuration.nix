@@ -66,8 +66,6 @@ in
     };
   };
 
-  sound.enable = true;
-
   nixpkgs.config = {
     # Allow unfree packages
     allowUnfree = true;

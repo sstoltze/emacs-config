@@ -35,7 +35,7 @@
     feh
     firefox
     geoclue2
-    gnome.gnome-keyring
+    gnome-keyring
     htop
     lsof
     networkmanager
