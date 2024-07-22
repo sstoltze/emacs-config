@@ -6,8 +6,8 @@ function sh
     fish $argv
 end
 
-set -x VISUAL "emacs "
-set -x EDITOR "nano "
+set -x VISUAL "emacs"
+set -x EDITOR "emacs -nw"
 
 # Env
 set -l system (uname)
