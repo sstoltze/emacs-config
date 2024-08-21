@@ -3,7 +3,11 @@ let
   packages = pkgs.callPackage ./emacs-config-packages.nix { };
 in
 {
-  imports = [ (import ./emacs { inherit pkgs; }) ];
+  imports = [
+    ./emacs
+    ./git.nix
+    ./kitty.nix
+  ];
 
   home = {
     # Home Manager needs a bit of information about you and the paths it should
@@ -37,47 +41,10 @@ in
   # Let Home Manager install and manage itself.
   programs = {
     home-manager.enable = true;
-
     # fish.enable = true;
-    # kitty.enable = true;
     # ripgrep.enable = true;
-    git.extraConfig = {
-      core.pager = "${pkgs.delta}/bin/delta";
-      diff.colorMoved = "default";
-      interactive.diffFilter = "${pkgs.delta}/bin/delta --color-only";
-
-      delta = {
-        hyperlinks = true;
-        navigate = true;
-        side-by-side = true;
-        syntax-theme = "zenburn";
-      };
-    };
-    kitty = {
-      font = {
-        package = pkgs.lib.mkForce pkgs.iosevka;
-        name = pkgs.lib.mkForce "Iosevka Term";
-        size = 14;
-      };
-    };
   };
 
   # Disable the "unread news" count when running home-manager switch
   news.display = "silent";
-  # Maybe?
-  # i18n = {
-  #   defaultLocale = "en_GB.UTF-8";
-
-  #   extraLocaleSettings = {
-  #     LC_ADDRESS = "da_DK.UTF-8";
-  #     LC_IDENTIFICATION = "da_DK.UTF-8";
-  #     LC_MEASUREMENT = "da_DK.UTF-8";
-  #     LC_MONETARY = "da_DK.UTF-8";
-  #     LC_NAME = "da_DK.UTF-8";
-  #     LC_NUMERIC = "da_DK.UTF-8";
-  #     LC_PAPER = "da_DK.UTF-8";
-  #     LC_TELEPHONE = "da_DK.UTF-8";
-  #     LC_TIME = "da_DK.UTF-8";
-  #   };
-  # };
 }
