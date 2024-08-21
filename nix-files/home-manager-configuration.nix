@@ -1,9 +1,10 @@
 { pkgs, ... }:
 let
   packages = pkgs.callPackage ./emacs-config-packages.nix { };
-
 in
 {
+  imports = [ (import ./emacs { inherit pkgs; }) ];
+
   home = {
     # Home Manager needs a bit of information about you and the paths it should
     # manage.
@@ -50,6 +51,13 @@ in
         navigate = true;
         side-by-side = true;
         syntax-theme = "zenburn";
+      };
+    };
+    kitty = {
+      font = {
+        package = pkgs.lib.mkForce pkgs.iosevka;
+        name = pkgs.lib.mkForce "Iosevka Term";
+        size = 14;
       };
     };
   };
