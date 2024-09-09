@@ -78,10 +78,10 @@ in
   };
 
   services = {
-
     displayManager = {
       defaultSession = "none+awesome";
     };
+
     xserver = {
       enable = true;
 
@@ -107,6 +107,9 @@ in
         luaModules = packages.nixosConfig.luaPackages;
       };
     };
+
+    # Should replace pulseaudio, but it breaks my sound. So disabled until I find time to debug why
+    pipewire.enable = false;
 
     redshift = {
       enable = true;
