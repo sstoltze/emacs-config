@@ -1,6 +1,6 @@
 { pkgs, ... }:
 let
-  credoLanguageServer = pkgs.callPackage ../credo-language-server.nix { };
+  credoLanguageServer = pkgs.callPackage ../../credo-language-server.nix { };
 in
 {
   imports = [
