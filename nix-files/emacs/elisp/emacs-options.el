@@ -125,8 +125,16 @@
 (global-set-key (kbd "M-u") 'upcase-dwim)
 (global-set-key (kbd "M-l") 'downcase-dwim)
 
-;; Delete extra lines and spaces when saving
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+;; Conditionally delete extra lines and spaces when saving
+(defvar keep-trailing-whitespace nil)
+(add-hook 'before-save-hook
+          (lambda ()
+            (unless keep-trailing-whitespace
+              (delete-trailing-whitespace))))
+;; This allows setting this variable in a .dir-locals.el file, without asking each time.
+(setq safe-local-variable-values
+      (append '((keep-trailing-whitespace . t))
+              safe-local-variable-values))
 
 (use-package recentf
   :custom
