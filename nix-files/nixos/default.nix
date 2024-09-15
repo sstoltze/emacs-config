@@ -29,7 +29,6 @@ in
       efi.canTouchEfiVariables = true;
     };
 
-    # Enable sound?
     kernelPackages = packages.nixosConfig.kernelPackages;
   };
 

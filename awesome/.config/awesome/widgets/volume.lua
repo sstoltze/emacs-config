@@ -6,17 +6,19 @@ local volume = {}
 
 volume.textbox = wibox.widget.textbox()
 
-volume.command = [[pactl list sinks | awk '
-BEGIN               { mute = "no"; running = 0; volume = 0; }
-/RUNNING/           { running = 1; }
-/^[^a-zA-Z]Mute/    { if ( running ) { mute = $2 } }
-/^[^a-zA-Z]*Volume/ { if ( running ) { if ( mute ~ /yes/ ) { gsub(/%/, "M", $5); }; volume = $5; } }
-/SUSPENDED/         { running = 0; }
-END                 { print volume; } ']]
+volume.command = [[wpctl get-volume @DEFAULT_SINK@ | awk '
+              BEGIN     { volume = 0; muted = ""; }
+              /^Volume/ { volume = ($2 * 100);
+                          if ($3 == "[MUTED]")
+                            muted = "M";
+                          else
+                            muted = "%"; }
+              END       { print volume muted; }
+']]
 
 volume.update = function ()
    awful.spawn.easy_async_with_shell(volume.command, function(vol, stderr, reason, exit_code)
-                                        if vol == "" then
+                                        if vol == "0" then
                                            vol = "off"
                                         end
                                         volume.textbox:set_markup("Vol: " .. vol)
@@ -29,27 +31,16 @@ volume.async = function (stdout, stderr, reason, exit_code)
    volume.update()
 end
 
-volume.get_sink = "pactl list short sinks | awk 'BEGIN { s = 0; }; /RUNNING/ { s = $1; }; END { print s; }'"
-
 volume.lower = function ()
-   awful.spawn.easy_async_with_shell(volume.get_sink,
-                                     function(sink, stderr, reason, exit_code)
-                                        awful.spawn.easy_async("pactl set-sink-volume " .. sink .. " -5%", volume.async)
-   end)
+   awful.spawn.easy_async_with_shell("wpctl set-volume @DEFAULT_SINK@ 5%-")
 end
 
 volume.raise = function ()
-   awful.spawn.easy_async_with_shell(volume.get_sink,
-                                     function(sink, stderr, reason, exit_code)
-                                        awful.spawn.easy_async("pactl set-sink-volume " .. sink .. " +5%", volume.async)
-   end)
+   awful.spawn.easy_async_with_shell("wpctl set-volume @DEFAULT_SINK@ 5%+")
 end
 
 volume.mute = function ()
-   awful.spawn.easy_async_with_shell(volume.get_sink,
-                                     function(sink, stderr, reason, exit_code)
-                                        awful.spawn.easy_async("pactl set-sink-mute " .. sink .. " toggle", volume.async)
-   end)
+   awful.spawn.easy_async_with_shell("wpctl set-mute @DEFAULT_SINK@ toggle")
 end
 
 -- Media controls
@@ -94,11 +85,11 @@ volume.media.pause = function ()
 end
 
 volume.media.prev = function ()
-   awful.spawn.easy_async("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous", volume.media.update_track_async)
+   awful.spawn.easy_async_with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous", volume.media.update_track_async)
 end
 
 volume.media.next = function ()
-   awful.spawn.easy_async("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next", volume.media.update_track_async)
+   awful.spawn.easy_async_with_shell("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next", volume.media.update_track_async)
 end
 
 -- Bluetooth
@@ -109,19 +100,19 @@ BEGIN              { card = "no"; profile = "off"; }
 /^[^a-zA-Z]Active/ { profile = $3; }
 END                { print card " " profile }']]
 volume.bluetooth.change_profile = function ()
-   awful.spawn.easy_async_with_shell(volume.bluetooth.command,
-                                     function (output, stderr, reason, exit_code)
-                                        local profile, card, new_profile
-                                        -- Default to a2dp_sink
-                                        new_profile = "a2dp_sink"
-                                        card, profile = string.match(output, "(%d+) ([^%s]+)")
-                                        -- If already a2dp_sink, switch to headset
-                                        if profile:gsub("%s+", "") == "a2dp_sink" then
-                                           new_profile = "handsfree_head_unit"
-                                        end
-                                        naughty.notify({text = "Bluetooth: " .. new_profile})
-                                        -- Switch to correct profile
-                                        awful.spawn.with_shell("pactl set-card-profile " .. card .. " " .. new_profile)
+   awful.spawn.with_shell(volume.bluetooth.command,
+                          function (output, stderr, reason, exit_code)
+                             local profile, card, new_profile
+                             -- Default to a2dp_sink
+                             new_profile = "a2dp_sink"
+                             card, profile = string.match(output, "(%d+) ([^%s]+)")
+                             -- If already a2dp_sink, switch to headset
+                             if profile:gsub("%s+", "") == "a2dp_sink" then
+                                new_profile = "handsfree_head_unit"
+                             end
+                             naughty.notify({text = "Bluetooth: " .. new_profile})
+                             -- Switch to correct profile
+                             awful.spawn.with_shell("pactl set-card-profile " .. card .. " " .. new_profile)
    end)
 end
 
