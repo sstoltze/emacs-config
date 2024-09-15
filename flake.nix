@@ -13,7 +13,7 @@
     in
     {
       nixosModules = {
-        default = import ./nix-files/nixos-configuration.nix;
+        default = import ./nix-files/nixos;
         homeManager = import ./nix-files/home-manager;
       };
 

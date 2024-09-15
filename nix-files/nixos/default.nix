@@ -3,7 +3,7 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 { pkgs, ... }:
 let
-  packages = pkgs.callPackage ./emacs-config-packages.nix { };
+  packages = pkgs.callPackage ../emacs-config-packages.nix { };
   # # This, with the nixpkgs.config below, provies pkgs.unstable.<pkg-name>
   # # for a single unstable package installation
   # let
@@ -12,7 +12,10 @@ let
   # in
 in
 {
-
+  imports = [
+    ./sound.nix
+    ./nix.nix
+  ];
   # nixpkgs.config = {
   #   packageOverrides = pkgs: {
   #     unstable = import unstableTarball { config = config.nixpkgs.config; };
@@ -57,24 +60,6 @@ in
       enable = true;
       powerOnBoot = true; # powers up the default Bluetooth controller on boot
     };
-
-    pulseaudio = {
-      enable = true;
-      package = packages.nixosConfig.pulseaudioPackage;
-      # Automatically switch to bluetooth speaker on connect
-      extraConfig = "load-module module-switch-on-connect";
-    };
-  };
-
-  nixpkgs.config = {
-    # Allow unfree packages
-    allowUnfree = true;
-    pulseaudio = true;
-  };
-
-  nix = {
-    settings.experimental-features = [ "nix-command" "flakes" ];
-    optimise.automatic = true;
   };
 
   services = {
@@ -107,9 +92,6 @@ in
         luaModules = packages.nixosConfig.luaPackages;
       };
     };
-
-    # Should replace pulseaudio, but it breaks my sound. So disabled until I find time to debug why
-    pipewire.enable = false;
 
     redshift = {
       enable = true;

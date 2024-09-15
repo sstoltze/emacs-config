@@ -1,6 +1,6 @@
 { pkgs, ... }:
 let
-  packages = pkgs.callPackage ./emacs-config-packages.nix { };
+  packages = pkgs.callPackage ../emacs-config-packages.nix { };
 in
 {
   imports = [
