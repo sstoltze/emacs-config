@@ -137,8 +137,3 @@ if command -v brew >/dev/null
     set -q MANPATH; or set MANPATH ''; set -gx MANPATH "/opt/homebrew/share/man" $MANPATH;
     set -q INFOPATH; or set INFOPATH ''; set -gx INFOPATH "/opt/homebrew/share/info" $INFOPATH;
 end
-
-# At work?
-if test "$USER" = "sarah.stoltze"
-    set -gx fish_complete_path ~/workspace/nrg/nrg-commands/completions $fish_complete_path
-end
