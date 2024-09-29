@@ -3,11 +3,10 @@
     nixpkgs = { url = "github:nixos/nixpkgs/nixos-unstable"; };
     emacsConfig = {
       url = "/home/sst/git/emacs-config";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
     homeManager = {
       url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "emacsConfig/nixpkgs";
     };
   };
 
