@@ -7,14 +7,10 @@ in
     ./emacs
     ./git.nix
     ./kitty.nix
+    ./fish.nix
   ];
 
   home = {
-    # Home Manager needs a bit of information about you and the paths it should
-    # manage.
-    username = "sarah.stoltze";
-    homeDirectory = "/Users/sarah.stoltze";
-
     # This value determines the Home Manager release that your configuration is
     # compatible with. This helps avoid breakage when a new Home Manager release
     # introduces backwards incompatible changes.
@@ -41,8 +37,8 @@ in
   # Let Home Manager install and manage itself.
   programs = {
     home-manager.enable = true;
-    # fish.enable = true;
-    # ripgrep.enable = true;
+    fish.enable = true;
+    ripgrep.enable = true;
   };
 
   # Disable the "unread news" count when running home-manager switch

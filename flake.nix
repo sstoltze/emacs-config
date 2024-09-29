@@ -14,7 +14,8 @@
     {
       nixosModules = {
         default = import ./nix-files/nixos;
-        homeManager = import ./nix-files/home-manager;
+        nixosHomeManager = import ./nix-files/home-manager/nixos.nix;
+        work = import ./nix-files/home-manager/work.nix;
       };
 
       # Basic setup for an elixir flake
