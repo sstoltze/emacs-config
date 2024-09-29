@@ -37,7 +37,6 @@ in
   # Let Home Manager install and manage itself.
   programs = {
     home-manager.enable = true;
-    fish.enable = true;
     ripgrep.enable = true;
   };
 

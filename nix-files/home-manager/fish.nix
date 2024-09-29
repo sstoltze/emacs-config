@@ -1,6 +1,9 @@
 { ... }:
 {
-  programs.fish.shellInitLast = ''
-    source ~/.config/fish/config.fish.mine
-  '';
+  programs.fish = {
+    enable = true;
+    shellInitLast = ''
+      source ~/.config/fish/config.fish.mine
+    '';
+  };
 }
