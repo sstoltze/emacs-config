@@ -5,6 +5,7 @@ in
 {
   imports = [
     ./custom-packages.nix
+    ./direnv.nix
     (import ./elixir.nix { inherit credoLanguageServer; inherit (pkgs) elixir_ls; })
     ./emacs-options.nix
     ./flycheck.nix
@@ -14,6 +15,7 @@ in
     ./nix.nix
     ./projectile.nix
     ./smartparens.nix
+    ./terraform.nix
     ./ui.nix
   ];
 
