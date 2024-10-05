@@ -22,8 +22,7 @@ in
 
     # The home.packages option allows you to install Nix packages into your
     # environment.
-    packages = packages.commonPackages ++ packages.fontPackages
-      ++ packages.homeManagerPackages;
+    packages = packages.commonPackages;
 
     # if you don't want to manage your shell through Home Manager.
     sessionVariables = {

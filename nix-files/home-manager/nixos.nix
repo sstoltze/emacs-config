@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 {
   imports = [ ./. ];
 
@@ -7,6 +7,26 @@
     # manage.
     username = "sst";
     homeDirectory = "/home/sst";
+    packages = with pkgs; [
+      dbeaver-bin
+      discord
+      dropbox
+      evince
+      feh
+      firefox
+      geoclue2
+      gnome-keyring
+      htop
+      lsof
+      networkmanager
+      redshift
+      skypeforlinux
+      slack
+      spotify
+      sqlite
+      steam
+      zoom-us
+    ];
   };
 
   programs = {
