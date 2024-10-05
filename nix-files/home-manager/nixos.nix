@@ -8,6 +8,7 @@
     username = "sst";
     homeDirectory = "/home/sst";
     packages = with pkgs; [
+      ardour
       dbeaver-bin
       discord
       dropbox
