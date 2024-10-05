@@ -66,7 +66,7 @@
     pulseaudioPackage = pkgs.pulseaudioFull;
     kernelPackages = pkgs.linuxPackagesFor pkgs.linux_latest;
     luaPackages = with pkgs.luaPackages; [ vicious ];
-    shellPackage = pkgs.fish;
+
   };
 
 }

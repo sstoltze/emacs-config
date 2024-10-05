@@ -9,5 +9,8 @@
     homeDirectory = "/home/sst";
   };
 
-  programs.home-manager.enable = true;
+  programs = {
+    home-manager.enable = true;
+    git.extraConfig.github.user = "sstoltze";
+  };
 }

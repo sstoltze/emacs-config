@@ -139,7 +139,7 @@ in
     isNormalUser = true;
     description = "Sarah Ella Stoltze";
     extraGroups = [ "networkmanager" "wheel" "input" "audio" ];
-    shell = packages.nixosConfig.shellPackage;
+    shell = pkgs.fish;
     packages = packages.commonPackages ++ packages.nixosPackages;
   };
 
@@ -164,33 +164,6 @@ in
       remotePlay.openFirewall = true;
       # Open ports in the firewall for Source Dedicated Server
       dedicatedServer.openFirewall = true;
-    };
-    git = {
-      enable = true;
-      config = {
-        core = {
-          autocrlf = "input";
-          editor = "emacs";
-          pager = "${pkgs.delta}/bin/delta";
-        };
-        credential.helper = "store";
-        diff = {
-          algorithm = "histogram";
-          colorMoved = "default";
-          defaultBranch = "main";
-        };
-        github.user = "sstoltze";
-        merge.conflictStyle = "zdiff3";
-        pull.rebase = "true";
-        push.autoSetupRemote = "true";
-        interactive.diffFilter = "${pkgs.delta}/bin/delta --color-only";
-        delta = {
-          hyperlinks = true;
-          navigate = true;
-          side-by-side = true;
-          syntax-theme = "zenburn";
-        };
-      };
     };
   };
 
