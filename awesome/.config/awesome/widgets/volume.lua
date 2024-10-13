@@ -32,15 +32,15 @@ volume.async = function (stdout, stderr, reason, exit_code)
 end
 
 volume.lower = function ()
-   awful.spawn.easy_async_with_shell("wpctl set-volume @DEFAULT_SINK@ 5%-")
+   awful.spawn.easy_async_with_shell("wpctl set-volume @DEFAULT_SINK@ 5%-", volume.async)
 end
 
 volume.raise = function ()
-   awful.spawn.easy_async_with_shell("wpctl set-volume @DEFAULT_SINK@ 5%+")
+   awful.spawn.easy_async_with_shell("wpctl set-volume @DEFAULT_SINK@ 5%+", volume.async)
 end
 
 volume.mute = function ()
-   awful.spawn.easy_async_with_shell("wpctl set-mute @DEFAULT_SINK@ toggle")
+   awful.spawn.easy_async_with_shell("wpctl set-mute @DEFAULT_SINK@ toggle", volume.async)
 end
 
 -- Media controls
