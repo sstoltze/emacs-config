@@ -16,6 +16,7 @@
       };
       merge.conflictStyle = "zdiff3";
       pull.rebase = pkgs.lib.mkForce "true";
+      rebase.autostash = "true";
       push.autoSetupRemote = "true";
       interactive.diffFilter = "${pkgs.delta}/bin/delta --color-only";
       delta = {
