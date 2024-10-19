@@ -9,7 +9,8 @@
         :custom
         (treesit-language-source-alist
          '((elixir "https://github.com/elixir-lang/tree-sitter-elixir")
-           (heex "https://github.com/phoenixframework/tree-sitter-heex")))
+           (heex "https://github.com/phoenixframework/tree-sitter-heex")
+           (gleam "https://github.com/gleam-lang/tree-sitter-gleam")))
         :config
         (dolist (language-source treesit-language-source-alist)
           (unless (treesit-language-available-p (car language-source))
@@ -29,12 +30,17 @@
         :config
         (add-to-list 'major-mode-remap-alist '(elixir-mode . elixir-ts-mode)))
 
-       (use-package heex-ts-mode)
+      (use-package heex-ts-mode)
+
+      (use-package gleam-ts-mode
+        :hook ((gleam-mode . (lambda ()
+                               (add-hook 'before-save-hook 'gleam-format nil t)))))
     '';
     extraPackages = epkgs: with epkgs; [
       elixir-ts-mode
       erlang
       heex-ts-mode
+      gleam-ts-mode
       tree-sitter
       treesit-grammars.with-all-grammars
     ];
