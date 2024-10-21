@@ -33,6 +33,8 @@
       (use-package heex-ts-mode)
 
       (use-package gleam-ts-mode
+        :defer t
+        :mode (rx ".gleam" eos)
         :hook ((gleam-mode . (lambda ()
                                (add-hook 'before-save-hook 'gleam-format nil t)))))
     '';
