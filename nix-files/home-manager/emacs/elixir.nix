@@ -1,6 +1,7 @@
-{ credoLanguageServer, elixir_ls, ... }:
-{ ... }:
-
+{ pkgs, ... }:
+let
+  credoLanguageServer = pkgs.callPackage ../../credo-language-server.nix { };
+in
 {
   programs.emacs = {
     extraConfig = ''
@@ -23,7 +24,7 @@
         :hook ((elixir-ts-mode . (lambda ()
                                    (add-hook 'before-save-hook 'lsp-format-buffer 0 t))))
         :custom
-        (lsp-elixir-server-command '("${elixir_ls}/bin/elixir-ls"))
+        (lsp-elixir-server-command '("${pkgs.elixir_ls}/bin/elixir-ls"))
         (lsp-elixir-suggest-specs nil)
         (lsp-credo-version "0.3.0")
         (lsp-credo-command '("${credoLanguageServer}/bin/credo-language-server" "--stdio=true"))
@@ -41,8 +42,8 @@
     extraPackages = epkgs: with epkgs; [
       elixir-ts-mode
       erlang
-      heex-ts-mode
       gleam-ts-mode
+      heex-ts-mode
       tree-sitter
       treesit-grammars.with-all-grammars
     ];
