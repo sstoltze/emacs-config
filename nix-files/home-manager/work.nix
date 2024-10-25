@@ -17,4 +17,7 @@
     # release notes.
     stateVersion = "23.05"; # Please read the comment before changing.
   };
+
+  programs.vscode.enable = false;
+  programs.iterm2.enable = false;
 }
