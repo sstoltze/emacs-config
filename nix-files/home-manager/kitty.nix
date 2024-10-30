@@ -4,8 +4,8 @@
   programs.kitty = {
     enable = true;
     font = {
-      package = pkgs.lib.mkForce pkgs.iosevka;
-      name = pkgs.lib.mkForce "Iosevka Term";
+      package = pkgs.iosevka;
+      name = "Iosevka Term";
       size = 14;
     };
     keybindings = {
