@@ -70,6 +70,8 @@ in
     zip
     unzip
     sof-firmware
+    usbutils
+    qpwgraph
   ];
 
   programs = {
