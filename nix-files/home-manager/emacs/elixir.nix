@@ -36,8 +36,8 @@ in
       (use-package gleam-ts-mode
         :defer t
         :mode (rx ".gleam" eos)
-        :hook ((gleam-mode . (lambda ()
-                               (add-hook 'before-save-hook 'gleam-format nil t)))))
+        :hook ((gleam-ts-mode . (lambda ()
+                                  (add-hook 'before-save-hook 'gleam-ts-format nil t)))))
     '';
     extraPackages = epkgs: with epkgs; [
       elixir-ts-mode
