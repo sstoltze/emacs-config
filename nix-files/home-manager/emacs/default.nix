@@ -18,7 +18,7 @@
 
   programs.emacs = {
     enable = true;
-    package = pkgs.lib.mkForce pkgs.emacs29;
+    package = pkgs.emacs29;
   };
 
 }
