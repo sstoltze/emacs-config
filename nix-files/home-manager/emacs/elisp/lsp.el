@@ -1,6 +1,7 @@
 (use-package lsp-mode
   :ensure t
   :hook ((elixir-ts-mode  . lsp-deferred)
+         (gleam-ts-mode   . lsp-deferred)
          (nix-mode        . lsp-deferred)
          (lsp-mode        . projectile-mode))
   :bind ((:map lsp-mode-map
