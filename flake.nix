@@ -12,6 +12,8 @@
         (system: f { inherit system; pkgs = import nixpkgs { inherit system; }; }));
     in
     {
+      inherit nixpkgs;
+
       nixosModules = {
         default = import ./nix-files/nixos;
         nixosHomeManager = import ./nix-files/home-manager/nixos.nix;
