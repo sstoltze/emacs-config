@@ -40,10 +40,7 @@ double prefix runs all tests."
   :bind ((:map lsp-mode-map
                ("M-+"     . lsp-find-references)
                ("M-."     . lsp-find-definition)
-               ("C-c l s" . lsp)
-               ("C-c t"   . sstoltze/lsp-run-mix-test))
-         (:map projectile-command-map
-               ("y"       . sstoltze/lsp-yank-relative-name)))
+               ("C-c l s" . lsp)))
   :custom
   (lsp-keymap-prefix "C-c l")
   (lsp-idle-delay 0.6)

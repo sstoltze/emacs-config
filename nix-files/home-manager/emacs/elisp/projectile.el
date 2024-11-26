@@ -2,6 +2,8 @@
   :ensure t
   :defer t
   :bind-keymap (("C-c p" . projectile-command-map))
+  :bind ((:map projectile-command-map
+               ("y"       . sstoltze/lsp-yank-relative-name)))
   :custom
   (projectile-completion-system 'ivy)
   (projectile-use-git-grep      t)
