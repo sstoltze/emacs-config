@@ -1,3 +1,36 @@
+(defun sstoltze/lsp-file-relative-name (line-number)
+  "Return the current buffer file name, relative to the project root.
+    If LINE-NUMBER is given, append the line at point to the file name."
+  (if (fboundp 'lsp-workspace-root)
+      (format "%s%s"
+              (file-relative-name (buffer-file-name) (lsp-workspace-root))
+              line-number)))
+
+(defun sstoltze/lsp-yank-relative-name (line-number)
+  "Yank the current buffer file name, relative to the project root.
+    If prefix argument LINE-NUMBER is given, append the line at point to
+    the file name."
+  (interactive (list (if (consp current-prefix-arg)
+                         (format ":%d" (line-number-at-pos nil t))
+                       "")))
+  (kill-new (sstoltze/lsp-file-relative-name line-number)))
+
+(defun sstoltze/lsp-run-mix-test (test)
+  "Run mix test in the project.
+
+Prefix argument TEST specifies which test to run.
+No prefix runs test at point, single prefix runs current file,
+double prefix runs all tests."
+  (interactive (list (cond ((and (consp current-prefix-arg)
+                                 (>= (car current-prefix-arg) 16))
+                            "")
+                           ((consp current-prefix-arg)
+                            (sstoltze/lsp-file-relative-name ""))
+                           (t
+                            (sstoltze/lsp-file-relative-name (format ":%d" (line-number-at-pos nil t)))))))
+  (let ((test-command (format "mix test %s" test)))
+    (async-shell-command (format "cd '%s' && %s" (lsp-workspace-root) test-command) "*Mix test*")))
+
 (use-package lsp-mode
   :ensure t
   :hook ((elixir-ts-mode  . lsp-deferred)
@@ -7,7 +40,10 @@
   :bind ((:map lsp-mode-map
                ("M-+"     . lsp-find-references)
                ("M-."     . lsp-find-definition)
-               ("C-c l s" . lsp)))
+               ("C-c l s" . lsp)
+               ("C-c t"   . sstoltze/lsp-run-mix-test))
+         (:map projectile-command-map
+               ("y"       . sstoltze/lsp-yank-relative-name)))
   :custom
   (lsp-keymap-prefix "C-c l")
   (lsp-idle-delay 0.6)
