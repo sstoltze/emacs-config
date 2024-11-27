@@ -10,14 +10,13 @@
         :bind (("C-c d" . document-sections-find-section)))
     '';
 
-    extraPackages = epkgs:
+    extraPackages =
+      epkgs:
       let
         relatedFiles = pkgs.callPackage ./packages/related-files.nix {
-          inherit (pkgs) fetchFromGitHub;
           inherit (epkgs) trivialBuild;
         };
         documentSections = pkgs.callPackage ./packages/document-sections.nix {
-          inherit (pkgs) fetchFromGitHub;
           inherit (epkgs) trivialBuild;
         };
       in
