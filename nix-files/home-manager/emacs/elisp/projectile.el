@@ -16,5 +16,8 @@
 (use-package counsel-projectile
   :ensure t
   :after (:all counsel projectile)
+  :custom
+  (counsel-projectile-sort-files   t)
+  (counsel-projectile-sort-buffers t)
   :init
   (counsel-projectile-mode 1))
