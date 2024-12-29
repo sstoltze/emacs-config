@@ -20,9 +20,4 @@
       tree-sitter
       (tree-sitter.withPlugins (p: builtins.attrNames p))
     ];
-
-  # Unique to nixos
-  nixosPackages = with pkgs; [
-
-  ];
 }
