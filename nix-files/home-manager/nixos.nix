@@ -8,6 +8,7 @@
     username = "sst";
     homeDirectory = "/home/sst";
     packages = with pkgs; [
+      (ardour.override { librdf_raptor = librdf_raptor2; })
       dbeaver-bin
       discord
       dropbox
