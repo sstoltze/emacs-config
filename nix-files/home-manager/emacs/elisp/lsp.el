@@ -15,21 +15,34 @@
                        "")))
   (kill-new (sstoltze/lsp-file-relative-name line-number)))
 
-(defun sstoltze/lsp-run-mix-test (test)
-  "Run mix test in the project.
+(let ((lsp-run-mix-test-last-run ""))
+  (defun sstoltze/lsp-run-mix-test (test)
+    "Run mix test in the project.
 
 Prefix argument TEST specifies which test to run.
 No prefix runs test at point, single prefix runs current file,
 double prefix runs all tests."
-  (interactive (list (cond ((and (consp current-prefix-arg)
-                                 (>= (car current-prefix-arg) 16))
-                            "")
-                           ((consp current-prefix-arg)
-                            (sstoltze/lsp-file-relative-name ""))
-                           (t
-                            (sstoltze/lsp-file-relative-name (format ":%d" (line-number-at-pos nil t)))))))
-  (let ((test-command (format "mix test %s" test)))
-    (async-shell-command (format "cd '%s' && %s" (lsp-workspace-root) test-command) "*Mix test*")))
+    (interactive (list (cond ((and (consp current-prefix-arg)
+                                   (>= (car current-prefix-arg) 16))
+                              "")
+                             ((consp current-prefix-arg)
+                              (sstoltze/lsp-file-relative-name ""))
+                             (t
+                              (sstoltze/lsp-file-relative-name (format ":%d" (line-number-at-pos nil t)))))))
+    (let* ((test-argument
+            (cond
+             ((eq test :point)
+              (sstoltze/lsp-file-relative-name (format ":%d" (line-number-at-pos nil t))))
+             ((eq test :file)
+              (sstoltze/lsp-file-relative-name ""))
+             ((eq test :suite)
+              "")
+             ((eq test :last)
+              lsp-run-mix-test-last-run)
+             (t test)))
+           (test-command (format "mix test %s" test-argument)))
+      (setq lsp-run-mix-test-last-run test-argument)
+      (async-shell-command (format "cd '%s' && %s" (lsp-workspace-root) test-command) "*Mix test*"))))
 
 (use-package lsp-mode
   :ensure t
