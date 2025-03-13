@@ -1,6 +1,7 @@
 { pkgs, ... }:
 
 {
+  home.packages = [ pkgs.nodejs ];
   programs.emacs = {
     extraConfig = ''
       ${builtins.readFile ./elisp/lsp.el}
