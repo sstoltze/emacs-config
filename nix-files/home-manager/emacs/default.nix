@@ -13,6 +13,7 @@
     ./projectile.nix
     ./smartparens.nix
     ./terraform.nix
+    ./tramp.nix
     ./tree-sitter.nix
     ./ui.nix
   ];
