@@ -3,7 +3,6 @@
 {
   programs.kitty = {
     enable = true;
-    package = with pkgs; lib.mkForce (kitty.overridePythonAttrs { doCheck = false; });
     font = {
       package = pkgs.iosevka;
       name = "Iosevka";
