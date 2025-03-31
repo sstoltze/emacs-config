@@ -26,7 +26,10 @@
   (diminish 'company-mode "")
   (diminish 'auto-revert-mode ""))
 
-(set-frame-font "Iosevka-14" nil t)
+(if (>= (length (display-monitor-attributes-list)) 2)
+    (set-frame-font "Iosevka-26" nil t)
+  (set-frame-font "Iosevka-14" nil t))
+
 (toggle-frame-maximized)
 
 (use-package visible-mark
