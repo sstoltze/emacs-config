@@ -10,6 +10,7 @@
     ./lsp.nix
     ./magit.nix
     ./nix.nix
+    ./org.nix
     ./projectile.nix
     ./smartparens.nix
     ./terraform.nix
