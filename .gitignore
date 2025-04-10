@@ -3,3 +3,4 @@ flycheck_*
 .#*
 .repository
 git/.config/git/config
+result
