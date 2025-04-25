@@ -21,7 +21,9 @@
 
   programs.emacs = {
     enable = true;
-    package = pkgs.emacs30;
+    package = pkgs.emacs30.override {
+      # https://github.com/NixOS/nixpkgs/issues/395169
+      withNativeCompilation = false;
+    };
   };
-
 }
