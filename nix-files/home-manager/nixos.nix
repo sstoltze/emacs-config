@@ -20,7 +20,6 @@
       lsof
       networkmanager
       redshift
-      skypeforlinux
       slack
       spotify
       sqlite
