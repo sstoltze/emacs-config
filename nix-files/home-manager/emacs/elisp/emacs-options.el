@@ -115,7 +115,7 @@
 (global-set-key (kbd "RET") 'newline-and-indent)
 
 ;; Do not ask to kill buffer every time
-(global-set-key (kbd "C-x k") 'kill-this-buffer)
+(global-set-key (kbd "C-x k") 'kill-current-buffer)
 
 ;; Better behaviour for M-SPC
 (global-set-key (kbd "M-SPC") 'cycle-spacing)
