@@ -30,6 +30,6 @@
 
   programs = {
     home-manager.enable = true;
-    git.extraConfig.github.user = "sstoltze";
+    git.settings.github.user = "sstoltze";
   };
 }
