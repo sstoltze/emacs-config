@@ -9,6 +9,7 @@
     homeDirectory = "/home/sst";
     packages = with pkgs; [
       dbeaver-bin
+      deluge
       discord
       dropbox
       evince
@@ -24,6 +25,7 @@
       spotify
       sqlite
       steam
+      vlc
       zoom-us
     ];
   };
