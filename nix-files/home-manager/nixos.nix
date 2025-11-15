@@ -20,6 +20,9 @@
       htop
       lsof
       networkmanager
+      proton-authenticator
+      proton-pass
+      protonvpn-gui
       redshift
       slack
       spotify
