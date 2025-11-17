@@ -767,11 +767,15 @@ awful.rules.rules = {
    { rule = { class = "[Ss]potify" },
      properties = { tag = "Music" } },
    -- Video
-   { rule_any = { class = {"mpv", "Totem"}},
+   { rule_any = { class = {"mpv", "Totem", "vlc"}},
      properties = { tag = "Video" } },
    -- Math
    { rule = { class = "Mathematica" },
      properties = { tag = "Maths" } },
+   { rule = { class = "deluge" },
+     properties = { tag = "VPN" } },
+   { rule = { name = "Proton VPN" },
+     properties = { tag = "VPN" } },
 }
 -- }}}
 
