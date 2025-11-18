@@ -2,7 +2,7 @@
 {
   programs.git = {
     enable = true;
-    settings = {
+    extraConfig = {
       core = {
         autocrlf = "input";
         editor = "emacs";
