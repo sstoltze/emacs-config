@@ -10,7 +10,6 @@
     ./lsp.nix
     ./magit.nix
     ./nix.nix
-    ./org.nix
     ./projectile.nix
     ./smartparens.nix
     ./terraform.nix
@@ -22,9 +21,9 @@
   programs.emacs =
     let
       overrides =
-        if pkgs.stdenv.isDarwin
-        then
-          emacs: emacs.override {
+        if pkgs.stdenv.isDarwin then
+          emacs:
+          emacs.override {
             # https://github.com/NixOS/nixpkgs/issues/395169
             withNativeCompilation = false;
           }
