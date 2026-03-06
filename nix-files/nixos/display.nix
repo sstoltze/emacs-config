@@ -14,7 +14,7 @@
         lightdm.enable = true;
 
         sessionCommands = ''
-          ${pkgs.xorg.xrdb}/bin/xrdb -merge <<EOF
+          ${pkgs.xrdb}/bin/xrdb -merge <<EOF
             Xcursor.theme: Adwaita
             Xcursor.size: 32
           EOF

@@ -65,7 +65,7 @@ in
     coreutils-full
     gnumake
     # fprintd # Fingerprint reader
-    xorg.xmodmap
+    xmodmap
     alsa-firmware
     zip
     unzip
