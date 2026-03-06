@@ -56,7 +56,7 @@ in
     description = "Sarah Ella Stoltze";
     extraGroups = [ "networkmanager" "wheel" "input" "audio" ];
     shell = pkgs.fish;
-    packages = packages.commonPackages;
+    packages = packages.commonPackages ++ [ pkgs.dualsensectl ];
   };
 
   environment.systemPackages = with pkgs; [
