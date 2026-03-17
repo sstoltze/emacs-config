@@ -40,7 +40,7 @@ function make_battery_widget(theme)
                                             urgent and "fgcolor='" .. theme.fg_urgent .. "' bgcolor='" .. theme.bg_urgent .."'" or "",
                                             args[2],
                                             args[1] == "-" and "%" or "+")
-                    end, 61, "BAT0")
+                    end, 61, "BAT1")
    return battery
 end
 
