@@ -25,6 +25,11 @@
         side-by-side = true;
         syntax-theme = "zenburn";
       };
+      fetch = {
+        prune = true;
+        pruneTags = true;
+        all = true;
+      };
     };
   };
 }
