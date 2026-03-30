@@ -22,7 +22,7 @@
       networkmanager
       proton-authenticator
       proton-pass
-      protonvpn-gui
+      proton-vpn
       redshift
       slack
       spotify

@@ -2,6 +2,7 @@
 {
   programs.git = {
     enable = true;
+    signing.format = "opengpg";
     settings = {
       core = {
         autocrlf = "input";
