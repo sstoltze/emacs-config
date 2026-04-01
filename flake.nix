@@ -41,7 +41,6 @@
         in
         {
           default = pkgs.mkShell {
-            buildInputs = with pkgs; lib.optional stdenv.isDarwin darwin.apple_sdk.frameworks.CoreServices;
             packages =
               with pkgs;
               [
