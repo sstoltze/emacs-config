@@ -46,13 +46,6 @@ if test -d ~/.config/guix
     set -x PATH "$HOME/.config/guix/current/bin" $PATH
 end
 
-# Nix
-if test -d ~/.nix-profile -a -e ~/.nix-profile/etc/profile.d/nix.sh
-    fenv source ~/.nix-profile/etc/profile.d/nix.sh
-else if test -e /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish
-    source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish
-end
-
 # Docker
 set -x DOCKER_BUILDKIT 1
 
@@ -126,8 +119,6 @@ if test "$system" = "Linux"
         end
     end
 end
-
-set -x GIT_MOB_COAUTHORS "$HOME/.git_coauthors.json"
 
 if command -v brew >/dev/null
     set -gx HOMEBREW_PREFIX "/opt/homebrew";
