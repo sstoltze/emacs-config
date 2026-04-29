@@ -11,6 +11,7 @@
     ./magit.nix
     ./nix.nix
     ./projectile.nix
+    ./racket.nix
     ./smartparens.nix
     ./terraform.nix
     ./tramp.nix
