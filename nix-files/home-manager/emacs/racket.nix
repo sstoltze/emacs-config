@@ -27,7 +27,8 @@
       (use-package racket-mode
         :ensure t
         :defer t
-        :hook ((racket-mode . racket-xp-mode))
+        :hook ((racket-mode . racket-xp-mode)
+               (racket-mode . font-lock-mode))
         :bind ((:map racket-mode-map
                ("C-c SPC" . racket-align))))
 
