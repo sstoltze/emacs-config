@@ -7,6 +7,7 @@ in
     ./bluetooth.nix
     ./display.nix
     ./ereader.nix
+    ./games.nix
     ./nix.nix
     ./sound.nix
   ];
