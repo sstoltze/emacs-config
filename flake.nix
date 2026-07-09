@@ -44,7 +44,7 @@
             packages =
               with pkgs;
               [
-                elixir
+                beamPackages.elixir
                 elixir-ls
                 sqlite
                 credoLanguageServer
