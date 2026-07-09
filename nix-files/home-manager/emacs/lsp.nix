@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 {
   home.packages = [ pkgs.nodejs ];
@@ -18,7 +18,6 @@
         company
         lsp-mode
         lsp-ivy
-        lsp-tailwindcss
-      ];
+      ] ++ lib.optional pkgs.stdenv.isDarwin lsp-tailwindcss;
   };
 }
