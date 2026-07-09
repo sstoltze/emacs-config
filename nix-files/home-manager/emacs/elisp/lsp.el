@@ -62,7 +62,10 @@ double prefix runs all tests."
   (lsp-log-max 10000)
   ;; Recommended for lsp as the replies can get rather large and slow things down - 1 mb
   (read-process-output-max (* 1024 1024))
-  (lsp-file-watch-threshold 2000))
+  (lsp-file-watch-threshold 2000)
+  (lsp-format-buffer-on-save t)
+  :init
+  (setq lsp-inline-completion-enable t))
 
 ;; Trying some things out to speed up LSP/emacs
 (with-eval-after-load 'lsp-mode

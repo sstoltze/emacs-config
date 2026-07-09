@@ -15,8 +15,6 @@ in
         "f" #'(lambda () (interactive) (sstoltze/lsp-run-mix-test :file)))
 
       (use-package elixir-ts-mode
-        :hook ((elixir-ts-mode . (lambda ()
-                                   (add-hook 'before-save-hook 'lsp-format-buffer 0 t))))
         :bind-keymap ("C-c t" . sstoltze-mix-test)
         :custom
         (lsp-elixir-server-command '("elixir-ls"))
