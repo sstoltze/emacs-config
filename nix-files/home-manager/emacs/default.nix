@@ -22,7 +22,7 @@
   programs.emacs =
     let
       overrides =
-        if pkgs.stdenv.isDarwin then
+        if pkgs.stdenv.hostPlatform.isDarwin then
           emacs:
           emacs.override {
             # https://github.com/NixOS/nixpkgs/issues/395169

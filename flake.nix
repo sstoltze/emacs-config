@@ -49,9 +49,9 @@
                 sqlite
                 credoLanguageServer
               ]
-              ++ lib.optional stdenv.isLinux inotify-tools
-              ++ lib.optional stdenv.isDarwin terminal-notifier
-              ++ lib.optional stdenv.isDarwin fswatch;
+              ++ lib.optional stdenv.hostPlatform.isLinux inotify-tools
+              ++ lib.optional stdenv.hostPlatform.isDarwin terminal-notifier
+              ++ lib.optional stdenv.hostPlatform.isDarwin fswatch;
           };
         }
       );
