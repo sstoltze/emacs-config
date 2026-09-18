@@ -72,6 +72,7 @@ in
     packages = packages.commonPackages ++ [
       pkgs.dualsensectl
       pkgs.auctex
+      pkgs.texliveMedium
     ];
   };
 
