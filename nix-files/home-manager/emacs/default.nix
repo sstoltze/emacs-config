@@ -7,6 +7,7 @@
     ./emacs-options.nix
     ./flycheck.nix
     ./ivy.nix
+    ./latex.nix
     ./lsp.nix
     ./magit.nix
     ./nix.nix
