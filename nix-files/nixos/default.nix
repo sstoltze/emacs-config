@@ -41,23 +41,38 @@ in
       };
     };
 
-    geoclue2 = { enable = true; };
+    geoclue2 = {
+      enable = true;
+    };
 
     # Needed for skype, otherwise complains about missing secret
-    gnome.gnome-keyring = { enable = true; };
+    gnome.gnome-keyring = {
+      enable = true;
+    };
   };
 
   location.provider = "geoclue2";
 
   console.keyMap = "dk-latin1";
-  fonts.packages = with pkgs; [ iosevka iosevka-bin ];
+  fonts.packages = with pkgs; [
+    iosevka
+    iosevka-bin
+  ];
 
   users.users.sst = {
     isNormalUser = true;
     description = "Sarah Ella Stoltze";
-    extraGroups = [ "networkmanager" "wheel" "input" "audio" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "input"
+      "audio"
+    ];
     shell = pkgs.fish;
-    packages = packages.commonPackages ++ [ pkgs.dualsensectl ];
+    packages = packages.commonPackages ++ [
+      pkgs.dualsensectl
+      pkgs.auctex
+    ];
   };
 
   environment.systemPackages = with pkgs; [
@@ -76,8 +91,12 @@ in
   ];
 
   programs = {
-    dconf = { enable = true; };
-    fish = { enable = true; };
+    dconf = {
+      enable = true;
+    };
+    fish = {
+      enable = true;
+    };
     steam = {
       enable = true;
       remotePlay.openFirewall = true;
