@@ -33,6 +33,6 @@
     in
     {
       enable = true;
-      package = overrides pkgs.emacs30;
+      package = overrides pkgs.emacs;
     };
 }
