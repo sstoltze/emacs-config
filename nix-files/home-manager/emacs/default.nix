@@ -20,20 +20,15 @@
     ./ui.nix
   ];
 
-  programs.emacs =
-    let
-      overrides =
-        if pkgs.stdenv.hostPlatform.isDarwin then
-          emacs:
-          emacs.override {
-            # https://github.com/NixOS/nixpkgs/issues/395169
-            withNativeCompilation = false;
-          }
-        else
-          emacs: emacs;
-    in
-    {
-      enable = true;
-      package = overrides pkgs.emacs;
-    };
+  programs.emacs = {
+    enable = true;
+    package =
+      if pkgs.stdenv.hostPlatform.isDarwin then
+        pkgs.emacs.override {
+          # https://github.com/NixOS/nixpkgs/issues/395169
+          withNativeCompilation = false;
+        }
+      else
+        pkgs.emacs;
+  };
 }
