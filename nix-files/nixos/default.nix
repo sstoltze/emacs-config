@@ -49,6 +49,17 @@ in
     gnome.gnome-keyring = {
       enable = true;
     };
+
+    deluge = {
+      enable = true;
+      package = pkgs.deluge-2_x.override {
+        python3Packages = pkgs.python3Packages.overrideScope (
+          final: prev: {
+            setuptools = prev.setuptools_80;
+          }
+        );
+      };
+    };
   };
 
   location.provider = "geoclue2";

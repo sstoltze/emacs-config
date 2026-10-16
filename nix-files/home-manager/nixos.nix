@@ -33,11 +33,6 @@
     ];
   };
 
-  programs = {
-    home-manager.enable = true;
-    git.settings.github.user = "sstoltze";
-  };
-
   services.deluge = {
     enable = true;
     package = pkgs.deluge-2_x.override {
