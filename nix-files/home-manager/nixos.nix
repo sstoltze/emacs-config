@@ -9,7 +9,6 @@
     homeDirectory = "/home/sst";
     packages = with pkgs; [
       dbeaver-bin
-      deluge
       discord
       dropbox
       evince
