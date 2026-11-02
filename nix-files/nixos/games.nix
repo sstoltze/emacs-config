@@ -34,7 +34,6 @@
 
     # Required
     glib
-    gtk2
 
     # Inspired by steam
     # https://github.com/NixOS/nixpkgs/blob/master/pkgs/by-name/st/steam/package.nix#L36-L85
@@ -95,7 +94,6 @@
     freeglut
     libjpeg
     libpng
-    libpng12
     libsamplerate
     libmikmod
     libtheora

@@ -36,10 +36,8 @@ in
 
     extraPackages =
       epkgs: with epkgs; [
-        elixir-ts-mode
         erlang
         gleam-ts-mode
-        heex-ts-mode
       ];
   };
 }
