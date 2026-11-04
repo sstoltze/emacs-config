@@ -746,6 +746,7 @@ awful.rules.rules = {
    { rule_any = {
         class = {
            "Slack",
+           "slack",
            "discord",
            "Skype",
            "Microsoft Teams - Preview",
